@@ -68,128 +68,97 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
 
   const rolesArray1 = [
     { label: "Quality Assurance-Differential Pressure Record-Initiator", value: 1 },
-    { label: "Quality Control-Differential Pressure Record-Initiator", value: 2 },
-    { label: "Production-Differential Pressure Record-Initiator", value: 3 },
-    { label: "Warehouse-Differential Pressure Record-Initiator", value: 4 },
-    { label: "Engineering-Differential Pressure Record-Initiator", value: 5 },
-    { label: "Human Resources-Differential Pressure Record-Initiator", value: 6 },
-    { label: "Information Technology-Differential Pressure Record-Initiator", value: 7 },
-    { label: "Accounts-Differential Pressure Record-Initiator", value: 8 },
-    { label: "Production Planning and Inventory Control-Differential Pressure Record-Initiator", value: 9 },
-    { label: "Regulatory Affairs-Differential Pressure Record-Initiator", value: 10 },
-
-    { label: "Quality Assurance-Temperature Records-Initiator", value: 11 },
-    { label: "Quality Control-Temperature Records-Initiator", value: 12 },
-    { label: "Production-Temperature Records-Initiator", value: 13 },
-    { label: "Warehouse-Temperature Records-Initiator", value: 14 },
-    { label: "Engineering-Temperature Records-Initiator", value: 15 },
-    { label: "Human Resources-Temperature Records-Initiator", value: 16 },
-    { label: "Information Technology-Temperature Records-Initiator", value: 17 },
-    { label: "Accounts-Temperature Records-Initiator", value: 18 },
-    { label: "Production Planning and Inventory Control-Temperature Records-Initiator", value: 19 },
+    { label: "Quality Assurance-Temperature Records-Initiator", value: 2 },
+    { label: "Quality Control-Differential Pressure Record-Initiator", value: 3 },
+    { label: "Quality Control-Temperature Records-Initiator", value: 4 },
+    { label: "Production-Differential Pressure Record-Initiator", value: 5 },
+    { label: "Production-Temperature Records-Initiator", value: 6 },
+    { label: "Warehouse-Differential Pressure Record-Initiator", value: 7 },
+    { label: "Warehouse-Temperature Records-Initiator", value: 8 },
+    { label: "Engineering-Differential Pressure Record-Initiator", value: 9 },
+    { label: "Engineering-Temperature Records-Initiator", value: 10 },
+    { label: "Human Resources-Differential Pressure Record-Initiator", value: 11 },
+    { label: "Human Resources-Temperature Records-Initiator", value: 12 },
+    { label: "Information Technology-Differential Pressure Record-Initiator", value: 13 },
+    { label: "Information Technology-Temperature Records-Initiator", value: 14 },
+    { label: "Accounts-Differential Pressure Record-Initiator", value: 5 },
+    { label: "Accounts-Temperature Records-Initiator", value: 16 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Initiator", value: 17 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Initiator", value: 18 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Initiator", value: 19 },
     { label: "Regulatory Affairs-Temperature Records-Initiator", value: 20 },
   ];
 
   const rolesArray2 = [
     { label: "Quality Assurance-Differential Pressure Record-Reviewer", value: 21 },
-    { label: "Quality Control-Differential Pressure Record-Reviewer", value: 22 },
-    { label: "Production-Differential Pressure Record-Reviewer", value: 23 },
-    { label: "Warehouse-Differential Pressure Record-Reviewer", value: 24 },
-    { label: "Engineering-Differential Pressure Record-Reviewer", value: 25 },
-    { label: "Human Resources-Differential Pressure Record-Reviewer", value: 26 },
-    { label: "Information Technology-Differential Pressure Record-Reviewer", value: 27 },
-    { label: "Accounts-Differential Pressure Record-Reviewer", value: 28 },
-    { label: "Production Planning and Inventory Control-Differential Pressure Record-Reviewer", value: 29 },
-    { label: "Regulatory Affairs-Differential Pressure Record-Reviewer", value: 30 },
-
-    { label: "Quality Assurance-Temperature Records-Reviewer", value: 31 },
-    { label: "Quality Control-Temperature Records-Reviewer", value: 32 },
-    { label: "Production-Temperature Records-Reviewer", value: 33 },
-    { label: "Warehouse-Temperature Records-Reviewer", value: 34 },
-    { label: "Engineering-Temperature Records-Reviewer", value: 35 },
-    { label: "Human Resources-Temperature Records-Reviewer", value: 36 },
-    { label: "Information Technology-Temperature Records-Reviewer", value: 37 },
-    { label: "Accounts-Temperature Records-Reviewer", value: 38 },
-    { label: "Production Planning and Inventory Control-Temperature Records-Reviewer", value: 39 },
+    { label: "Quality Assurance-Temperature Records-Reviewer", value: 22 },
+    { label: "Quality Control-Differential Pressure Record-Reviewer", value: 23 },
+    { label: "Quality Control-Temperature Records-Reviewer", value: 24 },
+    { label: "Production-Differential Pressure Record-Reviewer", value: 25 },
+    { label: "Production-Temperature Records-Reviewer", value: 26 },
+    { label: "Warehouse-Differential Pressure Record-Reviewer", value: 27 },
+    { label: "Warehouse-Temperature Records-Reviewer", value: 28 },
+    { label: "Engineering-Differential Pressure Record-Reviewer", value: 29 },
+    { label: "Engineering-Temperature Records-Reviewer", value: 30 },
+    { label: "Human Resources-Differential Pressure Record-Reviewer", value: 31 },
+    { label: "Human Resources-Temperature Records-Reviewer", value: 32 },
+    { label: "Information Technology-Differential Pressure Record-Reviewer", value: 33 },
+    { label: "Information Technology-Temperature Records-Reviewer", value: 34 },
+    { label: "Accounts-Differential Pressure Record-Reviewer", value: 35 },
+    { label: "Accounts-Temperature Records-Reviewer", value: 36 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Reviewer", value: 37 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Reviewer", value: 38 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Reviewer", value: 39 },
     { label: "Regulatory Affairs-Temperature Records-Reviewer", value: 40 },
   ];
   const rolesArray3 = [
     { label: "Quality Assurance-Differential Pressure Record-Approver", value: 41 },
-    { label: "Quality Control-Differential Pressure Record-Approver", value: 42 },
-    { label: "Production-Differential Pressure Record-Approver", value: 43 },
-    { label: "Warehouse-Differential Pressure Record-Approver", value: 44 },
-    { label: "Engineering-Differential Pressure Record-Approver", value: 45 },
-    { label: "Human Resources-Differential Pressure Record-Approver", value: 46 },
-    { label: "Information Technology-Differential Pressure Record-Approver", value: 47 },
-    { label: "Accounts-Differential Pressure Record-Approver", value: 48 },
-    { label: "Production Planning and Inventory Control-Differential Pressure Record-Approver", value: 49 },
-    { label: "Regulatory Affairs-Differential Pressure Record-Approver", value: 50 },
-    
-    { label: "Quality Assurance-Temperature Records-Approver", value: 51 },
-    { label: "Quality Control-Temperature Records-Approver", value: 52 },
-    { label: "Production-Temperature Records-Approver", value: 53 },
-    { label: "Warehouse-Temperature Records-Approver", value: 54 },
-    { label: "Engineering-Temperature Records-Approver", value: 55 },
-    { label: "Human Resources-Temperature Records-Approver", value: 56 },
-    { label: "Information Technology-Temperature Records-Approver", value: 57 },
-    { label: "Accounts-Temperature Records-Approver", value: 58 },
-    { label: "Production Planning and Inventory Control-Temperature Records-Approver", value: 59 },
+    { label: "Quality Assurance-Temperature Records-Approver", value: 42 },
+    { label: "Quality Control-Differential Pressure Record-Approver", value: 43 },
+    { label: "Quality Control-Temperature Records-Approver", value: 44 },
+    { label: "Production-Differential Pressure Record-Approver", value: 45 },
+    { label: "Production-Temperature Records-Approver", value: 46 },
+    { label: "Warehouse-Differential Pressure Record-Approver", value: 47 },
+    { label: "Warehouse-Temperature Records-Approver", value: 48 },
+    { label: "Engineering-Differential Pressure Record-Approver", value: 49 },
+    { label: "Engineering-Temperature Records-Approver", value: 50 },
+    { label: "Human Resources-Differential Pressure Record-Approver", value: 51 },
+    { label: "Human Resources-Temperature Records-Approver", value: 52 },
+    { label: "Information Technology-Differential Pressure Record-Approver", value: 53 },
+    { label: "Information Technology-Temperature Records-Approver", value: 54 },
+    { label: "Accounts-Differential Pressure Record-Approver", value: 55 },
+    { label: "Accounts-Temperature Records-Approver", value: 56 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Approver", value: 57 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Approver", value: 58 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Approver", value: 59 }, 
     { label: "Regulatory Affairs-Temperature Records-Approver", value: 60 },
+       
   ];
   const rolesArray4 = [
     { label: "Quality Assurance-Differential Pressure Record-Fullpermission", value: 61 },
-    { label: "Quality Control-Differential Pressure Record-Fullpermission", value: 62 },
-    { label: "Production-Differential Pressure Record-Fullpermission", value: 63 },
-    { label: "Warehouse-Differential Pressure Record-Fullpermission", value: 64 },
-    { label: "Engineering-Differential Pressure Record-Fullpermission", value: 65 },
-    { label: "Human Resources-Differential Pressure Record-Fullpermission", value: 66 },
-    { label: "Information Technology-Differential Pressure Record-Fullpermission", value: 67 },
-    { label: "Accounts-Differential Pressure Record-Fullpermission", value: 68 },
-    { label: "Production Planning and Inventory Control-Differential Pressure Record-Fullpermission", value: 69 },
-    { label: "Regulatory Affairs-Differential Pressure Record-Fullpermission", value: 70 },
-    
-    { label: "Quality Assurance-Temperature Records-Fullpermission", value: 71 },
-    { label: "Quality Control-Temperature Records-Fullpermission", value: 72 },
-    { label: "Production-Temperature Records-Fullpermission", value: 73 },
-    { label: "Warehouse-Temperature Records-Fullpermission", value: 74 },
-    { label: "Engineering-Temperature Records-Fullpermission", value: 75 },
-    { label: "Human Resources-Temperature Records-Fullpermission", value: 76 },
-    { label: "Information Technology-Temperature Records-Fullpermission", value: 77 },
-    { label: "Accounts-Temperature Records-Fullpermission", value: 78 },
-    { label: "Production Planning and Inventory Control-Temperature Records-Fullpermission", value: 79 },
+    { label: "Quality Assurance-Temperature Records-Fullpermission", value: 62 },
+    { label: "Quality Control-Differential Pressure Record-Fullpermission", value: 63 },
+    { label: "Quality Control-Temperature Records-Fullpermission", value: 64 },
+    { label: "Production-Differential Pressure Record-Fullpermission", value: 65 },
+    { label: "Production-Temperature Records-Fullpermission", value: 66 },
+    { label: "Warehouse-Differential Pressure Record-Fullpermission", value: 67 },
+    { label: "Warehouse-Temperature Records-Fullpermission", value: 68 },
+    { label: "Engineering-Differential Pressure Record-Fullpermission", value: 69 },
+    { label: "Engineering-Temperature Records-Fullpermission", value: 70 },
+    { label: "Human Resources-Differential Pressure Record-Fullpermission", value: 71 },
+    { label: "Human Resources-Temperature Records-Fullpermission", value: 72 },
+    { label: "Information Technology-Differential Pressure Record-Fullpermission", value: 73 },
+    { label: "Information Technology-Temperature Records-Fullpermission", value: 74 },
+    { label: "Accounts-Differential Pressure Record-Fullpermission", value: 75 },
+    { label: "Accounts-Temperature Records-Fullpermission", value: 76 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Fullpermission", value: 77 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Fullpermission", value: 78 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Fullpermission", value: 79 },  
     { label: "Regulatory Affairs-Temperature Records-Fullpermission", value: 80 },
+      
   ];
 
  User.addHook("afterSync", async () => {
-  const assignInitiatorRoles = async () => {
-    try {
-      const initiatorUser = await User.findOne({
-        where: { email: "initiator@vidyagxp.com" },
-      });
-      const reviewerUser = await User.findOne({
-        where: { email: "reviewer@vidyagxp.com" },
-      });
-      const approverUser = await User.findOne({
-        where: { email: "approver@vidyagxp.com" },
-      });
-      const fullPermissionUser = await User.findOne({
-        where: { email: "fullpermission@vidyagxp.com" },
-      });
-
-      if (!initiatorUser) {
-        throw new Error("Initiator user not found");
-      }
-
-      await processInitiatorRoles(rolesArray1, initiatorUser);
-      await processInitiatorRoles(rolesArray2, reviewerUser);
-      await processInitiatorRoles(rolesArray3, approverUser);
-      await processInitiatorRoles(rolesArray4, fullPermissionUser);
-      
-      console.log("Roles assigned successfully.");
-    } catch (error) {
-      console.error("Error assigning roles:", error.message);
-    }
-  };
 
   const processInitiatorRoles = async (rolesArray, initiatorUser) => {
     try {
@@ -234,6 +203,37 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
       throw error;
     }
   };
+  const assignInitiatorRoles = async () => {
+    try {
+      const initiatorUser = await User.findOne({
+        where: { email: "initiator@vidyagxp.com" },
+      });
+      const reviewerUser = await User.findOne({
+        where: { email: "reviewer@vidyagxp.com" },
+      });
+      const approverUser = await User.findOne({
+        where: { email: "approver@vidyagxp.com" },
+      });
+      const fullPermissionUser = await User.findOne({
+        where: { email: "fullpermission@vidyagxp.com" },
+      });
+
+      if (!initiatorUser) {
+        throw new Error("Initiator user not found");
+      }
+
+      await processInitiatorRoles(rolesArray1, initiatorUser);
+      await processInitiatorRoles(rolesArray2, reviewerUser);
+      await processInitiatorRoles(rolesArray3, approverUser);
+      await processInitiatorRoles(rolesArray4, fullPermissionUser);
+      
+      console.log("Roles assigned successfully.");
+    } catch (error) {
+      console.error("Error assigning roles:", error.message);
+    }
+    
+  };
+
    try {
      const userRoleCount = await UserRole.count();
      if (userRoleCount === 0) {

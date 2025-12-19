@@ -1,6 +1,6 @@
 const { sequelize } = require("../config/db");
 const { DataTypes, Sequelize } = require("sequelize");
-const Site = require("./sites");
+const Department = require("./departments");
 const User = require("./users");
 
 const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
@@ -9,12 +9,12 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     autoIncrement: true,
     primaryKey: true,
   },
-  site_id: {
+  department_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Site,
-      key: "site_id",
+      model: Department,
+      key: "department_id",
     },
   },
   initiator_id: {
@@ -127,8 +127,8 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   }
 });
 
-TempratureProcessForm.belongsTo(Site, { foreignKey: "site_id" });
-Site.hasMany(TempratureProcessForm, { foreignKey: "site_id" });
+TempratureProcessForm.belongsTo(Department, { foreignKey: "department_id" });
+Department.hasMany(TempratureProcessForm, { foreignKey: "department_id" });
 
 TempratureProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(TempratureProcessForm, { foreignKey: "initiator_id" });

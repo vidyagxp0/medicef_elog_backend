@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Role = require("../models/roles");
 const Process = require("../models/processes");
-const Site = require("../models/sites");
+const Department = require("../models/departments");
 const RoleGroup = require("../models/roleGroups");
 const EffectiveRoleGroup = require("../models/effectiveRoleGroup");
 const { sequelize } = require("../config/db");
@@ -65,7 +65,7 @@ exports.signup = async (req, res) => {
       const processId = await Process.findOne({
         where: { process: singleRole[1] },
       });
-      const siteId = await Site.findOne({ where: { site: singleRole[0] } });
+      const siteId = await Department.findOne({ where: { site: singleRole[0] } });
 
       await UserRole.create(
         {
@@ -143,7 +143,7 @@ exports.editUser = async (req, res) => {
         where: { process: singleRole[1] },
         transaction,
       });
-      const siteId = await Site.findOne({
+      const siteId = await Department.findOne({
         where: { site: singleRole[0] },
         transaction,
       });
