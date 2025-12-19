@@ -1,7 +1,7 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const Role = require("./roles");
-const Site = require("./sites");
+const Department = require("./departments");
 const User = require("./users");
 const Process = require("./processes");
 const RoleGroup = require("./roleGroups");
@@ -28,12 +28,12 @@ const UserRole = sequelize.define("UserRole", {
       key: "user_id",
     },
   },
-  site_id: {
+  department_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Site,
-      key: "site_id",
+      model: Department,
+      key: "department_id",
     },
   },
   process_id: {
@@ -56,170 +56,109 @@ const UserRole = sequelize.define("UserRole", {
 
 UserRole.belongsTo(User, { foreignKey: "user_id" });
 UserRole.belongsTo(Role, { foreignKey: "role_id" });
-UserRole.belongsTo(Site, { foreignKey: "site_id" });
+UserRole.belongsTo(Department, { foreignKey: "department_id" });
 UserRole.belongsTo(Process, { foreignKey: "process_id" });
 UserRole.belongsTo(RoleGroup, { foreignKey: "roleGroup_id" });
 
 User.hasMany(UserRole, { foreignKey: "user_id" });
 Role.hasMany(UserRole, { foreignKey: "role_id" });
-Site.hasMany(UserRole, { foreignKey: "site_id" });
+Department.hasMany(UserRole, { foreignKey: "department_id" });
 Process.hasMany(UserRole, { foreignKey: "process_id" });
 RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
 
   const rolesArray1 = [
-    { label: "Medicef-Differential Pressure Record-Initiator", value: 1 },
-    { label: "Medicef-Temperature Records-Initiator", value: 2 },
-  ];
-  const rolesArray2 = [
-    { label: "Medicef-Differential Pressure Record-Reviewer", value: 3},
-    { label: "Medicef-Temperature Records-Reviewer", value: 4 },
+    { label: "Quality Assurance-Differential Pressure Record-Initiator", value: 1 },
+    { label: "Quality Control-Differential Pressure Record-Initiator", value: 2 },
+    { label: "Production-Differential Pressure Record-Initiator", value: 3 },
+    { label: "Warehouse-Differential Pressure Record-Initiator", value: 4 },
+    { label: "Engineering-Differential Pressure Record-Initiator", value: 5 },
+    { label: "Human Resources-Differential Pressure Record-Initiator", value: 6 },
+    { label: "Information Technology-Differential Pressure Record-Initiator", value: 7 },
+    { label: "Accounts-Differential Pressure Record-Initiator", value: 8 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Initiator", value: 9 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Initiator", value: 10 },
 
+    { label: "Quality Assurance-Temperature Records-Initiator", value: 11 },
+    { label: "Quality Control-Temperature Records-Initiator", value: 12 },
+    { label: "Production-Temperature Records-Initiator", value: 13 },
+    { label: "Warehouse-Temperature Records-Initiator", value: 14 },
+    { label: "Engineering-Temperature Records-Initiator", value: 15 },
+    { label: "Human Resources-Temperature Records-Initiator", value: 16 },
+    { label: "Information Technology-Temperature Records-Initiator", value: 17 },
+    { label: "Accounts-Temperature Records-Initiator", value: 18 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Initiator", value: 19 },
+    { label: "Regulatory Affairs-Temperature Records-Initiator", value: 20 },
+  ];
+
+  const rolesArray2 = [
+    { label: "Quality Assurance-Differential Pressure Record-Reviewer", value: 21 },
+    { label: "Quality Control-Differential Pressure Record-Reviewer", value: 22 },
+    { label: "Production-Differential Pressure Record-Reviewer", value: 23 },
+    { label: "Warehouse-Differential Pressure Record-Reviewer", value: 24 },
+    { label: "Engineering-Differential Pressure Record-Reviewer", value: 25 },
+    { label: "Human Resources-Differential Pressure Record-Reviewer", value: 26 },
+    { label: "Information Technology-Differential Pressure Record-Reviewer", value: 27 },
+    { label: "Accounts-Differential Pressure Record-Reviewer", value: 28 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Reviewer", value: 29 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Reviewer", value: 30 },
+
+    { label: "Quality Assurance-Temperature Records-Reviewer", value: 31 },
+    { label: "Quality Control-Temperature Records-Reviewer", value: 32 },
+    { label: "Production-Temperature Records-Reviewer", value: 33 },
+    { label: "Warehouse-Temperature Records-Reviewer", value: 34 },
+    { label: "Engineering-Temperature Records-Reviewer", value: 35 },
+    { label: "Human Resources-Temperature Records-Reviewer", value: 36 },
+    { label: "Information Technology-Temperature Records-Reviewer", value: 37 },
+    { label: "Accounts-Temperature Records-Reviewer", value: 38 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Reviewer", value: 39 },
+    { label: "Regulatory Affairs-Temperature Records-Reviewer", value: 40 },
   ];
   const rolesArray3 = [
-    { label: "Medicef-Differential Pressure Record-Approver", value: 5 },
-    { label: "Medicef-Temperature Records-Approver", value: 6},
+    { label: "Quality Assurance-Differential Pressure Record-Approver", value: 41 },
+    { label: "Quality Control-Differential Pressure Record-Approver", value: 42 },
+    { label: "Production-Differential Pressure Record-Approver", value: 43 },
+    { label: "Warehouse-Differential Pressure Record-Approver", value: 44 },
+    { label: "Engineering-Differential Pressure Record-Approver", value: 45 },
+    { label: "Human Resources-Differential Pressure Record-Approver", value: 46 },
+    { label: "Information Technology-Differential Pressure Record-Approver", value: 47 },
+    { label: "Accounts-Differential Pressure Record-Approver", value: 48 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Approver", value: 49 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Approver", value: 50 },
+    
+    { label: "Quality Assurance-Temperature Records-Approver", value: 51 },
+    { label: "Quality Control-Temperature Records-Approver", value: 52 },
+    { label: "Production-Temperature Records-Approver", value: 53 },
+    { label: "Warehouse-Temperature Records-Approver", value: 54 },
+    { label: "Engineering-Temperature Records-Approver", value: 55 },
+    { label: "Human Resources-Temperature Records-Approver", value: 56 },
+    { label: "Information Technology-Temperature Records-Approver", value: 57 },
+    { label: "Accounts-Temperature Records-Approver", value: 58 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Approver", value: 59 },
+    { label: "Regulatory Affairs-Temperature Records-Approver", value: 60 },
   ];
   const rolesArray4 = [
-    { label: "Medicef-Differential Pressure Record-Fullpermission", value: 7 },
-    { label: "Medicef-Temperature Records-Fullpermission", value: 8 },
+    { label: "Quality Assurance-Differential Pressure Record-Fullpermission", value: 61 },
+    { label: "Quality Control-Differential Pressure Record-Fullpermission", value: 62 },
+    { label: "Production-Differential Pressure Record-Fullpermission", value: 63 },
+    { label: "Warehouse-Differential Pressure Record-Fullpermission", value: 64 },
+    { label: "Engineering-Differential Pressure Record-Fullpermission", value: 65 },
+    { label: "Human Resources-Differential Pressure Record-Fullpermission", value: 66 },
+    { label: "Information Technology-Differential Pressure Record-Fullpermission", value: 67 },
+    { label: "Accounts-Differential Pressure Record-Fullpermission", value: 68 },
+    { label: "Production Planning and Inventory Control-Differential Pressure Record-Fullpermission", value: 69 },
+    { label: "Regulatory Affairs-Differential Pressure Record-Fullpermission", value: 70 },
+    
+    { label: "Quality Assurance-Temperature Records-Fullpermission", value: 71 },
+    { label: "Quality Control-Temperature Records-Fullpermission", value: 72 },
+    { label: "Production-Temperature Records-Fullpermission", value: 73 },
+    { label: "Warehouse-Temperature Records-Fullpermission", value: 74 },
+    { label: "Engineering-Temperature Records-Fullpermission", value: 75 },
+    { label: "Human Resources-Temperature Records-Fullpermission", value: 76 },
+    { label: "Information Technology-Temperature Records-Fullpermission", value: 77 },
+    { label: "Accounts-Temperature Records-Fullpermission", value: 78 },
+    { label: "Production Planning and Inventory Control-Temperature Records-Fullpermission", value: 79 },
+    { label: "Regulatory Affairs-Temperature Records-Fullpermission", value: 80 },
   ];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const rolesArray1 = [
-  //   { label: "India-Differential Pressure Record-Initiator", value: 1 },
-  //   { label: "India-Loaded Quantity-Initiator", value: 3 },
-  //   { label: "India-Temperature Records-Initiator", value: 2 },
-  //   { label: "India-Operation Of Sterilizer-Initiator", value: 4 },
-  //   { label: "India-Media Record-Initiator", value: 5 },
-  //   { label: "India-Dispensing Of Materials-Initiator", value: 6 },
-  //   { label: "Malaysia-Differential Pressure Record-Initiator", value: 7 },
-  //   { label: "Malaysia-Temperature Records-Initiator", value: 8 },
-  //   { label: "Malaysia-Loaded Quantity-Initiator", value: 9 },
-  //   { label: "Malaysia-Media Record-Initiator", value: 11 },
-  //   { label: "Malaysia-Operation Of Sterilizer-Initiator", value: 10 },
-  //   { label: "Malaysia-Dispensing Of Materials-Initiator", value: 12 },
-  //   { label: "EMEA-Differential Pressure Record-Initiator", value: 13 },
-  //   { label: "EMEA-Temperature Records-Initiator", value: 14 },
-  //   { label: "EMEA-Loaded Quantity-Initiator", value: 15 },
-  //   { label: "EMEA-Operation Of Sterilizer-Initiator", value: 16 },
-  //   { label: "EMEA-Media Record-Initiator", value: 17 },
-  //   { label: "EMEA-Dispensing Of Materials-Initiator", value: 18 },
-  //   { label: "EU-Differential Pressure Record-Initiator", value: 19 },
-  //   { label: "EU-Temperature Records-Initiator", value: 20 },
-  //   { label: "EU-Loaded Quantity-Initiator", value: 21 },
-  //   { label: "EU-Operation Of Sterilizer-Initiator", value: 22 },
-  //   { label: "EU-Media Record-Initiator", value: 23 },
-  //   { label: "EU-Dispensing Of Materials-Initiator", value: 24 },
-  // ];
-  // const rolesArray2 = [
-  //   { label: "India-Differential Pressure Record-Reviewer", value: 25 },
-  //   { label: "India-Loaded Quantity-Reviewer", value: 26 },
-  //   { label: "India-Temperature Records-Reviewer", value: 27 },
-  //   { label: "India-Operation Of Sterilizer-Reviewer", value: 28 },
-  //   { label: "India-Media Record-Reviewer", value: 29 },
-  //   { label: "India-Dispensing Of Materials-Reviewer", value: 30 },
-  //   { label: "Malaysia-Differential Pressure Record-Reviewer", value: 31 },
-  //   { label: "Malaysia-Temperature Records-Reviewer", value: 32 },
-  //   { label: "Malaysia-Loaded Quantity-Reviewer", value: 33 },
-  //   { label: "Malaysia-Media Record-Reviewer", value: 34 },
-  //   { label: "Malaysia-Operation Of Sterilizer-Reviewer", value: 35 },
-  //   { label: "Malaysia-Dispensing Of Materials-Reviewer", value: 36 },
-  //   { label: "EMEA-Differential Pressure Record-Reviewer", value: 37 },
-  //   { label: "EMEA-Temperature Records-Reviewer", value: 38 },
-  //   { label: "EMEA-Loaded Quantity-Reviewer", value: 39 },
-  //   { label: "EMEA-Operation Of Sterilizer-Reviewer", value: 40 },
-  //   { label: "EMEA-Media Record-Reviewer", value: 41 },
-  //   { label: "EMEA-Dispensing Of Materials-Reviewer", value: 42 },
-  //   { label: "EU-Differential Pressure Record-Reviewer", value: 43 },
-  //   { label: "EU-Temperature Records-Reviewer", value: 44 },
-  //   { label: "EU-Loaded Quantity-Reviewer", value: 45 },
-  //   { label: "EU-Operation Of Sterilizer-Reviewer", value: 46 },
-  //   { label: "EU-Media Record-Reviewer", value: 47 },
-  //   { label: "EU-Dispensing Of Materials-Reviewer", value: 48 },
-  // ];
-  // const rolesArray3 = [
-  //   { label: "India-Differential Pressure Record-Approver", value: 49 },
-  //   { label: "India-Loaded Quantity-Approver", value: 50 },
-  //   { label: "India-Temperature Records-Approver", value: 51 },
-  //   { label: "India-Operation Of Sterilizer-Approver", value: 52 },
-  //   { label: "India-Media Record-Approver", value: 53 },
-  //   { label: "India-Dispensing Of Materials-Approver", value: 54 },
-  //   { label: "Malaysia-Differential Pressure Record-Approver", value: 55 },
-  //   { label: "Malaysia-Temperature Records-Approver", value: 56 },
-  //   { label: "Malaysia-Loaded Quantity-Approver", value: 57 },
-  //   { label: "Malaysia-Media Record-Approver", value: 58 },
-  //   { label: "Malaysia-Operation Of Sterilizer-Approver", value: 59 },
-  //   { label: "Malaysia-Dispensing Of Materials-Approver", value: 60 },
-  //   { label: "EMEA-Differential Pressure Record-Approver", value: 61 },
-  //   { label: "EMEA-Temperature Records-Approver", value: 62 },
-  //   { label: "EMEA-Loaded Quantity-Approver", value: 63 },
-  //   { label: "EMEA-Operation Of Sterilizer-Approver", value: 64 },
-  //   { label: "EMEA-Media Record-Approver", value: 65 },
-  //   { label: "EMEA-Dispensing Of Materials-Approver", value: 66 },
-  //   { label: "EU-Differential Pressure Record-Approver", value: 67 },
-  //   { label: "EU-Temperature Records-Approver", value: 68 },
-  //   { label: "EU-Loaded Quantity-Approver", value: 69 },
-  //   { label: "EU-Operation Of Sterilizer-Approver", value: 70 },
-  //   { label: "EU-Media Record-Approver", value: 71 },
-  //   { label: "EU-Dispensing Of Materials-Approver", value: 72 },
-  // ];
-  // const rolesArray4 = [
-  //   { label: "India-Differential Pressure Record-Fullpermission", value: 97 },
-  //   { label: "India-Loaded Quantity-Fullpermission", value: 98 },
-  //   { label: "India-Temperature Records-Fullpermission", value: 99 },
-  //   { label: "India-Operation Of Sterilizer-Fullpermission", value: 100 },
-  //   { label: "India-Media Record-Fullpermission", value: 101 },
-  //   { label: "India-Dispensing Of Materials-Fullpermission", value: 102 },
-  //   { label: "Malaysia-Differential Pressure Record-Fullpermission", value: 103 },
-  //   { label: "Malaysia-Temperature Records-Fullpermission", value: 104 },
-  //   { label: "Malaysia-Loaded Quantity-Fullpermission", value: 105 },
-  //   { label: "Malaysia-Media Record-Fullpermission", value: 106 },
-  //   { label: "Malaysia-Operation Of Sterilizer-Fullpermission", value: 107 },
-  //   { label: "Malaysia-Dispensing Of Materials-Fullpermission", value: 108 },
-  //   { label: "EMEA-Differential Pressure Record-Fullpermission", value: 109 },
-  //   { label: "EMEA-Temperature Records-Fullpermission", value: 110 },
-  //   { label: "EMEA-Loaded Quantity-Fullpermission", value: 111 },
-  //   { label: "EMEA-Operation Of Sterilizer-Fullpermission", value: 112 },
-  //   { label: "EMEA-Media Record-Fullpermission", value: 113 },
-  //   { label: "EMEA-Dispensing Of Materials-Fullpermission", value: 114 },
-  //   { label: "EU-Differential Pressure Record-Fullpermission", value: 115 },
-  //   { label: "EU-Temperature Records-Fullpermission", value: 116 },
-  //   { label: "EU-Loaded Quantity-Fullpermission", value: 117 },
-  //   { label: "EU-Operation Of Sterilizer-Fullpermission", value: 118 },
-  //   { label: "EU-Media Record-Fullpermission", value: 119 },
-  //   { label: "EU-Dispensing Of Materials-Fullpermission", value: 120 },
-  // ];
-
 
  User.addHook("afterSync", async () => {
   const assignInitiatorRoles = async () => {
@@ -257,11 +196,11 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
       await sequelize.transaction(async (transaction) => {
         for (const role of rolesArray) {
           // Split label into components
-          const [siteLabel, processLabel, roleName] = role.label.split("-");
+          const [departmentLabel, processLabel, roleName] = role.label.split("-");
 
-          // Fetch site, process, and role details
-          const site = await Site.findOne({
-            where: { site: siteLabel },
+          // Fetch department, process, and role details
+          const department = await Department.findOne({
+            where: { departmentName: departmentLabel },
             transaction,
           });
           const process = await Process.findOne({
@@ -273,7 +212,7 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
             transaction,
           });
 
-          if (!site || !process || !roleEntity) {
+          if (!department || !process || !roleEntity) {
             throw new Error(`Invalid role configuration: ${role.label}`);
           }
 
@@ -281,7 +220,7 @@ RoleGroup.hasMany(UserRole, { foreignKey: "roleGroup_id" });
           await UserRole.create(
             {
               user_id: initiatorUser.user_id,
-              site_id: site.site_id,
+              department_id: department.department_id,
               process_id: process.process_id,
               role_id: roleEntity.role_id,
               roleGroup_id: role.value, // Assuming value corresponds to roleGroup_id

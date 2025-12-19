@@ -21,7 +21,7 @@ const getUserById = async (user_id) => {
 // Fill tempratre record form and insert its records.
 exports.InsertTempratureRecord = async (req, res) => {
   const {
-    site_id,
+    department_id,
     description,
     department,
     compression_area,
@@ -108,7 +108,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     // Create new temperature record Form
     const newForm = await TempratureProcessForm.create(
       {
-        site_id: site_id,
+        department_id: department_id,
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
@@ -354,7 +354,7 @@ exports.InsertTempratureRecord = async (req, res) => {
 exports.EditTempratureRecord = async (req, res) => {
   const {
     form_id,
-    site_id,
+    department_id,
     description,
     department,
     compression_area,
@@ -485,7 +485,7 @@ exports.EditTempratureRecord = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        site_id,
+        department_id,
         description,
         department,
         compression_area,
@@ -1467,17 +1467,17 @@ exports.ApproveTRElog = async (req, res) => {
   }
 };
 
-// get users based on roles, sites and processes
+// get users based on roles, departments and processes
 exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
-  const { role_id, site_id, process_id } = req.body;
+  const { role_id, department_id, process_id } = req.body;
 
   try {
-    // Fetch users based on role, site, and process
+    // Fetch users based on role, department, and process
     const selectedUsers = await UserRole.findAll({
       where: {
         [Op.or]: [
-          { role_id: role_id, process_id: process_id, site_id: site_id },
-          { role_id: 5, process_id: process_id, site_id: site_id },
+          { role_id: role_id, process_id: process_id, department_id: department_id },
+          { role_id: 5, process_id: process_id, department_id: department_id },
         ],
       },
       include: {

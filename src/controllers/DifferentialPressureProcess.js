@@ -1,5 +1,3 @@
-const DifferentialPressureForm = require("../models/differentialPressureForm");
-const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const Process = require("../models/processes");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
@@ -7,27 +5,16 @@ const UserRole = require("../models/userRoles");
 const { Op, ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
-const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
-const DispenseOfMatrialAuditTrail = require("../models/dispensingOfMaterialAuditTrail");
-const EquipmentUsageProcessAuditTrail = require("../models/equipmentUsageAuditTrail");
-const MediaRecordAuditTrail = require("../models/mediaRecordAuditTrail");
-const OperationOfSterilizerProcessAuditTrail = require("../models/OperationOfSterilizerProcessAuditTrail");
+const DifferentialPressureForm = require("../models/differentialPressureForm");
+const DifferentialPressureRecord = require("../models/differentialPressureRecords");
+const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
-const AnalyticalBalanceAuditTrail = require("../models/AnalyticalBalanceAuditTrail")
-const hplcAuditTrails = require("../models/hplcAuditTrails")
-const karlFischer = require("../models/karlFischerAuditTrail")
-const GelDocIGeneAuditTrails = require("../models/gelDocIGeneAuditTrail")
-const OpAndCalParameterAuditTrails = require("../models/OpAndCalParameterAuditTrail")
-const OpAndCalUvVisAuditTrails = require("../models/OpAndCalUvVisAuditTrail")
-const sdsPageAuditTrails = require("../models/sdsPageAuditTrail")
-const uvWhiteLightAuditTrails = require("../models/uvWhiteLightAuditTrail")
-const vocalibAuditTrails = require("../models/voCalibAuditTrail")
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -37,7 +24,7 @@ const getUserById = async (user_id) => {
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
   const {
-    site_id,
+    department_id,
     description,
     department,
     compression_area,
@@ -124,7 +111,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     // Create new Differential Pressure Form
     const newForm = await DifferentialPressureForm.create(
       {
-        site_id: site_id,
+        department_id: department_id,
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
@@ -341,7 +328,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
 exports.EditDifferentialPressure = async (req, res) => {
   const {
     form_id,
-    site_id,
+    department_id,
     description,
     department,
     compression_area,
@@ -473,7 +460,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        site_id,
+        department_id,
         description,
         department,
         compression_area,
@@ -1455,17 +1442,17 @@ exports.ApproveDPElog = async (req, res) => {
   }
 };
 
-// get users based on roles, sites and processes
+// get users based on roles, departments and processes
 exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
-  const { role_id, site_id, process_id } = req.body;
+  const { role_id, department_id, process_id } = req.body;
 
   try {
-    // Fetch users based on role, site, and process
+    // Fetch users based on role, department, and process
     const selectedUsers = await UserRole.findAll({
       where: {
         [Op.or]: [
-          { role_id: role_id, process_id: process_id, site_id: site_id },
-          { role_id: 5, process_id: process_id, site_id: site_id },
+          { role_id: role_id, process_id: process_id, department_id: department_id },
+          { role_id: 5, process_id: process_id, department_id: department_id },
         ],
       },
       include: {
@@ -1956,7 +1943,7 @@ exports.blankReport = async (req, res) => {
 //     const searchCondition = search
 //       ? {
 //           [Op.or]: [
-//             { site_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
+//             { department_id: { [Op.like]: `%${search}%` } }, // Example: Search by name
 //             { form_id: { [Op.like]: `%${search}%` } }, // Example: Search by form_id
 //             { initiator_name: { [Op.like]: `%${search}%` } }, // Example: Search by initiator_name
 //           ],
@@ -2135,142 +2122,8 @@ exports.generateAuditPdfbyId = async (req, res) => {
         });
         break;
       
-      case "DispenseOfMatrialAuditTrail":
-        getData = await DispenseOfMatrialAuditTrail.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      
-      case "EquipmentUsageProcessAuditTrail":
-        getData = await EquipmentUsageProcessAuditTrail.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      
-      case "MediaRecordAuditTrail":
-        getData = await MediaRecordAuditTrail.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      
-      case "OperationOfSterilizerProcessAuditTrail":
-        getData = await OperationOfSterilizerProcessAuditTrail.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      
       case "TemperatureRecordsAuditTrail":
         getData = await TemperatureRecordsAuditTrail.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "AnalyticalBalanceAuditTrail":
-        getData = await AnalyticalBalanceAuditTrail.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "hplcAuditTrail":
-        getData = await hplcAuditTrails.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "karlFischerAuditTrail":
-        getData = await karlFischer.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "GelDociGeneAuditTrail":
-        getData = await GelDocIGeneAuditTrails.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "pHMeterOPCalAuditTrail":
-        getData = await OpAndCalParameterAuditTrails.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "UVVisCalibrationAuditTrail":
-        getData = await OpAndCalUvVisAuditTrails.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "sdsPageAuditTrail":
-        getData = await sdsPageAuditTrails.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "UVWhiteLightAuditTrail":
-        getData = await uvWhiteLightAuditTrails.findAll({
-          where: { form_id: formId },
-          include: {
-            model: User,
-            attributes: ["user_id", "name"],
-          },
-          order: [["auditTrail_id", "DESC"]],
-        });
-        break;
-      case "VoCalibrationAuditTrail":
-        getData = await vocalibAuditTrails.findAll({
           where: { form_id: formId },
           include: {
             model: User,

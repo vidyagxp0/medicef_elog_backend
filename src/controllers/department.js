@@ -1,7 +1,7 @@
-const Site = require("../models/sites");
+const Department = require("../models/departments");
 
-exports.getAllSites = async (req, res) => {
-  Site.findAll()
+exports.getAllDepartments = async (req, res) => {
+  Department.findAll()
     .then((result) => {
       res.json({
         error: false,
@@ -11,7 +11,7 @@ exports.getAllSites = async (req, res) => {
     .catch((e) => {
       res.status(400).json({
         error: true,
-        message: "Couldn't get sites! " + e,
+        message: "Couldn't get departments! " + e,
       });
     });
 };

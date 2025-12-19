@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const Site = require("../controllers/sites");
+const Department = require("../controllers/department");
 const Auth = require("../middlewares/authentication")
 
 
-router.get('/get-sites', Site.getAllSites);
-
+router.get('/get-departments', Department.getAllDepartments);
 
 module.exports = router;

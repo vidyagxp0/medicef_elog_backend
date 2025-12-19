@@ -102,7 +102,7 @@ router.put(
   DifferentialPressureProcess.ApproveDPElog
 );
 
-// get users based on roles, sites and processes
+// get users based on roles, departments and processes
 router.post(
   "/get-user-roleGroups",
   Auth.checkUserJwtToken,
