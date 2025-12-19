@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        margin-bottom: 55px;
+        margin-top: 14vh;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        margin: 20px;
+        line-height: 1.6;
+      }
+
+      .report-content {
+        margin-top: 30px;
+      }
+
+      h1,
+      h2 {
+        margin-bottom: 20px;
+        text-align: left;
+        clear: both;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 18px;
+        color: #0066cc;
+      }
+
+      p {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        border: 1px solid #000;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 10px;
+        /* text-align: left; */
+        text-align: center;
+        height: 24px;
+      }
+
+      th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+      }
+
+      .remarks {
+        page-break-inside: avoid;
+      }
+
+      .heading {
+        padding-top: 35px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-content">
+      <!-- <h2 class="heading">Loaded Quantity Records</h2> -->
+      <% if (arrayData && arrayData.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <!-- <th>Unique Id</th> -->
+            <th>S. No.</th>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Batch Number</th>
+            <th>Container Size (ml)</th>
+            <th>Batch Size (Ltr)</th>
+            <th>Theoretical Production</th>
+            <th>Loaded Quantity</th>
+            <th>Checked By</th>
+            <th>% Yield</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% let serialNumber = 1; %> <% arrayData.forEach(record => { %>
+          <tr>
+            <!-- <td><%= record?.unique_id %></td> -->
+            <td><%= serialNumber++ %>.</td>
+            <td><%= record?.date %></td>
+            <td><%= record?.product_name %></td>
+            <td><%= record?.batch_no %></td>
+            <td><%= record?.container_size %></td>
+            <td><%= record?.batch_size %></td>
+            <td><%= record?.theoretical_production %></td>
+            <td><%= record?.loaded_quantity %></td>
+            <td><%= record?.reviewed_by %></td>
+            <td><%= record?.yield %></td>
+            <td><%= record?.remarks %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+  </body>
+</html>

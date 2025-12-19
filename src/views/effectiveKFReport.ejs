@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin: 20px;
+      line-height: 1.6;
+    }
+
+    .report-content {
+      margin-top: 30px;
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+      text-align: left;
+      clear: both;
+    }
+
+    h2 {
+      font-size: 18px;
+      color: #0066CC;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      border: 1px solid #000;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #d9d7d7;
+      font-weight: bold;
+    }
+
+    .heading {
+      padding-top: 10px;
+      text-align: center;
+    }
+
+    .green {
+      color: green;
+      font-weight: bold;
+    }
+
+    .red {
+      color: red;
+      font-weight: bold;
+    }
+
+    .black {
+      color: black;
+      font-weight: bold;
+    }
+
+    .performance-box {
+      background: #fff6d9;
+      font-size: 13px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="report-content">
+    <h2 class="heading">Karl Fischer Record</h2>
+
+    <% if (reportData.karlFischerRecords && reportData.karlFischerRecords.length > 0) { %>
+
+      <table>
+        <thead>
+          <!-- HEADER ROW 1 (8 columns) -->
+          <tr>
+            <th>Sr. No.</th>
+            <th>Date and Time</th>
+            <th>Instrument / Equipment Name</th>
+            <th>Instrument / Equipment No.</th>
+            <th>Factor Value</th>
+            <th>Lot No. / Batch No.</th>
+            <th>Sample Name</th>
+            <th></th>
+          </tr>
+
+          <!-- HEADER ROW 2 (8 columns) -->
+          <tr>
+            <th></th>
+            <th>Performance</th>
+            <th>Factor / % Water</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Remark</th>
+            <th>Attachment</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% reportData.karlFischerRecords.forEach((record, index) => { %>
+
+          <!-- ================= MAIN DATA ROW ================= -->
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= record?.date || "Not Applicable" %></td>
+            <td><%= record?.instrument_name || "Not Applicable" %></td>
+            <td><%= record?.instrument_no || "Not Applicable" %></td>
+            <td><%= record?.factorValue || "Not Applicable" %></td>
+            <td><%= record?.lot_no || "Not Applicable" %></td>
+            <td><%= record?.sample_name || "Not Applicable" %></td>
+            <td></td>
+          </tr>
+
+          <!-- ================ SECOND ROW ================== -->
+          <tr>
+            <td></td>
+
+            <td><%= record?.performance || "Not Applicable" %></td>
+            <td><%= record?.factor_percent_water || "Not Applicable" %></td>
+            <td><%= record?.done_by || "Not Applicable" %></td>
+            <td><%= record?.reviewed_by || "Not Applicable" %></td>
+            <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
+
+            <td>
+              <% if (record?.supporting_docs) { %>
+                <a href="<%= record.supporting_docs %>" target="_blank">
+                  <%= record.supporting_docs.split('/').pop() %>
+                </a>
+              <% } else { %>
+                Not Applicable
+              <% } %>
+            </td>
+
+            <td>
+              <%= record?.status || "Not Applicable" %>
+            </td>
+          </tr>
+
+          <!-- ========== DYNAMIC PERFORMANCE DETAIL ROW ========== -->
+          <% if (record?.performance && record.performance !== "OK") { %>
+          <tr class="performance-box">
+            <td colspan="2" class="black" style="text-align: center;">
+              Performance Details
+            </td>
+
+            <td colspan="2">
+              <strong>Start Date & Time:</strong><br>
+              <%= record?.performanceStartTime || "Not Applicable" %>
+            </td>
+
+            <td colspan="2">
+              <strong>End Date & Time:</strong><br>
+              <%= record?.performanceEndDateTime || "Not Applicable" %>
+            </td>
+
+            <td colspan="2">
+              <strong>Remark:</strong><br>
+              <%= record?.performanceRemark || "Not Applicable" %>
+            </td>
+          </tr>
+          <% } %>
+
+          <% }) %>
+        </tbody>
+      </table>
+
+    <% } else { %>
+      <p>No Records Found.</p>
+    <% } %>
+
+  </div>
+</body>
+</html>

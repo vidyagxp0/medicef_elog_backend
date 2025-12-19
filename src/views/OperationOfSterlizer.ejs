@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .report-content {
+            margin-top: 30px;
+            /* Increase margin top for more spacing */
+        }
+
+        h1,
+        h2 {
+            margin-bottom: 20px;
+            text-align: left;
+            /* Align headings to the left */
+            clear: both;
+            /* Clear floats to prevent overlap */
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        h2 {
+            font-size: 18px;
+            color: #0066CC;
+        }
+
+        p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            /* Increase margin bottom for more spacing */
+            border: 1px solid #000;
+            /* Add border to the table */
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            /* Add border to table cells */
+            padding: 10px;
+            /* Adjusted padding for better spacing */
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .remarks {
+            page-break-inside: avoid;
+        }
+
+        .heading {
+            padding-top: 35px;
+        }
+    </style>
+
+
+<body>
+    <div class="report-content">
+        <h2 class="heading">General Information</h2>
+        <table>
+            <tr>
+                <th>Site</th>
+                <td>
+                    <%= reportData?.site || "Not Applicable" %>
+                </td>
+                <th>Status</th>
+                <td>
+                    <%= reportData?.status || "Not Applicable" %>
+                </td>
+            </tr>
+            <tr>
+                <th>Initiator</th>
+                <td>
+                    <%= reportData?.initiator_name || "Not Applicable" %>
+                </td>
+                <th>Date of Initiation</th>
+                <td>
+                    <%= (reportData?.date_of_initiation ? new Date(reportData.date_of_initiation).toLocaleDateString()
+                        : "Not Applicable" ) %>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Description</th>
+                <td colspan="3">
+                    <%- reportData?.description || "Not Applicable" %>
+                </td>
+            </tr>
+        </table>
+        <hr />
+
+        <h2 class="heading">Operation Of Sterlizer</h2>
+        <% if (reportData?.OperationOfSterilizerRecords
+        && reportData?.OperationOfSterilizerRecords
+        .length> 0) { %>
+            <% reportData?.OperationOfSterilizerRecords
+            .forEach(record=> { %>
+                <div class="listItem">
+                    <table>
+                        <tr>
+                            <th>Unique Id</th>
+                            <td>
+                                <%= record?.unique_id || "Not Applicable" %>
+                            </td>
+                            <th>Date</th>
+                            <td>
+                                <%= record?.date || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Air Pressure</th>
+                            <td>
+                                <%= record?.air_pressure || "Not Applicable" %>
+                            </td>
+                            <th>Steam Pressure</th>
+                            <td>
+                                <%= record?.steam_pressure || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Printer Ok</th>
+                            <td>
+                                <%= record?.printer_ok || "Not Applicable" %>
+                            </td>
+                            <th>Product Name</th>
+                            <td>
+                                <%= record?.product_name || "Not Applicable" %>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>Container Size</th>
+                            <td>
+                                <%= record?.container_size || "Not Applicable" %>
+                            </td>
+                            <th>Loaded Quantity</th>
+                            <td>
+                                <%= record?.loaded_quantity || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Batch Number Lot Number</th>
+                            <td>
+                                <%= record?.batch_no_lot_no || "Not Applicable" %>
+                            </td>
+                            <th>Loading Time</th>
+                            <td>
+                                <%= record?.loading_time || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>D-Well Period Start</th>
+                            <td>
+                                <%= record?.d_well_period_start || "Not Applicable" %>
+                            </td>
+                            <th>D-Well Period End</th>
+                            <td>
+                                <%= record?.d_well_period_end || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Unloading Time</th>
+                            <td>
+                                <%= record?.unloading_time || "Not Applicable" %>
+                            </td>
+                            <th>Cleaning Time Start</th>
+                            <td>
+                                <%= record?.cleaning_time_start || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Cleaning Time End</th>
+                            <td>
+                                <%= record?.cleaning_time_end || "Not Applicable" %>
+                            </td>
+                            <th>Cleaning Done By</th>
+                            <td>
+                                <%= record?.cleaning_done_by || "Not Applicable" %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Checked By</th>
+                            <td>
+                                <%= record?.checked_by || "Not Applicable" %>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr />
+                <% }) %>
+                    <% } else { %>
+                        <p>No Records Found.</p>
+                        <hr />
+                        <% } %>
+
+                            <div class="remarks">
+                                <h2 class="heading">Initiator Remarks</h2>
+                                <table>
+                                    <tr>
+                                        <th>Initiator</th>
+                                        <td>
+                                            <%= reportData?.initiator_name || "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Comment</th>
+                                        <td>
+                                            <%= reportData?.initiatorComment || "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Attachment</th>
+                                        <td>
+                                            <% if (reportData?.initiatorAttachment) { %>
+                                                <a href="<%= reportData.initiatorAttachment %>" target="_blank">View
+                                                    File</a>
+                                                <% } else { %>
+                                                    Not Applicable
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date of Initiation</th>
+                                        <td>
+                                            <%= (reportData?.date_of_initiation ? new
+                                                Date(reportData.date_of_initiation).toLocaleDateString()
+                                                : "Not Applicable" ) %>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <hr />
+
+                            <div class="remarks">
+                                <h2 class="heading">Reviewer Remarks</h2>
+                                <table>
+                                    <tr>
+                                        <th>Reviewer</th>
+                                        <td>
+                                            <%= reportData?.reviewer2?.name || "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Comment</th>
+                                        <td>
+                                            <%= reportData?.reviewComment
+                                            || "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Attachment</th>
+                                        <td>
+                                            <% if (reportData?.reviewerAttachment) { %>
+                                                <a href="<%= reportData.reviewerAttachment %>" target="_blank">View
+                                                    File</a>
+                                                <% } else { %>
+                                                    Not Applicable
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date of Review</th>
+                                        <td>
+                                            <%= (reportData?.date_of_review ? new
+                                                Date(reportData.date_of_review).toLocaleDateString() : "Not Applicable"
+                                                ) %>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <hr />
+
+                            <div class="remarks">
+                                <h2 class="heading">Approver Remarks</h2>
+                                <table>
+                                    <tr>
+                                        <th>Approver</th>
+                                        <td>
+                                            <%= reportData?.approver2?.name || "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Comment</th>
+                                        <td>
+                                            <%= reportData?.approverComment || "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Attachment</th>
+                                        <td>
+                                            <% if (reportData?.approverAttachment) { %>
+                                                <a href="<%= reportData.approverAttachment %>" target="_blank">View
+                                                    File</a>
+                                                <% } else { %>
+                                                    Not Applicable
+                                                    <% } %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Date of Approval</th>
+                                        <td>
+                                            <%= (reportData?.date_of_approval ? new
+                                                Date(reportData.date_of_approval).toLocaleDateString()
+                                                : "Not Applicable" ) %>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                            </div>
+                            <hr />
+    </div>
+</body>
+
+</html>

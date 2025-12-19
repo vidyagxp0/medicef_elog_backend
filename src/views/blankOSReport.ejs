@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @page {
+        margin-bottom: 55px;
+        margin-top: 20vh;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        margin: 20px;
+        line-height: 1.6;
+      }
+
+      .report-content {
+        margin-top: 30px;
+      }
+
+      h1,
+      h2 {
+        margin-bottom: 20px;
+        text-align: left;
+        clear: both;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 18px;
+        color: #0066cc;
+      }
+
+      p {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+        border: 1px solid #000;
+      }
+
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 10px;
+        /* text-align: left; */
+        text-align: center;
+        height: 24px;
+      }
+
+      th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+      }
+
+      .remarks {
+        page-break-inside: avoid;
+      }
+
+      .heading {
+        padding-top: 35px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="report-content">
+      <!-- <h2 class="heading">Opertion Of Sterlizer</h2> -->
+      <% if (arrayData && arrayData.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Unique Id</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Air Pressure (4-6 kg)</th>
+            <th rowspan="2">Steam Pressure (4-6 kg)</th>
+            <th rowspan="2">Printer Ok (Yes/No)</th>
+            <th rowspan="2">Product Name</th>
+            <th rowspan="2">Container Size (ml)</th>
+            <th rowspan="2">Loaded Quantity</th>
+            <th rowspan="2">Batch Number-Lot Number</th>
+            <th rowspan="2">Loading Time</th>
+            <th rowspan="1" colspan="2">D-well Period</th>
+            <th rowspan="2">Unloading Time</th>
+            <th rowspan="1" colspan="2">Cleaning Time</th>
+            <th rowspan="2">Cleaning Done By</th>
+            <th rowspan="2">Checked By</th>
+          </tr>
+          <tr>
+            <th rowspan="2">Start</th>
+            <th rowspan="2">End</th>
+            <th rowspan="2">Start</th>
+            <th rowspan="2">End</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% arrayData.forEach(record => { %>
+          <tr>
+            <td><%= record?.unique_id %></td>
+            <td><%= record?.date %></td>
+            <td><%= record?.air_pressure %></td>
+            <td><%= record?.steam_pressure %></td>
+            <td><%= record?.printer_ok %></td>
+            <td><%= record?.product_name %></td>
+            <td><%= record?.container_size %></td>
+            <td><%= record?.loaded_quantity %></td>
+            <td><%= record?.batch_no_lot_no %></td>
+            <td><%= record?.loading_time %></td>
+            <td><%= record?.d_well_period_start %></td>
+            <td><%= record?.d_well_period_end %></td>
+            <td><%= record?.unloading_time %></td>
+            <td><%= record?.cleaning_time_start %></td>
+            <td><%= record?.cleaning_time_end %></td>
+            <td><%= record?.cleaning_done_by %></td>
+            <td><%= record?.reviewed_by %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audit Report</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    .heading {
+      /* padding-top: 10px; */
+      text-align: center;
+    }
+  .report-content {
+    page-break-inside: avoid;
+  }
+
+  table, tr, td, th {
+    page-break-inside: avoid !important;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+    </style>
+  </head>
+  <body>
+      <!-- <h2 style="text-align: center;">Audit Report </h2> -->
+
+  <div class="report-content">
+    <table>
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Field Name</th>
+          <th>Previous Value</th>
+          <th>New Value</th>
+          <th>Previous State</th>
+          <th>New State</th>
+          <th>Perform</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (Array.isArray(reportData.auditTrail) && reportData.auditTrail.length > 0) { %> <%
+        reportData.auditTrail.forEach(function(audit,index) { %>
+        <tr>
+          <td><%= index+1 %></td>
+          <td><%= audit.field_name || 'N/A' %></td>
+          <td style="white-space: pre-wrap; word-wrap: break-word;"><%= audit.previous_value || 'N/A' %></td>
+          <td style="white-space: pre-wrap; word-wrap: break-word;"><%= audit.new_value || 'N/A' %></td>
+          <td><%= audit.previous_status || 'N/A' %></td>
+          <td><%= audit.new_status || 'N/A' %></td>
+          <td>
+           <b> Performed By:</b> <%= audit.User.name ?
+            audit.User.name : 'N/A' %> <br />
+            <b> Performed On:</b> <%= new
+            Date(audit.createdAt).toLocaleDateString('en-GB', { day:
+            'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %>
+            <br />
+            <b>declaration:</b>  <%= audit.declaration || 'N/A' %>
+          </td>
+          <td><%= audit.action || 'N/A' %></td>
+        </tr>
+        <% }); %> <% } else { %>
+        <tr>
+          <td colspan="8">No audit trail data available.</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+  </body>
+</html>

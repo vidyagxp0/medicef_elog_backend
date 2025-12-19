@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        margin: 20px;
+        line-height: 1.6;
+      }
+      
+      .report-content {
+        margin-top: 30px; /* Increase margin top for more spacing */
+      }
+      
+      h1, h2 {
+        margin-bottom: 20px;
+        text-align: left; /* Align headings to the left */
+        clear: both; /* Clear floats to prevent overlap */
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+      
+      h2 {
+        font-size: 18px;
+        color: #0066CC;
+      }
+      
+      p {
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px; /* Increase margin bottom for more spacing */
+        border: 1px solid #000; /* Add border to the table */
+      }
+      
+      th, td {
+        border: 1px solid #000; /* Add border to table cells */
+        padding: 10px; /* Adjusted padding for better spacing */
+        text-align: left;
+      }
+      
+      th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+      }
+      
+      .remarks {
+        page-break-inside: avoid;
+      }
+      .heading
+      {
+        padding-top: 35px;
+      }
+             .green {
+        color: green;
+        font-weight: bold;
+    }
+    .red {
+        color: red;
+        font-weight: bold;
+    }
+.black {
+        color: black;
+        font-weight: bold;
+    }
+      </style>
+      
+    
+    <body>
+    <div class="report-content">
+        <h2 class="heading">General Information</h2>
+        <table>
+            <!-- <tr>
+                <th>Site</th>
+                <td><%= reportData?.site || "Not Applicable" %></td>
+                <th>Status</th>
+                <td><%= reportData?.status || "Not Applicable" %></td>
+            </tr> -->
+            <tr>
+                <th>Initiator</th>
+                <td><%= reportData?.initiator_name || "Not Applicable" %></td>
+                <th>Date of Initiation</th>
+                <td><%= (reportData?.date_of_initiation ? new Date(reportData.date_of_initiation).toLocaleDateString() : "Not Applicable") %></td>
+            </tr>
+            
+            <tr>
+                <th>Description</th>
+                <td ><%- reportData?.description || "Not Applicable" %></td>
+                 <th>Limit</th>
+                <td ><%- reportData?.limit || "Not Applicable" %></td>
+            </tr>
+            <tr>
+                <th>Area name</th>
+                <td ><%- reportData?.area_name || "Not Applicable" %></td>
+                 <th>Room ID</th>
+                <td ><%- reportData?.room_id || "Not Applicable" %></td>
+            </tr>
+            <tr>
+                <th>Instrument Id. No.</th>
+                <td ><%- reportData?.instrument_id || "Not Applicable" %></td>
+                 <th>Department</th>
+                <td ><%- reportData?.department || "Not Applicable" %></td>
+            </tr>
+            <tr>
+                <th>Acceptance Temperature</th>
+                <td ><%- reportData?.acceptance_temperature || "Not Applicable" %></td>
+                 <th>Relative Humidity Criteria</th>
+                <td ><%- reportData?.relative_humidity_criteria || "Not Applicable" %></td>
+            </tr>
+        </table>
+        <hr />
+
+        <h2 class="heading">Temperature Process Records</h2>
+        <% if (reportData.TempratureRecords && reportData.TempratureRecords.length > 0) { %>
+            <% reportData.TempratureRecords.forEach(record => { %>
+            <div class="listItem">
+                <table>
+                    <tr>
+                        <th>Unique Id</th>
+                        <td><%= record?.unique_id || "Not Applicable" %></td>
+                        <th>Time</th>
+                        <td><%= record?.time || "Not Applicable" %></td>
+                    </tr>
+                    <tr>
+                        <th>Temperature Records</th>
+                        <td class="<%= 
+    record?.temprature_record < reportData?.limit 
+        ? 'green' 
+        : record?.temprature_record > reportData?.limit 
+            ? 'red' 
+            : 'black' 
+%>"><%= record?.temprature_record || "Not Applicable" %></td>
+                        <th>Remark</th>
+                        <td><%= record?.remarks || "Not Applicable" %></td>
+                    </tr>
+                    <tr>
+                        <th>Checked By</th>
+                        <td><%= record?.checked_by || "Not Applicable" %></td>
+                        <th>Supporting Documents</th>
+                        <td>
+                            <% if (record?.supporting_docs) { %>
+                                <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
+                            <% } else { %>
+                                Not Applicable
+                            <% } %>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <hr />
+            <% }) %>
+        <% } else { %>
+            <p>No Temperature Process Records Found.</p>
+            <hr />
+        <% } %>
+
+        <div class="remarks">
+            <h2 class="heading">Initiator Remarks</h2>
+            <table>
+                <tr>
+                    <th>Initiator</th>
+                    <td><%= reportData?.initiator_name || "Not Applicable" %></td>
+                </tr>
+                <tr>
+                    <th>Comment</th>
+                    <td><%= reportData?.initiatorComment || "Not Applicable" %></td>
+                </tr>
+                <tr>
+                    <th>Attachment</th>
+                    <td>
+                        <% if (reportData?.initiatorAttachment) { %>
+                            <a href="<%= reportData.initiatorAttachment %>" target="_blank">View File</a>
+                        <% } else { %>
+                            Not Applicable
+                        <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date of Initiation</th>
+                    <td><%= (reportData?.date_of_initiation ? new Date(reportData.date_of_initiation).toLocaleDateString() : "Not Applicable") %></td>
+                </tr>
+                
+            </table>
+        </div>
+        <hr />
+
+        <div class="remarks">
+            <h2 class="heading">Reviewer Remarks</h2>
+            <table>
+                <tr>
+                    <th>Reviewer</th>
+                    <td><%= reportData?.tpreviewer?.name || "Not Applicable" %></td>
+                </tr>
+                <tr>
+                    <th>Comment</th>
+                    <td><%= reportData?.reviewComment || "Not Applicable" %></td>
+                </tr>
+                <tr>
+                    <th>Attachment</th>
+                    <td>
+                        <% if (reportData?.reviewerAttachment) { %>
+                            <a href="<%= reportData.reviewerAttachment %>" target="_blank">View File</a>
+                        <% } else { %>
+                            Not Applicable
+                        <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date of Review</th>
+                    <td><%= (reportData?.date_of_review ? new Date(reportData.date_of_review).toLocaleDateString() : "Not Applicable") %></td>
+                </tr>
+                
+            </table>
+        </div>
+        <hr />
+
+        <div class="remarks">
+            <h2 class="heading">Approver Remarks</h2>
+            <table>
+                <tr>
+                    <th>Approver</th>
+                    <td><%= reportData?.tpapprover?.name || "Not Applicable" %></td>
+                </tr>
+                <tr>
+                    <th>Comment</th>
+                    <td><%= reportData?.approverComment || "Not Applicable" %></td>
+                </tr>
+                <tr>
+                    <th>Attachment</th>
+                    <td>
+                        <% if (reportData?.approverAttachment) { %>
+                            <a href="<%= reportData.approverAttachment %>" target="_blank">View File</a>
+                        <% } else { %>
+                            Not Applicable
+                        <% } %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date of Approval</th>
+                    <td><%= (reportData?.date_of_approval ? new Date(reportData.date_of_approval).toLocaleDateString() : "Not Applicable") %></td>
+                </tr>
+                
+            </table>
+        </div>
+        <hr />
+    </div>
+</body>
+</html>

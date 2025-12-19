@@ -1,0 +1,18 @@
+{
+    "development" : {
+            "PORT": 1000,
+            "dbName": "elogbook",
+            "username": "root",
+            "password": "Root@123",
+            "dialect": "mysql",
+            "host": "localhost",
+            "JWT_SECRET": "NAHKNAHRAF",
+            "JWT_ADMIN_SECRET": "ADMINNAHKNAHRAF",
+             "GMAILUSER": "swapnil.vidyagxp@gmail.com",
+      "GMAILPASS": "fbbb hfuf xirg hgdk"
+
+    },
+    "production": {
+
+    }
+}

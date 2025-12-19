@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .header-container {
+        width: 100%;
+        padding: 0 50px; /* Increased margin from left and right */
+        box-sizing: border-box;
+      }
+
+      .header-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 14px;
+        table-layout: fixed;
+      }
+
+      .header-table th,
+      .header-table td {
+        border: 1px solid #000;
+        padding: 8px;
+      }
+
+      .header-table th {
+        background-color: #f8f8f8;
+        font-weight: bold;
+      }
+
+      .header-logo {
+        text-align: center;
+        width: 100px;
+      }
+
+      .header-title {
+        text-align: center;
+        font-size: 18px;
+        margin: 10px 0;
+      }
+
+      .header-info {
+        font-size: 12px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header-container">
+      <table class="header-table">
+        <tr>
+         <th rowspan="2" class="header-logo">
+            <img
+              src="<%= logoDataUri %>"
+              alt="Logo"
+              style="max-width: 40px; height: auto; object-fit: cover"
+            />
+          </th>
+          <th  class="header-title">
+          <span style="font-weight: 600">INDIAN PHARMACOPOEIA COMMISSION </span> 
+          </th>
+        </tr>
+        <tr>
+          <td class="header-info">
+            <span style="font-weight: 600">ANNEXURE -I (Logbook Format):</span>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

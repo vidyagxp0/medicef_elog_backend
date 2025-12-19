@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin: 20px;
+      line-height: 1.6;
+    }
+
+    .report-content {
+      margin-top: 30px;
+      page-break-before: always;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+      color: #0066CC;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 30px;
+      border: 1px solid #000;
+    }
+
+    th, td {
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background-color: #d9d7d7;
+      font-weight: bold;
+    }
+
+    .green { color: green; font-weight: bold; }
+    .red { color: red; font-weight: bold; }
+    .black { color: black; font-weight: bold; }
+
+    .performance-box {
+      background: #fff6d9;
+      font-size: 12px;
+    }
+
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+<div class="report-content">
+  <h2>PH Meter (Multiparameter) Record</h2>
+
+  <% if (reportData.OpAndCalMultiParameterProcessRecords 
+        && reportData.OpAndCalMultiParameterProcessRecords.length > 0) { %>
+
+  <table>
+    <thead>
+      <!-- Header Row - 1 -->
+      <tr>
+        <th>Sr. No</th>
+        <th>Date and Time</th>
+        <th>Instrument Name</th>
+        <th>Instrument No.</th>
+        <th>Solution / Buffer</th>
+        <th>Adjusted pH</th>
+        <th>Factor Value</th>
+      </tr>
+
+      <!-- Header Row - 2 -->
+      <tr>
+        <th></th>
+        <th>Performance</th>
+        <th>Done By</th>
+        <th>Checked By</th>
+        <th>Remarks</th>
+        <th>Attachment</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    <% reportData.OpAndCalMultiParameterProcessRecords.forEach((record, index) => { %>
+
+      <!-- ================= MAIN DATA ROW ================= -->
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= record?.date || "Not Applicable" %></td>
+        <td><%= record?.instrument_name || "Not Applicable" %></td>
+        <td><%= record?.instrument_no || "Not Applicable" %></td>
+        <td><%= record?.nameOfSolution || "Not Applicable" %></td>
+        <td><%= record?.adjustPH || "Not Applicable" %></td>
+        <td><%= record?.factorValue || "Not Applicable" %></td>
+      </tr>
+
+      <!-- ================= SECOND DATA ROW ================= -->
+      <tr>
+        <td></td>
+        <td><%= record?.performance || "Not Applicable" %></td>
+        <td><%= record?.done_by || "Not Applicable" %></td>
+        <td><%= record?.reviewed_by || "Not Applicable" %></td>
+        <td><%= record?.remarks || record?.remarksOther || "Not Applicable" %></td>
+
+        <td style="word-break: break-word;">
+          <% if (record?.supporting_docs) { %>
+            <a href="<%= record.supporting_docs %>" target="_blank">
+              <%= record.supporting_docs.split('/').pop() %>
+            </a>
+          <% } else { %>
+            Not Applicable
+          <% } %>
+        </td>
+
+        <td><%= record?.status || "Not Applicable" %></td>
+      </tr>
+
+      <!-- ================= DYNAMIC PERFORMANCE DETAIL ROW ================= -->
+      <% if (record?.performance && record.performance !== "OK") { %>
+      <tr class="performance-box">
+
+        <td colspan="2" class="black center">
+          Performance Details
+        </td>
+
+        <td colspan="2">
+          <strong>Start Date & Time:</strong><br>
+          <%= record?.performanceStartTime || "Not Applicable" %>
+        </td>
+
+        <td colspan="1">
+          <strong>End Date & Time:</strong><br>
+          <%= record?.performanceEndDateTime || "Not Applicable" %>
+        </td>
+
+        <td colspan="2">
+          <strong>Remark :</strong>
+          <%= record?.performanceRemark || "Not Applicable" %>
+        </td>
+      </tr>
+      <% } %>
+
+    <% }) %>
+    </tbody>
+  </table>
+
+  <% } else { %>
+    <p>No Records Found.</p>
+  <% } %>
+
+</div>
+</body>
+</html>

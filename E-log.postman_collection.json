@@ -1,0 +1,3086 @@
+{
+  "info": {
+    "_postman_id": "d1fa85ac-b5e9-4c04-aebb-9c9f60f94b46",
+    "name": "E-log",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28150059"
+  },
+  "item": [
+    {
+      "name": "operation",
+      "item": [
+        {
+          "name": "operation-sterlizer/update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "description",
+                  "value": "xxxxssss",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "aaaa",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/update",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"site_id\": 1,\r\n  \"description\": \"description\",\r\n  \"department\": 1,\r\n  \"compression_area\": \"q\",\r\n  \"limit\": 1,\r\n  \"reviewer_id\": 2,\r\n  \"approver_id\": 2,\r\n  \"initiatorComment\": \"e\",\r\n  \"email\": \"swapnil@vidyagxp.com\",\r\n  \"password\": \"00000000\",\r\n  \"FormRecordsArray\": [\r\n    {\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"air_pressure\": \"product_name\",\r\n      \"steam_pressure\": \"batch_no\",\r\n      \"printer_ok\": \"container_size\",\r\n      \"product_name\": \"batch_size\",\r\n      \"container_size\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"batch_no_lot_no\": \"yield\",\r\n      \"loading_time\": \"remarks\",\r\n      \"d_well_period_start\": \"checked_by\",\r\n      \"d_well_period_end\": \"d_well_period_end\",\r\n      \"unloading_time\": \"checked_by\",\r\n      \"cleaning_time_start\": \"cleaning_time_start\",\r\n      \"cleaning_time_end\": \"cleaning_time_end\",\r\n      \"cleaning_done_by\": \"cleaning_done_by\",\r\n      \"checked_by\": \"checked_by\"\r\n    }\r\n  ],\r\n  \"initiatorDeclaration\": \"a\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/post",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "post"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/get/1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/get/1",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "get", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/get-all",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/get-all",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "get-all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/send-for-review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "initiatorAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/send-for-review",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "send-for-review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/send-review-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/send-review-to-open",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "send-review-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/send-review-to-approval",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewComment",
+                  "value": "dispenCom",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/send-review-to-approval",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "send-review-to-approval"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/send-approval-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/send-approval-to-open",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "send-approval-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverComment",
+                  "value": "appc",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/approve",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "approve"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "operation-sterlizer/generate-pdf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Operation Of sterlizer\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"OperationOfSterilizerRecords\": [\r\n        {\r\n      \"record_id\": 2,\r\n      \"form_id\": 2,\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"air_pressure\": \"product_name\",\r\n      \"steam_pressure\": \"batch_no\",\r\n      \"printer_ok\": \"container_size\",\r\n      \"product_name\": \"batch_size\",\r\n      \"container_size\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"batch_no_lot_no\": \"yield\",\r\n      \"loading_time\": \"remarks\",\r\n      \"d_well_period_start\": \"checked_by\",\r\n      \"d_well_period_end\": \"d_well_period_end\",\r\n      \"unloading_time\": \"checked_by\",\r\n      \"cleaning_time_start\": \"cleaning_time_start\",\r\n      \"cleaning_time_end\": \"cleaning_time_end\",\r\n      \"cleaning_done_by\": \"cleaning_done_by\",\r\n      \"checked_by\": \"checked_by\"\r\n\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/operation-sterlizer/generate-pdf",
+              "host": ["{{local}}"],
+              "path": ["operation-sterlizer", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blank-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"reportData\":{\r\n      \"title\":\"Operation Of Sterilizer\",\r\n      \"status\":\"Under Approval\",\r\n      \"blankRows\":20,\r\n      \"form_id\":1,\r\n      \"OperationOfSterilizerRecord\":[]\r\n   }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/operation-sterlizer/blank-report/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["operation-sterlizer", "blank-report", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "loaded",
+      "item": [
+        {
+          "name": "loaded-quantity/post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"site_id\": 1,\r\n  \"description\": \"description\",\r\n  \"department\": 1,\r\n  \"compression_area\": \"q\",\r\n  \"limit\": 1,\r\n  \"reviewer_id\": 2,\r\n  \"approver_id\": 2,\r\n  \"initiatorComment\": \"e\",\r\n  \"email\": \"swapnil@vidyagxp.com\",\r\n  \"password\": \"00000000\",\r\n  \"LoadedQuantityRecords\": [\r\n    {\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"product_name\",\r\n      \"batch_no\": \"batch_no\",\r\n      \"container_size\": \"container_size\",\r\n      \"batch_size\": \"batch_size\",\r\n      \"theoretical_production\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"yield\": \"yield\",\r\n      \"remarks\": \"remarks\",\r\n      \"checked_by\": \"checked_by\"\r\n    }\r\n  ],\r\n  \"initiatorDeclaration\": \"a\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/post",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "post"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"site_id\":1,\r\n\"email\":\"swapnil@vidyagxp.com\",\r\n\"password\":\"00000000\",\r\n\"initiatorDeclaration\":\"aaaa\",\r\n\"form_id\": \"16\",\r\n  \"LoadedQuantityRecords\": [\r\n    {\r\n      \"unique_id\": \"rec1\",\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"pppppppp\",\r\n      \"batch_no\": \"2222\",\r\n      \"loaded_quantity\": 300\r\n    },\r\n    {\r\n      \"unique_id\": \"rec3\",\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"Another New Product\",\r\n      \"batch_no\": \"B003\",\r\n      \"loaded_quantity\": 250\r\n    }\r\n  ]\r\n\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/update",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/get/12",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/loaded-quantity/get/2",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "get", "2"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/get-all",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/loaded-quantity/get-all",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "get-all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/send-for-review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "initiatorAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/send-for-review",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "send-for-review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/send-review-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/send-review-to-open",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "send-review-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/send-review-to-approval",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewComment",
+                  "value": "dispenCom",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/send-review-to-approval",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "send-review-to-approval"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/send-approval-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/send-approval-to-open",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "send-approval-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverComment",
+                  "value": "appc",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/approve",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "approve"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "loaded-quantity/generate-pdf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Loaded Quantity Records\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"LoadedQuantityRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n                \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"product_name\": \"product_name\",\r\n      \"batch_no\": \"batch_no\",\r\n      \"container_size\": \"container_size\",\r\n      \"batch_size\": \"batch_size\",\r\n      \"theoretical_production\": \"theoretical_production\",\r\n      \"loaded_quantity\": \"loaded_quantity\",\r\n      \"yield\": \"yield\",\r\n      \"remarks\": \"remarks\",\r\n      \"checked_by\": \"checked_by\"\r\n\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/loaded-quantity/generate-pdf",
+              "host": ["{{local}}"],
+              "path": ["loaded-quantity", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blank-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"reportData\":{\r\n      \"title\":\"Loaded Quantity\",\r\n      \"status\":\"Under Approval\",\r\n      \"blankRows\":20,\r\n      \"form_id\":1,\r\n      \"LoadedQuantityRecord\":[]\r\n   }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/loaded-quantity/blank-report/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["loaded-quantity", "blank-report", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "media",
+      "item": [
+        {
+          "name": "media-record/post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"site_id\": 1,\r\n  \"description\": \"description\",\r\n  \"department\": 1,\r\n  \"compression_area\": \"q\",\r\n  \"limit\": 1,\r\n  \"reviewer_id\": 2,\r\n  \"approver_id\": 2,\r\n  \"initiatorComment\": \"e\",\r\n  \"email\": \"swapnil@vidyagxp.com\",\r\n  \"password\": \"00000000\",\r\n  \"FormRecordsArray\": [\r\n    {\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"name_medium\": \"product_name\",\r\n      \"date_of_preparation\": \"batch_no\",\r\n      \"date_of_use\": \"container_size\",\r\n      \"lot_no\": \"batch_size\",\r\n      \"no_of_plate_prepared\": \"theoretical_production\",\r\n      \"no_of_plate_used\": \"loaded_quantity\",\r\n      \"used_for\": \"yield\",\r\n      \"balance_no_plate\": \"remarks\",\r\n      \"signature\": \"checked_by\"\r\n    }\r\n  ],\r\n  \"initiatorDeclaration\": \"a\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/media-record/post",
+              "host": ["{{local}}"],
+              "path": ["media-record", "post"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "description",
+                  "value": "aaaaaa",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "amit@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "Amit@121",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "aaaa",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/media-record/update",
+              "host": ["{{local}}"],
+              "path": ["media-record", "update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/get/1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/media-record/get/1",
+              "host": ["{{local}}"],
+              "path": ["media-record", "get", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/get-all",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/media-record/get-all",
+              "host": ["{{local}}"],
+              "path": ["media-record", "get-all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/send-for-review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "initiatorAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/media-record/send-for-review",
+              "host": ["{{local}}"],
+              "path": ["media-record", "send-for-review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/send-review-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/media-record/send-review-to-open",
+              "host": ["{{local}}"],
+              "path": ["media-record", "send-review-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/send-review-to-approval",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewComment",
+                  "value": "dispenCom",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/media-record/send-review-to-approval",
+              "host": ["{{local}}"],
+              "path": ["media-record", "send-review-to-approval"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/send-approval-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/media-record/send-approval-to-open",
+              "host": ["{{local}}"],
+              "path": ["media-record", "send-approval-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverComment",
+                  "value": "appc",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/media-record/approve",
+              "host": ["{{local}}"],
+              "path": ["media-record", "approve"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "media-record/generate-pdf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Media Record\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"MediaRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n                 \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"name_medium\": \"product_name\",\r\n      \"date_of_preparation\": \"batch_no\",\r\n      \"date_of_use\": \"container_size\",\r\n      \"lot_no\": \"batch_size\",\r\n      \"no_of_plate_prepared\": \"theoretical_production\",\r\n      \"no_of_plate_used\": \"loaded_quantity\",\r\n      \"used_for\": \"yield\",\r\n      \"balance_no_plate\": \"remarks\",\r\n      \"signature\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\"\r\n\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/media-record/generate-pdf",
+              "host": ["{{local}}"],
+              "path": ["media-record", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blank-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"reportData\":{\r\n      \"title\":\"Media Record\",\r\n      \"status\":\"Under Approval\",\r\n      \"blankRows\":17,\r\n      \"form_id\":1,\r\n      \"MediaRecords\":[]\r\n   }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/media-record/blank-report/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["media-record", "blank-report", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "dispensing material",
+      "item": [
+        {
+          "name": "dispensing-material/post",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"site_id\": 1,\r\n  \"description\": \"description\",\r\n  \"department\": 1,\r\n  \"compression_area\": \"q\",\r\n  \"limit\": 1,\r\n  \"reviewer_id\": 2,\r\n  \"approver_id\": 2,\r\n  \"initiatorComment\": \"e\",\r\n  \"email\": \"swapnil@vidyagxp.com\",\r\n  \"password\": \"00000000\",\r\n  \"FormRecordsArray\": [\r\n    {\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n    },{\r\n      \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n    }\r\n  ],\r\n  \"initiatorDeclaration\": \"a\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/post",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "post"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/get/1",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/get/1",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "get", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/get-all",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczMTY2MDg0NSwiZXhwIjoxNzMxNzQ3MjQ1fQ.xJnfHKjlpwAYre2EdFm5Srhkbd3rmAqSNXGaUMJ-bHc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{local}}/dispensing-material/get-all",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "get-all"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/update",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n\"description\":\"dddd\",\r\n\"site_id\":1,\r\n\"form_id\":1,\r\n\"email\":\"swapnil@vidyagxp.com\",\r\n\"password\":\"00000000\",\r\n\"initiatorDeclaration\":\"aaaa\",\r\n\"DispenseOfMaterialRecords\":[{\r\n    \"on_time_auh\":\"qqqqqqqqqqqqq\",\r\n    \"date\": \"2024-12-22\",\r\n    \"unique_id\": 1232\r\n\r\n}]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/update",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "update"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/send-for-review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "initiatorAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json"
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/send-for-review",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "send-for-review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/send-review-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/send-review-to-open",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "send-review-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/send-review-to-approval",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewComment",
+                  "value": "dispenCom",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/send-review-to-approval",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "send-review-to-approval"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/send-approval-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/send-approval-to-open",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "send-approval-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverComment",
+                  "value": "appc",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/approve",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "approve"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/generate-pdf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"DispensngOfMaterialRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/dispensing-material/generate-pdf",
+              "host": ["{{local}}"],
+              "path": ["dispensing-material", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/chat-pdf/1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"DispenseOfMaterials\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/dispensing-material/chat-pdf/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["dispensing-material", "chat-pdf", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dispensing-material/view-report",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:1000/dispensing-material/view-report",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["dispensing-material", "view-report"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blank-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"reportData\":{\r\n      \"title\":\"Dispensing Material\",\r\n      \"status\":\"Under Approval\",\r\n      \"blankRows\":12,\r\n      \"form_id\":1,\r\n      \"DispenseOfMaterial\":[]\r\n   }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/dispensing-material/blank-report/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["dispensing-material", "blank-report", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "diffrential pressure",
+      "item": [
+        {
+          "name": "differential-pressure/send-for-review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "initiatorAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json",
+                  "disabled": true
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/differential-pressure/send-DP-elog-for-review",
+              "host": ["{{local}}"],
+              "path": ["differential-pressure", "send-DP-elog-for-review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/send-review-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/differential-pressure/send-DP-elog-from-review-to-open",
+              "host": ["{{local}}"],
+              "path": [
+                "differential-pressure",
+                "send-DP-elog-from-review-to-open"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/send-review-to-approval",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewComment",
+                  "value": "dispenCom",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/differential-pressure/send-DP-from-review-to-approval",
+              "host": ["{{local}}"],
+              "path": [
+                "differential-pressure",
+                "send-DP-from-review-to-approval"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/send-approval-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/differential-pressure/send-DP-elog-from-approval-to-open",
+              "host": ["{{local}}"],
+              "path": [
+                "differential-pressure",
+                "send-DP-elog-from-approval-to-open"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverComment",
+                  "value": "appc",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/differential-pressure/approve-DP-elog",
+              "host": ["{{local}}"],
+              "path": ["differential-pressure", "approve-DP-elog"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/generate-pdf",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"DifferentialPressureRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"differential_pressure\": \"79\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/differential-pressure/generate-pdf",
+              "host": ["{{local}}"],
+              "path": ["differential-pressure", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/chat-pdf/1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"<p>This is <strong>bold</strong> and <em>italic</em> text</p>\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"DispenseOfMaterials\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/differential-pressure/chat-pdf/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["differential-pressure", "chat-pdf", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/effective-chat-pdf/1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"<p>This is <strong>bold</strong> and <em>italic</em> text</p>\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"additionalAttachement\":\"http://localhost:1001/elogdoc\",\r\n    \"additionalInfo\":\"this is differential testing\",\r\n   \"DifferentialPressureRecords\": [\r\n        {\r\n           \"unique_id\": \"11\",\r\n      \"time\": \"55\",\r\n      \"differential_pressure\": \"66\",\r\n      \"remarks\": \"66\",\r\n      \"checked_by\": \"77\",\r\n      \"supporting_docs\": \"88\"\r\n        },\r\n         {\r\n                \"unique_id\": \"11\",\r\n      \"time\": \"55\",\r\n      \"differential_pressure\": \"55\",\r\n      \"remarks\": \"66\",\r\n      \"checked_by\": \"77\",\r\n      \"supporting_docs\": \"88\"\r\n        }\r\n    ]\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/differential-pressure/effective-chat-pdf/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["differential-pressure", "effective-chat-pdf", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blank-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"reportData\":{\r\n      \"title\":\"Differential Pressure\",\r\n      \"status\":\"Under Approval\",\r\n      \"blankRows\":17,\r\n      \"form_id\":1,\r\n      \"DifferentialPressureRecords\":[]\r\n   }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/differential-pressure/blank-report/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["differential-pressure", "blank-report", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "differential-pressure/view-report",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:1000/differential-pressure/view-report",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["differential-pressure", "view-report"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "temperature",
+      "item": [
+        {
+          "name": "temprature-record/send-for-review",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "initiatorAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/E-log.postman_collection.json",
+                  "disabled": true
+                },
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/send-TR-elog-for-review",
+              "host": ["{{local}}"],
+              "path": ["temprature-record", "send-TR-elog-for-review"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/send-review-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "initiatorDeclaration",
+                  "value": "dispen",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": "/C:/Users/Administrator/Downloads/APQR_Report (62).pdf"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/send-TR-elog-from-review-to-open",
+              "host": ["{{local}}"],
+              "path": ["temprature-record", "send-TR-elog-from-review-to-open"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/send-review-to-approval",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewComment",
+                  "value": "dispenCom",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "reviewerAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/send-DP-from-review-to-approval",
+              "host": ["{{local}}"],
+              "path": ["temprature-record", "send-DP-from-review-to-approval"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/send-approval-to-open",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverAttachment",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/send-DP-elog-from-approval-to-open",
+              "host": ["{{local}}"],
+              "path": [
+                "temprature-record",
+                "send-DP-elog-from-approval-to-open"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/approve",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "form_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "swapnil@vidyagxp.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "00000000",
+                  "type": "text"
+                },
+                {
+                  "key": "approverDeclaration",
+                  "value": "dispenDec",
+                  "type": "text"
+                },
+                {
+                  "key": "site_id",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "approverComment",
+                  "value": "appc",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/approve-DP-elog",
+              "host": ["{{local}}"],
+              "path": ["temprature-record", "approve-DP-elog"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/generate-pdf",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"TempratureRecords\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/generate-pdf",
+              "host": ["{{local}}"],
+              "path": ["temprature-record", "generate-pdf"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/view-report",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:1000/temprature-record/view-report",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["temprature-record", "view-report"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "temprature-record/chat-pdf/1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"reportData\":{\r\n    \"title\": \"Dispensing Material\",\r\n    \"site\": \"India\",\r\n    \"status\": \"Under Approval\",\r\n    \"initiator_name\": \"Rupesh Gurjar\",\r\n    \"form_id\": 2,\r\n    \"site_id\": 1,\r\n    \"initiator_id\": 2,\r\n    \"date_of_initiation\": \"2024-11-18T07:25:49.000Z\",\r\n    \"date_of_review\": \"2024-11-18T08:29:49.000Z\",\r\n    \"date_of_approval\": null,\r\n    \"description\": \"asdfghj\",\r\n    \"stage\": 3,\r\n    \"department\": \"Quality Assurance Bio-Pharma\",\r\n    \"compression_area\": \"Area 3\",\r\n    \"limit\": 76,\r\n    \"reviewer_id\": 2,\r\n    \"approver_id\": 3,\r\n    \"reviewComment\": \"asdf\",\r\n    \"approverComment\": null,\r\n    \"initiatorComment\": \"asdfghj\",\r\n    \"initiatorAttachment\": null,\r\n    \"reviewerAttachment\": null,\r\n    \"approverAttachment\": null,\r\n    \"createdAt\": \"2024-11-18T07:25:49.000Z\",\r\n    \"updatedAt\": \"2024-11-18T08:29:49.000Z\",\r\n    \"DispenseOfMaterials\": [\r\n        {\r\n            \"record_id\": 2,\r\n            \"form_id\": 2,\r\n            \"unique_id\": 123,\r\n      \"date\": \"2024-12-22\",\r\n      \"on_time_auh\": \"product_name\",\r\n      \"on_time_laf\": \"batch_no\",\r\n      \"on_time_uv_light\": \"container_size\",\r\n      \"on_time_done_by\": \"batch_size\",\r\n      \"name_of_material\": \"theoretical_production\",\r\n      \"control_no\": \"loaded_quantity\",\r\n      \"dispensed_quantity\": \"yield\",\r\n      \"dispensed_by_qa\": \"remarks\",\r\n      \"dispensed_by_store\": \"checked_by\",\r\n      \"off_time_auh\": \"checked_by\",\r\n      \"off_time_laf\": \"checked_by\",\r\n      \"off_time_uv_light\": \"checked_by\",\r\n      \"uv_burning\": \"checked_by\",\r\n      \"off_time_done_by\": \"checked_by\",\r\n      \"cleaning_done_by\": \"checked_by\",\r\n      \"checked_by\": \"checked_by\",\r\n      \"weighing_balance_id\": \"checked_by\",\r\n      \"remark\": \"checked_by\"\r\n        }\r\n    ],\r\n    \"reviewer\": {\r\n        \"user_id\": 2,\r\n        \"name\": \"Rupesh Gurjar\"\r\n    },\r\n    \"approver\": {\r\n        \"user_id\": 3,\r\n        \"name\": \"Gaurav Sir\"\r\n    }\r\n}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{local}}/temprature-record/chat-pdf/1",
+              "host": ["{{local}}"],
+              "path": ["temprature-record", "chat-pdf", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "blank-report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"reportData\":{\r\n      \"title\":\"Temprature Process\",\r\n      \"status\":\"Under Approval\",\r\n      \"blankRows\":17,\r\n      \"form_id\":1,\r\n      \"temprature_record\":[]\r\n   }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:1000/temprature-record/blank-report/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "1000",
+              "path": ["temprature-record", "blank-report", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "admin-login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "admin@vidyagxp.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Amit@121",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{local}}/user/admin-login",
+          "host": ["{{local}}"],
+          "path": ["user", "admin-login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "user-login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();\r",
+              "pm.environment.set(\"token\", response.token);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "email",
+              "value": "initiator@vidyagxp.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Amit@121",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{local}}/user/user-login",
+          "host": ["{{local}}"],
+          "path": ["user", "user-login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "differential-pressure/get-user-roleGroups",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "role_id",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "site_id",
+              "value": "1",
+              "type": "text"
+            },
+            {
+              "key": "process_id",
+              "value": "1",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{local}}/differential-pressure/get-user-roleGroups",
+          "host": ["{{local}}"],
+          "path": ["differential-pressure", "get-user-roleGroups"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get-all-effective-role",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{local}}/user/get-all-effective-role",
+          "host": ["{{local}}"],
+          "path": ["user", "get-all-effective-role"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "user/get-user-roles/14",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{local}}/user/get-user-roles/14",
+          "host": ["{{local}}"],
+          "path": ["user", "get-user-roles", "14"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "search?search=Initiator",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:1000/differential-pressure/search?search=Initiator",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "1000",
+          "path": ["differential-pressure", "search"],
+          "query": [
+            {
+              "key": "search",
+              "value": "Initiator"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

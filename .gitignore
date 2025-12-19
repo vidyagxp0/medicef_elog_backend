@@ -1,0 +1,9 @@
+
+#Ignore the node modules folder
+node_modules
+
+src/documents/elog_docs/*
+!src/documents/elog_docs/.gitkeep
+src/documents/profile_pics/*
+!src/documents/profile_pics/.gitkeep
+
