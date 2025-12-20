@@ -43,6 +43,15 @@ router.put(
   DifferentialPressureProcess.EditDifferentialPressure
 );
 
+// edit differential pressure elog details
+router.put(
+  "/update-effective-differential-pressure",
+  Auth.checkUserJwtToken,
+  upload.any(),
+  // Auth.authorizeUserRole(1, 1),
+  DifferentialPressureProcess.EditEffectiveDifferentialPressure
+);
+
 //get a differential pressure elog by id
 router.get(
   "/get-differential-pressure/:id",

@@ -14,6 +14,7 @@ const { v4: uuidv4 } = require("uuid");
 const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const EffectiveAuditTrail = require("../models/effectiveAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const getUserById = async (user_id) => {
@@ -389,9 +390,11 @@ exports.EditDifferentialPressure = async (req, res) => {
     req.files.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
-      } else if (file.fieldname === "additionalAttachment") {
-        additionalAttachment = file;
-      } else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
+      } 
+      // else if (file.fieldname === "additionalAttachment") {
+      //   additionalAttachment = file;
+      // }
+       else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
         const match = file.fieldname.match(
           /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
         );
@@ -604,6 +607,290 @@ exports.EditDifferentialPressure = async (req, res) => {
     }
 
     await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "E-log Updated successfully",
+    });
+  } catch (error) {
+    await transaction.rollback();
+
+    let errorMessage = "Error during updating elog";
+    if (error instanceof ValidationError) {
+      errorMessage = error.errors.map((e) => e.message).join(", ");
+    }
+
+    return res.status(500).json({
+      error: true,
+      message: `${errorMessage}: ${error.message}`,
+    });
+  }
+};
+// edit effective differential pressure elog details
+exports.EditEffectiveDifferentialPressure = async (req, res) => {
+  const {
+    form_id,
+    record_id,
+    department_id,
+    reviewer_id,
+    approver_id,
+    DifferentialPressureRecords,
+    email,
+    password,
+    initiatorDeclaration,
+    additionalInfo,
+  } = req.body;
+
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }
+
+  if (!record_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a record ID." });
+  }
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide email and password." });
+  }
+
+  const transaction = await sequelize.transaction();
+
+  try {
+    const user = await User.findOne({
+      where: { user_id: req.user.userId, isActive: true },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature." });
+    }
+    let additionalAttachment = null;
+    const supportingDocs = {};
+
+    req.files.forEach((file) => {
+        if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      } 
+    });
+    const form = await DifferentialPressureForm.findOne({
+      where: { form_id: form_id },
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ error: true, message: "Form not found." });
+    }
+
+    // Define epsilon for float comparison
+    const EPSILON = 0.000001;
+
+    // Function to compare floats with epsilon
+    const areFloatsEqual = (a, b) => Math.abs(a - b) < EPSILON;
+
+    // Track changes for the form
+    const auditTrailEntries = [];
+    const fields = {
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : undefined, // 👈 IMPORTANT (form value yaha mat bhejo)
+      additionalInfo,
+    };
+
+    for (const [field, newValue] of Object.entries(fields)) {
+      const oldValue = form[field];
+
+      // 1️⃣ value aayi hi nahi → skip
+      if (
+        newValue === undefined ||
+        newValue === null ||
+        newValue === ""
+      ) {
+        continue;
+      }
+
+      // 2️⃣ number compare safely
+      const isChanged =
+        typeof newValue === "number"
+          ? !areFloatsEqual(oldValue, newValue)
+          : oldValue != newValue;
+
+      // 3️⃣ agar change hi nahi hua → skip
+      if (!isChanged) {
+        continue;
+      }
+
+      // ✅ AUDIT ENTRY
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        record_id: null, // 👈 form-level audit
+        field_name: field,
+        previous_value: oldValue ?? null,
+        new_value: newValue,
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: "Opened",
+        declaration: initiatorDeclaration,
+        action: "Update Elog",
+      });
+    }
+
+    // Update the form details
+    await form.update(
+      {
+      additionalAttachment: additionalAttachment
+        ? getElogDocsUrl(additionalAttachment)
+        : form.additionalAttachment,
+        additionalInfo,
+      },
+      { transaction }
+    );
+
+    // Update the Form Records if provided
+    if (
+      Array.isArray(DifferentialPressureRecords) &&
+      DifferentialPressureRecords.length > 0
+    ) {
+      const existingRecords = await DifferentialPressureRecord.findAll({
+        where: { form_id: form_id },
+        raw: true,
+        // order: [["record_id", "DESC"]],
+        transaction,
+      });
+
+      // Track changes for existing records
+      existingRecords.forEach((existingRecord, index) => {
+        DifferentialPressureRecords.sort(
+          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
+        );
+        const newRecord = DifferentialPressureRecords[index];
+        if (newRecord) {
+          const recordFields = {
+            differential_pressure: newRecord.differential_pressure,
+            remarks: newRecord.remarks,
+            done_by: newRecord.done_by,
+            approver_remarks:newRecord.approver_remarks,
+            reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
+            // supporting_docs:
+            //   newRecord.supporting_docs ||
+            //   getElogDocsUrl(supportingDocs[index]),
+          };
+
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
+            if (
+              newValue !== undefined &&
+              ((typeof newValue === "number" &&
+                !areFloatsEqual(oldValue, newValue)) ||
+                oldValue != newValue)
+            ) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${index}]`,
+                previous_value: oldValue || null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
+            }
+          }
+        }
+      });
+
+      // Handle new records added
+      if (DifferentialPressureRecords.length > existingRecords.length) {
+        for (
+          let i = existingRecords.length;
+          i < DifferentialPressureRecords.length;
+          i++
+        ) {
+          const newRecord = DifferentialPressureRecords[i];
+          const recordFields = {
+            unique_id: newRecord?.unique_id,
+            time: newRecord?.time,
+            date: newRecord?.date,
+            checked_by: newRecord?.checked_by,
+            differential_pressure: newRecord.differential_pressure,
+            remarks: newRecord.remarks,
+            done_by: newRecord.done_by,
+            approver_remarks:newRecord.approver_remarks,
+            reviewed_by: newRecord?.reviewed_by,
+            approved_by: newRecord?.approved_by,
+            supporting_docs:
+              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+          };
+
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue || "",
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                declaration: initiatorDeclaration,
+                action: "Update Elog",
+              });
+            }
+          }
+        }
+      }
+
+      // Delete existing records for the form
+      await DifferentialPressureRecord.destroy({
+        where: { form_id: form_id },
+        transaction,
+      });
+
+      // Create new records
+      const formRecords = DifferentialPressureRecords.map((record, index) => ({
+        form_id: form_id,
+        unique_id: record?.unique_id,
+        time: record?.time,
+        date: record?.date,
+        differential_pressure: record?.differential_pressure,
+        remarks: record?.remarks,
+        done_by: record?.done_by,
+        approver_remarks:record?.approver_remarks,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
+        supporting_docs: record?.supporting_docs
+          ? record?.supporting_docs
+          : getElogDocsUrl(supportingDocs[index]),
+      }));
+
+      await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+    }
+
+    await EffectiveAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
