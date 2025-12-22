@@ -43,13 +43,13 @@ function checkUserJwtToken(req, res, next) {
   });
 }
 
-function hasAccess(userRoles, site_id, processId, roleId) {
+function hasAccess(userRoles, department_id, processId, roleId) {
   return userRoles.some(
     (role) =>
       (role.role_id === 5 && // Grant access if role_id is 5 (full permissions)
-        role.site_id === site_id &&
+        role.department_id === department_id &&
         role.process_id === processId) ||
-      (role.site_id === site_id &&
+      (role.department_id === department_id &&
         role.process_id === processId &&
         role.role_id === roleId)
   );
@@ -63,12 +63,12 @@ function authorizeUserRole(processId, roleId) {
       },
       attributes: { exclude: ["createdAt", "updatedAt"] },
     });
-    if (!req.body.site_id) {
+    if (!req.body.department_id) {
       return res
         .status(400)
-        .json({ error: true, message: "Please provide a site ID." });
+        .json({ error: true, message: "Please provide a department ID." });
     }
-    if (hasAccess(userRoles, Number(req.body?.site_id), processId, roleId)) {
+    if (hasAccess(userRoles, Number(req.body?.department_id), processId, roleId)) {
       next(); // User has access, proceed to the next middleware or route handler
     } else {
       res

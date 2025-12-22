@@ -27,7 +27,7 @@ const upload = multer({ storage: storage });
 
 // post differential pressure elog
 router.post(
-  "/post-differential-pressure",
+  "/create",
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(1, 1),
@@ -36,7 +36,7 @@ router.post(
 
 // edit differential pressure elog details
 router.put(
-  "/update-differential-pressure",
+  "/update",
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(1, 1),
@@ -45,30 +45,30 @@ router.put(
 
 // edit differential pressure elog details
 router.put(
-  "/update-effective-differential-pressure",
+  "/update-effective",
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(1, 1),
-  DifferentialPressureProcess.EditEffectiveDifferentialPressure
+  DifferentialPressureProcess.EditEffective
 );
 
 //get a differential pressure elog by id
 router.get(
-  "/get-differential-pressure/:id",
+  "/get/:id",
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.GetDifferentialPressureElog
 );
 
 //get all the differential pressure elogs
 router.get(
-  "/get-all-differential-pressure",
+  "/get-all",
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.GetAllDifferentialPressureElog
 );
 
 //send differential pressure elog for review
 router.put(
-  "/send-DP-elog-for-review",
+  "/send-for-review",
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(1, 1),
@@ -77,7 +77,7 @@ router.put(
 
 // change status of differential pressure elog from review to open
 router.put(
-  "/send-DP-elog-from-review-to-open",
+  "/review-to-open",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(1, 2),
@@ -86,7 +86,7 @@ router.put(
 
 // send differential pressure elog from review to approval
 router.put(
-  "/send-DP-from-review-to-approval",
+  "/review-to-approval",
   Auth.checkUserJwtToken,
   upload.single("reviewerAttachment"),
   Auth.authorizeUserRole(1, 2),
@@ -95,7 +95,7 @@ router.put(
 
 // send differential pressure elog from under-approval to open
 router.put(
-  "/send-DP-elog-from-approval-to-open",
+  "/approval-to-open",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(1, 3),
@@ -104,7 +104,7 @@ router.put(
 
 // APPROVE differential pressure elog
 router.put(
-  "/approve-DP-elog",
+  "/approve-elog",
   Auth.checkUserJwtToken,
   upload.single("approverAttachment"),
   Auth.authorizeUserRole(1, 3),

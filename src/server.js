@@ -48,7 +48,7 @@ app.use("/user", userRoutes);
 app.use("/feedback", vidyagxpFeedback);
 app.use("/differential-pressure", differentialPressureRoutes);
 app.use("/temprature-record", tempratureRecordRoutes);
-app.use("/site", departmentRoutes);
+app.use("/department", departmentRoutes);
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
