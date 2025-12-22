@@ -14,7 +14,6 @@ const { v4: uuidv4 } = require("uuid");
 const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
-const EffectiveAuditTrail = require("../models/effectiveAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const getUserById = async (user_id) => {

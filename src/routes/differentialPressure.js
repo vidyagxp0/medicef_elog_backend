@@ -44,13 +44,13 @@ router.put(
 );
 
 // edit differential pressure elog details
-router.put(
-  "/update-effective",
-  Auth.checkUserJwtToken,
-  upload.any(),
-  // Auth.authorizeUserRole(1, 1),
-  DifferentialPressureProcess.EditEffective
-);
+// router.put(
+//   "/update-effective",
+//   Auth.checkUserJwtToken,
+//   upload.any(),
+//   // Auth.authorizeUserRole(1, 1),
+//   DifferentialPressureProcess.EditEffective
+// );
 
 //get a differential pressure elog by id
 router.get(
