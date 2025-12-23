@@ -223,24 +223,39 @@ exports.deleteUser = async (req, res) => {
 
 //get all users
 exports.getAllUsers = async (req, res) => {
-  User.findAll({
-    where: {
-      isActive: true,
-    },
-  })
-    .then((result) => {
-      res.status(200).json({
-        error: false,
-        response: result,
-      });
-    })
-    .catch((e) => {
-      res.status(400).json({
-        error: true,
-        response: e.message,
-      });
+  try {
+    const users = await User.findAll({
+      where: {
+        isActive: true,
+      },
+      attributes: { exclude: ["password"] },
     });
+    
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        error: true,
+        message: "No active users found",
+        data: [],
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      message: "Users fetched successfully",
+      data: users,
+    });
+
+  } catch (error) {
+    console.error("Get Users Error:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: "Failed to fetch users",
+      errorDetails: error.message,
+    });
+  }
 };
+
 
 // get a single user
 exports.getAUser = async (req, res) => {

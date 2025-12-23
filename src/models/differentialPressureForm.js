@@ -61,12 +61,12 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     type: DataTypes.STRING,
   },
   reviewer_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.JSON,
     allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
+  },
+  reviewerData: {
+    type: DataTypes.JSON,
+    allowNull: false,
   },
   approver_id: {
     type: DataTypes.INTEGER,
@@ -122,14 +122,14 @@ Department.hasMany(DifferentialPressureForm, { foreignKey: "department_id" });
 DifferentialPressureForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(DifferentialPressureForm, { foreignKey: "initiator_id" });
 
-DifferentialPressureForm.belongsTo(User, {
-  foreignKey: "reviewer_id",
-  as: "reviewer",
-});
-User.hasMany(DifferentialPressureForm, {
-  foreignKey: "reviewer_id",
-  as: "reviewer",
-});
+// DifferentialPressureForm.belongsTo(User, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer",
+// });
+// User.hasMany(DifferentialPressureForm, {
+//   foreignKey: "reviewer_id",
+//   as: "reviewer",
+// });
 
 DifferentialPressureForm.belongsTo(User, {
   foreignKey: "approver_id",

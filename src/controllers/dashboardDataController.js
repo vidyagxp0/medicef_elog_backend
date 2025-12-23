@@ -9,6 +9,7 @@ const { Op } = require("sequelize");
 
 exports.GetAllElogs = async (req, res) => {
   try {
+    //https://worldtimeapi.org/api/timezone/Asia/Kolkata
     //equipment
     //record numbber
     //department
@@ -21,7 +22,8 @@ exports.GetAllElogs = async (req, res) => {
     const differentialPressureElogs = await DifferentialPressureForm.findAll({
       include: [
         { model: DifferentialPressureRecord },
-        { model: User, as: "reviewer", attributes: ["user_id", "name"] },
+        // reviewer ko uske ander hi json me daaal diya 
+        // { model: User, as: "reviewer", attributes: ["user_id", "name"] },
         { model: User, as: "approver", attributes: ["user_id", "name"] },
       ],
       order: [["form_id", "DESC"]],
@@ -31,7 +33,7 @@ exports.GetAllElogs = async (req, res) => {
     const tempratureProcessElogs = await TempratureProcessForm.findAll({
       include: [
         { model: TempratureProcessRecord },
-        { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
+        // { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
         { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
       ],
       order: [["form_id", "DESC"]],
@@ -112,6 +114,74 @@ exports.getAllDepartments = async (req, res) => {
     res.status(500).json({
       error: true,
       message: "Internal server error",
+      errorDetails: error.message,
+    });
+  }
+};
+
+
+exports.getServerTime = async (req, res) => {
+  try {
+    const now = new Date();
+
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    // week number calculation
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+    const weekNumber = Math.ceil(
+      ((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Server time fetched successfully",
+      data: {
+        fullDateTime: now.toISOString(),
+        timestamp: now.getTime(),
+
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        monthName: months[now.getMonth()],
+
+        day: now.getDate(),
+        dayName: days[now.getDay()],
+
+        weekNumber: weekNumber,
+
+        hour: now.getHours(),
+        minute: now.getMinutes(),
+        second: now.getSeconds(),
+
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: true,
+      message: "Failed to fetch server time",
       errorDetails: error.message,
     });
   }

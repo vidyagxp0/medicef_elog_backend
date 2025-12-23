@@ -20,6 +20,15 @@ const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
   return user;
 };
+const getUsersByIdsReviewer = async (user_ids) => {
+  return await User.findAll({
+    where: {
+      user_id: user_ids,
+      isActive: true,
+    },
+    attributes: ["name"],
+  });
+};
 
 // Fill Differential pressure form and insert its records.
 exports.InsertDifferentialPressure = async (req, res) => {
@@ -34,6 +43,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     instrument_id_no,
     differential_pressure,
     reviewer_id,
+    reviewerData,
     approver_id,
     initiatorComment,
     email,
@@ -52,6 +62,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
+  }
+  if (!reviewerData) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a reviewer data." });
   }
 
   if (!email || !password) {
@@ -119,6 +134,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         department: department,
         compression_area: compression_area,
         limit: limit,
+        reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -135,6 +151,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
     );
 
     const auditTrailEntries = [];
+    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
+    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
+
     const fields = {
       description,
       department,
@@ -144,7 +163,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       instrument_id_no,
       differential_pressure,
       limit,
-      reviewer: (await getUserById(reviewer_id))?.name,
+      reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       additionalInfo,
@@ -670,11 +689,11 @@ exports.GetAllDifferentialPressureElog = async (req, res) => {
       {
         model: DifferentialPressureRecord,
       },
-      {
-        model: User,
-        as: "reviewer", // Use the consistent alias 'reviewer'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
+      // {
+      //   model: User,
+      //   as: "reviewer", // Use the consistent alias 'reviewer'
+      //   attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
+      // },
       {
         model: User,
         as: "approver", // Use the consistent alias 'approver'
