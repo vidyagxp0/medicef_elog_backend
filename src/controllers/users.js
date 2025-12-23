@@ -349,48 +349,67 @@ exports.getAllRoleGroups = async (req, res) => {
 
 // user login
 exports.Userlogin = async (req, res) => {
-  const { email, password } = req.body;
-  User.findOne({
-    where: {
-      email: email.toLowerCase(),
-      isActive: true,
-    },
-    raw: true,
-  })
-    .then((data) => {
-      bcrypt.compare(password, data.password, async (_err, result) => {
-        if (!result) {
-          res.status(400).json({
-            error: true,
-            message: "Invalid Password!",
-          });
-        } else {
-          const token = jwt.sign(
-            { userId: data.user_id },
-            config.development.JWT_SECRET,
-            { expiresIn: "24h" }
-          );
-          if (token) {
-            res.status(200).json({
-              error: false,
-              token: token,
-            });
-          } else {
-            res.status(400).json({
-              error: true,
-              message: "Some unknown error",
-            });
-          }
-        }
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: true,
+        message: "Email and password are required",
       });
-    })
-    .catch((e) => {
-      res.status(401).json({
-        error: false,
-        message: "Couldn't find User!",
-      });
+    }
+
+    const user = await User.findOne({
+      where: {
+        email: email.toLowerCase(),
+        isActive: true,
+      },
+      raw: true,
     });
+
+    if (!user) {
+      return res.status(401).json({
+        error: true,
+        message: "User not found or inactive",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid password",
+      });
+    }
+
+    const token = jwt.sign(
+      { userId: user.user_id },
+      config.development.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    // password remove
+    const { password: _password, ...userWithoutPassword } = user;
+
+    return res.status(200).json({
+      error: false,
+      message: "Login successful",
+      token,
+      user: userWithoutPassword,
+    });
+
+  } catch (error) {
+    console.error("Login Error:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error",
+    });
+  }
 };
+
+
 
 exports.Adminlogin = async (req, res) => {
   const { email, password } = req.body;
