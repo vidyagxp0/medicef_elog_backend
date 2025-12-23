@@ -5,9 +5,8 @@ const TempratureProcessRecord = require("../models/tempratureProcessRecords");
 const TempratureProcessForm = require("../models/tempratureProcessForm");
 const Process = require("../models/processes");
 const Department = require("../models/departments");
+const { Op } = require("sequelize");
 
-
-// Combined method
 exports.GetAllElogs = async (req, res) => {
   try {
     //equipment
@@ -81,15 +80,21 @@ exports.getAllProcesses = async (req, res) => {
 
 exports.getAllDepartments = async (req, res) => {
   try {
-    const result = await Department.findAll();
+    const { departmentName } = req.query;
 
-    if (!result || result.length === 0) {
-      return res.status(200).json({
-        error: false,
-        message: "No departments found",
-        data: [],
-      });
+    const whereCondition = {};
+
+    // agar departmentName query me aaya
+    if (departmentName) {
+      whereCondition.departmentName = {
+        [Op.like]: `%${departmentName}%`,
+      };
     }
+
+    const result = await Department.findAll({
+      where: whereCondition,
+      order: [["department_id", "ASC"]],
+    });
 
     res.status(200).json({
       error: false,
@@ -100,9 +105,10 @@ exports.getAllDepartments = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       error: true,
-      message: "Internal server error while fetching departments",
+      message: "Internal server error",
       errorDetails: error.message,
     });
   }
 };
+
 
