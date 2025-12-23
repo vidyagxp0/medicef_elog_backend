@@ -117,9 +117,6 @@ router.post(
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.GetUserOnBasisOfRoleGroup
 );
-
-router.get("/get-processes", DifferentialPressureProcess.getAllProcesses);
-
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,

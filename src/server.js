@@ -7,6 +7,7 @@ const differentialPressureRoutes = require("./routes/differentialPressure");
 const tempratureRecordRoutes = require("./routes/tempratureRecords");
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const departmentRoutes = require("./routes/departments");
+const dashboardData = require("./routes/dashboardData")
 const cors = require("cors");
 const path = require("path");
 const helmet = require("helmet");
@@ -24,7 +25,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["*"],
-        frameAncestors: ["self"], // Allow iframe embedding from any source
+        frameAncestors: ["self"], 
       },
     },
     crossOriginResourcePolicy: true,
@@ -47,6 +48,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/feedback", vidyagxpFeedback);
 app.use("/differential-pressure", differentialPressureRoutes);
+app.use("/dashboard-data", dashboardData);
 app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/department", departmentRoutes);
 app.use(express.static(path.join(__dirname, "documents")));

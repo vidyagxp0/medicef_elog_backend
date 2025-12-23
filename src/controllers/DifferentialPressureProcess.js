@@ -40,7 +40,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
-    additionalAttachment,
     additionalInfo,
   } = req.body;
 
@@ -1476,22 +1475,6 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
       message: `Error fetching users: ${error.message}`,
     });
   }
-};
-
-exports.getAllProcesses = async (req, res) => {
-  Process.findAll()
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: "Couldn't find processes " + error,
-      });
-    });
 };
 
 exports.getAuditTrailForAnElog = async (req, res) => {
