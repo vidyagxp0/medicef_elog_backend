@@ -6,7 +6,6 @@ const userRoutes = require("./routes/users");
 const differentialPressureRoutes = require("./routes/differentialPressure");
 const tempratureRecordRoutes = require("./routes/tempratureRecords");
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
-const departmentRoutes = require("./routes/departments");
 const dashboardData = require("./routes/dashboardData")
 const cors = require("cors");
 const path = require("path");
@@ -50,7 +49,6 @@ app.use("/feedback", vidyagxpFeedback);
 app.use("/differential-pressure", differentialPressureRoutes);
 app.use("/dashboard-data", dashboardData);
 app.use("/temprature-record", tempratureRecordRoutes);
-app.use("/department", departmentRoutes);
 app.use(express.static(path.join(__dirname, "documents")));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
