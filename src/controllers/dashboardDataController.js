@@ -53,15 +53,20 @@ exports.GetAllElogs = async (req, res) => {
 
 exports.getAllProcesses = async (req, res) => {
   try {
-    const result = await Process.findAll();
+    const { process } = req.query; // query parameter
 
-    if (!result || result.length === 0) {
-      return res.status(200).json({
-        error: false,
-        message: "No processes found",
-        data: [],
-      });
+    const whereCondition = {};
+
+    if (process) {
+      whereCondition.process = {
+        [Op.like]: `%${process}%`,
+      };
     }
+
+    const result = await Process.findAll({
+      where: whereCondition,
+      order: [["process_id", "ASC"]],
+    });
 
     res.status(200).json({
       error: false,
@@ -77,6 +82,7 @@ exports.getAllProcesses = async (req, res) => {
     });
   }
 };
+
 
 exports.getAllDepartments = async (req, res) => {
   try {
