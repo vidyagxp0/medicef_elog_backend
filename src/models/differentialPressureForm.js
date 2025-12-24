@@ -60,7 +60,7 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  department: {
+  departmentName: {
     type: DataTypes.STRING,
   },
   compression_area: {
