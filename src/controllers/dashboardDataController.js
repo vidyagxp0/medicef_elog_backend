@@ -19,12 +19,27 @@ exports.GetAllElogs = async (req, res) => {
     // date of creation
     const seacrhParams = req.params;
     // Fetch differential pressure records
-    const differentialPressureElogs = await DifferentialPressureForm.findAll({
-      order: [["form_id", "DESC"]],
-    });
+      const differentialPressureElogs = await DifferentialPressureForm.findAll({
+        include: [
+          {
+            model: Process,
+            attributes: ["process_id", "process"], // Process column ka correct naam
+          },
+          {
+            model: User,
+            as: "approver",
+            attributes: ["user_id", "name"],
+          },
+        ],
+        order: [["form_id", "DESC"]],
+      });
 
     // Fetch temperature process records
     const tempratureProcessElogs = await TempratureProcessForm.findAll({
+      // include:[{
+      //   model:Process,
+      //   attributes:["process_id" , "Process"]
+      // }],
       order: [["form_id", "DESC"]],
     });
 
@@ -41,6 +56,7 @@ exports.GetAllElogs = async (req, res) => {
     });
   }
 };
+
 exports.GetAllEffectiveElogs = async (req, res) => {
   try {
     //https://worldtimeapi.org/api/timezone/Asia/Kolkata
@@ -57,6 +73,56 @@ exports.GetAllEffectiveElogs = async (req, res) => {
       where:{
         status: "Closed"
       },
+      order: [["form_id", "DESC"]],
+    });
+
+    // Fetch temperature process records
+    const tempratureProcessElogs = await TempratureProcessForm.findAll({
+      where:{
+        status: "Closed"
+      },
+      order: [["form_id", "DESC"]],
+    });
+
+    // Return combined response
+    res.json({
+      error: false,
+      differentialPressureElogs,
+      tempratureProcessElogs,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+exports.GetEffectiveElogsById = async (req, res) => {
+  try {
+    //https://worldtimeapi.org/api/timezone/Asia/Kolkata
+    //equipment
+    //record numbber
+    //department
+    // area name
+    //description
+    //created by 
+    // date of creation
+    const {form_id,process_id} = req.params;
+
+    if (!form_id || !process_id) {
+      return res.status(400).json({
+        error: true,
+        message: "form_id and process_id are required",
+      });
+    }
+
+    // Fetch differential pressure records
+    const differentialPressureElogs = await DifferentialPressureForm.findAll({
+      where:{
+        form_id:form_id,
+        status: "Closed",
+        process_id:process_id
+      },
       include: [
         { model: DifferentialPressureRecord },
         // reviewer ko uske ander hi json me daaal diya 
@@ -69,7 +135,9 @@ exports.GetAllEffectiveElogs = async (req, res) => {
     // Fetch temperature process records
     const tempratureProcessElogs = await TempratureProcessForm.findAll({
       where:{
-        status: "Closed"
+        form_id:form_id,
+        status: "Closed",
+        process_id:process_id
       },
       include: [
         { model: TempratureProcessRecord },

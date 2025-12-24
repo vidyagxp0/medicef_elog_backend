@@ -1474,7 +1474,7 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
       where: {
         [Op.or]: [
           { role_id: role_id, process_id: process_id, department_id: department_id },
-          { role_id: 5, process_id: process_id, department_id: department_id },
+          { role_id: 4, process_id: process_id, department_id: department_id },
         ],
       },
       include: {
