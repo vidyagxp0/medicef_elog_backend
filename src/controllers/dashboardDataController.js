@@ -15,24 +15,23 @@ exports.GetAllElogs = async (req, res) => {
     //department
     // area name
     //description
-    //created by 
     // date of creation
     const seacrhParams = req.params;
     // Fetch differential pressure records
-      const differentialPressureElogs = await DifferentialPressureForm.findAll({
-        include: [
-          {
-            model: Process,
-            attributes: ["process_id", "process"], // Process column ka correct naam
-          },
-          {
-            model: User,
-            as: "approver",
-            attributes: ["user_id", "name"],
-          },
-        ],
-        order: [["form_id", "DESC"]],
-      });
+        const differentialPressureElogs = await DifferentialPressureForm.findAll({
+          include: [
+            {
+              model: Process,
+              attributes: ["process_id", "process"], // Process column ka correct naam
+            },
+            {
+              model: User,
+              as: "approver",
+              attributes: ["user_id", "name"],
+            },
+          ],
+          order: [["form_id", "DESC"]],
+        });
 
     // Fetch temperature process records
     const tempratureProcessElogs = await TempratureProcessForm.findAll({

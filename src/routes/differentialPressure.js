@@ -54,17 +54,17 @@ router.put(
 
 //get a differential pressure elog by id
 router.get(
-  "/get/:id",
+  "/get/:form_id",
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.GetDifferentialPressureElog
 );
 
 //get all the differential pressure elogs
-router.get(
-  "/get-all",
-  Auth.checkUserJwtToken,
-  DifferentialPressureProcess.GetAllDifferentialPressureElog
-);
+// router.get(
+//   "/get-all",
+//   Auth.checkUserJwtToken,
+//   DifferentialPressureProcess.GetAllDifferentialPressureElog
+// );
 
 //send differential pressure elog for review
 router.put(

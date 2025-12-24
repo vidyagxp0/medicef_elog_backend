@@ -652,70 +652,57 @@ exports.EditDifferentialPressure = async (req, res) => {
 
 //get a differential pressure elog by id
 exports.GetDifferentialPressureElog = async (req, res) => {
-  const form_id = req.params.id;
+  try {
+    const { form_id } = req.params;
 
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
+    if (!form_id) {
+      return res.status(400).json({
+        error: true,
+        message: "Form ID is required.",
+      });
+    }
+
+    if (isNaN(form_id)) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid Form ID.",
+      });
+    }
+
+    const result = await DifferentialPressureForm.findOne({
+      where: { form_id },
+          include: [
+            {
+              model: Process,
+              attributes: ["process_id", "process"],
+            },
+            {
+              model: User,
+              as: "approver",
+              attributes: ["user_id", "name"],
+            },
+          ],
+    });
+
+    if (!result) {
+      return res.status(404).json({
+        error: true,
+        message: "Differential Pressure E-log not found.",
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      message: "Data fetched successfully.",
+      data: result,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error.",
+    });
   }
-
-  DifferentialPressureForm.findOne({
-    where: {
-      form_id: form_id,
-    },
-    include: [
-      {
-        model: DifferentialPressureRecord,
-      },
-    ],
-  })
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: error.message,
-      });
-    });
-};
-
-//get all the differential pressure elogs
-exports.GetAllDifferentialPressureElog = async (req, res) => {
-  DifferentialPressureForm.findAll({
-    include: [
-      {
-        model: DifferentialPressureRecord,
-      },
-      // {
-      //   model: User,
-      //   as: "reviewer", // Use the consistent alias 'reviewer'
-      //   attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      // },
-      {
-        model: User,
-        as: "approver", // Use the consistent alias 'approver'
-        attributes: ["user_id", "name"], // Specify which user attributes to fetch (optional)
-      },
-    ],
-    order: [["form_id", "DESC"]],
-  })
-    .then((result) => {
-      res.json({
-        error: false,
-        message: result,
-      });
-    })
-    .catch((error) => {
-      res.status(400).json({
-        error: true,
-        message: error.message,
-      });
-    });
 };
 
 //send differential pressure elog for review
