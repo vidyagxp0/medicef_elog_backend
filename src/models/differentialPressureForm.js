@@ -2,6 +2,7 @@ const { sequelize } = require("../config/db");
 const { DataTypes, Sequelize } = require("sequelize");
 const Department = require("./departments");
 const User = require("./users");
+const Process = require("./processes");
 
 const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   form_id: {
@@ -15,6 +16,14 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     references: {
       model: Department,
       key: "department_id",
+    },
+  },
+  process_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Process,
+      key: "process_id",
     },
   },
   initiator_id: {
@@ -118,6 +127,9 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
 
 DifferentialPressureForm.belongsTo(Department, { foreignKey: "department_id" });
 Department.hasMany(DifferentialPressureForm, { foreignKey: "department_id" });
+
+DifferentialPressureForm.belongsTo(Process, { foreignKey: "process_id" });
+Process.hasMany(DifferentialPressureForm, { foreignKey: "process_id" });
 
 DifferentialPressureForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(DifferentialPressureForm, { foreignKey: "initiator_id" });

@@ -34,8 +34,9 @@ const getUsersByIdsReviewer = async (user_ids) => {
 exports.InsertDifferentialPressure = async (req, res) => {
   const {
     department_id,
+    process_id,
     description,
-    department,
+    departmentName,
     compression_area,
     limit,
     area_name,
@@ -126,12 +127,13 @@ exports.InsertDifferentialPressure = async (req, res) => {
     const newForm = await DifferentialPressureForm.create(
       {
         department_id: department_id,
+        process_id: process_id,
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
         status: "Opened",
         stage: 1,
-        department: department,
+        departmentName: departmentName,
         compression_area: compression_area,
         limit: limit,
         reviewerData: reviewerData,
@@ -156,7 +158,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
     const fields = {
       description,
-      department,
+      departmentName,
       compression_area,
       area_name,
       acceptance_criteria,
@@ -348,7 +350,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     form_id,
     department_id,
     description,
-    department,
+    departmentName,
     compression_area,
     limit,
     area_name,
@@ -442,7 +444,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
+      departmentName,
       compression_area,
       limit,
       initiatorComment,
@@ -482,7 +484,7 @@ exports.EditDifferentialPressure = async (req, res) => {
       {
         department_id,
         description,
-        department,
+        departmentName,
         compression_area,
         limit,
         reviewer_id,
@@ -1467,7 +1469,7 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, department_id, process_id } = req.body;
 
   try {
-    // Fetch users based on role, department, and process
+    // Fetch users based on role, departmentName, and process
     const selectedUsers = await UserRole.findAll({
       where: {
         [Op.or]: [

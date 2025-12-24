@@ -11,7 +11,7 @@ exports.GetAllElogs = async (req, res) => {
   try {
     //https://worldtimeapi.org/api/timezone/Asia/Kolkata
     //equipment
-    //record numbber
+    //record number
     //department
     // area name
     //description
