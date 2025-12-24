@@ -20,6 +20,43 @@ exports.GetAllElogs = async (req, res) => {
     const seacrhParams = req.params;
     // Fetch differential pressure records
     const differentialPressureElogs = await DifferentialPressureForm.findAll({
+      order: [["form_id", "DESC"]],
+    });
+
+    // Fetch temperature process records
+    const tempratureProcessElogs = await TempratureProcessForm.findAll({
+      order: [["form_id", "DESC"]],
+    });
+
+    // Return combined response
+    res.json({
+      error: false,
+      differentialPressureElogs,
+      tempratureProcessElogs,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+exports.GetAllEffectiveElogs = async (req, res) => {
+  try {
+    //https://worldtimeapi.org/api/timezone/Asia/Kolkata
+    //equipment
+    //record numbber
+    //department
+    // area name
+    //description
+    //created by 
+    // date of creation
+    const seacrhParams = req.params;
+    // Fetch differential pressure records
+    const differentialPressureElogs = await DifferentialPressureForm.findAll({
+      where:{
+        status: "Closed"
+      },
       include: [
         { model: DifferentialPressureRecord },
         // reviewer ko uske ander hi json me daaal diya 
@@ -31,6 +68,9 @@ exports.GetAllElogs = async (req, res) => {
 
     // Fetch temperature process records
     const tempratureProcessElogs = await TempratureProcessForm.findAll({
+      where:{
+        status: "Closed"
+      },
       include: [
         { model: TempratureProcessRecord },
         // { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
@@ -85,7 +125,6 @@ exports.getAllProcesses = async (req, res) => {
   }
 };
 
-
 exports.getAllDepartments = async (req, res) => {
   try {
     const { departmentName } = req.query;
@@ -119,7 +158,6 @@ exports.getAllDepartments = async (req, res) => {
   }
 };
 
-
 exports.getServerTime = async (req, res) => {
   try {
     const now = new Date();
@@ -145,7 +183,7 @@ exports.getServerTime = async (req, res) => {
       "August",
       "September",
       "October",
-      "November",
+      "November", 
       "December",
     ];
 
