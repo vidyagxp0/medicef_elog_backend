@@ -138,6 +138,53 @@ exports.GetAllElogs = async (req, res) => {
   }
 };
 
+exports.GetElogById = async (req, res) => {
+  try {
+    const { form_id, process_id } = req.params;
+
+    if (!form_id || !process_id) {
+      return res.status(400).json({
+        error: true,
+        message: "form_id and process_id are required",
+      });
+    }
+
+    const registry = formRegistry[process_id];
+    if (!registry) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const { form, record, approverAlias } = registry;
+
+    const elogData = await form.findAll({
+      where: {
+        form_id,
+        process_id,
+      },
+      include: [
+        { model: record },
+        { model: Process, attributes: ["process_id", "process"] },
+        { model: User, as: approverAlias, attributes: ["user_id", "name"] },
+      ],
+      order: [["form_id", "DESC"]],
+    });
+
+    return res.json({
+      error: false,
+      data: elogData,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+
 exports.GetAllEffectiveElogs = async (req, res) => {
   try {
     // Fetch all processes
@@ -190,7 +237,6 @@ exports.GetAllEffectiveElogs = async (req, res) => {
     });
   }
 };
-
 exports.GetEffectiveElogsById = async (req, res) => {
   try {
     const { form_id, process_id } = req.params;

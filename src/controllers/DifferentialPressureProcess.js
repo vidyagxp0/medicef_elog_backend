@@ -407,7 +407,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     let additionalAttachment = null;
     const supportingDocs = {};
 
-    req.files.forEach((file) => {
+    req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } 
