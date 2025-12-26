@@ -17,7 +17,7 @@ const initWorkflowTransitions = async () => {
       { from_state_id: 3, to_state_id: 5, action_key: "CANCEL" }
     ]);
 
-    console.log("Workflow transitions created (including CANCEL)");
+    console.log("Workflow transitions created");
   } catch (err) {
     console.error("Init workflow transitions error:", err);
   }

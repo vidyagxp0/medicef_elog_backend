@@ -203,7 +203,6 @@ exports.GetEffectiveElogsById = async (req, res) => {
     }
 
     const registry = formRegistry[process_id];
-
     if (!registry) {
       return res.status(400).json({
         error: true,
@@ -221,6 +220,7 @@ exports.GetEffectiveElogsById = async (req, res) => {
       },
       include: [
         { model: record },
+        { model: Process, attributes: ["process_id", "process"] },
         { model: User, as: approverAlias, attributes: ["user_id", "name"] },
       ],
       order: [["form_id", "DESC"]],
