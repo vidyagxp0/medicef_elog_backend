@@ -367,8 +367,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     additionalInfo,
   } = req.body;
 
-   const form_id = req.params;
-
+   const {form_id} = req.params;
   if (!form_id) {
     return res
       .status(400)
