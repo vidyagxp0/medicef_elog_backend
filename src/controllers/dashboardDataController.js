@@ -11,55 +11,6 @@ const Department = require("../models/departments");
 const { Op } = require("sequelize");
 const WorkflowState = require("../models/workflowState");
 
-// exports.GetAllElogs = async (req, res) => {
-//   try {
-//     //https://worldtimeapi.org/api/timezone/Asia/Kolkata
-//     //equipment
-//     //record number
-//     //department
-//     // area name
-//     //description
-//     // date of creation
-//     const seacrhParams = req.params;
-//     // Fetch differential pressure records
-//         const differentialPressureElogs = await DifferentialPressureForm.findAll({
-//           include: [
-//             {
-//               model: Process,
-//               attributes: ["process_id", "process"], // Process column ka correct naam
-//             },
-//             {
-//               model: User,
-//               as: "approver",
-//               attributes: ["user_id", "name"],
-//             },
-//           ],
-//           order: [["form_id", "DESC"]],
-//         });
-
-//     // Fetch temperature process records
-//     const tempratureProcessElogs = await TempratureProcessForm.findAll({
-//       // include:[{
-//       //   model:Process,
-//       //   attributes:["process_id" , "Process"]
-//       // }],
-//       order: [["form_id", "DESC"]],
-//     });
-
-//     // Return combined response
-//     res.json({
-//       error: false,
-//       differentialPressureElogs,
-//       tempratureProcessElogs,
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       error: true,
-//       message: error.message,
-//     });
-//   }
-// };
-
 // ----------------- Build dynamic filters -----------------
 const buildFilters = (query) => {
   const where = {};

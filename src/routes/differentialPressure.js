@@ -36,7 +36,7 @@ router.post(
 
 // edit differential pressure elog details
 router.put(
-  "/update",
+  "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(1, 1),

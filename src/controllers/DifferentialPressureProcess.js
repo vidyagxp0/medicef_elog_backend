@@ -348,7 +348,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
 // edit differential pressure elog details
 exports.EditDifferentialPressure = async (req, res) => {
   const {
-    form_id,
     department_id,
     description,
     departmentName,
@@ -367,6 +366,8 @@ exports.EditDifferentialPressure = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
+
+   const form_id = req.params;
 
   if (!form_id) {
     return res
