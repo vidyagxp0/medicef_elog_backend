@@ -185,7 +185,7 @@ exports.GetTransitions = async (req, res) => {
     }
 
     const declaration = req.body[`${activeRole}Declaration`] || "";
-    const comment = req.body[`${activeRole}Comment`] || "";
+    // const comment = req.body[`${activeRole}Comment`] || "";
 
     // --------------------------
     // Update form workflow state
@@ -195,7 +195,7 @@ exports.GetTransitions = async (req, res) => {
         workflow_state_id: nextState.id,
         stage: nextState.order_no,
         status: nextState.name,
-        [`${activeRole}Comment`]: comment,
+        // [`${activeRole}Comment`]: comment,
         // [`${activeRole}Declaration`]: declaration,
       },
       { transaction }
@@ -219,38 +219,38 @@ exports.GetTransitions = async (req, res) => {
       declaration: declaration,
     });
 
-    if (comment) {
-  auditTrailEntries.push({
-    form_id: form.form_id,
-    field_name: `${activeRole.toUpperCase()}_COMMENT`,
-    previous_value: form[`${activeRole}Comment`] || null,
-    new_value: comment,
-    changed_by: user.userId,
-    previous_status: form.workflow_state.name,
-    new_status: nextState.name,
-    action: action,
-    declaration: declaration,
-  });
-}
+//     if (comment) {
+//   auditTrailEntries.push({
+//     form_id: form.form_id,
+//     field_name: `${activeRole.toUpperCase()}_COMMENT`,
+//     previous_value: form[`${activeRole}Comment`] || null,
+//     new_value: comment,
+//     changed_by: user.userId,
+//     previous_status: form.workflow_state.name,
+//     new_status: nextState.name,
+//     action: action,
+//     declaration: declaration,
+//   });
+// }
 
 
     // Handle attachments dynamically
     const roleAttachmentField = `${activeRole}Attachment`;
     const attachment = files?.find((f) => f.fieldname === roleAttachmentField);
     if (attachment) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: roleAttachmentField,
-        previous_value: form[roleAttachmentField] || null,
-        new_value: getElogDocsUrl(attachment),
-        changed_by: user.userId,
-        previous_status: form.workflow_state.name,
-        new_status: nextState.name,
-        action: action,
-        declaration: declaration,
-      });
+    //   auditTrailEntries.push({
+    //     form_id: form.form_id,
+    //     field_name: roleAttachmentField,
+    //     previous_value: form[roleAttachmentField] || null,
+    //     new_value: getElogDocsUrl(attachment),
+    //     changed_by: user.userId,
+    //     previous_status: form.workflow_state.name,
+    //     new_status: nextState.name,
+    //     action: action,
+    //     declaration: declaration,
+    //   });
 
-      form[roleAttachmentField] = getElogDocsUrl(attachment);
+    //   form[roleAttachmentField] = getElogDocsUrl(attachment);
       await form.save({ transaction });
     }
 
@@ -270,6 +270,7 @@ exports.GetTransitions = async (req, res) => {
       is_final: nextState.is_final,
     });
   } catch (error) {
+    await transaction.rollback();
     console.error(error);
     return res.status(500).json({
       error: true,
