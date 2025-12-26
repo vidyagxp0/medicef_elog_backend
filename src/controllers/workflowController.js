@@ -2,6 +2,9 @@ const WorkflowState = require("../models/workflowState");
 const differential_pressure = require("../models/differentialPressureForm")
 const processFormRegistry = require("../utils/processFormRegistry");
 const workflow_transitions = require("../models/workflowTransition");
+const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const { getElogDocsUrl } = require("../middlewares/authentication");
+const { sequelize } = require("../config/db");
 
 exports.GetAllStages = async (req, res) => {
     try {
@@ -84,89 +87,193 @@ exports.GetTransitions = async (req, res) => {
 
 
  exports.updateWorkflowStage = async (req, res) => {
-    const { form_id, process_id, action } = req.body;
-      // action = FORWARD | BACKWARD | CANCEL
-     
-      console.log("req.body",req.body)
-    try {
-        if (!form_id || !process_id || !action) {
-            return res.status(400).json({
-                message: "form_id, process_id and action are required"
-            });
-        }
+  const { form_id, process_id, action } = req.body;
+  const user = req.user; // logged-in user
+  const files = req.files;
 
-        //  resolve model from registry
-        const FormModel = processFormRegistry[process_id];
-        if (!FormModel) {
-            return res.status(400).json({
-                message: "No form model mapped for this process_id"
-            });
-        }
-        console.log("FormModel",FormModel)
-
-        // fetch form (COMMON)
-        const form = await FormModel.findOne({
-            where: { form_id, process_id }
-        });
-
-        if (!form) {
-            return res.status(404).json({
-                message: "Form not found"
-            });
-        }
-
-        const currentStateId = form.workflow_state_id;
-
-        // validate transition
-        const transition = await workflow_transitions.findOne({
-            where: {
-                from_state_id: currentStateId,
-                action_key: action,
-                is_active: 1
-            }
-        });
-
-        if (!transition) {
-            return res.status(400).json({
-                message: `Action ${action} not allowed from current stage`
-            });
-        }
-
-        // CANCEL
-        if (action === "CANCEL") {
-            await form.update({
-                workflow_state_id: transition.to_state_id,
-                status: "CANCELLED"
-            });
-
-            return res.json({
-                success: true,
-                message: "Form cancelled successfully"
-            });
-        }
-
-        //  FORWARD / BACKWARD
-        await form.update({
-            workflow_state_id: transition.to_state_id
-        });
-
-        // state info
-        const nextState = await WorkflowState.findByPk(
-            transition.to_state_id
-        );
-
-        return res.json({
-            success: true,
-            message: `Form moved ${action}`,
-            current_state: nextState.code,
-            is_final: nextState.is_final
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            error: true,
-            message: error.message
-        });
+  try {
+    if (!form_id || !process_id || !action) {
+      return res.status(400).json({
+        message: "form_id, process_id, and action are required",
+      });
     }
-};
 
+    // Resolve form model dynamically
+    const FormModel = processFormRegistry[process_id];
+    if (!FormModel)
+      return res.status(400).json({ message: "No form model mapped" });
+
+    // Start transaction
+    const transaction = await sequelize.transaction();
+
+    // Fetch form with current workflow state
+    const form = await FormModel.findOne({
+      where: { form_id, process_id },
+      include: [{ model: WorkflowState, as: "workflow_state" }],
+      transaction,
+    });
+
+    if (!form) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Form not found" });
+    }
+
+    const currentStateId = form.workflow_state_id;
+
+    // Find allowed transition dynamically
+    const transition = await workflow_transitions.findOne({
+      where: {
+        from_state_id: currentStateId,
+        action_key: action,
+        is_active: 1,
+      },
+    });
+
+    if (!transition) {
+      await transaction.rollback();
+      return res.status(400).json({
+        message: `Action ${action} not allowed from current stage`,
+      });
+    }
+
+    const nextState = await WorkflowState.findByPk(transition.to_state_id);
+
+    if (!nextState) {
+      await transaction.rollback();
+      return res.status(500).json({ message: "Next stage not found" });
+    }
+
+    // --------------------------
+    // Role-based permission check
+    // --------------------------
+
+    const currentState = form.workflow_state.name; 
+    let activeRole = null;
+    if (user.userId === form.initiator_id) {
+    activeRole = "initiator";
+    } else if (
+    Array.isArray(form.reviewer_id) &&
+    form.reviewer_id.includes(user.userId)
+    ) {
+    activeRole = "reviewer";
+    } else if (user.userId === form.approver_id) {
+    activeRole = "approver";
+    }
+
+    if (!activeRole) {
+    await transaction.rollback();
+    return res.status(403).json({
+        error: true,
+        message: "Invalid signature / unauthorized to perform this action",
+    });
+    }
+
+    const stageRoleMap = {
+    "Opened": "initiator",
+    "Under Review": "reviewer",
+    "Under Approval": "approver",
+    };
+
+    const expectedRole = stageRoleMap[currentState];
+
+    if (expectedRole !== activeRole) {
+    await transaction.rollback();
+    return res.status(403).json({
+        error: true,
+        message: `Action not allowed. Only ${expectedRole} can act at ${currentState} stage.`,
+    });
+    }
+
+    const declaration = req.body[`${activeRole}Declaration`] || "";
+    const comment = req.body[`${activeRole}Comment`] || "";
+
+    // --------------------------
+    // Update form workflow state
+    // --------------------------
+    await form.update(
+      {
+        workflow_state_id: nextState.id,
+        stage: nextState.order_no,
+        status: nextState.name,
+        [`${activeRole}Comment`]: comment,
+        // [`${activeRole}Declaration`]: declaration,
+      },
+      { transaction }
+    );
+
+    // --------------------------
+    // Prepare audit trail
+    // --------------------------
+    const auditTrailEntries = [];
+
+    // Stage change entry
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: "STAGE_CHANGE",
+      previous_value: form.workflow_state.name,
+      new_value: nextState.name,
+      changed_by: user.userId,
+      previous_status: form.workflow_state.name,
+      new_status: nextState.name,
+      action: action,
+      declaration: declaration,
+    });
+
+    if (comment) {
+  auditTrailEntries.push({
+    form_id: form.form_id,
+    field_name: `${activeRole.toUpperCase()}_COMMENT`,
+    previous_value: form[`${activeRole}Comment`] || null,
+    new_value: comment,
+    changed_by: user.userId,
+    previous_status: form.workflow_state.name,
+    new_status: nextState.name,
+    action: action,
+    declaration: declaration,
+  });
+}
+
+
+    // Handle attachments dynamically
+    const roleAttachmentField = `${activeRole}Attachment`;
+    const attachment = files?.find((f) => f.fieldname === roleAttachmentField);
+    if (attachment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: roleAttachmentField,
+        previous_value: form[roleAttachmentField] || null,
+        new_value: getElogDocsUrl(attachment),
+        changed_by: user.userId,
+        previous_status: form.workflow_state.name,
+        new_status: nextState.name,
+        action: action,
+        declaration: declaration,
+      });
+
+      form[roleAttachmentField] = getElogDocsUrl(attachment);
+      await form.save({ transaction });
+    }
+
+    // --------------------------
+    // Bulk insert audit trail entries
+    // --------------------------
+    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
+
+    await transaction.commit();
+
+    return res.json({
+      success: true,
+      message: `Form ${action} successfully`,
+      current_state: nextState.name,
+      is_final: nextState.is_final,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+}
