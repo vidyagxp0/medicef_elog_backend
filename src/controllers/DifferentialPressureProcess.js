@@ -111,16 +111,17 @@ exports.InsertDifferentialPressure = async (req, res) => {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("FormRecordsArray[")) {
-        // Extract the index from the fieldname
-        const match = file.fieldname.match(
-          /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
-        );
-        if (match) {
-          const index = match[1];
-          supportingDocs[index] = file;
-        }
       }
+      //  else if (file.fieldname.startsWith("FormRecordsArray[")) {
+      //   // Extract the index from the fieldname
+      //   const match = file.fieldname.match(
+      //     /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
+      //   );
+      //   if (match) {
+      //     const index = match[1];
+      //     supportingDocs[index] = file;
+      //   }
+      // }
     });
 
     // Create new Differential Pressure Form
@@ -410,9 +411,9 @@ exports.EditDifferentialPressure = async (req, res) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } 
-      // else if (file.fieldname === "additionalAttachment") {
-      //   additionalAttachment = file;
-      // }
+      else if (file.fieldname === "additionalAttachment") {
+        additionalAttachment = file;
+      }
        else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
         const match = file.fieldname.match(
           /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
@@ -447,6 +448,11 @@ exports.EditDifferentialPressure = async (req, res) => {
       departmentName,
       compression_area,
       limit,
+      initiatorComment,
+      area_name,
+      acceptance_criteria,
+      instrument_id_no,
+      differential_pressure,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -487,6 +493,10 @@ exports.EditDifferentialPressure = async (req, res) => {
         departmentName,
         compression_area,
         limit,
+        area_name,
+        acceptance_criteria,
+        instrument_id_no,
+        differential_pressure,
         reviewer_id,
         approver_id,
       initiatorAttachment: initiatorAttachment
@@ -533,27 +543,27 @@ exports.EditDifferentialPressure = async (req, res) => {
               getElogDocsUrl(supportingDocs[index]),
           };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
-            if (
-              newValue !== undefined &&
-              ((typeof newValue === "number" &&
-                !areFloatsEqual(oldValue, newValue)) ||
-                oldValue != newValue)
-            ) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${index}]`,
-                previous_value: oldValue || null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
+          // for (const [field, newValue] of Object.entries(recordFields)) {
+          //   const oldValue = existingRecord[field];
+          //   if (
+          //     newValue !== undefined &&
+          //     ((typeof newValue === "number" &&
+          //       !areFloatsEqual(oldValue, newValue)) ||
+          //       oldValue != newValue)
+          //   ) {
+          //     auditTrailEntries.push({
+          //       form_id: form.form_id,
+          //       field_name: `${field}[${index}]`,
+          //       previous_value: oldValue || null,
+          //       new_value: newValue,
+          //       changed_by: user.user_id,
+          //       previous_status: form.status,
+          //       new_status: "Opened",
+          //       declaration: initiatorDeclaration,
+          //       action: "Update Elog",
+          //     });
+          //   }
+          // }
         }
       });
 
@@ -580,21 +590,21 @@ exports.EditDifferentialPressure = async (req, res) => {
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            if (newValue !== undefined) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${i}]`,
-                previous_value: null,
-                new_value: newValue || "",
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                declaration: initiatorDeclaration,
-                action: "Update Elog",
-              });
-            }
-          }
+          // for (const [field, newValue] of Object.entries(recordFields)) {
+          //   if (newValue !== undefined) {
+          //     auditTrailEntries.push({
+          //       form_id: form.form_id,
+          //       field_name: `${field}[${i}]`,
+          //       previous_value: null,
+          //       new_value: newValue || "",
+          //       changed_by: user.user_id,
+          //       previous_status: form.status,
+          //       new_status: "Opened",
+          //       declaration: initiatorDeclaration,
+          //       action: "Update Elog",
+          //     });
+          //   }
+          // }
         }
       }
 
@@ -621,7 +631,7 @@ exports.EditDifferentialPressure = async (req, res) => {
           ? record?.supporting_docs
           : getElogDocsUrl(supportingDocs[index]),
       }));
-
+   
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
     }
 

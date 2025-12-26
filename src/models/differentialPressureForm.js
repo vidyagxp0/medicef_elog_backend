@@ -3,6 +3,7 @@ const { DataTypes, Sequelize } = require("sequelize");
 const Department = require("./departments");
 const User = require("./users");
 const Process = require("./processes");
+const WorkflowState = require("./workflowState");
 
 const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   form_id: {
@@ -122,6 +123,16 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   differential_pressure: {
     type: DataTypes.STRING,
   },
+workflow_state_id: {
+  type: DataTypes.INTEGER,
+  defaultValue: 1,
+  references: {
+    model: WorkflowState,
+    key: "id"
+  }
+}
+
+
 
 });
 
@@ -151,5 +162,15 @@ User.hasMany(DifferentialPressureForm, {
   foreignKey: "approver_id",
   as: "approver",
 });
+
+DifferentialPressureForm.belongsTo(WorkflowState, {
+  foreignKey: "workflow_state_id",
+  as: "workflow_state"
+});
+
+WorkflowState.hasMany(DifferentialPressureForm, {
+  foreignKey: "workflow_state_id"
+});
+
 
 module.exports = DifferentialPressureForm;

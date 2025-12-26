@@ -424,8 +424,6 @@ exports.Userlogin = async (req, res) => {
   }
 };
 
-
-
 exports.Adminlogin = async (req, res) => {
   const { email, password } = req.body;
   if (email.toLowerCase() !== "admin@vidyagxp.com") {

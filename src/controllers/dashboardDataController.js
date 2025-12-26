@@ -3,52 +3,134 @@ const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const TempratureProcessRecord = require("../models/tempratureProcessRecords");
 const TempratureProcessForm = require("../models/tempratureProcessForm");
+const processFormRegistry = require("../utils/processFormRegistry");
+const formRegistry = require("../utils/formModelRegistry");
+
 const Process = require("../models/processes");
 const Department = require("../models/departments");
 const { Op } = require("sequelize");
+const WorkflowState = require("../models/workflowState");
+
+// exports.GetAllElogs = async (req, res) => {
+//   try {
+//     //https://worldtimeapi.org/api/timezone/Asia/Kolkata
+//     //equipment
+//     //record number
+//     //department
+//     // area name
+//     //description
+//     // date of creation
+//     const seacrhParams = req.params;
+//     // Fetch differential pressure records
+//         const differentialPressureElogs = await DifferentialPressureForm.findAll({
+//           include: [
+//             {
+//               model: Process,
+//               attributes: ["process_id", "process"], // Process column ka correct naam
+//             },
+//             {
+//               model: User,
+//               as: "approver",
+//               attributes: ["user_id", "name"],
+//             },
+//           ],
+//           order: [["form_id", "DESC"]],
+//         });
+
+//     // Fetch temperature process records
+//     const tempratureProcessElogs = await TempratureProcessForm.findAll({
+//       // include:[{
+//       //   model:Process,
+//       //   attributes:["process_id" , "Process"]
+//       // }],
+//       order: [["form_id", "DESC"]],
+//     });
+
+//     // Return combined response
+//     res.json({
+//       error: false,
+//       differentialPressureElogs,
+//       tempratureProcessElogs,
+//     });
+//   } catch (error) {
+//     res.status(400).json({
+//       error: true,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// ----------------- Build dynamic filters -----------------
+const buildFilters = (query) => {
+  const where = {};
+
+  if (query.department_id) {
+    where.department_id = query.department_id;
+  }
+
+  if (query.status) {
+    where.status = query.status;
+  }
+
+  if (query.from && query.to) {
+    where.createdAt = {
+      [Op.between]: [query.from, query.to],
+    };
+  }
+
+  if (query.search) {
+    where[Op.or] = [
+      { equipment_name: { [Op.like]: `%${query.search}%` } },
+      { description: { [Op.like]: `%${query.search}%` } },
+    ];
+  }
+
+  return where;
+};
 
 exports.GetAllElogs = async (req, res) => {
   try {
-    //https://worldtimeapi.org/api/timezone/Asia/Kolkata
-    //equipment
-    //record number
-    //department
-    // area name
-    //description
-    // date of creation
-    const seacrhParams = req.params;
-    // Fetch differential pressure records
-        const differentialPressureElogs = await DifferentialPressureForm.findAll({
-          include: [
-            {
-              model: Process,
-              attributes: ["process_id", "process"], // Process column ka correct naam
-            },
-            {
-              model: User,
-              as: "approver",
-              attributes: ["user_id", "name"],
-            },
-          ],
-          order: [["form_id", "DESC"]],
-        });
+    // Fetch all processes
+    const processes = await Process.findAll();
+    let response = [];
 
-    // Fetch temperature process records
-    const tempratureProcessElogs = await TempratureProcessForm.findAll({
-      // include:[{
-      //   model:Process,
-      //   attributes:["process_id" , "Process"]
-      // }],
-      order: [["form_id", "DESC"]],
-    });
+    for (const process of processes) {
+      const FormModel = processFormRegistry[process.process_id];
+      if (!FormModel) continue; // Agar model registry me na ho toh skip
 
-    // Return combined response
+      // Apply filters
+      const filters = buildFilters(req.query);
+
+      const records = await FormModel.findAll({
+        // where: filters,
+        include: [
+          {
+            model: WorkflowState,
+            as: "workflow_state"
+          },
+          {
+            model: User,
+            as: "approver",
+            attributes: ["user_id", "name"],
+            required: false,
+          },
+        ],
+        order: [["form_id", "DESC"]],
+      });
+
+      response.push({
+        process_id: process.process_id,
+        process_name: process.process,
+        data: records,
+      });
+    }
+
     res.json({
       error: false,
-      differentialPressureElogs,
-      tempratureProcessElogs,
+      data: response,
     });
   } catch (error) {
+    console.error(error);
     res.status(400).json({
       error: true,
       message: error.message,
@@ -58,55 +140,60 @@ exports.GetAllElogs = async (req, res) => {
 
 exports.GetAllEffectiveElogs = async (req, res) => {
   try {
-    //https://worldtimeapi.org/api/timezone/Asia/Kolkata
-    //equipment
-    //record numbber
-    //department
-    // area name
-    //description
-    //created by 
-    // date of creation
-    const seacrhParams = req.params;
-    // Fetch differential pressure records
-    const differentialPressureElogs = await DifferentialPressureForm.findAll({
-      where:{
-        status: "Closed"
-      },
-      order: [["form_id", "DESC"]],
-    });
+    // Fetch all processes
+    const processes = await Process.findAll();
+    let response = [];
 
-    // Fetch temperature process records
-    const tempratureProcessElogs = await TempratureProcessForm.findAll({
-      where:{
-        status: "Closed"
-      },
-      order: [["form_id", "DESC"]],
-    });
+    for (const process of processes) {
+      const FormModel = processFormRegistry[process.process_id];
+      if (!FormModel) continue; // Agar model registry me na ho toh skip
 
-    // Return combined response
+      // Apply filters
+      const filters = buildFilters(req.query);
+
+      const records = await FormModel.findAll({
+        // where: filters,
+        where:{
+          workflow_state_id:"4"
+        },
+        include: [
+          {
+            model: WorkflowState,
+            as: "workflow_state"
+          },
+          {
+            model: User,
+            as: "approver",
+            attributes: ["user_id", "name"],
+            required: false,
+          },
+        ],
+        order: [["form_id", "DESC"]],
+      });
+
+      response.push({
+        process_id: process.process_id,
+        process_name: process.process,
+        data: records,
+      });
+    }
+
     res.json({
       error: false,
-      differentialPressureElogs,
-      tempratureProcessElogs,
+      data: response,
     });
   } catch (error) {
+    console.error(error);
     res.status(400).json({
       error: true,
       message: error.message,
     });
   }
 };
+
 exports.GetEffectiveElogsById = async (req, res) => {
   try {
-    //https://worldtimeapi.org/api/timezone/Asia/Kolkata
-    //equipment
-    //record numbber
-    //department
-    // area name
-    //description
-    //created by 
-    // date of creation
-    const {form_id,process_id} = req.params;
+    const { form_id, process_id } = req.params;
 
     if (!form_id || !process_id) {
       return res.status(400).json({
@@ -115,45 +202,37 @@ exports.GetEffectiveElogsById = async (req, res) => {
       });
     }
 
-    // Fetch differential pressure records
-    const differentialPressureElogs = await DifferentialPressureForm.findAll({
-      where:{
-        form_id:form_id,
-        status: "Closed",
-        process_id:process_id
+    const registry = formRegistry[process_id];
+
+    if (!registry) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const { form, record, approverAlias } = registry;
+
+    const elogData = await form.findAll({
+      where: {
+        form_id,
+        process_id,
+        workflow_state_id: "4",
       },
       include: [
-        { model: DifferentialPressureRecord },
-        // reviewer ko uske ander hi json me daaal diya 
-        // { model: User, as: "reviewer", attributes: ["user_id", "name"] },
-        { model: User, as: "approver", attributes: ["user_id", "name"] },
+        { model: record },
+        { model: User, as: approverAlias, attributes: ["user_id", "name"] },
       ],
       order: [["form_id", "DESC"]],
     });
 
-    // Fetch temperature process records
-    const tempratureProcessElogs = await TempratureProcessForm.findAll({
-      where:{
-        form_id:form_id,
-        status: "Closed",
-        process_id:process_id
-      },
-      include: [
-        { model: TempratureProcessRecord },
-        // { model: User, as: "tpreviewer", attributes: ["user_id", "name"] },
-        { model: User, as: "tpapprover", attributes: ["user_id", "name"] },
-      ],
-      order: [["form_id", "DESC"]],
-    });
-
-    // Return combined response
-    res.json({
+    return res.json({
       error: false,
-      differentialPressureElogs,
-      tempratureProcessElogs,
+      data: elogData,
     });
+
   } catch (error) {
-    res.status(400).json({
+    return res.status(500).json({
       error: true,
       message: error.message,
     });

@@ -1,5 +1,6 @@
+// src/config/db.js
 const { Sequelize } = require("sequelize");
-const config = require("../config/config.json");
+const config = require("./config.json");
 
 const sequelize = new Sequelize(
   config.development.dbName,
@@ -8,7 +9,7 @@ const sequelize = new Sequelize(
   {
     dialect: config.development.dialect,
     host: config.development.host,
-    logging: false,
+    logging: false
   }
 );
 
@@ -20,14 +21,5 @@ const connectToDB = async () => {
     console.log(e);
   }
 };
-
-sequelize
-  .sync({ alter: false })
-  .then(() => {
-    console.log("Tables synchronized");
-  })
-  .catch((error) => {
-    console.error("Error synchronizing tables:", error);
-  });
 
 module.exports = { sequelize, connectToDB };
