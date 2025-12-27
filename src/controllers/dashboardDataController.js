@@ -31,7 +31,7 @@ const buildFilters = (query) => {
   // }
 
   if (query.from && query.to) {
-    where.createdAt = {
+    where.date_of_initiation = {
       [Op.between]: [
         new Date(query.from + "T00:00:00"),
         new Date(query.to + "T23:59:59")
