@@ -22,11 +22,13 @@ const getUserById = async (user_id) => {
 exports.InsertTempratureRecord = async (req, res) => {
   const {
     department_id,
+    process_id,
     description,
-    department,
+    departmentName,
     compression_area,
     limit,
     reviewer_id,
+    reviewerData,
     approver_id,
     initiatorComment,
     email,
@@ -36,9 +38,9 @@ exports.InsertTempratureRecord = async (req, res) => {
     additionalAttachment,
     area_name,
     room_id,
-    instrument_id,
+    instrument_id_no,
     acceptance_temperature,
-      relative_humidity_criteria,
+    relative_humidity_criteria,
     additionalInfo,
   } = req.body;
   if (!approver_id) {
@@ -51,7 +53,11 @@ exports.InsertTempratureRecord = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
   }
-
+  if (!reviewerData) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a reviewer data." });
+  }
   if (!email || !password) {
     return res
       .status(400)
@@ -88,7 +94,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     const supportingDocs = {};
     
     // Process files
-    req.files.forEach((file) => {
+    req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
@@ -109,14 +115,15 @@ exports.InsertTempratureRecord = async (req, res) => {
     const newForm = await TempratureProcessForm.create(
       {
         department_id: department_id,
+        process_id: process_id,
         initiator_id: user.user_id,
         initiator_name: user.name,
         description: description,
         status: "Opened",
         stage: 1,
-        department: department,
+        departmentName: departmentName,
         compression_area: compression_area,
-        limit: limit,
+        reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
@@ -124,7 +131,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
         area_name:area_name,
-        instrument_id:instrument_id,
+        instrument_id_no:instrument_id_no,
         room_id:room_id,
         acceptance_temperature: acceptance_temperature,
         relative_humidity_criteria: relative_humidity_criteria  
@@ -136,11 +143,11 @@ exports.InsertTempratureRecord = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
+      departmentName,
       compression_area,
       area_name,
       room_id,
-      instrument_id,
+      instrument_id_no,
       acceptance_temperature,
       relative_humidity_criteria,
       limit,
@@ -204,7 +211,7 @@ exports.InsertTempratureRecord = async (req, res) => {
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
         area_name:area_name,
-        instrument_id:instrument_id,
+        instrument_id_no:instrument_id_no,
         room_id:room_id,
         // acceptance_temperature: acceptance_temperature,
         // relative_humidity_criteria: relative_humidity_criteria,
@@ -344,7 +351,7 @@ exports.EditTempratureRecord = async (req, res) => {
     form_id,
     department_id,
     description,
-    department,
+    departmentName,
     compression_area,
     limit,
     reviewer_id,
@@ -435,7 +442,7 @@ exports.EditTempratureRecord = async (req, res) => {
     const auditTrailEntries = [];
     const fields = {
       description,
-      department,
+      departmentName,
       compression_area,
       limit,
       initiatorComment,

@@ -44,6 +44,22 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
+  reviewer_id: {
+    type: DataTypes.JSON,
+    allowNull: false,
+  },
+  reviewerData: {
+    type: DataTypes.JSON,
+    allowNull: false,
+  },
+  approver_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: "user_id",
+    },
+  },
   date_of_review: {
     type: DataTypes.DATE,
   },
@@ -67,24 +83,20 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   compression_area: {
     type: DataTypes.STRING,
   },
-  limit: {
-    type: DataTypes.FLOAT,
+   area_name:{
+    type:DataTypes.STRING,
   },
-  reviewer_id: {
-    type: DataTypes.JSON,
-    allowNull: false,
+   room_id:{
+    type:DataTypes.STRING,
   },
-  reviewerData: {
-    type: DataTypes.JSON,
-    allowNull: false,
+   instrument_id:{
+    type:DataTypes.STRING,
   },
-  approver_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
+   acceptance_temperature:{
+    type:DataTypes.STRING,
+  },
+    relative_humidity_criteria:{
+       type:DataTypes.STRING,
   },
   reviewComment: {
     type: DataTypes.STRING,
@@ -110,21 +122,6 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   },
   additionalInfo: {
     type: DataTypes.STRING,
-  },
-   area_name:{
-    type:DataTypes.STRING,
-  },
-   room_id:{
-    type:DataTypes.STRING,
-  },
-   instrument_id:{
-    type:DataTypes.STRING,
-  },
-   acceptance_temperature:{
-    type:DataTypes.STRING,
-  },
-    relative_humidity_criteria:{
-       type:DataTypes.STRING,
   },
   workflow_state_id: {
   type: DataTypes.INTEGER,
@@ -156,11 +153,11 @@ User.hasMany(TempratureProcessForm, { foreignKey: "initiator_id" });
 
 TempratureProcessForm.belongsTo(User, {
   foreignKey: "approver_id",
-  as: "tpapprover",
+  as: "approver",
 });
 User.hasMany(TempratureProcessForm, {
   foreignKey: "approver_id",
-  as: "tpapprover",
+  as: "temperatureApprovals",
 });
 
 TempratureProcessForm.belongsTo(WorkflowState, {

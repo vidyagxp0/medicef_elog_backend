@@ -15,12 +15,16 @@ const WorkflowState = require("../models/workflowState");
 const buildFilters = (query) => {
   const where = {};
 
-  if (query.department_id) {
-    where.department_id = query.department_id;
+  if (query.area_name ) {
+    where.area_name = query.area_name;
   }
 
   if (query.status) {
     where.status = query.status;
+  }
+
+  if (query.departmentName) {
+    where.departmentName = query.departmentName;
   }
 
   if (query.from && query.to) {

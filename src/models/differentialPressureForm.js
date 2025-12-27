@@ -157,7 +157,7 @@ DifferentialPressureForm.belongsTo(User, {
 });
 User.hasMany(DifferentialPressureForm, {
   foreignKey: "approver_id",
-  as: "approver",
+  as: "dpApprovals",
 });
 
 DifferentialPressureForm.belongsTo(WorkflowState, {

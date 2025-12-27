@@ -27,7 +27,7 @@ const upload = multer({ storage: storage });
 
 // post differential pressure elog
 router.post(
-  "/post-temprature-record",
+  "/create",
   Auth.checkUserJwtToken,
   upload.any(),
   Auth.authorizeUserRole(2, 1),
@@ -36,7 +36,7 @@ router.post(
 
 // edit differential pressure elog details
 router.put(
-  "/update-temprature-record",
+  "/update",
   Auth.checkUserJwtToken,
   upload.any(),
   // Auth.authorizeUserRole(2, 1),
