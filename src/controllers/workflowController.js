@@ -5,6 +5,8 @@ const workflow_transitions = require("../models/workflowTransition");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const { sequelize } = require("../config/db");
+const formModelRegistry = require("../utils/formModelRegistry");
+const WorkflowTransition = require("../models/workflowTransition");
 
 exports.GetAllStages = async (req, res) => {
     try {
@@ -24,70 +26,124 @@ exports.GetAllStages = async (req, res) => {
     }
 };
 exports.GetCurrentStage = async (req, res) => {
-    try {
-        const {form_id} = req.params;
+  try {
+    const { form_id, process_id } = req.params;
 
-        if (!form_id) {
-            return res.status(401).json({
-                message: "form_id not found "
-            })
-        }
-
-        const form = await differential_pressure.findByPk(form_id);
-
-        const current_stage = form.workflow_state_id
-        if (!current_stage) {
-            return res.status(401).json({
-                message: "workflow_state_id not found "
-            })
-        }
-        // Return combined response
-        res.json({
-            error: false,
-            current_stage,
-        });
-    } catch (error) {
-        res.status(400).json({
-            error: true,
-            message: error.message,
-        });
+    if (!form_id || !process_id) {
+      return res.status(400).json({
+        error: true,
+        message: "form_id and process_id are required",
+      });
     }
+
+    const FormModel = processFormRegistry[process_id];
+    if (!FormModel) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const form = await FormModel.findByPk(form_id);
+
+    if (!form) {
+      return res.status(404).json({
+        error: true,
+        message: "Form not found",
+      });
+    }
+
+    const current_stage = form.workflow_state_id;
+
+    if (!current_stage) {
+      return res.status(404).json({
+        error: true,
+        message: "workflow_state_id not found",
+      });
+    }
+
+    res.json({
+      error: false,
+      process_id,
+      form_id,
+      current_stage,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
 };
 exports.GetTransitions = async (req, res) => {
-    try {
-        const { form_id } = req.params;
+  try {
+    const { form_id, process_id } = req.params;
 
-        if (!form_id) {
-            return res.status(401).json({
-                message: "form_id not found "
-            })
-        }
-        
-        const form = await differential_pressure.findByPk(form_id, {
-        });
-
-        const state = await WorkflowState.findByPk(form.workflow_state_id);
-        if (state.is_final) return res.json([]);
-
-        const transitions = await workflow_transitions.findAll({
-            where: { from_state_id: form.workflow_state_id, is_active: true }
-        });
-        // Return combined response
-        res.json({
-            error: false,
-            transitions,
-        });
-    } catch (error) {
-        res.status(400).json({
-            error: true,
-            message: error.message,
-        });
+    if (!form_id || !process_id) {
+      return res.status(400).json({
+        error: true,
+        message: "form_id and process_id are required",
+      });
     }
+
+    const FormModel = processFormRegistry[process_id];
+    if (!FormModel) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const form = await FormModel.findByPk(form_id);
+
+    if (!form) {
+      return res.status(404).json({
+        error: true,
+        message: "Form not found",
+      });
+    }
+
+    const state = form.workflow_state_id;
+
+    if (!state) {
+      return res.status(404).json({
+        error: true,
+        message: "Workflow state not found",
+      });
+    }
+
+    if (state.is_final) {
+      return res.json({
+        error: false,
+        transitions: [],
+      });
+    }
+
+    const transitions = await WorkflowTransition.findAll({
+      where: {
+        from_state_id:state,
+        is_active: true,
+      }
+    });
+
+    res.json({
+      error: false,
+      current_stage: form.workflow_state_id,
+      transitions,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
 };
 
-
  exports.updateWorkflowStage = async (req, res) => {
-  const { form_id, process_id, action } = req.body;
+  const { form_id, process_id } = req.params;
+  const { action } = req.body;
   const user = req.user; // logged-in user
   const files = req.files;
 
