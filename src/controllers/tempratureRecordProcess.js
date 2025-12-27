@@ -159,7 +159,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
       }
@@ -174,7 +173,6 @@ exports.InsertTempratureRecord = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
-        declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
@@ -187,7 +185,6 @@ exports.InsertTempratureRecord = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
-        declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
@@ -227,7 +224,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -238,7 +234,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -249,7 +244,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -260,7 +254,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -271,7 +264,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -282,7 +274,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -293,7 +284,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -304,7 +294,6 @@ exports.InsertTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         if (supportingDocs[index]) {
@@ -316,7 +305,6 @@ exports.InsertTempratureRecord = async (req, res) => {
             changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
-            declaration: initiatorDeclaration,
             action: "Opened",
           });
         }
@@ -476,7 +464,6 @@ exports.EditTempratureRecord = async (req, res) => {
           changed_by: user.user_id,
           previous_status: form.status,
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Update Elog",
         });
       }
@@ -552,7 +539,6 @@ exports.EditTempratureRecord = async (req, res) => {
                 changed_by: user.user_id,
                 previous_status: form.status,
                 new_status: "Opened",
-                declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
             }
@@ -593,7 +579,6 @@ exports.EditTempratureRecord = async (req, res) => {
                 changed_by: user.user_id,
                 previous_status: form.status,
                 new_status: "Opened",
-                declaration: initiatorDeclaration,
                 action: "Update Elog",
               });
             }
@@ -805,7 +790,6 @@ exports.SendTRElogForReview = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
-        declaration: initiatorDeclaration,
         action: "Send For Review",
       });
     }
@@ -818,7 +802,6 @@ exports.SendTRElogForReview = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
-        declaration: initiatorDeclaration,
         action: "Send For Review",
       });
     }
@@ -831,7 +814,6 @@ exports.SendTRElogForReview = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Opened",
       new_status: "Under Review",
-      declaration: initiatorDeclaration,
       action: "Send For Review",
     });
 
@@ -944,7 +926,6 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Opened",
-        declaration: reviewerDeclaration,
         action: "Open Elog",
       });
     }
@@ -957,7 +938,6 @@ exports.SendTRElogfromReviewToOpen = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Review",
       new_status: "Opened",
-      declaration: reviewerDeclaration,
       action: "Open Elog",
     });
 
@@ -1090,7 +1070,6 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Under Approval",
-        declaration: reviewerDeclaration,
         action: "Send For Approval",
       });
     }
@@ -1105,7 +1084,6 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Under Approval",
-        declaration: reviewerDeclaration,
         action: "Send For Approval",
       });
     }
@@ -1118,7 +1096,6 @@ exports.SendTRfromReviewToApproval = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Review",
       new_status: "Under Approval",
-      declaration: reviewerDeclaration,
       action: "Send For Approval",
     });
 
@@ -1251,7 +1228,6 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Under Review",
-        declaration: approverDeclaration,
         action: "Open Elog",
       });
     }
@@ -1264,7 +1240,6 @@ exports.SendTRfromApprovalToOpen = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Approval",
       new_status: "Under Review",
-      declaration: approverDeclaration,
       action: "Open Elog",
     });
 
@@ -1398,7 +1373,6 @@ exports.ApproveTRElog = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Closed",
-        declaration: approverDeclaration,
         action: "Closed",
       });
     }
@@ -1413,7 +1387,6 @@ exports.ApproveTRElog = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Closed",
-        declaration: approverDeclaration,
         action: "Closed",
       });
     }
@@ -1426,7 +1399,6 @@ exports.ApproveTRElog = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Approval",
       new_status: "Closed",
-      declaration: approverDeclaration,
       action: "Closed",
     });
 
