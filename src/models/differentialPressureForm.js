@@ -131,9 +131,6 @@ workflow_state_id: {
     key: "id"
   }
 }
-
-
-
 });
 
 DifferentialPressureForm.belongsTo(Department, { foreignKey: "department_id" });

@@ -181,7 +181,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
       }
@@ -196,7 +195,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
-        declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
@@ -210,7 +208,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
-        declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
@@ -246,7 +243,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -257,7 +253,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -268,7 +263,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -279,7 +273,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -290,7 +283,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         auditTrailEntries.push({
@@ -301,7 +293,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Opened",
         });
         if (supportingDocs[index]) {
@@ -313,7 +304,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
             changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
-            declaration: initiatorDeclaration,
             action: "Opened",
           });
         }
@@ -479,7 +469,6 @@ exports.EditDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: form.status,
           new_status: "Opened",
-          declaration: initiatorDeclaration,
           action: "Update Elog",
         });
       }
@@ -559,7 +548,6 @@ exports.EditDifferentialPressure = async (req, res) => {
           //       changed_by: user.user_id,
           //       previous_status: form.status,
           //       new_status: "Opened",
-          //       declaration: initiatorDeclaration,
           //       action: "Update Elog",
           //     });
           //   }
@@ -600,7 +588,6 @@ exports.EditDifferentialPressure = async (req, res) => {
           //       changed_by: user.user_id,
           //       previous_status: form.status,
           //       new_status: "Opened",
-          //       declaration: initiatorDeclaration,
           //       action: "Update Elog",
           //     });
           //   }
@@ -798,7 +785,6 @@ exports.SendDPElogForReview = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
-        declaration: initiatorDeclaration,
         action: "Send For Review",
       });
     }
@@ -812,7 +798,6 @@ exports.SendDPElogForReview = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Opened",
         new_status: "Under Review",
-        declaration: initiatorDeclaration,
         action: "Send For Review",
       });
     }
@@ -825,7 +810,6 @@ exports.SendDPElogForReview = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Opened",
       new_status: "Under Review",
-      declaration: initiatorDeclaration,
       action: "Send For Review",
     });
 
@@ -937,7 +921,6 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Opened",
-        declaration: reviewerDeclaration,
         action: "Open Elog",
       });
     }
@@ -950,7 +933,6 @@ exports.SendDPElogfromReviewToOpen = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Review",
       new_status: "Opened",
-      declaration: reviewerDeclaration,
       action: "Open Elog",
     });
 
@@ -1083,7 +1065,6 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Under Approval",
-        declaration: reviewerDeclaration,
         action: "Send For Approval",
       });
     }
@@ -1098,7 +1079,6 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Review",
         new_status: "Under Approval",
-        declaration: reviewerDeclaration,
         action: "Send For Approval",
       });
     }
@@ -1111,7 +1091,6 @@ exports.SendDPfromReviewToApproval = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Review",
       new_status: "Under Approval",
-      declaration: reviewerDeclaration,
       action: "Send For Approval",
     });
 
@@ -1245,7 +1224,6 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Under Review",
-        declaration: approverDeclaration,
         action: "Open Elog",
       });
     }
@@ -1258,7 +1236,6 @@ exports.SendDPfromApprovalToOpen = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Approval",
       new_status: "Under Review",
-      declaration: approverDeclaration,
       action: "Open Elog",
     });
 
@@ -1392,7 +1369,6 @@ exports.ApproveDPElog = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Closed",
-        declaration: approverDeclaration,
         action: "Closed",
       });
     }
@@ -1407,7 +1383,6 @@ exports.ApproveDPElog = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Under Approval",
         new_status: "Closed",
-        declaration: approverDeclaration,
         action: "Closed",
       });
     }
@@ -1420,7 +1395,6 @@ exports.ApproveDPElog = async (req, res) => {
       changed_by: user.user_id,
       previous_status: "Under Approval",
       new_status: "Closed",
-      declaration: approverDeclaration,
       action: "Closed",
     });
 

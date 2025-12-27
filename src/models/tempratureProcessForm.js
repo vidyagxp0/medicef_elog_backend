@@ -2,6 +2,8 @@ const { sequelize } = require("../config/db");
 const { DataTypes, Sequelize } = require("sequelize");
 const Department = require("./departments");
 const User = require("./users");
+const WorkflowState = require("./workflowState");
+const Process = require("./processes");
 
 const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   form_id: {
@@ -15,6 +17,14 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     references: {
       model: Department,
       key: "department_id",
+    },
+  },
+  process_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Process,
+      key: "process_id",
     },
   },
   initiator_id: {
@@ -51,7 +61,7 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  department: {
+  departmentName: {
     type: DataTypes.STRING,
   },
   compression_area: {
@@ -61,12 +71,12 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     type: DataTypes.FLOAT,
   },
   reviewer_id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.JSON,
     allowNull: false,
-    references: {
-      model: User,
-      key: "user_id",
-    },
+  },
+  reviewerData: {
+    type: DataTypes.JSON,
+    allowNull: false,
   },
   approver_id: {
     type: DataTypes.INTEGER,
@@ -95,15 +105,6 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   approverAttachment: {
     type: DataTypes.STRING,
   },
-  initiatorDeclaration: {
-    type: DataTypes.STRING,
-  },
-  reviewerDeclaration: {
-    type: DataTypes.STRING,
-  },
-  approverDeclaration: {
-    type: DataTypes.STRING,
-  },
   additionalAttachment: {
     type: DataTypes.STRING,
   },
@@ -124,23 +125,34 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   },
     relative_humidity_criteria:{
        type:DataTypes.STRING,
+  },
+  workflow_state_id: {
+  type: DataTypes.INTEGER,
+  defaultValue: 1,
+  references: {
+    model: WorkflowState,
+    key: "id"
   }
+}
 });
 
 TempratureProcessForm.belongsTo(Department, { foreignKey: "department_id" });
 Department.hasMany(TempratureProcessForm, { foreignKey: "department_id" });
 
+TempratureProcessForm.belongsTo(Process, { foreignKey: "process_id" });
+Process.hasMany(TempratureProcessForm, { foreignKey: "process_id" });
+
 TempratureProcessForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(TempratureProcessForm, { foreignKey: "initiator_id" });
 
-TempratureProcessForm.belongsTo(User, {
-  foreignKey: "reviewer_id",
-  as: "tpreviewer",
-});
-User.hasMany(TempratureProcessForm, {
-  foreignKey: "reviewer_id",
-  as: "tpreviewer",
-});
+// TempratureProcessForm.belongsTo(User, {
+//   foreignKey: "reviewer_id",
+//   as: "tpreviewer",
+// });
+// User.hasMany(TempratureProcessForm, {
+//   foreignKey: "reviewer_id",
+//   as: "tpreviewer",
+// });
 
 TempratureProcessForm.belongsTo(User, {
   foreignKey: "approver_id",
@@ -150,5 +162,15 @@ User.hasMany(TempratureProcessForm, {
   foreignKey: "approver_id",
   as: "tpapprover",
 });
+
+TempratureProcessForm.belongsTo(WorkflowState, {
+  foreignKey: "workflow_state_id",
+  as: "workflow_state"
+});
+
+WorkflowState.hasMany(TempratureProcessForm, {
+  foreignKey: "workflow_state_id"
+});
+
 
 module.exports = TempratureProcessForm;
