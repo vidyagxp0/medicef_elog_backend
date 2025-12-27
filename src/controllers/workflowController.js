@@ -13,6 +13,13 @@ exports.GetAllStages = async (req, res) => {
         const stages = await WorkflowState.findAll({
             order: [["order_no", "ASC"]]
         });
+        
+        if(!stages){
+          return res.json({
+            error:true,
+            message:"stages not found"
+          })
+        }
         // Return combined response
         res.json({
             error: false,
@@ -140,7 +147,6 @@ exports.GetTransitions = async (req, res) => {
     });
   }
 };
-
  exports.updateWorkflowStage = async (req, res) => {
   const { form_id, process_id } = req.params;
   const { action } = req.body;

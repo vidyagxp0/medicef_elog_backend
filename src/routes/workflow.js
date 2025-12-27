@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/get-all-stages/", workflowController.GetAllStages);
+router.get("/get-all-stages", workflowController.GetAllStages);
 router.get("/current-stage/:form_id/:process_id", workflowController.GetCurrentStage);
 router.get("/transitions/:form_id/:process_id", workflowController.GetTransitions);
 router.post("/move-stage/:form_id/:process_id",Auth.checkUserJwtToken, upload.any(), workflowController.updateWorkflowStage
