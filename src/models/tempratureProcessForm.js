@@ -89,7 +89,7 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
    room_id:{
     type:DataTypes.STRING,
   },
-   instrument_id:{
+   instrument_id_no:{
     type:DataTypes.STRING,
   },
    acceptance_temperature:{
