@@ -11,9 +11,9 @@ module.exports = {
     record: DifferentialPressureRecord,
     approverAlias: "approver",
   },
-//   2: {
-//     form: TempratureProcessForm,
-//     record: TempratureProcessRecord,
-//     approverAlias: "tpapprover",
-//   },
+  2: {
+    form: TempratureProcessForm,
+    record: TempratureProcessRecord,
+    approverAlias: "approver",
+  },
 };

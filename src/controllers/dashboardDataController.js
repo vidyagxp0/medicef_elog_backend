@@ -26,10 +26,16 @@ const buildFilters = (query) => {
   if (query.departmentName) {
     where.departmentName = query.departmentName;
   }
+  // if (query.process) {
+  //   where.process = query.process;
+  // }
 
   if (query.from && query.to) {
     where.createdAt = {
-      [Op.between]: [query.from, query.to],
+      [Op.between]: [
+        new Date(query.from + "T00:00:00"),
+        new Date(query.to + "T23:59:59")
+      ]
     };
   }
 
@@ -113,6 +119,7 @@ exports.GetElogById = async (req, res) => {
     }
 
     const { form, record, approverAlias } = registry;
+    console.log("registry",registry)
 
     const elogData = await form.findAll({
       where: {
@@ -125,10 +132,18 @@ exports.GetElogById = async (req, res) => {
         { model: User, as: approverAlias, attributes: ["user_id", "name"] },
       ],
       order: [["form_id", "DESC"]],
-    });
+    });``
+    if(!elogData){
+      return res.json({
+        error: true,
+        message:"No data Found"
+      })
+    }
+    console.log("elogData",elogData)
 
     return res.json({
       error: false,
+      message:"Data fetch Successfully",
       data: elogData,
     });
 
