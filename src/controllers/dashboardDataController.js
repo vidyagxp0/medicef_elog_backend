@@ -57,7 +57,7 @@ exports.GetAllElogs = async (req, res) => {
       const filters = buildFilters(req.query);
 
       const records = await FormModel.findAll({
-        // where: filters,
+        where: filters,
         include: [
           {
             model: WorkflowState,
@@ -75,7 +75,7 @@ exports.GetAllElogs = async (req, res) => {
 
       response.push({
         process_id: process.process_id,
-        process_name: process.process,
+        process: process.process,
         data: records,
       });
     }
@@ -175,7 +175,7 @@ exports.GetAllEffectiveElogs = async (req, res) => {
 
       response.push({
         process_id: process.process_id,
-        process_name: process.process,
+        process: process.process,
         data: records,
       });
     }
