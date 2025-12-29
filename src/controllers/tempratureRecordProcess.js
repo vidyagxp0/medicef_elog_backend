@@ -49,6 +49,8 @@ exports.InsertTempratureRecord = async (req, res) => {
     instrument_id_no,
     acceptance_temperature,
     relative_humidity_criteria,
+    acceptanceTempData,
+    relHumidityData,
     additionalInfo,
   } = req.body;
 
@@ -138,6 +140,8 @@ exports.InsertTempratureRecord = async (req, res) => {
         room_id:room_id,
         acceptance_temperature: acceptance_temperature,
         relative_humidity_criteria: relative_humidity_criteria ,
+        acceptanceTempData:acceptanceTempData,
+        relHumidityData:relHumidityData,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -162,6 +166,8 @@ exports.InsertTempratureRecord = async (req, res) => {
       instrument_id_no,
       acceptance_temperature,
       relative_humidity_criteria,
+      acceptanceTempData,
+      relHumidityData,
       reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -370,6 +376,8 @@ exports.EditTempratureRecord = async (req, res) => {
     instrument_id_no,
     acceptance_temperature,
     relative_humidity_criteria,
+    acceptanceTempData,
+    relHumidityData,
     initiatorComment,
     initiatorDeclaration,
     additionalInfo,
@@ -454,9 +462,6 @@ exports.EditTempratureRecord = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
-    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
-    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
-
     const fields = {
       description,
       departmentName,
@@ -466,6 +471,8 @@ exports.EditTempratureRecord = async (req, res) => {
       instrument_id_no,
       acceptance_temperature,
       relative_humidity_criteria,
+      acceptanceTempData,
+      relHumidityData,
       // reviewer: reviewerNames,
       // approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -519,15 +526,47 @@ exports.EditTempratureRecord = async (req, res) => {
       });
     }
 
+    const normalizeValueForAudit = (value) => {
+      if (value === null || value === undefined) return value;
+
+      if (Array.isArray(value)) {
+        return value
+          .map(normalizeValueForAudit)
+          .sort((a, b) =>
+            JSON.stringify(a).localeCompare(JSON.stringify(b))
+          );
+      }
+
+      if (typeof value === "object") {
+        return Object.keys(value)
+          .sort()
+          .reduce((acc, key) => {
+            acc[key] = normalizeValueForAudit(value[key]);
+            return acc;
+          }, {});
+      }
+
+      return value;
+    };
+
+
+    const isDifferent = (oldVal, newVal) => {
+      const oldNorm = normalizeValueForAudit(oldVal);
+      const newNorm = normalizeValueForAudit(newVal);
+
+      // number (float safe)
+      if (typeof oldNorm === "number" && typeof newNorm === "number") {
+        return !areFloatsEqual(oldNorm, newNorm);
+      }
+
+      // object / array / string
+      return JSON.stringify(oldNorm) !== JSON.stringify(newNorm);
+    };
 
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
-      if (
-        newValue !== undefined &&
-        ((typeof newValue === "number" &&
-          !areFloatsEqual(oldValue, newValue)) ||
-          oldValue != newValue)
-      ) {
+
+      if (newValue !== undefined && isDifferent(oldValue, newValue)) {
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
@@ -540,6 +579,7 @@ exports.EditTempratureRecord = async (req, res) => {
         });
       }
     }
+
 
     // Update the form details
     await form.update(
@@ -554,6 +594,8 @@ exports.EditTempratureRecord = async (req, res) => {
         instrument_id_no,
         acceptance_temperature,
         relative_humidity_criteria,
+        acceptanceTempData,
+        relHumidityData,
         reviewer_id,
         reviewerData,
         approver_id,

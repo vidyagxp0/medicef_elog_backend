@@ -95,8 +95,17 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
    acceptance_temperature:{
     type:DataTypes.STRING,
   },
-    relative_humidity_criteria:{
-       type:DataTypes.STRING,
+   acceptanceTempData:{
+    type:DataTypes.JSON,
+    allowNull:false,
+  },
+  relative_humidity_criteria:{
+   type:DataTypes.STRING,
+   allowNull:false
+  },
+  relHumidityData:{
+    type:DataTypes.JSON,
+    allowNull:false,
   },
   reviewComment: {
     type: DataTypes.STRING,
@@ -123,8 +132,10 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   additionalInfo: {
     type: DataTypes.STRING,
   },
+
   workflow_state_id: {
   type: DataTypes.INTEGER,
+  allowNull:false,
   defaultValue: 1,
   references: {
     model: WorkflowState,
