@@ -345,8 +345,8 @@ exports.InsertTempratureRecord = async (req, res) => {
 
 // edit tempratre record elog details
 exports.EditTempratureRecord = async (req, res) => {
+  const {form_id} = req.params;
   const {
-    form_id,
     process_id,
     department_id,
     description,
@@ -447,6 +447,13 @@ exports.EditTempratureRecord = async (req, res) => {
       description,
       departmentName,
       compression_area,
+      area_name,
+      room_id,
+      instrument_id_no,
+      acceptance_temperature,
+      relative_humidity_criteria,
+      reviewer: (await getUserById(reviewer_id))?.name,
+      approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -481,10 +488,16 @@ exports.EditTempratureRecord = async (req, res) => {
     // Update the form details
     await form.update(
       {
+        process_id,
         department_id,
         description,
         departmentName,
         compression_area,
+        area_name,
+        room_id,
+        instrument_id_no,
+        acceptance_temperature,
+        relative_humidity_criteria,
         reviewer_id,
         approver_id,
         initiatorAttachment: initiatorAttachment
