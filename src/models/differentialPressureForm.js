@@ -69,6 +69,11 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   },
   limit: {
     type: DataTypes.STRING,
+    allowNull:false
+  },
+  limitData:{
+  type: DataTypes.JSON,
+  allowNull:false,
   },
   reviewer_id: {
     type: DataTypes.JSON,

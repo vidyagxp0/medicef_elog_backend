@@ -119,7 +119,6 @@ exports.GetElogById = async (req, res) => {
     }
 
     const { form, record, approverAlias } = registry;
-    console.log("registry",registry)
 
     const elogData = await form.findAll({
       where: {
@@ -170,8 +169,9 @@ exports.GetAllEffectiveElogs = async (req, res) => {
 
       const records = await FormModel.findAll({
         // where: filters,
-        where:{
-          workflow_state_id:"4"
+        where: {
+          ...filters,              // 🔹 dynamic filters
+          workflow_state_id: 4     // 🔹 fixed condition
         },
         include: [
           {

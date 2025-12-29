@@ -39,6 +39,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     departmentName,
     compression_area,
     limit,
+    limitData,
     area_name,
     acceptance_criteria,
     instrument_id_no,
@@ -137,6 +138,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
         departmentName: departmentName,
         compression_area: compression_area,
         limit: limit,
+        // limitData: JSON.stringify(limitData),
+        limitData:limitData,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -166,6 +169,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       instrument_id_no,
       differential_pressure,
       limit,
+      limitData,
       reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -177,7 +181,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           form_id: newForm.form_id,
           field_name: field,
           previous_value: null,
-          new_value: value === "" ? "" : value,
+          new_value: typeof value === "object" ? JSON.stringify(value) : value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -343,6 +347,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     departmentName,
     compression_area,
     limit,
+    limitData,
     area_name,
     acceptance_criteria,
     instrument_id_no,
@@ -438,6 +443,7 @@ exports.EditDifferentialPressure = async (req, res) => {
       departmentName,
       compression_area,
       limit,
+      limitData,
       initiatorComment,
       area_name,
       acceptance_criteria,
@@ -453,6 +459,14 @@ exports.EditDifferentialPressure = async (req, res) => {
       additionalInfo,
     };
 
+  const formatAuditValue = (value) => {
+    if (typeof value === "object" && value !== null) {
+      return JSON.stringify(value);
+    }
+    return value;
+    };
+
+
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
       if (
@@ -464,8 +478,8 @@ exports.EditDifferentialPressure = async (req, res) => {
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
-          previous_value: oldValue || null,
-          new_value: newValue,
+          previous_value: formatAuditValue(oldValue) || null,
+          new_value: formatAuditValue(newValue),
           changed_by: user.user_id,
           previous_status: form.status,
           new_status: "Opened",
@@ -473,7 +487,6 @@ exports.EditDifferentialPressure = async (req, res) => {
         });
       }
     }
-
     // Update the form details
     await form.update(
       {
@@ -482,6 +495,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         departmentName,
         compression_area,
         limit,
+        limitData,
         area_name,
         acceptance_criteria,
         instrument_id_no,
