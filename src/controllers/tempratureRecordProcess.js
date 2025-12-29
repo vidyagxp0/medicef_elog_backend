@@ -26,7 +26,6 @@ exports.InsertTempratureRecord = async (req, res) => {
     description,
     departmentName,
     compression_area,
-    limit,
     reviewer_id,
     reviewerData,
     approver_id,
@@ -150,7 +149,6 @@ exports.InsertTempratureRecord = async (req, res) => {
       instrument_id_no,
       acceptance_temperature,
       relative_humidity_criteria,
-      limit,
       reviewer: (await getUserById(reviewer_id))?.name,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -349,16 +347,21 @@ exports.InsertTempratureRecord = async (req, res) => {
 exports.EditTempratureRecord = async (req, res) => {
   const {
     form_id,
+    process_id,
     department_id,
     description,
     departmentName,
     compression_area,
-    limit,
     reviewer_id,
     approver_id,
     TempratureRecords,
     email,
     password,
+    area_name,
+    room_id,
+    instrument_id_no,
+    acceptance_temperature,
+    relative_humidity_criteria,
     initiatorComment,
     initiatorDeclaration,
     additionalInfo,
@@ -444,7 +447,6 @@ exports.EditTempratureRecord = async (req, res) => {
       description,
       departmentName,
       compression_area,
-      limit,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -481,9 +483,8 @@ exports.EditTempratureRecord = async (req, res) => {
       {
         department_id,
         description,
-        department,
+        departmentName,
         compression_area,
-        limit,
         reviewer_id,
         approver_id,
         initiatorAttachment: initiatorAttachment
