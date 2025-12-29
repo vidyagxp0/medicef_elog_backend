@@ -185,6 +185,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
+          // declaration: initiatorDeclaration,
           action: "Opened",
         });
       }
@@ -199,6 +200,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
+        // declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
@@ -212,6 +214,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
+        declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
@@ -439,8 +442,6 @@ exports.EditDifferentialPressure = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
-    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
-    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
     const fields = {
       description,
       departmentName,
@@ -460,6 +461,39 @@ exports.EditDifferentialPressure = async (req, res) => {
         ? getElogDocsUrl(additionalAttachment)
         : form.additionalAttachment,
       additionalInfo,
+    };
+
+const normalizeValue = (val) => {
+  if (val === null || val === undefined) return val;
+
+  if (Array.isArray(val)) {
+    return val
+      .map(normalizeValue)
+      .sort((a, b) =>
+        JSON.stringify(a).localeCompare(JSON.stringify(b))
+      );
+  }
+
+  if (typeof val === "object") {
+    return Object.keys(val)
+      .sort()
+      .reduce((acc, key) => {
+        acc[key] = normalizeValue(val[key]);
+        return acc;
+      }, {});
+  }
+
+  return val;
+};
+
+    const hasChanged = (oldVal, newVal) => {
+      // number safe compare
+      if (typeof oldVal === "number" && typeof newVal === "number") {
+        return !areFloatsEqual(oldVal, newVal);
+      }
+
+      return JSON.stringify(normalizeValue(oldVal)) !==
+            JSON.stringify(normalizeValue(newVal));
     };
 
   const formatAuditValue = (value) => {
@@ -504,26 +538,23 @@ exports.EditDifferentialPressure = async (req, res) => {
       });
     }
 
-    for (const [field, newValue] of Object.entries(fields)) {
-      const oldValue = form[field];
-      if (
-        newValue !== undefined &&
-        ((typeof newValue === "number" &&
-          !areFloatsEqual(oldValue, newValue)) ||
-          oldValue != newValue)
-      ) {
-        auditTrailEntries.push({
-          form_id: form.form_id,
-          field_name: field,
-          previous_value: formatAuditValue(oldValue) || null,
-          new_value: formatAuditValue(newValue),
-          changed_by: user.user_id,
-          previous_status: form.status,
-          new_status: "Opened",
-          action: "Update Elog",
-        });
-      }
-    }
+for (const [field, newValue] of Object.entries(fields)) {
+  const oldValue = form[field];
+
+  if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: field,
+      previous_value: formatAuditValue(oldValue) || null,
+      new_value: formatAuditValue(newValue),
+      changed_by: user.user_id,
+      previous_status: form.status,
+      new_status: "Opened",
+      action: "Update Elog",
+    });
+  }
+}
+
     // Update the form details
     await form.update(
       {
@@ -873,6 +904,7 @@ exports.SendDPElogForReview = async (req, res) => {
         initiatorComment: initiatorComment,
         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
         additionalAttachment: getElogDocsUrl(additionalAttachment),
+
       },
       { transaction }
     );

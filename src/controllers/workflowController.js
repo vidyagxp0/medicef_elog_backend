@@ -3,10 +3,12 @@ const differential_pressure = require("../models/differentialPressureForm")
 const processFormRegistry = require("../utils/processFormRegistry");
 const workflow_transitions = require("../models/workflowTransition");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const { sequelize } = require("../config/db");
 const formModelRegistry = require("../utils/formModelRegistry");
 const WorkflowTransition = require("../models/workflowTransition");
+const User = require("../models/users");
 
 exports.GetAllStages = async (req, res) => {
     try {
@@ -149,24 +151,58 @@ exports.GetTransitions = async (req, res) => {
 };
  exports.updateWorkflowStage = async (req, res) => {
   const { form_id, process_id } = req.params;
-  const { action } = req.body;
+  const { action ,declaration,email, password,  } = req.body;
   const user = req.user; // logged-in user
   const files = req.files;
-
+  // Start a transaction
+  const transaction = await sequelize.transaction();
   try {
-    if (!form_id || !process_id || !action) {
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "email, password are required",
+      });
+    }
+    if (!form_id || !process_id || !action || !declaration) {
       return res.status(400).json({
         message: "form_id, process_id, and action are required",
       });
+    }
+
+    const dbUser = await User.findOne({
+      where: {
+        email: email.toLowerCase(),
+        isActive: true,
+      },
+      raw: true,
+    });
+
+    if (!dbUser) {
+      return res.status(401).json({
+        error: true,
+        message: "User not found ",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, dbUser.password);
+
+    if (!isMatch) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid password",
+      });
+    }
+
+    if(dbUser.user_id !== user.userId){
+      return res.status(400).json({
+        error:true,
+        message:"Invalid Signature",
+      })
     }
 
     // Resolve form model dynamically
     const FormModel = processFormRegistry[process_id];
     if (!FormModel)
       return res.status(400).json({ message: "No form model mapped" });
-
-    // Start transaction
-    const transaction = await sequelize.transaction();
 
     // Fetch form with current workflow state
     const form = await FormModel.findOne({
@@ -246,8 +282,8 @@ exports.GetTransitions = async (req, res) => {
     });
     }
 
-    const declaration = req.body[`${activeRole}Declaration`] || "";
-    // const comment = req.body[`${activeRole}Comment`] || "";
+    // const declaration = req.body[`${activeRole}Declaration`] || "";
+    const comment = req.body[`${activeRole}Comment`] || "";
 
     // --------------------------
     // Update form workflow state
@@ -257,8 +293,8 @@ exports.GetTransitions = async (req, res) => {
         workflow_state_id: nextState.id,
         stage: nextState.order_no,
         status: nextState.name,
-        // [`${activeRole}Comment`]: comment,
-        // [`${activeRole}Declaration`]: declaration,
+        [`${activeRole}Comment`]: comment,
+        [`${activeRole}Name`]: dbUser.name,
       },
       { transaction }
     );
@@ -281,38 +317,37 @@ exports.GetTransitions = async (req, res) => {
       declaration: declaration,
     });
 
-//     if (comment) {
-//   auditTrailEntries.push({
-//     form_id: form.form_id,
-//     field_name: `${activeRole.toUpperCase()}_COMMENT`,
-//     previous_value: form[`${activeRole}Comment`] || null,
-//     new_value: comment,
-//     changed_by: user.userId,
-//     previous_status: form.workflow_state.name,
-//     new_status: nextState.name,
-//     action: action,
-//     declaration: declaration,
-//   });
-// }
-
+    if (comment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: `${activeRole.toUpperCase()}_COMMENT`,
+        previous_value: form[`${activeRole}Comment`] || null,
+        new_value: comment,
+        changed_by: user.userId,
+        previous_status: form.workflow_state.name,
+        new_status: nextState.name,
+        action: action,
+        declaration: declaration,
+      });
+    }
 
     // Handle attachments dynamically
     const roleAttachmentField = `${activeRole}Attachment`;
     const attachment = files?.find((f) => f.fieldname === roleAttachmentField);
     if (attachment) {
-    //   auditTrailEntries.push({
-    //     form_id: form.form_id,
-    //     field_name: roleAttachmentField,
-    //     previous_value: form[roleAttachmentField] || null,
-    //     new_value: getElogDocsUrl(attachment),
-    //     changed_by: user.userId,
-    //     previous_status: form.workflow_state.name,
-    //     new_status: nextState.name,
-    //     action: action,
-    //     declaration: declaration,
-    //   });
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: roleAttachmentField,
+        previous_value: form[roleAttachmentField] || null,
+        new_value: getElogDocsUrl(attachment),
+        changed_by: user.userId,
+        previous_status: form.workflow_state.name,
+        new_status: nextState.name,
+        action: action,
+        declaration: declaration,
+      });
 
-    //   form[roleAttachmentField] = getElogDocsUrl(attachment);
+      form[roleAttachmentField] = getElogDocsUrl(attachment);
       await form.save({ transaction });
     }
 

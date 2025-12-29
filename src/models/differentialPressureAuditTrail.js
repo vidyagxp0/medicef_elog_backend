@@ -47,10 +47,10 @@ const DifferentialPressureAuditTrail = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    // declaration: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false,
-    // },
+    declaration: {
+      type: DataTypes.STRING,
+      // allowNull: false,d
+    },
     action: {
       type: DataTypes.STRING,
       allowNull: false,

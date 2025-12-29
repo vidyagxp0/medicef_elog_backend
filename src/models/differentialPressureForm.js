@@ -44,6 +44,9 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
+  initiator_date_time: {
+    type: DataTypes.DATE,
+  },
   date_of_review: {
     type: DataTypes.DATE,
   },
@@ -104,10 +107,19 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   initiatorAttachment: {
     type: DataTypes.STRING,
   },
+  initiatorName: {
+    type: DataTypes.STRING,
+  },
   reviewerAttachment: {
     type: DataTypes.STRING,
   },
+  reviewerName: {
+    type: DataTypes.STRING,
+  },
   approverAttachment: {
+    type: DataTypes.STRING,
+  },
+  approverName  : {
     type: DataTypes.STRING,
   },
   additionalAttachment: {
