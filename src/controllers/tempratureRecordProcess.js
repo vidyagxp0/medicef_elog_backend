@@ -17,6 +17,15 @@ const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
   return user;
 };
+const getUsersByIdsReviewer = async (user_ids) => {
+  return await User.findAll({
+    where: {
+      user_id: user_ids,
+      isActive: true,
+    },
+    attributes: ["name"],
+  });
+};
 
 // Fill tempratre record form and insert its records.
 exports.InsertTempratureRecord = async (req, res) => {
@@ -42,6 +51,7 @@ exports.InsertTempratureRecord = async (req, res) => {
     relative_humidity_criteria,
     additionalInfo,
   } = req.body;
+
   if (!approver_id) {
     return res
       .status(400)
@@ -98,16 +108,17 @@ exports.InsertTempratureRecord = async (req, res) => {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("FormRecordsArray[")) {
-        // Extract the index from the fieldname
-        const match = file.fieldname.match(
-          /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
-        );
-        if (match) {
-          const index = match[1];
-          supportingDocs[index] = file;
-        }
       }
+      //  else if (file.fieldname.startsWith("FormRecordsArray[")) {
+      //   // Extract the index from the fieldname
+      //   const match = file.fieldname.match(
+      //     /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
+      //   );
+      //   if (match) {
+      //     const index = match[1];
+      //     supportingDocs[index] = file;
+      //   }
+      // }
     });
 
     // Create new temperature record Form
@@ -122,6 +133,11 @@ exports.InsertTempratureRecord = async (req, res) => {
         stage: 1,
         departmentName: departmentName,
         compression_area: compression_area,
+        area_name:area_name,
+        instrument_id_no:instrument_id_no,
+        room_id:room_id,
+        acceptance_temperature: acceptance_temperature,
+        relative_humidity_criteria: relative_humidity_criteria ,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -129,17 +145,14 @@ exports.InsertTempratureRecord = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
-        area_name:area_name,
-        instrument_id_no:instrument_id_no,
-        room_id:room_id,
-        acceptance_temperature: acceptance_temperature,
-        relative_humidity_criteria: relative_humidity_criteria  
       },
 
       { transaction }
     );
 
     const auditTrailEntries = [];
+    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
+    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
     const fields = {
       description,
       departmentName,
@@ -149,7 +162,7 @@ exports.InsertTempratureRecord = async (req, res) => {
       instrument_id_no,
       acceptance_temperature,
       relative_humidity_criteria,
-      reviewer: (await getUserById(reviewer_id))?.name,
+      reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       additionalInfo,
@@ -160,7 +173,7 @@ exports.InsertTempratureRecord = async (req, res) => {
           form_id: newForm.form_id,
           field_name: field,
           previous_value: null,
-          new_value: value,
+          new_value: typeof value === "object" ? JSON.stringify(value) : value,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -208,15 +221,9 @@ exports.InsertTempratureRecord = async (req, res) => {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
-        area_name:area_name,
-        instrument_id_no:instrument_id_no,
-        room_id:room_id,
-        // acceptance_temperature: acceptance_temperature,
-        // relative_humidity_criteria: relative_humidity_criteria,
-
-        supporting_docs: record?.supporting_docs
-          ? record.supporting_docs
-          : getElogDocsUrl(supportingDocs[index]),
+        // supporting_docs: record?.supporting_docs
+        //   ? record.supporting_docs
+        //   : getElogDocsUrl(supportingDocs[index]),
       }));
 
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
@@ -353,6 +360,7 @@ exports.EditTempratureRecord = async (req, res) => {
     departmentName,
     compression_area,
     reviewer_id,
+    reviewerData,
     approver_id,
     TempratureRecords,
     email,
@@ -373,6 +381,7 @@ exports.EditTempratureRecord = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  
   if (!email || !password) {
     return res
       .status(400)
@@ -407,7 +416,8 @@ exports.EditTempratureRecord = async (req, res) => {
     let additionalAttachment = null;
     const supportingDocs = {};
 
-    req.files.forEach((file) => {
+    if(!req.files){
+    req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
@@ -423,6 +433,7 @@ exports.EditTempratureRecord = async (req, res) => {
         }
       }
     });
+    }
 
     // Find the form by ID
     const form = await TempratureProcessForm.findOne({
@@ -443,6 +454,9 @@ exports.EditTempratureRecord = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
+    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
+    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
+
     const fields = {
       description,
       departmentName,
@@ -452,17 +466,59 @@ exports.EditTempratureRecord = async (req, res) => {
       instrument_id_no,
       acceptance_temperature,
       relative_humidity_criteria,
-      reviewer: (await getUserById(reviewer_id))?.name,
-      approver: (await getUserById(approver_id))?.name,
+      // reviewer: reviewerNames,
+      // approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
-        : form.initiatorAttachment || "",
+        : form.initiatorAttachment,
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
-        : form.additionalAttachment || "",
+        : form.additionalAttachment,
       additionalInfo,
     };
+
+  const formatAuditValue = (value) => {
+    if (typeof value === "object" && value !== null) {
+      return JSON.stringify(value);
+    }
+    return value;
+    };
+    if (
+      reviewer_id &&
+      JSON.stringify(form.reviewer_id) !== JSON.stringify(reviewer_id)
+    ) {
+      const oldReviewers = await getUsersByIdsReviewer(form.reviewer_id);
+      const newReviewers = await getUsersByIdsReviewer(reviewer_id);
+
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewer",
+        previous_value: oldReviewers.map(u => u.name).join(", "),
+        new_value: newReviewers.map(u => u.name).join(", "),
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: "Opened",
+        action: "Update Elog",
+      });
+    }
+
+    if (approver_id && form.approver_id !== approver_id) {
+      const oldApprover = await getUserById(form.approver_id);
+      const newApprover = await getUserById(approver_id);
+
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approver",
+        previous_value: oldApprover?.name || "",
+        new_value: newApprover?.name || "",
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: "Opened",
+        action: "Update Elog",
+      });
+    }
+
 
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
@@ -475,8 +531,8 @@ exports.EditTempratureRecord = async (req, res) => {
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
-          previous_value: oldValue || null,
-          new_value: newValue || " ",
+          previous_value: formatAuditValue(oldValue),
+          new_value: formatAuditValue(newValue),
           changed_by: user.user_id,
           previous_status: form.status,
           new_status: "Opened",
@@ -499,6 +555,7 @@ exports.EditTempratureRecord = async (req, res) => {
         acceptance_temperature,
         relative_humidity_criteria,
         reviewer_id,
+        reviewerData,
         approver_id,
         initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)

@@ -55,6 +55,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     additionalInfo,
   } = req.body;
 
+
   if (!approver_id) {
     return res
       .status(400)
@@ -138,7 +139,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         departmentName: departmentName,
         compression_area: compression_area,
         limit: limit,
-        // limitData: JSON.stringify(limitData),
         limitData:limitData,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
@@ -352,6 +352,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     acceptance_criteria,
     instrument_id_no,
     differential_pressure,  
+    reviewerData,
     reviewer_id,
     approver_id,
     DifferentialPressureRecords,
@@ -438,6 +439,8 @@ exports.EditDifferentialPressure = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
+    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
+    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
     const fields = {
       description,
       departmentName,
@@ -466,6 +469,40 @@ exports.EditDifferentialPressure = async (req, res) => {
     return value;
     };
 
+    if (
+      reviewer_id &&
+      JSON.stringify(form.reviewer_id) !== JSON.stringify(reviewer_id)
+    ) {
+      const oldReviewers = await getUsersByIdsReviewer(form.reviewer_id);
+      const newReviewers = await getUsersByIdsReviewer(reviewer_id);
+
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "reviewer",
+        previous_value: oldReviewers.map(u => u.name).join(", "),
+        new_value: newReviewers.map(u => u.name).join(", "),
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: "Opened",
+        action: "Update Elog",
+      });
+    }
+
+    if (approver_id && form.approver_id !== approver_id) {
+      const oldApprover = await getUserById(form.approver_id);
+      const newApprover = await getUserById(approver_id);
+
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "approver",
+        previous_value: oldApprover?.name || "",
+        new_value: newApprover?.name || "",
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: "Opened",
+        action: "Update Elog",
+      });
+    }
 
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
@@ -501,6 +538,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         instrument_id_no,
         differential_pressure,
         reviewer_id,
+        reviewerData,
         approver_id,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -546,26 +584,26 @@ exports.EditDifferentialPressure = async (req, res) => {
               getElogDocsUrl(supportingDocs[index]),
           };
 
-          // for (const [field, newValue] of Object.entries(recordFields)) {
-          //   const oldValue = existingRecord[field];
-          //   if (
-          //     newValue !== undefined &&
-          //     ((typeof newValue === "number" &&
-          //       !areFloatsEqual(oldValue, newValue)) ||
-          //       oldValue != newValue)
-          //   ) {
-          //     auditTrailEntries.push({
-          //       form_id: form.form_id,
-          //       field_name: `${field}[${index}]`,
-          //       previous_value: oldValue || null,
-          //       new_value: newValue,
-          //       changed_by: user.user_id,
-          //       previous_status: form.status,
-          //       new_status: "Opened",
-          //       action: "Update Elog",
-          //     });
-          //   }
-          // }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
+            if (
+              newValue !== undefined &&
+              ((typeof newValue === "number" &&
+                !areFloatsEqual(oldValue, newValue)) ||
+                oldValue != newValue)
+            ) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${index}]`,
+                previous_value: oldValue || null,
+                new_value: newValue,
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                action: "Update Elog",
+              });
+            }
+          }
         }
       });
 
@@ -592,20 +630,20 @@ exports.EditDifferentialPressure = async (req, res) => {
               newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
 
-          // for (const [field, newValue] of Object.entries(recordFields)) {
-          //   if (newValue !== undefined) {
-          //     auditTrailEntries.push({
-          //       form_id: form.form_id,
-          //       field_name: `${field}[${i}]`,
-          //       previous_value: null,
-          //       new_value: newValue || "",
-          //       changed_by: user.user_id,
-          //       previous_status: form.status,
-          //       new_status: "Opened",
-          //       action: "Update Elog",
-          //     });
-          //   }
-          // }
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            if (newValue !== undefined) {
+              auditTrailEntries.push({
+                form_id: form.form_id,
+                field_name: `${field}[${i}]`,
+                previous_value: null,
+                new_value: newValue || "",
+                changed_by: user.user_id,
+                previous_status: form.status,
+                new_status: "Opened",
+                action: "Update Elog",
+              });
+            }
+          }
         }
       }
 
