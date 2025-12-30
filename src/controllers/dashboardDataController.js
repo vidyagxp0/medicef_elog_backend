@@ -1,8 +1,4 @@
 const User = require("../models/users");
-const DifferentialPressureForm = require("../models/differentialPressureForm");
-const DifferentialPressureRecord = require("../models/differentialPressureRecords");
-const TempratureProcessRecord = require("../models/tempratureProcessRecords");
-const TempratureProcessForm = require("../models/tempratureProcessForm");
 const processFormRegistry = require("../utils/processFormRegistry");
 const formRegistry = require("../utils/formModelRegistry");
 
@@ -14,6 +10,14 @@ const formModelRegistry = require("../utils/formModelRegistry");
 const UserRole = require("../models/userRoles");
 const auditFieldMap = require("../utils/auditFieldMap");
 
+const puppeteer = require("puppeteer");
+const fs = require("fs");
+const path = require("path");
+
+const getUserById = async (user_id) => {
+  const user = await User.findOne({ where: { user_id, isActive: true } });
+  return user;
+};
 // ----------------- Build dynamic filters -----------------
 const buildFilters = (query) => {
   const where = {};
@@ -100,61 +104,6 @@ exports.GetAllElogs = async (req, res) => {
     });
   }
 };
-exports.GetElogAuditTrail = async (req, res) => {
-  try {
-    const { process_id, form_id } = req.params;
-
-    const registry = formModelRegistry[process_id];
-    if (!registry || !registry.audit) {
-      return res.status(400).json({
-        error: true,
-        message: "Audit trail not configured for this process",
-      });
-    }
-
-    const AuditModel = registry.audit;
-
-    const auditTrail = await AuditModel.findAll({
-      where: { form_id },
-      include: [
-        {
-          model: User,
-          as: "changedByUser",
-          attributes: ["user_id", "name", "email"],
-        },
-      ],
-      order: [["auditTrail_id", "ASC"]],
-    });
-
-    const response = auditTrail.map((row) => {
-      const data = row.toJSON();
-
-      return {
-        ...data,
-
-        //  yahin pe field_name replace
-        field_name:
-          auditFieldMap[data.field_name] ||
-          data.field_name
-            .replace(/_/g, " ")
-            .replace(/([a-z])([A-Z])/g, "$1 $2")
-            .toLowerCase()
-            .replace(/\b\w/g, (c) => c.toUpperCase()),
-      };
-    });
-
-    return res.json({
-      error: false,
-      data: response,
-    });
-  } catch (error) {
-    console.error("GetElogAuditTrail Error:", error);
-    return res.status(400).json({
-      error: true,
-      message: error.message,
-    });
-  }
-};
 exports.GetElogById = async (req, res) => {
   try {
     const { form_id, process_id } = req.params;
@@ -208,7 +157,6 @@ exports.GetElogById = async (req, res) => {
     });
   }
 };
-
 exports.GetAllEffectiveElogs = async (req, res) => {
   try {
     // Fetch all processes
@@ -309,7 +257,6 @@ exports.GetEffectiveElogsById = async (req, res) => {
     });
   }
 };
-
 exports.getAllProcesses = async (req, res) => {
   try {
     const { process } = req.query; // query parameter
@@ -341,7 +288,6 @@ exports.getAllProcesses = async (req, res) => {
     });
   }
 };
-
 exports.getAllDepartments = async (req, res) => {
   try {
     const { departmentName } = req.query;
@@ -374,7 +320,6 @@ exports.getAllDepartments = async (req, res) => {
     });
   }
 };
-
 exports.getServerTime = async (req, res) => {
   try {
     const now = new Date();
@@ -441,7 +386,6 @@ exports.getServerTime = async (req, res) => {
     });
   }
 };
-
 exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, department_id, process_id } = req.body;
 
@@ -488,6 +432,205 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
       error: true,
       message: error.message,
     });
+  }
+};
+
+
+
+
+// Common Audit section
+
+exports.GetElogAuditTrail = async (req, res) => {
+  try {
+    const { process_id, form_id } = req.params;
+
+    const registry = formModelRegistry[process_id];
+    if (!registry || !registry.audit) {
+      return res.status(400).json({
+        error: true,
+        message: "Audit trail not configured for this process",
+      });
+    }
+
+    const AuditModel = registry.audit;
+
+    const auditTrail = await AuditModel.findAll({
+      where: { form_id },
+      include: [
+        {
+          model: User,
+          as: "changedByUser",
+          attributes: ["user_id", "name", "email"],
+        },
+      ],
+      order: [["auditTrail_id", "ASC"]],
+    });
+
+    const response = auditTrail.map((row) => {
+      const data = row.toJSON();
+
+      return {
+        ...data,
+
+        //  yahin pe field_name replace
+        field_name:
+          auditFieldMap[data.field_name] ||
+          data.field_name
+            .replace(/_/g, " ")
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
+            .toLowerCase()
+            .replace(/\b\w/g, (c) => c.toUpperCase()),
+      };
+    });
+
+    return res.json({
+      error: false,
+      data: response,
+    });
+  } catch (error) {
+    console.error("GetElogAuditTrail Error:", error);
+    return res.status(400).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+
+exports.generateAuditPdfbyId = async (req, res) => {
+  const { form_id,process_id, type } = req.params;
+  const userId = req.user.userId
+  const date = new Date();
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  let browser;
+
+  const user = await getUserById(userId);
+
+  try {
+
+    const registry = formModelRegistry[process_id];
+      if (!registry || !registry.audit) {
+        return res.status(400).json({
+          error: true,
+          message: "Audit trail not configured for this process",
+        });
+      }
+
+      const AuditModel = registry.audit;
+
+      const auditTrail = await AuditModel.findAll({
+        where: { form_id },
+        include: [
+          {
+            model: User,
+            as: "changedByUser",
+            attributes: ["user_id", "name", "email"],
+          },
+        ],
+        order: [["auditTrail_id", "ASC"]],
+      });
+
+    const response = auditTrail.map((row) => {
+      const data = row.toJSON();
+
+      return {
+        ...data,
+
+        //  yahin pe field_name replace
+        field_name:
+          auditFieldMap[data.field_name] ||
+          data.field_name
+            .replace(/_/g, " ")
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
+            .toLowerCase()
+            .replace(/\b\w/g, (c) => c.toUpperCase()),
+      };
+    });
+
+    const logoPath = path.join(__dirname, "../public/medicef_logo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+    const data = {
+      title: `${type.replace(/([A-Z])/g, " $1")} Audit Report`,
+      form_id: form_id,
+      status: "status",
+      auditTrail: response,
+    };
+
+    // Render audit report content using EJS
+    const htmlContent = await new Promise((resolve, reject) => {
+      req.app.render("auditReport", { reportData: data }, (err, html) => {
+        if (err) reject(err);
+        resolve(html);
+      });
+    });
+
+    const headerHtml = await new Promise((resolve, reject) => {
+      req.app.render(
+        "auditHeader",
+        { reportData: data, logoDataUri: logoDataUri },
+        (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        }
+      );
+    });
+
+    const footerHtml = await new Promise((resolve, reject) => {
+      req.app.render(
+        "footer",
+        { userName: user?.name, date: formattedDate },
+        (err, html) => {
+          if (err) return reject(err);
+          resolve(html);
+        }
+      );
+    });
+
+    browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      // executablePath: '/usr/bin/chromium-browser',
+    });
+    const page = await browser.newPage();
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      landscape:true,
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: headerHtml,
+      footerTemplate: footerHtml,
+      margin: {
+      top: "180px",
+      bottom: "60px",
+      left: "40px",
+      right: "40px"
+      },
+    });
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${type}_Audit_Report.pdf`
+    );
+    res.setHeader("Content-Type", "application/pdf");
+    res.end(pdfBuffer);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Error generating PDF", error });
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 };
 

@@ -16,15 +16,14 @@ const Process = sequelize.define("Process", {
 // User.belongsToMany(Project, { through: UserProject });
 // Project.belongsToMany(User, { through: UserProject });
 
-
 // isme UI ke hisab se process_id ko static diya hai id base pr
 Process.addHook('afterSync', async () => {
     try {
         const processesCount = await Process.count();
         if (processesCount === 0) {
             await Process.bulkCreate([
-                {  process: 'Differential Pressure Record' },
-                { process: 'Temperature Records' },
+                {  process: 'Differential Pressure' },
+                { process: 'Temperature Record' },
             ]);
             console.log('Processes created');
         } else {

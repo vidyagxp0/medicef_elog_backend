@@ -2119,7 +2119,7 @@ exports.sendReportOnMail = async (req, res) => {
 };
 
 exports.generateAuditPdfbyId = async (req, res) => {
-  const { formId, type, userId } = req.params;
+  const { formId,process_id, type, userId } = req.params;
   const date = new Date();
   const formattedDate = date.toLocaleDateString("en-US", {
     year: "numeric",

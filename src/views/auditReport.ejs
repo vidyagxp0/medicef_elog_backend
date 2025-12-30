@@ -62,21 +62,21 @@
         reportData.auditTrail.forEach(function(audit,index) { %>
         <tr>
           <td><%= index+1 %></td>
-          <td><%= audit.field_name || 'N/A' %></td>
-          <td style="white-space: pre-wrap; word-wrap: break-word;"><%= audit.previous_value || 'N/A' %></td>
-          <td style="white-space: pre-wrap; word-wrap: break-word;"><%= audit.new_value || 'N/A' %></td>
-          <td><%= audit.previous_status || 'N/A' %></td>
-          <td><%= audit.new_status || 'N/A' %></td>
+          <td><%= audit?.field_name || 'N/A' %></td>
+          <td style="white-space: pre-wrap; word-wrap: break-word;"><%= audit?.previous_value || 'N/A' %></td>
+          <td style="white-space: pre-wrap; word-wrap: break-word;"><%= audit?.new_value || 'N/A' %></td>
+          <td><%= audit?.previous_status || 'N/A' %></td>
+          <td><%= audit?.new_status || 'N/A' %></td>
           <td>
-           <b> Performed By:</b> <%= audit.User.name ?
-            audit.User.name : 'N/A' %> <br />
+           <b> Performed By:</b> <%= audit?.changedByUser.name ?
+            audit?.changedByUser.name : 'N/A' %> <br />
             <b> Performed On:</b> <%= new
-            Date(audit.createdAt).toLocaleDateString('en-GB', { day:
+            Date(audit?.createdAt).toLocaleDateString('en-GB', { day:
             'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %>
             <br />
-            <b>declaration:</b>  <%= audit.declaration || 'N/A' %>
+            <b>declaration:</b>  <%= audit?.declaration || 'N/A' %>
           </td>
-          <td><%= audit.action || 'N/A' %></td>
+          <td><%= audit?.action || 'N/A' %></td>
         </tr>
         <% }); %> <% } else { %>
         <tr>
