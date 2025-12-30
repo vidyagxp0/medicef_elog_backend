@@ -1,6 +1,8 @@
 // utils/formModelRegistry.js
+const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
+const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
 
 const TempratureProcessForm = require("../models/tempratureProcessForm");
 const TempratureProcessRecord = require("../models/tempratureProcessRecords");
@@ -9,11 +11,13 @@ module.exports = {
   1: {
     form: DifferentialPressureForm,
     record: DifferentialPressureRecord,
+    audit:DifferentialPressureAuditTrail,
     approverAlias: "approver",
   },
   2: {
     form: TempratureProcessForm,
     record: TempratureProcessRecord,
+    audit: TemperatureRecordsAuditTrail,
     approverAlias: "approver",
   },
 };

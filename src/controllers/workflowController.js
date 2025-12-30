@@ -205,9 +205,18 @@ exports.GetTransitions = async (req, res) => {
     }
 
     // Resolve form model dynamically
-    const FormModel = processFormRegistry[process_id];
-    if (!FormModel)
-      return res.status(400).json({ message: "No form model mapped" });
+      const registry = processFormRegistry[process_id];
+
+      if (!registry) {
+        return res.status(400).json({
+          error: true,
+          message: "No process mapping found",
+        });
+      }
+
+      const FormModel = registry.form;
+      const AuditModel = registry.audit;
+
 
     // Fetch form with current workflow state
     const form = await FormModel.findOne({
@@ -360,7 +369,7 @@ exports.GetTransitions = async (req, res) => {
     // --------------------------
     // Bulk insert audit trail entries
     // --------------------------
-    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+    await AuditModel.bulkCreate(auditTrailEntries, {
       transaction,
     });
 

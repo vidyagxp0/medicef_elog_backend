@@ -58,8 +58,8 @@ const DifferentialPressureAuditTrail = sequelize.define(
   }
 );
 
-DifferentialPressureAuditTrail.belongsTo(User, { foreignKey: "changed_by" });
-User.hasMany(DifferentialPressureAuditTrail, { foreignKey: "changed_by" });
+DifferentialPressureAuditTrail.belongsTo(User, { foreignKey: "changed_by",as: "changedByUser", });
+User.hasMany(DifferentialPressureAuditTrail, { foreignKey: "changed_by", as: "changedAuditTrails", });
 
 DifferentialPressureAuditTrail.belongsTo(DifferentialPressureForm, {
   foreignKey: "form_id",

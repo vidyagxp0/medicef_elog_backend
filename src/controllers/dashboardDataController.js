@@ -10,6 +10,7 @@ const Process = require("../models/processes");
 const Department = require("../models/departments");
 const { Op } = require("sequelize");
 const WorkflowState = require("../models/workflowState");
+const formModelRegistry = require("../utils/formModelRegistry");
 
 // ----------------- Build dynamic filters -----------------
 const buildFilters = (query) => {
@@ -98,7 +99,55 @@ exports.GetAllElogs = async (req, res) => {
     });
   }
 };
+exports.GetElogAuditTrail = async (req, res) => {
+  try {
+    const { process_id, form_id } = req.params;
+      console.log(req.params);
+    if (!process_id || !form_id) {
+      return res.status(400).json({
+        error: true,
+        message: "process_id and form_id are required",
+      });
+    }
 
+    // 🔹 process ke according registry nikalo
+    const registry = formModelRegistry[process_id];
+    console.log("registry",registry)
+
+    if (!registry || !registry.audit) {
+      return res.status(400).json({
+        error: true,
+        message: "Audit trail not configured for this process",
+      });
+    }
+
+    const AuditModel = registry.audit;
+
+    // 🔹 Audit Trail fetch
+    const auditTrail = await AuditModel.findAll({
+      where: { form_id },
+      include: [
+        {
+          model: User,
+          as: "changedByUser", // ✅ alias match
+          attributes: ["user_id", "name", "email"],
+        },
+      ],
+      order: [["auditTrail_id", "ASC"]],
+    });
+
+    return res.json({
+      error: false,
+      data: auditTrail,
+    });
+  } catch (error) {
+    console.error("GetElogAuditTrail Error:", error);
+    return res.status(400).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
 exports.GetElogById = async (req, res) => {
   try {
     const { form_id, process_id } = req.params;
