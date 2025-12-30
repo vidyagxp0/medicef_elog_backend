@@ -436,8 +436,6 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
 };
 
 
-
-
 // Common Audit section
 
 exports.GetElogAuditTrail = async (req, res) => {
@@ -496,6 +494,49 @@ exports.GetElogAuditTrail = async (req, res) => {
   }
 };
 
+//function to make pdf friendly json
+function formatAuditValue(value) {
+  if (!value) return "N/A";
+
+  if (typeof value !== "string") {
+    return JSON.stringify(value);
+  }
+
+  // try JSON parse
+  try {
+    const parsed = JSON.parse(value);
+
+    // Array case
+    if (Array.isArray(parsed)) {
+      return parsed
+        .map((item, index) => {
+          if (typeof item === "object" && item !== null) {
+            return Object.entries(item)
+              .filter(([key]) => !key.toLowerCase().includes("active"))
+              .map(([key, val]) => `${key}: ${val}`)
+              .join(", ");
+          }
+          return item;
+        })
+        .join(" | ");
+    }
+
+    // Object case
+    if (typeof parsed === "object") {
+      return Object.entries(parsed)
+        .filter(([key]) => !key.toLowerCase().includes("active"))
+        .map(([key, val]) => `${key}: ${val}`)
+        .join(", ");
+    }
+
+    return parsed;
+  } catch (e) {
+    // normal string
+    return value;
+  }
+}
+
+
 exports.generateAuditPdfbyId = async (req, res) => {
   const { form_id,process_id, type } = req.params;
   const userId = req.user.userId
@@ -523,6 +564,11 @@ exports.generateAuditPdfbyId = async (req, res) => {
       }
 
       const AuditModel = registry.audit;
+      const Form = registry.form;
+      const FormData = await Form.findOne({
+        where:{form_id},
+      })
+      const departmentName = FormData.departmentName
 
       const auditTrail = await AuditModel.findAll({
         where: { form_id },
@@ -536,22 +582,23 @@ exports.generateAuditPdfbyId = async (req, res) => {
         order: [["auditTrail_id", "ASC"]],
       });
 
-    const response = auditTrail.map((row) => {
-      const data = row.toJSON();
+      const response = auditTrail.map((row) => {
+        const data = row.toJSON();
 
-      return {
-        ...data,
+        return {
+          ...data,
+          new_value: formatAuditValue(data.new_value),
+          previous_value: formatAuditValue(data.previous_value),
 
-        //  yahin pe field_name replace
-        field_name:
-          auditFieldMap[data.field_name] ||
-          data.field_name
-            .replace(/_/g, " ")
-            .replace(/([a-z])([A-Z])/g, "$1 $2")
-            .toLowerCase()
-            .replace(/\b\w/g, (c) => c.toUpperCase()),
-      };
-    });
+          field_name:
+            auditFieldMap[data.field_name] ||
+            data.field_name
+              .replace(/_/g, " ")
+              .replace(/([a-z])([A-Z])/g, "$1 $2")
+              .toLowerCase()
+              .replace(/\b\w/g, (c) => c.toUpperCase()),
+        };
+      });
 
     const logoPath = path.join(__dirname, "../public/medicef_logo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
@@ -561,6 +608,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
       form_id: form_id,
       status: "status",
       auditTrail: response,
+      departmentName:departmentName
     };
 
     // Render audit report content using EJS
@@ -573,7 +621,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const headerHtml = await new Promise((resolve, reject) => {
       req.app.render(
-        "auditHeader",
+        "header",
         { reportData: data, logoDataUri: logoDataUri },
         (err, html) => {
           if (err) return reject(err);
