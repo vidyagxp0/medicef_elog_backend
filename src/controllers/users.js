@@ -65,12 +65,12 @@ exports.signup = async (req, res) => {
       const processId = await Process.findOne({
         where: { process: singleRole[1] },
       });
-      const siteId = await Department.findOne({ where: { site: singleRole[0] } });
+      const departmentId = await Department.findOne({ where: { departmentName: singleRole[0] } });
 
       await UserRole.create(
         {
           user_id: newUser.user_id,
-          site_id: siteId.site_id,
+          department_id: departmentId.department_id,
           process_id: processId.process_id,
           role_id: roleId.role_id,
           roleGroup_id: roleGroup.roleGroup_id,
@@ -143,8 +143,8 @@ exports.editUser = async (req, res) => {
         where: { process: singleRole[1] },
         transaction,
       });
-      const siteId = await Department.findOne({
-        where: { site: singleRole[0] },
+      const departmentId = await Department.findOne({
+        where: { departmentName: singleRole[0] },
         transaction,
       });
       const roleGroup = await RoleGroup.findOne({
@@ -155,7 +155,7 @@ exports.editUser = async (req, res) => {
       await UserRole.create(
         {
           user_id: req.params.id,
-          site_id: siteId.site_id,
+          department_id: departmentId.department_id,
           process_id: processId.process_id,
           role_id: roleId.role_id,
           roleGroup_id: roleGroup.roleGroup_id,

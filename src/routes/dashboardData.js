@@ -11,6 +11,7 @@ router.get("/get-effective-by-id/:form_id/:process_id", Auth.checkUserJwtToken, 
 router.get("/get-processes", dashboardDataController.getAllProcesses);
 router.get('/get-departments', dashboardDataController.getAllDepartments);
 router.get('/get-server-time', dashboardDataController.getServerTime);
+router.post("/get-user-roleGroups", Auth.checkUserJwtToken, dashboardDataController.GetUserOnBasisOfRoleGroup);
 
 
 

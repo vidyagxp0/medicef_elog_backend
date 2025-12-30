@@ -49,7 +49,6 @@ const buildFilters = (query) => {
 
   return where;
 };
-
 exports.GetAllElogs = async (req, res) => {
   try {
     // Fetch all processes
@@ -110,9 +109,8 @@ exports.GetElogAuditTrail = async (req, res) => {
       });
     }
 
-    // 🔹 process ke according registry nikalo
+    // process ke according registry nikalo
     const registry = formModelRegistry[process_id];
-    console.log("registry",registry)
 
     if (!registry || !registry.audit) {
       return res.status(400).json({
@@ -123,13 +121,13 @@ exports.GetElogAuditTrail = async (req, res) => {
 
     const AuditModel = registry.audit;
 
-    // 🔹 Audit Trail fetch
+    // Audit Trail fetch
     const auditTrail = await AuditModel.findAll({
       where: { form_id },
       include: [
         {
           model: User,
-          as: "changedByUser", // ✅ alias match
+          as: "changedByUser", // alias match
           attributes: ["user_id", "name", "email"],
         },
       ],
@@ -434,5 +432,55 @@ exports.getServerTime = async (req, res) => {
     });
   }
 };
+
+exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
+  const { role_id, department_id, process_id } = req.body;
+
+  try {
+    if(!role_id,!department_id,!process_id){
+      return res.status(400).json({
+        error:true,
+        message:"please provide all details"
+      })
+    }
+    const selectedUsers = await UserRole.findAll({
+      where: {
+        [Op.or]: [
+          {
+            role_id: role_id,
+            process_id: process_id,
+            department_id: department_id,
+          },
+          {
+            role_id: 4,
+            process_id: process_id,
+            department_id: department_id,
+          },
+        ],
+      },
+      include: [
+        {
+          model: User,
+          where: { isActive: true },
+        },
+      ],
+    });
+
+    return res.status(200).json({
+      error: false,
+      message: "Users fetched successfully",
+      data: selectedUsers,
+    });
+
+  } catch (error) {
+    console.error("Error fetching users:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+
 
 
