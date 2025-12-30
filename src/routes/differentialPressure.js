@@ -102,13 +102,6 @@ router.put(
   DifferentialPressureProcess.ApproveDPElog
 );
 
-// get users based on roles, departments and processes
-router.post(
-  "/get-user-roleGroups",
-  Auth.checkUserJwtToken,
-  DifferentialPressureProcess.GetUserOnBasisOfRoleGroup
-);
-
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,

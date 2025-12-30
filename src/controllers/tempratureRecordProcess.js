@@ -1558,41 +1558,6 @@ exports.ApproveTRElog = async (req, res) => {
     });
   }
 };
-
-// get users based on roles, departments and processes
-exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
-  const { role_id, department_id, process_id } = req.body;
-
-  try {
-    // Fetch users based on role, department, and process
-    const selectedUsers = await UserRole.findAll({
-      where: {
-        [Op.or]: [
-          { role_id: role_id, process_id: process_id, department_id: department_id },
-          { role_id: 5, process_id: process_id, department_id: department_id },
-        ],
-      },
-      include: {
-        model: User,
-        where: { isActive: true },
-      },
-    });
-
-    // Send the response with the fetched users
-    return res.status(200).json({
-      error: false,
-      message: selectedUsers,
-    });
-  } catch (error) {
-    // Catch any errors and send an appropriate response
-    console.error("Error fetching users:", error);
-    return res.status(500).json({
-      error: true,
-      message: `Error fetching users: ${error.message}`,
-    });
-  }
-};
-
 exports.getAuditTrailForAnElog = async (req, res) => {
   try {
     // Extract form_id from request parameters

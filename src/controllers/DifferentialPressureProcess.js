@@ -223,13 +223,12 @@ exports.InsertDifferentialPressure = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
-        time: record?.time, // Assuming time was meant here instead of unique_id again
+        time: record?.time,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         done_by: record?.done_by,
         approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
-        unique_id: record?.unique_id,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
         area_name:area_name, 
@@ -1515,40 +1514,6 @@ exports.ApproveDPElog = async (req, res) => {
     return res.status(500).json({
       error: true,
       message: `Error approving elog: ${error.message}`,
-    });
-  }
-};
-
-// get users based on roles, departments and processes
-exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
-  const { role_id, department_id, process_id } = req.body;
-
-  try {
-    // Fetch users based on role, departmentName, and process
-    const selectedUsers = await UserRole.findAll({
-      where: {
-        [Op.or]: [
-          { role_id: role_id, process_id: process_id, department_id: department_id },
-          { role_id: 4, process_id: process_id, department_id: department_id },
-        ],
-      },
-      include: {
-        model: User,
-        where: { isActive: true },
-      },
-    });
-
-    // Send the response with the fetched users
-    return res.status(200).json({
-      error: false,
-      message: selectedUsers,
-    });
-  } catch (error) {
-    // Catch any errors and send an appropriate response
-    console.error("Error fetching users:", error);
-    return res.status(500).json({
-      error: true,
-      message: `Error fetching users: ${error.message}`,
     });
   }
 };

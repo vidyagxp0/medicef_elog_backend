@@ -12,6 +12,7 @@ const { Op } = require("sequelize");
 const WorkflowState = require("../models/workflowState");
 const formModelRegistry = require("../utils/formModelRegistry");
 const UserRole = require("../models/userRoles");
+const auditFieldMap = require("../utils/auditFieldMap");
 
 // ----------------- Build dynamic filters -----------------
 const buildFilters = (query) => {
@@ -102,17 +103,8 @@ exports.GetAllElogs = async (req, res) => {
 exports.GetElogAuditTrail = async (req, res) => {
   try {
     const { process_id, form_id } = req.params;
-      console.log(req.params);
-    if (!process_id || !form_id) {
-      return res.status(400).json({
-        error: true,
-        message: "process_id and form_id are required",
-      });
-    }
 
-    // process ke according registry nikalo
     const registry = formModelRegistry[process_id];
-
     if (!registry || !registry.audit) {
       return res.status(400).json({
         error: true,
@@ -122,22 +114,38 @@ exports.GetElogAuditTrail = async (req, res) => {
 
     const AuditModel = registry.audit;
 
-    // Audit Trail fetch
     const auditTrail = await AuditModel.findAll({
       where: { form_id },
       include: [
         {
           model: User,
-          as: "changedByUser", // alias match
+          as: "changedByUser",
           attributes: ["user_id", "name", "email"],
         },
       ],
       order: [["auditTrail_id", "ASC"]],
     });
 
+    const response = auditTrail.map((row) => {
+      const data = row.toJSON();
+
+      return {
+        ...data,
+
+        //  yahin pe field_name replace
+        field_name:
+          auditFieldMap[data.field_name] ||
+          data.field_name
+            .replace(/_/g, " ")
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
+            .toLowerCase()
+            .replace(/\b\w/g, (c) => c.toUpperCase()),
+      };
+    });
+
     return res.json({
       error: false,
-      data: auditTrail,
+      data: response,
     });
   } catch (error) {
     console.error("GetElogAuditTrail Error:", error);

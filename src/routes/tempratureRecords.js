@@ -102,13 +102,6 @@ router.put(
   TempratureProcess.ApproveTRElog
 );
 
-// get users based on roles, sites and processes
-router.post(
-  "/get-user-roleGroups",
-  Auth.checkUserJwtToken,
-  TempratureProcess.GetUserOnBasisOfRoleGroup
-);
-
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,
