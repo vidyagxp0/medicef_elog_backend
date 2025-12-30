@@ -44,13 +44,13 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
-  initiator_date_time: {
+  initiatorDate: {
     type: DataTypes.DATE,
   },
-  date_of_review: {
+  approverDate: {
     type: DataTypes.DATE,
   },
-  date_of_approval: {
+  reviewerDate: {
     type: DataTypes.DATE,
   },
   description: {

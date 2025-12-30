@@ -138,7 +138,6 @@ exports.GetElogById = async (req, res) => {
         message:"No data Found"
       })
     }
-    console.log("elogData",elogData)
 
     return res.json({
       error: false,

@@ -162,9 +162,14 @@ exports.GetTransitions = async (req, res) => {
         message: "email, password are required",
       });
     }
-    if (!form_id || !process_id || !action || !declaration) {
+    if (!form_id || !process_id ) {
       return res.status(400).json({
-        message: "form_id, process_id, and action are required",
+        message: "form_id, process_id are required",
+      });
+    }
+    if (!action || !declaration ) {
+      return res.status(400).json({
+        message: "action, declaration are required",
       });
     }
 
@@ -295,6 +300,7 @@ exports.GetTransitions = async (req, res) => {
         status: nextState.name,
         [`${activeRole}Comment`]: comment,
         [`${activeRole}Name`]: dbUser.name,
+        [`${activeRole}Date`]: new Date(),
       },
       { transaction }
     );
