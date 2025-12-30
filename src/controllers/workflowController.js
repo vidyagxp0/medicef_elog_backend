@@ -205,7 +205,7 @@ exports.GetTransitions = async (req, res) => {
     }
 
     // Resolve form model dynamically
-      const registry = processFormRegistry[process_id];
+      const registry = formModelRegistry[process_id];
 
       if (!registry) {
         return res.status(400).json({
