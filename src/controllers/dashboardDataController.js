@@ -11,6 +11,7 @@ const Department = require("../models/departments");
 const { Op } = require("sequelize");
 const WorkflowState = require("../models/workflowState");
 const formModelRegistry = require("../utils/formModelRegistry");
+const UserRole = require("../models/userRoles");
 
 // ----------------- Build dynamic filters -----------------
 const buildFilters = (query) => {
