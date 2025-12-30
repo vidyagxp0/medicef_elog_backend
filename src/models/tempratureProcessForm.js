@@ -44,6 +44,15 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     allowNull: false,
     defaultValue: Sequelize.NOW,
   },
+  initiatorDate: {
+    type: DataTypes.DATE,
+  },
+  approverDate: {
+    type: DataTypes.DATE,
+  },
+  reviewerDate: {
+    type: DataTypes.DATE,
+  },
   reviewer_id: {
     type: DataTypes.JSON,
     allowNull: false,
@@ -59,12 +68,6 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
       model: User,
       key: "user_id",
     },
-  },
-  date_of_review: {
-    type: DataTypes.DATE,
-  },
-  date_of_approval: {
-    type: DataTypes.DATE,
   },
   description: {
     type: DataTypes.JSON,
@@ -107,7 +110,7 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     type:DataTypes.JSON,
     allowNull:false,
   },
-  reviewComment: {
+  reviewerComment: {
     type: DataTypes.STRING,
   },
   approverComment: {
