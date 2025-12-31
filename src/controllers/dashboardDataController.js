@@ -167,7 +167,7 @@ exports.GetAllEffectiveElogs = async (req, res) => {
       const filters = buildFilters(req.query);
 
       const records = await FormModel.findAll({
-        // where: filters,
+        where: filters,
         where: {
           ...filters,              // 🔹 dynamic filters
           workflow_state_id: 4     // 🔹 fixed condition
