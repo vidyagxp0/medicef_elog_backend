@@ -22,35 +22,47 @@ const getUserById = async (user_id) => {
 const buildFilters = (query) => {
   const where = {};
 
-  if (query.status) {
-    where.status = query.status;
+  //  Parse filters JSON
+  let filters = {};
+  if (query.filters) {
+    try {
+      filters = JSON.parse(query.filters);
+    } catch (err) {
+      console.error("Invalid filters JSON");
+    }
   }
 
-  if (query.departmentName) {
-    where.departmentName = query.departmentName;
+  // Status
+  if (filters.status) {
+    where.status = filters.status;
   }
-  // if (query.process) {
-  //   where.process = query.process;
-  // }
 
-  if (query.from && query.to) {
+  // Department
+  if (filters.departmentName) {
+    where.departmentName = filters.departmentName;
+  }
+
+  //  Date range
+  if (filters.date?.from && filters.date?.to) {
     where.date_of_initiation = {
       [Op.between]: [
-        new Date(query.from + "T00:00:00"),
-        new Date(query.to + "T23:59:59")
-      ]
+        new Date(filters.date.from + "T00:00:00"),
+        new Date(filters.date.to + "T23:59:59"),
+      ],
     };
   }
 
-  if (query.searchTerm) {
+  //  Search (area_name + description)
+  if (filters.search) {
     where[Op.or] = [
-      { area_name: { [Op.like]: `%${query.searchTerm}%` } },
-      { description: { [Op.like]: `%${query.searchTerm}%` } },
+      { area_name: { [Op.like]: `%${filters.search}%` } },
+      { description: { [Op.like]: `%${filters.search}%` } },
     ];
   }
 
   return where;
 };
+
 exports.GetAllElogs = async (req, res) => {
   try {
     // Fetch all processes
@@ -169,8 +181,8 @@ exports.GetAllEffectiveElogs = async (req, res) => {
       const records = await FormModel.findAll({
         where: filters,
         where: {
-          ...filters,              // 🔹 dynamic filters
-          workflow_state_id: 4     // 🔹 fixed condition
+          ...filters,              // dynamic filters
+          workflow_state_id: 4     // fixed condition
         },
         include: [
           {
