@@ -32,14 +32,25 @@ app.use(
 
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["*"],
-        frameAncestors: ["self"],
-      },
+    // contentSecurityPolicy: {
+    //   directives: {
+    //     defaultSrc: ["*"],
+    //     frameAncestors: ["self"],
+    //   },
+    // },
+        contentSecurityPolicy: false,
+    // crossOriginResourcePolicy: true,
+        crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
+app.use(
+  "/profile_pics",
+  express.static("profile_pics", {
+    setHeaders: (res) => {
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     },
-    crossOriginResourcePolicy: true,
-    crossOriginEmbedderPolicy: true,
   })
 );
 

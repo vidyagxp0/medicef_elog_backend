@@ -80,7 +80,7 @@ function authorizeUserRole(processId, roleId) {
 
 const getFileUrl = (file) => {
   if (file?.filename) {
-    return `http://localhost:1001/profile_pics/${file?.filename}`;
+    return `http://localhost:1000/profile_pics/${file?.filename}`;
   }
 };
 
