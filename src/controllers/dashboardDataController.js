@@ -62,7 +62,6 @@ exports.GetAllElogs = async (req, res) => {
       if (!FormModel) continue; // Agar model registry me na ho toh skip
 
       // Apply filters
-      console.log(req.query,"req.query")
       const filters = buildFilters(req.query);
 
       const records = await FormModel.findAll({
