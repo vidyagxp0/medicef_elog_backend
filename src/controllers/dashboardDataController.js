@@ -22,10 +22,6 @@ const getUserById = async (user_id) => {
 const buildFilters = (query) => {
   const where = {};
 
-  if (query.area_name ) {
-    where.area_name = query.area_name;
-  }
-
   if (query.status) {
     where.status = query.status;
   }
@@ -46,10 +42,10 @@ const buildFilters = (query) => {
     };
   }
 
-  if (query.search) {
+  if (query.searchTerm) {
     where[Op.or] = [
-      { equipment_name: { [Op.like]: `%${query.search}%` } },
-      { description: { [Op.like]: `%${query.search}%` } },
+      { area_name: { [Op.like]: `%${query.searchTerm}%` } },
+      { description: { [Op.like]: `%${query.searchTerm}%` } },
     ];
   }
 
@@ -66,6 +62,7 @@ exports.GetAllElogs = async (req, res) => {
       if (!FormModel) continue; // Agar model registry me na ho toh skip
 
       // Apply filters
+      console.log(req.query,"req.query")
       const filters = buildFilters(req.query);
 
       const records = await FormModel.findAll({
@@ -651,7 +648,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const pdfBuffer = await page.pdf({
       format: "A4",
-      landscape:true,
+      // landscape:true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: headerHtml,
