@@ -13,6 +13,7 @@ const auditFieldMap = require("../utils/auditFieldMap");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { sequelize } = require("../config/db");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -443,7 +444,6 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   }
 };
 
-
 // Common Audit section
 
 exports.GetElogAuditTrail = async (req, res) => {
@@ -687,6 +687,96 @@ exports.generateAuditPdfbyId = async (req, res) => {
     if (browser) {
       await browser.close();
     }
+  }
+};
+
+
+exports.deleteAttahment = async (req, res) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const { form_id, process_id } = req.params;
+    const { fieldName } = req.body;
+    const user = req.user;
+
+    // 🔹 
+    if (!form_id || !process_id || !fieldName) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "form_id, process_id and fieldName are required",
+      });
+    }
+
+    // 🔹 Get models dynamically
+    const registry = formModelRegistry[process_id];
+    if (!registry || !registry.form || !registry.audit) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const FormModel = registry.form;
+    const AuditModel = registry.audit;
+
+    // 🔹 Fetch form
+    const formData = await FormModel.findByPk(form_id, { transaction });
+    if (!formData) {
+      await transaction.rollback();
+      return res.status(404).json({
+        error: true,
+        message: "Form not found",
+      });
+    }
+
+    const previousValue = formData[fieldName];
+    if (!previousValue) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Attachment already deleted",
+      });
+    }
+
+    const previousStatus = formData.status || "";
+
+    //  Update form (attachment → NULL)
+    await FormModel.update(
+      { [fieldName]: null },
+      { where: { form_id: form_id }, transaction }
+    );
+
+    // AUDIT TRAIL (direct mapping here )
+    await AuditModel.create(
+      {
+        form_id: form_id,
+        changed_by: user.userId,
+        field_name: auditFieldMap[fieldName] || fieldName,
+        previous_value: previousValue,
+        new_value: "NULL",
+        previous_status: previousStatus,
+        new_status: previousStatus,
+        declaration: null,
+        action: "Delete Attachment",
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "Attachment deleted successfully",
+    });
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Error:", error);
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
   }
 };
 

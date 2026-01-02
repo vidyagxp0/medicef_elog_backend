@@ -55,7 +55,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
     additionalInfo,
   } = req.body;
 
-
+  if (!description) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Description field is mandatory." });
+  }
   if (!approver_id) {
     return res
       .status(400)
@@ -656,8 +660,8 @@ for (const [field, newValue] of Object.entries(fields)) {
             approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
-            supporting_docs:
-              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+            // supporting_docs:
+            //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -696,9 +700,9 @@ for (const [field, newValue] of Object.entries(fields)) {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
-        supporting_docs: record?.supporting_docs
-          ? record?.supporting_docs
-          : getElogDocsUrl(supportingDocs[index]),
+        // supporting_docs: record?.supporting_docs
+        //   ? record?.supporting_docs
+        //   : getElogDocsUrl(supportingDocs[index]),
       }));
    
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
