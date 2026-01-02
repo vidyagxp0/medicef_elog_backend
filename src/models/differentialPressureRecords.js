@@ -33,6 +33,12 @@ const DifferentialPressureRecord = sequelize.define(
     differential_pressure: {
       type: DataTypes.STRING,
     },
+    differential_pressure_max: {
+      type: DataTypes.STRING,
+    },
+    differential_pressure_min: {
+      type: DataTypes.STRING,
+    },
     remarks: {
       type: DataTypes.STRING,
     },

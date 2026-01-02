@@ -544,7 +544,6 @@ function formatAuditValue(value) {
   }
 }
 
-
 exports.generateAuditPdfbyId = async (req, res) => {
   const { form_id,process_id, type } = req.params;
   const userId = req.user.userId
@@ -690,15 +689,13 @@ exports.generateAuditPdfbyId = async (req, res) => {
   }
 };
 
-
-exports.deleteAttahment = async (req, res) => {
+exports.deleteAttachment = async (req, res) => {
   const transaction = await sequelize.transaction();
   try {
     const { form_id, process_id } = req.params;
     const { fieldName } = req.body;
     const user = req.user;
-
-    // 🔹 
+ 
     if (!form_id || !process_id || !fieldName) {
       await transaction.rollback();
       return res.status(400).json({
@@ -707,7 +704,6 @@ exports.deleteAttahment = async (req, res) => {
       });
     }
 
-    // 🔹 Get models dynamically
     const registry = formModelRegistry[process_id];
     if (!registry || !registry.form || !registry.audit) {
       await transaction.rollback();
@@ -720,7 +716,6 @@ exports.deleteAttahment = async (req, res) => {
     const FormModel = registry.form;
     const AuditModel = registry.audit;
 
-    // 🔹 Fetch form
     const formData = await FormModel.findByPk(form_id, { transaction });
     if (!formData) {
       await transaction.rollback();
@@ -741,13 +736,11 @@ exports.deleteAttahment = async (req, res) => {
 
     const previousStatus = formData.status || "";
 
-    //  Update form (attachment → NULL)
     await FormModel.update(
       { [fieldName]: null },
       { where: { form_id: form_id }, transaction }
     );
 
-    // AUDIT TRAIL (direct mapping here )
     await AuditModel.create(
       {
         form_id: form_id,

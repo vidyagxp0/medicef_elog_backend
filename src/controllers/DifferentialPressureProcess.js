@@ -229,6 +229,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
         unique_id: record?.unique_id,
         time: record?.time,
         differential_pressure: record?.differential_pressure,
+        differential_pressure_min: record?.differential_pressure_min,
+        differential_pressure_max: record?.differential_pressure_max,
         remarks: record?.remarks,
         done_by: record?.done_by,
         approver_remarks: record?.approver_remarks,
@@ -267,9 +269,29 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "DifferentialPressure",
+          field_name: "Differential Pressure",
           previous_value: null,
           new_value: record.differential_pressure,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Differential Pressure Min",
+          previous_value: null,
+          new_value: record.differential_pressure_min,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Differential Pressure Max",
+          previous_value: null,
+          new_value: record.differential_pressure_max,
           changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
@@ -608,6 +630,8 @@ for (const [field, newValue] of Object.entries(fields)) {
         if (newRecord) {
           const recordFields = {
             differential_pressure: newRecord.differential_pressure,
+            differential_pressure_min: newRecord.differential_pressure_min,
+            differential_pressure_max: newRecord.differential_pressure_max,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
             approver_remarks:newRecord.approver_remarks,
@@ -655,6 +679,8 @@ for (const [field, newValue] of Object.entries(fields)) {
             date: newRecord?.date,
             checked_by: newRecord?.checked_by,
             differential_pressure: newRecord.differential_pressure,
+            differential_pressure_min: newRecord.differential_pressure_min,
+            differential_pressure_max: newRecord.differential_pressure_max,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
             approver_remarks:newRecord.approver_remarks,
@@ -694,6 +720,8 @@ for (const [field, newValue] of Object.entries(fields)) {
         time: record?.time,
         date: record?.date,
         differential_pressure: record?.differential_pressure,
+        differential_pressure_min: record.differential_pressure_min,
+        differential_pressure_max: record.differential_pressure_max,
         remarks: record?.remarks,
         done_by: record?.done_by,
         approver_remarks:record?.approver_remarks,
