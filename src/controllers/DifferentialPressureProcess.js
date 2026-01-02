@@ -643,26 +643,26 @@ for (const [field, newValue] of Object.entries(fields)) {
             //   getElogDocsUrl(supportingDocs[index]),
           };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
-            if (
-              newValue !== undefined &&
-              ((typeof newValue === "number" &&
-                !areFloatsEqual(oldValue, newValue)) ||
-                oldValue != newValue)
-            ) {
-              // auditTrailEntries.push({
-              //   form_id: form.form_id,
-              //   field_name: `${field}[${index}]`,
-              //   previous_value: oldValue || null,
-              //   new_value: newValue,
-              //   changed_by: user.user_id,
-              //   previous_status: form.status,
-              //   new_status: form.status,
-              //   action: "Update Elog",
-              // });
-            }
-          }
+          // for (const [field, newValue] of Object.entries(recordFields)) {
+          //   const oldValue = existingRecord[field];
+          //   if (
+          //     newValue !== undefined &&
+          //     ((typeof newValue === "number" &&
+          //       !areFloatsEqual(oldValue, newValue)) ||
+          //       oldValue != newValue)
+          //   ) {
+          //     auditTrailEntries.push({
+          //       form_id: form.form_id,
+          //       field_name: `${field}[${index}]`,
+          //       previous_value: oldValue || null,
+          //       new_value: newValue,
+          //       changed_by: user.user_id,
+          //       previous_status: form.status,
+          //       new_status: form.status,
+          //       action: "Update Elog",
+          //     });
+          //   }
+          // }
         }
       });
 
