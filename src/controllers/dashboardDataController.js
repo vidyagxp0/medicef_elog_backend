@@ -773,5 +773,97 @@ exports.deleteAttachment = async (req, res) => {
   }
 };
 
+exports.addAttachment = async (req, res) => {
+  const transaction = await sequelize.transaction();
+  try {
+    const { form_id, process_id } = req.params;
+    const { fieldName } = req.body;
+    const user = req.user;
+
+    const file = req.file || req.files;
+
+    if (!form_id || !process_id || !fieldName || !file) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "form_id, process_id, fieldName and file are required",
+      });
+    }
+
+    const attachmentPath = getElogDocsUrl(file);
+    if (!attachmentPath) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Invalid file object",
+      });
+    }
+
+    const registry = formModelRegistry[process_id];
+    if (!registry || !registry.form || !registry.audit) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const FormModel = registry.form;
+    const AuditModel = registry.audit;
+
+    const formData = await FormModel.findByPk(form_id, { transaction });
+    if (!formData) {
+      await transaction.rollback();
+      return res.status(404).json({
+        error: true,
+        message: "Form not found",
+      });
+    }
+
+    const previousValue = formData[fieldName];
+    const previousStatus = formData.status || "";
+
+    await FormModel.update(
+      { [fieldName]: attachmentPath },
+      { where: { form_id: form_id }, transaction }
+    );
+
+    await AuditModel.create(
+      {
+        form_id: form_id,
+        changed_by: user.userId,
+        field_name: auditFieldMap[fieldName] || fieldName,
+        previous_value: previousValue || null,
+        new_value: attachmentPath,
+        previous_status: previousStatus,
+        new_status: previousStatus,
+        declaration: "Attachment",
+        action: "Add Attachment",
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "Attachment added successfully",
+      data: {
+        attachmentPath,
+      },
+    });
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Error:", error);
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
+
+
+
 
 

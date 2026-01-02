@@ -437,11 +437,7 @@ exports.EditDifferentialPressure = async (req, res) => {
         initiatorAttachment = file;
       }  else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if(file.fieldname === "reviewerAttachment"){
-        reviewerAttachment = file;
-      } else if(file.fieldname === "approverAttachment"){
-        approverAttachment = file;
-      }
+      } 
       //  else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
       //   const match = file.fieldname.match(
       //     /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
@@ -486,12 +482,6 @@ exports.EditDifferentialPressure = async (req, res) => {
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
-        : form.initiatorAttachment,
-      reviewerAttachment: reviewerAttachment
-        ? getElogDocsUrl(reviewerAttachment)
-        : form.reviewerAttachment,
-      approverAttachment: approverAttachment
-        ? getElogDocsUrl(approverAttachment)
         : form.initiatorAttachment,
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
@@ -549,8 +539,8 @@ const normalizeValue = (val) => {
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "reviewer",
-        previous_value: oldReviewers.map(u => u.name).join(", "),
-        new_value: newReviewers.map(u => u.name).join(", "),
+        previous_value: oldReviewers?.map(u => u.name).join(", "),
+        new_value: newReviewers?.map(u => u.name).join(", "),
         changed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
@@ -607,19 +597,13 @@ for (const [field, newValue] of Object.entries(fields)) {
         reviewer_id,
         reviewerData,
         approver_id,
-      initiatorAttachment: initiatorAttachment
-        ? getElogDocsUrl(initiatorAttachment)
-        : form.initiatorAttachment,
-      reviewerAttachment: reviewerAttachment
-        ? getElogDocsUrl(reviewerAttachment)
-        : form.reviewerAttachment,
-      approverAttachment: approverAttachment
-        ? getElogDocsUrl(approverAttachment)
-        : form.approverAttachment,
+        initiatorAttachment: initiatorAttachment
+          ? getElogDocsUrl(initiatorAttachment)
+          : form.initiatorAttachment,
 
-      additionalAttachment: additionalAttachment
-        ? getElogDocsUrl(additionalAttachment)
-        : form.additionalAttachment,
+        additionalAttachment: additionalAttachment
+          ? getElogDocsUrl(additionalAttachment)
+          : form.additionalAttachment,
         initiatorComment,
         additionalInfo,
       },
