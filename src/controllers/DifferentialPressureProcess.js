@@ -15,6 +15,7 @@ const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const TemperatureRecordsAuditTrail = require("../models/temperatureRecordsAuditTrail");
+const { reviewerAttachment, approverAttachment } = require("../utils/auditFieldMap");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -241,7 +242,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         acceptance_criteria:acceptance_criteria,
         instrument_id_no:instrument_id_no,
         differential_pressure:differential_pressure,
-        supporting_docs: getElogDocsUrl(supportingDocs),
+        // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
@@ -434,25 +435,29 @@ exports.EditDifferentialPressure = async (req, res) => {
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
-      } 
-      else if (file.fieldname === "additionalAttachment") {
+      }  else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
+      } else if(file.fieldname === "reviewerAttachment"){
+        reviewerAttachment = file;
+      } else if(file.fieldname === "approverAttachment"){
+        approverAttachment = file;
       }
-       else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
-        const match = file.fieldname.match(
-          /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
-        );
-        if (match) {
-          const index = match[1];
-          supportingDocs[index] = file;
-        }
-      }
+      //  else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
+      //   const match = file.fieldname.match(
+      //     /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
+      //   );
+      //   if (match) {
+      //     const index = match[1];
+      //     supportingDocs[index] = file;
+      //   }
+      // }
     });
 
     const form = await DifferentialPressureForm.findOne({
       where: { form_id: form_id },
       transaction,
     });
+
 
     if (!form) {
       await transaction.rollback();
@@ -481,6 +486,12 @@ exports.EditDifferentialPressure = async (req, res) => {
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
+        : form.initiatorAttachment,
+      reviewerAttachment: reviewerAttachment
+        ? getElogDocsUrl(reviewerAttachment)
+        : form.reviewerAttachment,
+      approverAttachment: approverAttachment
+        ? getElogDocsUrl(approverAttachment)
         : form.initiatorAttachment,
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
@@ -542,7 +553,7 @@ const normalizeValue = (val) => {
         new_value: newReviewers.map(u => u.name).join(", "),
         changed_by: user.user_id,
         previous_status: form.status,
-        new_status: "Opened",
+        new_status: form.status,
         action: "Update Elog",
       });
     }
@@ -558,7 +569,7 @@ const normalizeValue = (val) => {
         new_value: newApprover?.name || "",
         changed_by: user.user_id,
         previous_status: form.status,
-        new_status: "Opened",
+        new_status: form.status,
         action: "Update Elog",
       });
     }
@@ -574,7 +585,7 @@ for (const [field, newValue] of Object.entries(fields)) {
       new_value: formatAuditValue(newValue),
       changed_by: user.user_id,
       previous_status: form.status,
-      new_status: "Opened",
+      new_status: form.status,
       action: "Update Elog",
     });
   }
@@ -599,6 +610,12 @@ for (const [field, newValue] of Object.entries(fields)) {
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
+      reviewerAttachment: reviewerAttachment
+        ? getElogDocsUrl(reviewerAttachment)
+        : form.reviewerAttachment,
+      approverAttachment: approverAttachment
+        ? getElogDocsUrl(approverAttachment)
+        : form.approverAttachment,
 
       additionalAttachment: additionalAttachment
         ? getElogDocsUrl(additionalAttachment)
@@ -637,9 +654,9 @@ for (const [field, newValue] of Object.entries(fields)) {
             approver_remarks:newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
-            supporting_docs:
-              newRecord.supporting_docs ||
-              getElogDocsUrl(supportingDocs[index]),
+            // supporting_docs:
+            //   newRecord.supporting_docs ||
+            //   getElogDocsUrl(supportingDocs[index]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
@@ -650,16 +667,16 @@ for (const [field, newValue] of Object.entries(fields)) {
                 !areFloatsEqual(oldValue, newValue)) ||
                 oldValue != newValue)
             ) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${index}]`,
-                previous_value: oldValue || null,
-                new_value: newValue,
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                action: "Update Elog",
-              });
+              // auditTrailEntries.push({
+              //   form_id: form.form_id,
+              //   field_name: `${field}[${index}]`,
+              //   previous_value: oldValue || null,
+              //   new_value: newValue,
+              //   changed_by: user.user_id,
+              //   previous_status: form.status,
+              //   new_status: form.status,
+              //   action: "Update Elog",
+              // });
             }
           }
         }
@@ -692,16 +709,16 @@ for (const [field, newValue] of Object.entries(fields)) {
 
           for (const [field, newValue] of Object.entries(recordFields)) {
             if (newValue !== undefined) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}[${i}]`,
-                previous_value: null,
-                new_value: newValue || "",
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                action: "Update Elog",
-              });
+              // auditTrailEntries.push({
+              //   form_id: form.form_id,
+              //   field_name: `${field}[${i}]`,
+              //   previous_value: null,
+              //   new_value: newValue || "",
+              //   changed_by: user.user_id,
+              //   previous_status: form.status,
+              //   new_status: "Opened",
+              //   action: "Update Elog",
+              // });
             }
           }
         }
@@ -1919,7 +1936,7 @@ exports.blankReport = async (req, res) => {
       remarks: record?.remarks || "",
       done_by: record?.done_by || "",
       checked_by: record?.checked_by || "",
-      supporting_docs: record?.supporting_docs || "",
+      // supporting_docs: record?.supporting_docs || "",
     }));
 
     const arrayData = [...data, ...blankRows];
