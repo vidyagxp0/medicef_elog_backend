@@ -14,6 +14,7 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 const { sequelize } = require("../config/db");
+const { getElogDocsUrl } = require("../middlewares/authentication");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });

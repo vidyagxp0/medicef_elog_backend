@@ -40,6 +40,6 @@ router.get("/get-all-audittrail/:form_id/:process_id", Auth.checkUserJwtToken, d
 router.get( "/get-audit-report/:form_id/:process_id/:type", Auth.checkUserJwtToken, dashboardDataController.generateAuditPdfbyId);
 
 //Attachment Delete
-router.post("/delete-attachment/:form_id/:process_id", Auth.checkUserJwtToken,dashboardDataController.deleteAttachment)
-router.post("/add-attachment/:form_id/:process_id",upload.any(), Auth.checkUserJwtToken,dashboardDataController.addAttachment)
+router.post("/delete-attachment/:form_id/:process_id", Auth.checkUserJwtToken,dashboardDataController.deleteAttachment);
+router.post("/add-attachment/:form_id/:process_id",upload.any(), Auth.checkUserJwtToken,dashboardDataController.addAttachment);
 module.exports = router;
