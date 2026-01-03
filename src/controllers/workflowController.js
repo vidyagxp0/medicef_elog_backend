@@ -28,6 +28,7 @@ exports.GetAllStages = async (req, res) => {
             stages,
         });
     } catch (error) {
+    console.error(error);
         res.status(400).json({
             error: true,
             message: error.message,
@@ -79,6 +80,7 @@ exports.GetCurrentStage = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       error: true,
       message: error.message,
@@ -143,6 +145,7 @@ exports.GetTransitions = async (req, res) => {
     });
 
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       error: true,
       message: error.message,
@@ -231,7 +234,6 @@ exports.GetTransitions = async (req, res) => {
     }
 
     const currentStateId = form.workflow_state_id;
-
     // Find allowed transition dynamically
     const transition = await workflow_transitions.findOne({
       where: {
@@ -240,7 +242,6 @@ exports.GetTransitions = async (req, res) => {
         is_active: 1,
       },
     });
-
     if (!transition) {
       await transaction.rollback();
       return res.status(400).json({
@@ -296,9 +297,17 @@ exports.GetTransitions = async (req, res) => {
     });
     }
 
+
     // const declaration = req.body[`${activeRole}Declaration`] || "";
     const comment = req.body[`${activeRole}Comment`] || "";
 
+        if (!comment || comment.trim() === "") {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: `${activeRole} comment is mandatory`,
+      });
+    }
     // --------------------------
     // Update form workflow state
     // --------------------------

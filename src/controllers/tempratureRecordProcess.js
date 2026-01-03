@@ -47,8 +47,8 @@ exports.InsertTempratureRecord = async (req, res) => {
     area_name,
     room_id,
     instrument_id_no,
-    acceptance_temperature,
-    relative_humidity_criteria,
+    // acceptance_temperature,
+    // relative_humidity_criteria,
     acceptanceTempData,
     relHumidityData,
     additionalInfo,
@@ -138,8 +138,8 @@ exports.InsertTempratureRecord = async (req, res) => {
         area_name:area_name,
         instrument_id_no:instrument_id_no,
         room_id:room_id,
-        acceptance_temperature: acceptance_temperature,
-        relative_humidity_criteria: relative_humidity_criteria ,
+        // acceptance_temperature: acceptance_temperature,
+        // relative_humidity_criteria: relative_humidity_criteria ,
         acceptanceTempData:acceptanceTempData,
         relHumidityData:relHumidityData,
         reviewerData: reviewerData,
@@ -164,8 +164,8 @@ exports.InsertTempratureRecord = async (req, res) => {
       area_name,
       room_id,
       instrument_id_no,
-      acceptance_temperature,
-      relative_humidity_criteria,
+      // acceptance_temperature,
+      // relative_humidity_criteria,
       acceptanceTempData,
       relHumidityData,
       reviewer: reviewerNames,
@@ -213,121 +213,121 @@ exports.InsertTempratureRecord = async (req, res) => {
       });
     }
 
-    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record, index) => ({
-        form_id: newForm?.form_id,
-        unique_id: record?.unique_id,
-        time: record?.time, // Assuming time was meant here instead of unique_id again
-        date: record?.date,
-        temprature_record: record?.temprature_record,
-        humidity_record: record?.humidity_record,
-        remarks: record?.remarks,
-        done_by: record?.done_by,
-        approver_remarks: record?.approver_remarks,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        // supporting_docs: record?.supporting_docs
-        //   ? record.supporting_docs
-        //   : getElogDocsUrl(supportingDocs[index]),
-      }));
+    // if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
+    //   const formRecords = FormRecordsArray.map((record, index) => ({
+    //     form_id: newForm?.form_id,
+    //     unique_id: record?.unique_id,
+    //     time: record?.time, // Assuming time was meant here instead of unique_id again
+    //     date: record?.date,
+    //     temprature_record: record?.temprature_record,
+    //     humidity_record: record?.humidity_record,
+    //     remarks: record?.remarks,
+    //     done_by: record?.done_by,
+    //     approver_remarks: record?.approver_remarks,
+    //     checked_by: record?.checked_by,
+    //     reviewed_by: record?.reviewed_by,
+    //     approved_by: record?.approved_by,
+    //     // supporting_docs: record?.supporting_docs
+    //     //   ? record.supporting_docs
+    //     //   : getElogDocsUrl(supportingDocs[index]),
+    //   }));
 
-      await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
-      formRecords.forEach((record, index) => {
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Unique Id",
-          previous_value: null,
-          new_value: record.unique_id,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Time",
-          previous_value: null,
-          new_value: record.time,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Date",
-          previous_value: null,
-          new_value: record.date,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Temprature Record",
-          previous_value: null,
-          new_value: record.temprature_record,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Humidity Record",
-          previous_value: null,
-          new_value: record.humidity_record,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Remarks",
-          previous_value: null,
-          new_value: record.remarks,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Done by",
-          previous_value: null,
-          new_value: record.done_by,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "CheckedBy",
-          previous_value: null,
-          new_value: record.checked_by,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        if (supportingDocs[index]) {
-          auditTrailEntries.push({
-            form_id: newForm.form_id,
-            field_name: "SupportingDocs",
-            previous_value: null,
-            new_value: getElogDocsUrl(supportingDocs[index]),
-            changed_by: user.user_id,
-            previous_status: "Not Applicable",
-            new_status: "Opened",
-            action: "Opened",
-          });
-        }
-      });
-    }
+    //   await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
+    //   formRecords.forEach((record, index) => {
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Unique Id",
+    //       previous_value: null,
+    //       new_value: record.unique_id,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Time",
+    //       previous_value: null,
+    //       new_value: record.time,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Date",
+    //       previous_value: null,
+    //       new_value: record.date,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Temprature Record",
+    //       previous_value: null,
+    //       new_value: record.temprature_record,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Humidity Record",
+    //       previous_value: null,
+    //       new_value: record.humidity_record,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Remarks",
+    //       previous_value: null,
+    //       new_value: record.remarks,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Done by",
+    //       previous_value: null,
+    //       new_value: record.done_by,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "CheckedBy",
+    //       previous_value: null,
+    //       new_value: record.checked_by,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     if (supportingDocs[index]) {
+    //       auditTrailEntries.push({
+    //         form_id: newForm.form_id,
+    //         field_name: "SupportingDocs",
+    //         previous_value: null,
+    //         new_value: getElogDocsUrl(supportingDocs[index]),
+    //         changed_by: user.user_id,
+    //         previous_status: "Not Applicable",
+    //         new_status: "Opened",
+    //         action: "Opened",
+    //       });
+    //     }
+    //   });
+    // }
 
     await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
@@ -374,8 +374,8 @@ exports.EditTempratureRecord = async (req, res) => {
     area_name,
     room_id,
     instrument_id_no,
-    acceptance_temperature,
-    relative_humidity_criteria,
+    // acceptance_temperature,
+    // relative_humidity_criteria,
     acceptanceTempData,
     relHumidityData,
     initiatorComment,
@@ -469,8 +469,8 @@ exports.EditTempratureRecord = async (req, res) => {
       area_name,
       room_id,
       instrument_id_no,
-      acceptance_temperature,
-      relative_humidity_criteria,
+      // acceptance_temperature,
+      // relative_humidity_criteria,
       acceptanceTempData,
       relHumidityData,
       // reviewer: reviewerNames,
@@ -592,8 +592,8 @@ exports.EditTempratureRecord = async (req, res) => {
         area_name,
         room_id,
         instrument_id_no,
-        acceptance_temperature,
-        relative_humidity_criteria,
+        // acceptance_temperature,
+        // relative_humidity_criteria,
         acceptanceTempData,
         relHumidityData,
         reviewer_id,

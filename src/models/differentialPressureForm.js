@@ -70,10 +70,10 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   compression_area: {
     type: DataTypes.STRING,
   },
-  limit: {
-    type: DataTypes.STRING,
-    allowNull:false
-  },
+  // limit: {
+  //   type: DataTypes.STRING,
+  //   allowNull:false
+  // },
   limitData:{
   type: DataTypes.JSON,
   allowNull:false,
