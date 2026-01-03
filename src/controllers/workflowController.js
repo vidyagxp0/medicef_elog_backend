@@ -261,17 +261,26 @@ exports.GetTransitions = async (req, res) => {
     // --------------------------
 
     const currentState = form.workflow_state.name; 
-    let activeRole = null;
-    if (user.userId === form.initiator_id) {
-    activeRole = "initiator";
-    } else if (
-    Array.isArray(form.reviewer_id) &&
-    form.reviewer_id.includes(user.userId)
-    ) {
-    activeRole = "reviewer";
-    } else if (user.userId === form.approver_id) {
-    activeRole = "approver";
-    }
+
+    const resolveActiveRole = (userId, form, currentState) => {
+      if (currentState === "Opened" && userId === form.initiator_id)
+        return "initiator";
+
+      if (
+        currentState === "Under Review" &&
+        Array.isArray(form.reviewer_id) &&
+        form.reviewer_id.includes(userId)
+      )
+        return "reviewer";
+
+      if (currentState === "Under Approval" && userId === form.approver_id)
+        return "approver";
+
+      return null;
+    };
+
+const activeRole = resolveActiveRole(user.userId, form, currentState);
+
 
     if (!activeRole) {
     await transaction.rollback();
