@@ -298,10 +298,7 @@ const activeRole = resolveActiveRole(user.userId, form, currentState);
 
     const expectedRole = stageRoleMap[currentState];
 
-    // Full permission roles
-    const fullAccessRoles = ["fullpermission"];
-
-    if (!fullAccessRoles.includes(activeRole) && expectedRole !== activeRole) {
+    if ( expectedRole !== activeRole) {
     await transaction.rollback();
     return res.status(403).json({
         error: true,
@@ -353,19 +350,19 @@ const activeRole = resolveActiveRole(user.userId, form, currentState);
       declaration: declaration,
     });
 
-    // if (comment) {
-    //   auditTrailEntries.push({
-    //     form_id: form.form_id,
-    //     field_name: `${activeRole.toUpperCase()}_COMMENT`,
-    //     previous_value: form[`${activeRole}Comment`] || null,
-    //     new_value: comment,
-    //     changed_by: user.userId,
-    //     previous_status: form.workflow_state.name,
-    //     new_status: nextState.name,
-    //     action: action,
-    //     declaration: declaration,
-    //   });
-    // }
+    if (comment) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: `${activeRole.toUpperCase()}_COMMENT`,
+        previous_value: form[`${activeRole}Comment`] || null,
+        new_value: comment,
+        changed_by: user.userId,
+        previous_status: form.workflow_state.name,
+        new_status: nextState.name,
+        action: action,
+        declaration: declaration,
+      });
+    }
 
     // Handle attachments dynamically
     // const roleAttachmentField = `${activeRole}Attachment`;

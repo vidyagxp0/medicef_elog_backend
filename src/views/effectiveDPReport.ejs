@@ -3,46 +3,60 @@
 <head>
   <style>
     body {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        margin: 20px;
-        line-height: 1.6;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      margin: 20px;
+      line-height: 1.6;
     }
 
     h2.heading {
-        padding-top: 0px;
-        font-size: 18px;
-        color: #0066CC;
-        margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      padding: 6px 8px;
+      font-size: 16px;
+      background-color: #dadada;
+      margin-bottom: 8px;
+      page-break-after: avoid;
     }
 
     table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 25px;
-        border: 1px solid #000;
-        page-break-inside: auto;
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+      border: 1px solid #000;
+      page-break-inside: auto;
     }
 
     th, td {
-        border: 1px solid #000;
-        padding: 8px;
-        text-align: left;
-        font-size: 13px;
+      border: 1px solid #000;
+      padding: 8px;
+      text-align: left;
+      font-size: 13px;
     }
 
     th {
-        background: #f8f8f8;
-        font-weight: bold;
+      background: #f8f8f8;
+      font-weight: bold;
     }
 
     thead {
-        display: table-header-group; /* 🔥 PRINT PAR HEADER AUTO REPEAT */
+      display: table-header-group;
     }
 
     tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
+      page-break-inside: avoid;
+    }
+
+    /* 🔥 DETAILS TABLE */
+    .details-table td.label {
+      width: 35%;
+      font-weight: bold;
+      background-color: #f2f2f2;
+    }
+
+    .details-table td.value {
+      width: 65%;
     }
 
     .green { color: green; font-weight: bold; }
@@ -53,16 +67,62 @@
 
 <body>
 
+  <!-- ================= DETAILS ================= -->
+  <h2 class="heading">Details</h2>
+
+  <table class="details-table">
+    <tbody>
+      <tr>
+        <td class="label">Area Name</td>
+        <td class="value"><%= reportData?.area_name || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Acceptance Criteria</td>
+        <td class="value"><%= reportData?.acceptance_criteria || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Differential Pressure</td>
+        <td class="value"><%= reportData?.differential_pressure || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Instrument ID No</td>
+        <td class="value"><%= reportData?.instrument_id_no || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Department</td>
+        <td class="value"><%= reportData?.departmentName || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Lower Action Limit</td>
+        <td class="value"><%= reportData?.limitData?.lowerActionLimit || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Upper Action Limit</td>
+        <td class="value"><%= reportData?.limitData?.upperActionLimit || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Lower Allocation Limit</td>
+        <td class="value"><%= reportData?.limitData?.lowerAllocationLimit || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Upper Allocation Limit</td>
+        <td class="value"><%= reportData?.limitData?.upperAllocationLimit || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Lower Acceptance Criteria</td>
+        <td class="value"><%= reportData?.limitData?.lowerAcceptanceLimit || "Not Applicable" %></td>
+      </tr>
+      <tr>
+        <td class="label">Upper Acceptance Limit</td>
+        <td class="value"><%= reportData?.limitData?.upperAcceptanceLimit || "Not Applicable" %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ================= RECORDS ================= -->
   <h2 class="heading">Differential Pressure Records</h2>
 
-  <div style="margin-bottom: 10px;">
-    <strong style="font-size: medium;">Limit:</strong>
-    <span><%= reportData?.limit %></span>
-  </div>
-
   <% if (reportData.DifferentialPressureRecords && reportData.DifferentialPressureRecords.length > 0) { %>
-
-  <!-- 🔥 Table only once — rows dynamically inside -->
   <table>
     <thead>
       <tr>
@@ -71,66 +131,60 @@
         <th>Date</th>
         <th>Time</th>
         <th>Differential Pressure</th>
-        <th>Done by</th>
+        <th>Done By</th>
         <th>Checked By</th>
-        <th>Supporting Docs</th>
+        <!-- <th>Supporting Docs</th> -->
         <th>Remark</th>
       </tr>
     </thead>
-
     <tbody>
       <% reportData.DifferentialPressureRecords.forEach((record, index) => { %>
-        <tr>
-          <td><%= index + 1 %></td>
-          <td><%= record?.unique_id || "Not Applicable" %></td>
-          <td><%= record?.date || "Not Applicable" %></td>
-          <td><%= record?.time || "Not Applicable" %></td>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= record?.unique_id || "Not Applicable" %></td>
+        <td><%= record?.date || "Not Applicable" %></td>
+        <td><%= record?.time || "Not Applicable" %></td>
 
-          <td class="<%= 
-                record?.differential_pressure < reportData?.limit 
-                    ? 'green' 
-                    : record?.differential_pressure > reportData?.limit 
-                        ? 'red' 
-                        : 'black' 
-            %>">
-            <%= record?.differential_pressure || "Not Applicable" %>
-          </td>
+        <td class="<%= 
+          record?.differential_pressure < reportData?.limit ? 'green' :
+          record?.differential_pressure > reportData?.limit ? 'red' : 'black'
+        %>">
+          <%= record?.differential_pressure || "Not Applicable" %>
+        </td>
 
-          <td><%= record?.done_by || "Not Applicable" %></td>
-          <td><%= record?.reviewed_by || "Not Applicable" %></td>
-          <td>
-              <% if (record?.supporting_docs) { %>
-              <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
-              <% } else { %>
-              Not Applicable
-              <% } %>
-          </td>
-          
-          <td><%= record?.remarks || "Not Applicable" %></td>
-        </tr>
+        <td><%= record?.done_by || "Not Applicable" %></td>
+        <td><%= record?.reviewed_by || "Not Applicable" %></td>
+        <!-- <td>
+          <% if (record?.supporting_docs) { %>
+            <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
+          <% } else { %>
+            Not Applicable
+          <% } %>
+        </td> -->
+        <td><%= record?.remarks || "Not Applicable" %></td>
+      </tr>
       <% }) %>
     </tbody>
   </table>
-
   <% } else { %>
     <p>No Records Found.</p>
   <% } %>
 
+  <!-- ================= ADDITIONAL ================= -->
   <h2 class="heading">Additional</h2>
   <table>
     <tr>
       <th>Additional Attachment</th>
       <td>
         <% if (reportData?.additionalAttachment) { %>
-            <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
+          <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
         <% } else { %>
-            Not Applicable
+          Not Applicable
         <% } %>
       </td>
     </tr>
-
     <tr>
-      <th>Addtional Info</th>
+      <th>Additional Info</th>
       <td><%= reportData?.additionalInfo || "Not Applicable" %></td>
     </tr>
   </table>

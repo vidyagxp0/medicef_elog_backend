@@ -43,74 +43,10 @@ router.put(
   DifferentialPressureProcess.EditDifferentialPressure
 );
 
-//get a differential pressure elog by id
-router.get(
-  "/get/:form_id",
-  Auth.checkUserJwtToken,
-  DifferentialPressureProcess.GetDifferentialPressureElog
-);
-
-//get all the differential pressure elogs
-// router.get(
-//   "/get-all",
-//   Auth.checkUserJwtToken,
-//   DifferentialPressureProcess.GetAllDifferentialPressureElog
-// );
-
-//send differential pressure elog for review
-router.put(
-  "/send-for-review",
-  Auth.checkUserJwtToken,
-  upload.any(),
-  Auth.authorizeUserRole(1, 1),
-  DifferentialPressureProcess.SendDPElogForReview
-);
-
-// change status of differential pressure elog from review to open
-router.put(
-  "/review-to-open",
-  Auth.checkUserJwtToken,
-  upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
-  DifferentialPressureProcess.SendDPElogfromReviewToOpen
-);
-
-// send differential pressure elog from review to approval
-router.put(
-  "/review-to-approval",
-  Auth.checkUserJwtToken,
-  upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(1, 2),
-  DifferentialPressureProcess.SendDPfromReviewToApproval
-);
-
-// send differential pressure elog from under-approval to open
-router.put(
-  "/approval-to-open",
-  Auth.checkUserJwtToken,
-  upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
-  DifferentialPressureProcess.SendDPfromApprovalToOpen
-);
-
-// APPROVE differential pressure elog
-router.put(
-  "/approve-elog",
-  Auth.checkUserJwtToken,
-  upload.single("approverAttachment"),
-  Auth.authorizeUserRole(1, 3),
-  DifferentialPressureProcess.ApproveDPElog
-);
-
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,
   DifferentialPressureProcess.getAuditTrailForAnElog
-);
-
-router.get(
-  "/get-audit-report/:formId/:type/:userId",
-  DifferentialPressureProcess.generateAuditPdfbyId
 );
 
 router.post(
@@ -126,6 +62,7 @@ router.post(
 );
 
 router.post("/view-report", DifferentialPressureProcess.viewReport);
+
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
