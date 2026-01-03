@@ -289,7 +289,10 @@ exports.GetTransitions = async (req, res) => {
 
     const expectedRole = stageRoleMap[currentState];
 
-    if (expectedRole !== activeRole) {
+    // Full permission roles
+    const fullAccessRoles = ["fullpermission"];
+
+    if (!fullAccessRoles.includes(activeRole) && expectedRole !== activeRole) {
     await transaction.rollback();
     return res.status(403).json({
         error: true,
