@@ -687,22 +687,12 @@ exports.EditDifferentialPressure = async (req, res) => {
         transaction,
       });
 
-      const parseDDMMYYYY = (dateStr) => {
-        if (!dateStr) return null;
-
-        const [dd, mm, yyyy] = dateStr.split("/");
-        if (!dd || !mm || !yyyy) return null;
-
-        const date = new Date(`${yyyy}-${mm}-${dd}`);
-        return isNaN(date.getTime()) ? null : date;
-      };
-
       // Create new records
       const formRecords = DifferentialPressureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
-        date: parseDDMMYYYY(record?.date),
+        date: record?.date,
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         done_by: record?.done_by,
@@ -1045,7 +1035,6 @@ if (!form_id) {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
-    console.log("reportData",reportData)
     // reportData.addtionalInfo = reportData?.addtionalInfo
     //   ? removeHtmlTags(reportData?.addtionalInfo)
     //   : "Not Applicable";
@@ -1172,7 +1161,6 @@ if (!form_id) {
         { model: Process },
       ],
     });
-
 
     if (!formData) {
       return res.status(404).json({ error: true, message: "Form not found" });
