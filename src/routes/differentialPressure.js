@@ -61,7 +61,7 @@ router.post(
   DifferentialPressureProcess.chatByPdf
 );
 
-router.post("/view-report", DifferentialPressureProcess.viewReport);
+router.post("/view-report/:form_id", DifferentialPressureProcess.viewReport);
 
 router.post(
   "/effective-chat-pdf/:form_id",

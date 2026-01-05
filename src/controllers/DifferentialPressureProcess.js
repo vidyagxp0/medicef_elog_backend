@@ -970,7 +970,28 @@ exports.chatByPdf = async (req, res) => {
 };
 exports.viewReport = async (req, res) => {
   try {
-    let reportData = req.body.reportData;
+    const { form_id } = req.params;
+    const formData = await DifferentialPressureForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: Process,
+        },
+        {
+          model: User,
+          as: "approver",
+        }
+      ],
+    });
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
     // Render HTML using EJS template
     req.app.render("report", { reportData }, (err, html) => {
       if (err) {
@@ -1002,11 +1023,12 @@ if (!form_id) {
         // fromDate, toDate expected in 'YYYY/MM/DD'
         const [fy, fm, fd] = fromDate.split("/"); 
         const [ty, tm, td] = toDate.split("/");
+        
 
         // create Date objects
         const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
         const to = new Date(ty, tm - 1, td);
-
+         console.log("form",from,"to",to)
         recordWhere.date = {
           [Op.between]: [from, to],
         };
