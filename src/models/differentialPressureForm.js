@@ -54,7 +54,7 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
     type: DataTypes.DATE,
   },
   description: {
-    type: DataTypes.JSON,
+    type: DataTypes.TEXT,
   },
   status: {
     type: DataTypes.STRING,

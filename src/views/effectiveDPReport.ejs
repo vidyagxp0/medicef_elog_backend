@@ -80,6 +80,17 @@
 
 <body>
 
+<% 
+const formatDateOnly = (date) => {
+    if (!date) return "Not Applicable";
+    return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+    });
+};
+%>
+
   <!-- ================= DETAILS ================= -->
   <h2 class="heading">Details</h2>
 
@@ -132,7 +143,7 @@
         <td class="value"><%= reportData?.limitData?.lowerAcceptanceLimit || "Not Applicable" %></td>
       </tr>
       <tr>
-        <td class="label">Upper Acceptance Criteria</td>
+        <td class="label">Upper Acceptance Limit</td>
         <td class="value"><%= reportData?.limitData?.upperAcceptanceLimit || "Not Applicable" %></td>
       </tr>
     </tbody>
@@ -157,11 +168,12 @@
       </tr>
     </thead>
     <tbody>
+
       <% reportData.DifferentialPressureRecords.forEach((record, index) => { %>
       <tr>
         <td><%= index + 1 %></td>
         <td><%= record?.unique_id || "Not Applicable" %></td>
-        <td><%= record?.date || "Not Applicable" %></td>
+        <td><%=  formatDateOnly(record?.date) || "Not Applicable" %></td>
         <td><%= record?.time || "Not Applicable" %></td>
         <%
           const value = parseFloat(record?.differential_pressure);

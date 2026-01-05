@@ -1,6 +1,6 @@
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
-const { Op, ValidationError } = require("sequelize");
+const { ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const puppeteer = require("puppeteer");
@@ -12,6 +12,8 @@ const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const Process = require("../models/processes");
+const { Op, fn, col, where, literal } = require("sequelize");
+
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -239,7 +241,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
-      await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+      // await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -685,12 +687,22 @@ exports.EditDifferentialPressure = async (req, res) => {
         transaction,
       });
 
+      const parseDDMMYYYY = (dateStr) => {
+        if (!dateStr) return null;
+
+        const [dd, mm, yyyy] = dateStr.split("/");
+        if (!dd || !mm || !yyyy) return null;
+
+        const date = new Date(`${yyyy}-${mm}-${dd}`);
+        return isNaN(date.getTime()) ? null : date;
+      };
+
       // Create new records
       const formRecords = DifferentialPressureRecords.map((record, index) => ({
         form_id: form_id,
         unique_id: record?.unique_id,
         time: record?.time,
-        date: record?.date,
+        date: parseDDMMYYYY(record?.date),
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         done_by: record?.done_by,
@@ -986,18 +998,44 @@ exports.viewReport = async (req, res) => {
 };
 exports.effetiveChatByPdf = async (req, res) => {
   try {
-    const { form_id } = req.params;
+
+const { form_id } = req.params;
+const { fromDate, toDate } = req.query;
+
+if (!form_id) {
+  return res.status(400).json({ error: true, message: "Form Id Required" });
+}
+
+      let recordWhere = {};
+
+      if (fromDate && toDate) {
+        // fromDate, toDate expected in 'YYYY/MM/DD'
+        const [fy, fm, fd] = fromDate.split("/"); 
+        const [ty, tm, td] = toDate.split("/");
+
+        // create Date objects
+        const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
+        const to = new Date(ty, tm - 1, td);
+
+        recordWhere.date = {
+          [Op.between]: [from, to],
+        };
+      }
+
     const formData = await DifferentialPressureForm.findOne({
       where: { form_id },
       include: [
         {
           model: DifferentialPressureRecord,
+          where: recordWhere, // directly use literal or undefined
+          required: false,
+          separate: true, // important for order to work on hasMany
+          // order: [["date", "ASC"], ["time", "ASC"]],
         },
-        {
-          model: Process,
-        }
+        { model: Process },
       ],
     });
+
 
     if (!formData) {
       return res.status(404).json({ error: true, message: "Form not found" });
@@ -1007,6 +1045,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
+    console.log("reportData",reportData)
     // reportData.addtionalInfo = reportData?.addtionalInfo
     //   ? removeHtmlTags(reportData?.addtionalInfo)
     //   : "Not Applicable";

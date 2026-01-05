@@ -32,11 +32,11 @@ const DifferentialPressureAuditTrail = sequelize.define(
       allowNull: false,
     },
     previous_value: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     new_value: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     previous_status: {
