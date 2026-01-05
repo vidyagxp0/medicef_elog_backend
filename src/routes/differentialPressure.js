@@ -76,7 +76,7 @@ router.post(
 );
 
 router.post(
-  "/effective-view-report",
+  "/effective-view-report/:form_id",
   DifferentialPressureProcess.effetiveViewReport
 );
 router.post(

@@ -1135,7 +1135,53 @@ if (!form_id) {
 };
 exports.effetiveViewReport = async (req, res) => {
   try {
-    let reportData = req.body.reportData;
+
+const { form_id } = req.params;
+// const { fromDate, toDate } = req.query;
+
+if (!form_id) {
+  return res.status(400).json({ error: true, message: "Form Id Required" });
+}
+
+      // let recordWhere = {};
+
+      // if (fromDate && toDate) {
+      //   // fromDate, toDate expected in 'YYYY/MM/DD'
+      //   const [fy, fm, fd] = fromDate.split("/"); 
+      //   const [ty, tm, td] = toDate.split("/");
+
+      //   // create Date objects
+      //   const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
+      //   const to = new Date(ty, tm - 1, td);
+
+      //   recordWhere.date = {
+      //     [Op.between]: [from, to],
+      //   };
+      // }
+
+    const formData = await DifferentialPressureForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: DifferentialPressureRecord,
+          // where: recordWhere, // directly use literal or undefined
+          // required: false,
+          // separate: true, 
+          // order: [["date", "ASC"], ["time", "ASC"]],
+        },
+        { model: Process },
+      ],
+    });
+
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
     // Render HTML using EJS template
     req.app.render("effectiveDPReport", { reportData }, (err, html) => {
       if (err) {
