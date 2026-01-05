@@ -1125,7 +1125,7 @@ if (!form_id) {
 exports.effetiveViewReport = async (req, res) => {
   try {
 
-const { form_id } = req.params;
+const { form_id } = req.query;
 // const { fromDate, toDate } = req.query;
 
 if (!form_id) {
