@@ -858,8 +858,28 @@ const removeHtmlTags = (htmlString) => {
 };
 exports.chatByPdf = async (req, res) => {
   try {
-    const reportData = req.body.reportData;
-    const formId = req.params.form_id;
+    const {form_id} = req.params;
+    const formData = await DifferentialPressureForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: Process,
+        },
+        {
+          model:User,
+          as: "approver",
+        }
+      ],
+    });
+   
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
     reportData.description = removeHtmlTags(reportData.description);
 
     const date = new Date();
@@ -923,10 +943,10 @@ exports.chatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "150px",
-        right: "50px",
+        top: "130px",
+        right: "30px",
         bottom: "50px",
-        left: "50px",
+        left: "30px",
       },
     });
 
@@ -987,7 +1007,6 @@ exports.effetiveChatByPdf = async (req, res) => {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
-    console.log("reportData",reportData)
     // reportData.addtionalInfo = reportData?.addtionalInfo
     //   ? removeHtmlTags(reportData?.addtionalInfo)
     //   : "Not Applicable";
