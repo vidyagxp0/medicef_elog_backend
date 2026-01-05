@@ -140,7 +140,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         departmentName: departmentName,
         compression_area: compression_area,
         // limit: limit,
-        limitData:limitData,
+        limitData: limitData,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -148,10 +148,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
-        area_name:area_name,
-        acceptance_criteria:acceptance_criteria,
-        instrument_id_no:instrument_id_no,
-        differential_pressure:differential_pressure,
+        area_name: area_name,
+        acceptance_criteria: acceptance_criteria,
+        instrument_id_no: instrument_id_no,
+        differential_pressure: differential_pressure,
       },
 
       { transaction }
@@ -232,10 +232,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
-        area_name:area_name, 
-        acceptance_criteria:acceptance_criteria,
-        instrument_id_no:instrument_id_no,
-        differential_pressure:differential_pressure,
+        area_name: area_name,
+        acceptance_criteria: acceptance_criteria,
+        instrument_id_no: instrument_id_no,
+        differential_pressure: differential_pressure,
         // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
@@ -355,7 +355,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     area_name,
     acceptance_criteria,
     instrument_id_no,
-    differential_pressure,  
+    differential_pressure,
     reviewerData,
     reviewer_id,
     approver_id,
@@ -366,8 +366,8 @@ exports.EditDifferentialPressure = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-   
-   const {form_id} = req.params;
+
+  const { form_id } = req.params;
   if (!form_id) {
     return res
       .status(400)
@@ -410,9 +410,9 @@ exports.EditDifferentialPressure = async (req, res) => {
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
-      }  else if (file.fieldname === "additionalAttachment") {
+      } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } 
+      }
       //  else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
       //   const match = file.fieldname.match(
       //     /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
@@ -464,28 +464,28 @@ exports.EditDifferentialPressure = async (req, res) => {
       additionalInfo,
     };
 
-const normalizeValue = (val) => {
-  if (val === null || val === undefined) return val;
+    const normalizeValue = (val) => {
+      if (val === null || val === undefined) return val;
 
-  if (Array.isArray(val)) {
-    return val
-      .map(normalizeValue)
-      .sort((a, b) =>
-        JSON.stringify(a).localeCompare(JSON.stringify(b))
-      );
-  }
+      if (Array.isArray(val)) {
+        return val
+          .map(normalizeValue)
+          .sort((a, b) =>
+            JSON.stringify(a).localeCompare(JSON.stringify(b))
+          );
+      }
 
-  if (typeof val === "object") {
-    return Object.keys(val)
-      .sort()
-      .reduce((acc, key) => {
-        acc[key] = normalizeValue(val[key]);
-        return acc;
-      }, {});
-  }
+      if (typeof val === "object") {
+        return Object.keys(val)
+          .sort()
+          .reduce((acc, key) => {
+            acc[key] = normalizeValue(val[key]);
+            return acc;
+          }, {});
+      }
 
-  return val;
-};
+      return val;
+    };
 
     const hasChanged = (oldVal, newVal) => {
       // number safe compare
@@ -494,14 +494,14 @@ const normalizeValue = (val) => {
       }
 
       return JSON.stringify(normalizeValue(oldVal)) !==
-            JSON.stringify(normalizeValue(newVal));
+        JSON.stringify(normalizeValue(newVal));
     };
 
-  const formatAuditValue = (value) => {
-    if (typeof value === "object" && value !== null) {
-      return JSON.stringify(value);
-    }
-    return value;
+    const formatAuditValue = (value) => {
+      if (typeof value === "object" && value !== null) {
+        return JSON.stringify(value);
+      }
+      return value;
     };
 
     if (
@@ -539,22 +539,22 @@ const normalizeValue = (val) => {
       });
     }
 
-for (const [field, newValue] of Object.entries(fields)) {
-  const oldValue = form[field];
+    for (const [field, newValue] of Object.entries(fields)) {
+      const oldValue = form[field];
 
-  if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-    auditTrailEntries.push({
-      form_id: form.form_id,
-      field_name: field,
-      previous_value: formatAuditValue(oldValue) || null,
-      new_value: formatAuditValue(newValue),
-      changed_by: user.user_id,
-      previous_status: form.status,
-      new_status: form.status,
-      action: "Update Elog",
-    });
-  }
-}
+      if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+        auditTrailEntries.push({
+          form_id: form.form_id,
+          field_name: field,
+          previous_value: formatAuditValue(oldValue) || null,
+          new_value: formatAuditValue(newValue),
+          changed_by: user.user_id,
+          previous_status: form.status,
+          new_status: form.status,
+          action: "Update Elog",
+        });
+      }
+    }
 
     // Update the form details
     await form.update(
@@ -608,7 +608,7 @@ for (const [field, newValue] of Object.entries(fields)) {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
-            approver_remarks:newRecord.approver_remarks,
+            approver_remarks: newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
             // supporting_docs:
@@ -655,7 +655,7 @@ for (const [field, newValue] of Object.entries(fields)) {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
-            approver_remarks:newRecord.approver_remarks,
+            approver_remarks: newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
             // supporting_docs:
@@ -694,7 +694,7 @@ for (const [field, newValue] of Object.entries(fields)) {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         done_by: record?.done_by,
-        approver_remarks:record?.approver_remarks,
+        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
@@ -702,7 +702,7 @@ for (const [field, newValue] of Object.entries(fields)) {
         //   ? record?.supporting_docs
         //   : getElogDocsUrl(supportingDocs[index]),
       }));
-   
+
       await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
     }
 
@@ -858,7 +858,7 @@ const removeHtmlTags = (htmlString) => {
 };
 exports.chatByPdf = async (req, res) => {
   try {
-    const {form_id} = req.params;
+    const { form_id } = req.params;
     const formData = await DifferentialPressureForm.findOne({
       where: { form_id },
       include: [
@@ -866,12 +866,12 @@ exports.chatByPdf = async (req, res) => {
           model: Process,
         },
         {
-          model:User,
+          model: User,
           as: "approver",
         }
       ],
     });
-   
+
     if (!formData) {
       return res.status(404).json({ error: true, message: "Form not found" });
     }
@@ -986,7 +986,7 @@ exports.viewReport = async (req, res) => {
 };
 exports.effetiveChatByPdf = async (req, res) => {
   try {
-    const {form_id} = req.params;
+    const { form_id } = req.params;
     const formData = await DifferentialPressureForm.findOne({
       where: { form_id },
       include: [
@@ -1218,7 +1218,7 @@ exports.sendReportOnMail = async (req, res) => {
   const { to, cc, bcc, subject, message } = req.body;
   const elogId = req.params.id;
 
-  const filePath = path.resolve("public",elogId);
+  const filePath = path.resolve("public", elogId);
 
   const fileExists = fs.existsSync(filePath);
   if (!fileExists) {

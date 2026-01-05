@@ -146,17 +146,17 @@ exports.GetElogById = async (req, res) => {
         { model: User, as: approverAlias, attributes: ["user_id", "name"] },
       ],
       order: [["form_id", "DESC"]],
-    });``
-    if(!elogData){
+    });
+    if (!elogData) {
       return res.json({
         error: true,
-        message:"No data Found"
+        message: "No data Found"
       })
     }
 
     return res.json({
       error: false,
-      message:"Data fetch Successfully",
+      message: "Data fetch Successfully",
       data: elogData,
     });
 
@@ -355,7 +355,7 @@ exports.getServerTime = async (req, res) => {
       "August",
       "September",
       "October",
-      "November", 
+      "November",
       "December",
     ];
 
@@ -400,10 +400,10 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, department_id, process_id } = req.body;
 
   try {
-    if(!role_id,!department_id,!process_id){
+    if (!role_id, !department_id, !process_id) {
       return res.status(400).json({
-        error:true,
-        message:"please provide all details"
+        error: true,
+        message: "please provide all details"
       })
     }
     const selectedUsers = await UserRole.findAll({
@@ -546,7 +546,7 @@ function formatAuditValue(value) {
 }
 
 exports.generateAuditPdfbyId = async (req, res) => {
-  const { form_id,process_id, type } = req.params;
+  const { form_id, process_id, type } = req.params;
   const userId = req.user.userId
   const date = new Date();
   const formattedDate = date.toLocaleDateString("en-US", {
@@ -564,49 +564,49 @@ exports.generateAuditPdfbyId = async (req, res) => {
   try {
 
     const registry = formModelRegistry[process_id];
-      if (!registry || !registry.audit) {
-        return res.status(400).json({
-          error: true,
-          message: "Audit trail not configured for this process",
-        });
-      }
-
-      const AuditModel = registry.audit;
-      const Form = registry.form;
-      const FormData = await Form.findOne({
-        where:{form_id},
-      })
-      const departmentName = FormData.departmentName
-
-      const auditTrail = await AuditModel.findAll({
-        where: { form_id },
-        include: [
-          {
-            model: User,
-            as: "changedByUser",
-            attributes: ["user_id", "name", "email"],
-          },
-        ],
-        order: [["auditTrail_id", "ASC"]],
+    if (!registry || !registry.audit) {
+      return res.status(400).json({
+        error: true,
+        message: "Audit trail not configured for this process",
       });
+    }
 
-      const response = auditTrail.map((row) => {
-        const data = row.toJSON();
+    const AuditModel = registry.audit;
+    const Form = registry.form;
+    const FormData = await Form.findOne({
+      where: { form_id },
+    })
+    const departmentName = FormData.departmentName
 
-        return {
-          ...data,
-          new_value: formatAuditValue(data.new_value),
-          previous_value: formatAuditValue(data.previous_value),
+    const auditTrail = await AuditModel.findAll({
+      where: { form_id },
+      include: [
+        {
+          model: User,
+          as: "changedByUser",
+          attributes: ["user_id", "name", "email"],
+        },
+      ],
+      order: [["auditTrail_id", "ASC"]],
+    });
 
-          field_name:
-            auditFieldMap[data.field_name] ||
-            data.field_name
-              .replace(/_/g, " ")
-              .replace(/([a-z])([A-Z])/g, "$1 $2")
-              .toLowerCase()
-              .replace(/\b\w/g, (c) => c.toUpperCase()),
-        };
-      });
+    const response = auditTrail.map((row) => {
+      const data = row.toJSON();
+
+      return {
+        ...data,
+        new_value: formatAuditValue(data.new_value),
+        previous_value: formatAuditValue(data.previous_value),
+
+        field_name:
+          auditFieldMap[data.field_name] ||
+          data.field_name
+            .replace(/_/g, " ")
+            .replace(/([a-z])([A-Z])/g, "$1 $2")
+            .toLowerCase()
+            .replace(/\b\w/g, (c) => c.toUpperCase()),
+      };
+    });
 
     const logoPath = path.join(__dirname, "../public/medicef_logo.png.png");
     const logoBase64 = fs.readFileSync(logoPath).toString("base64");
@@ -616,7 +616,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
       form_id: form_id,
       status: "status",
       auditTrail: response,
-      departmentName:departmentName
+      departmentName: departmentName
     };
 
     // Render audit report content using EJS
@@ -665,10 +665,10 @@ exports.generateAuditPdfbyId = async (req, res) => {
       headerTemplate: headerHtml,
       footerTemplate: footerHtml,
       margin: {
-      top: "180px",
-      bottom: "60px",
-      left: "40px",
-      right: "40px"
+        top: "180px",
+        bottom: "60px",
+        left: "40px",
+        right: "40px"
       },
     });
 
@@ -696,7 +696,7 @@ exports.deleteAttachment = async (req, res) => {
     const { form_id, process_id } = req.params;
     const { fieldName } = req.body;
     const user = req.user;
- 
+
     if (!form_id || !process_id || !fieldName) {
       await transaction.rollback();
       return res.status(400).json({
@@ -748,7 +748,7 @@ exports.deleteAttachment = async (req, res) => {
         changed_by: user.userId,
         field_name: auditFieldMap[fieldName] || fieldName,
         previous_value: previousValue,
-        new_value: "NULL",
+        new_value: "null",
         previous_status: previousStatus,
         new_status: previousStatus,
         declaration: null,
