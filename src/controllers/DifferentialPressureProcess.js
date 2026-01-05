@@ -11,6 +11,7 @@ const { v4: uuidv4 } = require("uuid");
 const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const Process = require("../models/processes");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -365,7 +366,7 @@ exports.EditDifferentialPressure = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-
+   
    const {form_id} = req.params;
   if (!form_id) {
     return res
@@ -972,6 +973,9 @@ exports.effetiveChatByPdf = async (req, res) => {
         {
           model: DifferentialPressureRecord,
         },
+        {
+          model: Process,
+        }
       ],
     });
 
