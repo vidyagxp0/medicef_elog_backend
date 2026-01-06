@@ -283,130 +283,140 @@
 
             <hr />
 
-            <div class="remarks">
-                <h2 class="heading">Initiator Remarks</h2>
+            <% if ( reportData?.initiatorName || reportData?.initiatorComment || reportData?.initiatorAttachment ||
+                reportData?.initiatorDate ) { %>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Initiator Name</th>
-                            <th> Initiator Comment</th>
-                            <th>Attachment</th>
-                            <th>Date of Initiator Review</th>
-                        </tr>
-                    </thead>
+                <div class="remarks">
+                    <h2 class="heading">Initiator Remarks</h2>
 
-                    <tbody>
-                        <tr>
-                            <td>
-                                <%= reportData?.initiatorName || "Not Applicable" %>
-                            </td>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Initiator Name</th>
+                                <th>Initiator Comment</th>
+                                <th>Attachment</th>
+                                <th>Date of Initiator Review</th>
+                            </tr>
+                        </thead>
 
-                            <td>
-                                <%= reportData?.initiatorComment || "Not Applicable" %>
-                            </td>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <%= reportData?.initiatorName || "Not Applicable" %>
+                                </td>
+                                <td>
+                                    <%= reportData?.initiatorComment || "Not Applicable" %>
+                                </td>
+                                <td>
+                                    <% if (reportData?.initiatorAttachment) { %>
+                                        <a href="<%= reportData.initiatorAttachment %>" target="_blank">View File</a>
+                                        <% } else { %>
+                                            Not Applicable
+                                            <% } %>
+                                </td>
+                                <td>
+                                    <%= reportData?.initiatorDate ? formatDateOnly(reportData.initiatorDate)
+                                        : "Not Applicable" %>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                            <td>
-                                <% if (reportData?.initiatorAttachment) { %>
-                                    <a href="<%= reportData.initiatorAttachment %>" target="_blank">
-                                        View File
-                                    </a>
-                                    <% } else { %>
-                                        Not Applicable
-                                        <% } %>
-                            </td>
+                <% } %>
 
-                            <td>
-                                <%= formatDateOnly(reportData?.initiatorDate) %>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
 
-            <div class="remarks">
-                <h2 class="heading">Reviewer Remarks</h2>
+                    <% if ( reportData?.reviewerName || reportData?.reviewerComment || reportData?.reviewerAttachment ||
+                        reportData?.reviewerDate ) { %>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Reviewer Name</th>
-                            <th>Reviewer Comment</th>
-                            <th>Attachment</th>
-                            <th>Date of Reviewer Review</th>
-                        </tr>
-                    </thead>
+                        <div class="remarks">
+                            <h2 class="heading">Reviewer Remarks</h2>
 
-                    <tbody>
-                        <tr>
-                            <td>
-                                <%= reportData?.reviewerName || "Not Applicable" %>
-                            </td>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Reviewer Name</th>
+                                        <th>Reviewer Comment</th>
+                                        <th>Attachment</th>
+                                        <th>Date of Reviewer Review</th>
+                                    </tr>
+                                </thead>
 
-                            <td>
-                                <%= reportData?.reviewerComment || "Not Applicable" %>
-                            </td>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <%= reportData?.reviewerName || "Not Applicable" %>
+                                        </td>
+                                        <td>
+                                            <%= reportData?.reviewerComment || "Not Applicable" %>
+                                        </td>
+                                        <td>
+                                            <% if (reportData?.reviewerAttachment) { %>
+                                                <a href="<%= reportData.reviewerAttachment %>" target="_blank">View
+                                                    File</a>
+                                                <% } else { %>
+                                                    Not Applicable
+                                                    <% } %>
+                                        </td>
+                                        <td>
+                                            <%= reportData?.reviewerDate ? formatDateOnly(reportData.reviewerDate)
+                                                : "Not Applicable" %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-                            <td>
-                                <% if (reportData?.reviewerAttachment) { %>
-                                    <a href="<%= reportData.reviewerAttachment %>" target="_blank">
-                                        View File
-                                    </a>
-                                    <% } else { %>
-                                        Not Applicable
-                                        <% } %>
-                            </td>
+                        <% } %>
 
-                            <td>
-                                <%= formatDateOnly(reportData?.reviewerDate) %>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
 
-            <hr />
+                            <hr />
 
-            <div class="remarks">
-                <h2 class="heading">Approver Remarks</h2>
+                            <% if ( reportData?.approverName || reportData?.approverComment ||
+                                reportData?.approverAttachment || reportData?.approverDate ) { %>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Approver Name</th>
-                            <th>Approver Comment</th>
-                            <th>Attachment</th>
-                            <th>Date of Approver Review</th>
-                        </tr>
-                    </thead>
+                                <hr />
 
-                    <tbody>
-                        <tr>
-                            <td>
-                                <%= reportData?.approverName || "Not Applicable" %>
-                            </td>
+                                <div class="remarks">
+                                    <h2 class="heading">Approver Remarks</h2>
 
-                            <td>
-                                <%= reportData?.approverComment || "Not Applicable" %>
-                            </td>
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Approver Name</th>
+                                                <th>Approver Comment</th>
+                                                <th>Attachment</th>
+                                                <th>Date of Approver Review</th>
+                                            </tr>
+                                        </thead>
 
-                            <td>
-                                <% if (reportData?.approverAttachment) { %>
-                                    <a href="<%= reportData.approverAttachment %>" target="_blank">
-                                        View File
-                                    </a>
-                                    <% } else { %>
-                                        Not Applicable
-                                        <% } %>
-                            </td>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <%= reportData?.approverName || "Not Applicable" %>
+                                                </td>
+                                                <td>
+                                                    <%= reportData?.approverComment || "Not Applicable" %>
+                                                </td>
+                                                <td>
+                                                    <% if (reportData?.approverAttachment) { %>
+                                                        <a href="<%= reportData.approverAttachment %>"
+                                                            target="_blank">View File</a>
+                                                        <% } else { %>
+                                                            Not Applicable
+                                                            <% } %>
+                                                </td>
+                                                <td>
+                                                    <%= reportData?.approverDate ?
+                                                        formatDateOnly(reportData.approverDate) : "Not Applicable" %>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
 
-                            <td>
-                                <%= formatDateOnly(reportData?.approverDate) %>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                                <% } %>
+
 
 
         </div>
