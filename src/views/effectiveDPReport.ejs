@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <style>
     body {
-    font-family: "Segoe UI",Arial, sans-serif;
-    font-size: 13.5px;
-    color: #000;
-    margin: 25px;
-    line-height: 1.6;
-  }
-  
-   h1 {
-    text-align: center;
-    font-size: 20px;
-    margin-bottom: 25px;
-    letter-spacing: 0.5px;
-  }
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 13.5px;
+      color: #000;
+      margin: 25px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 25px;
+      letter-spacing: 0.5px;
+    }
 
     h2.heading {
       display: flex;
@@ -24,7 +25,7 @@
       border-left: 4px solid #495057;
       padding: 6px 10px;
       font-size: 15px;
-      background-color: #e9ecef; 
+      background-color: #e9ecef;
       margin-bottom: 8px;
       page-break-after: avoid;
     }
@@ -37,7 +38,8 @@
       page-break-inside: auto;
     }
 
-    th, td {
+    th,
+    td {
       border: 1px solid #000;
       padding: 8px;
       /* text-align: left; */
@@ -70,183 +72,223 @@
       width: 65%;
     }
 
-    .green { color: green; font-weight: bold; }
-    .yellow { color: orange; font-weight: bold; }
-    .red { color: red; font-weight: bold; }
-    .black { color: black; }
+    .green {
+      color: green;
+      font-weight: bold;
+    }
 
+    .yellow {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .red {
+      color: red;
+      font-weight: bold;
+    }
+
+    .black {
+      color: black;
+    }
   </style>
 </head>
 
 <body>
 
-<% 
-const formatDateOnly = (date) => {
+  <% const formatDateOnly=(date)=> {
     if (!date) return "Not Applicable";
     return new Date(date).toLocaleDateString("en-IN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
     });
-};
-%>
+    };
+    %>
 
-  <!-- ================= DETAILS ================= -->
-  <h2 class="heading">Details</h2>
+    <!-- ================= DETAILS ================= -->
+    <h2 class="heading">Details</h2>
 
-  <table class="details-table">
-    <tbody>
-      <tr>
-        <td class="label">Record Id</td>
-        <td class="value">
-          MED/DP/<%= String(reportData?.form_id || 0).padStart(3, '0') %>
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Area Name</td>
-        <td class="value"><%= reportData?.area_name || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Acceptance Criteria</td>
-        <td class="value"><%= reportData?.acceptance_criteria || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Differential Pressure</td>
-        <td class="value"><%= reportData?.differential_pressure || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Instrument ID No</td>
-        <td class="value"><%= reportData?.instrument_id_no || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Department</td>
-        <td class="value"><%= reportData?.departmentName || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Lower Action Limit</td>
-        <td class="value"><%= reportData?.limitData?.lowerActionLimit || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Upper Action Limit</td>
-        <td class="value"><%= reportData?.limitData?.upperActionLimit || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Lower Allocation Limit</td>
-        <td class="value"><%= reportData?.limitData?.lowerAllocationLimit || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Upper Allocation Limit</td>
-        <td class="value"><%= reportData?.limitData?.upperAllocationLimit || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Lower Acceptance Criteria</td>
-        <td class="value"><%= reportData?.limitData?.lowerAcceptanceLimit || "Not Applicable" %></td>
-      </tr>
-      <tr>
-        <td class="label">Upper Acceptance Criteria</td>
-        <td class="value"><%= reportData?.limitData?.upperAcceptanceLimit || "Not Applicable" %></td>
-      </tr>
-    </tbody>
-  </table>
+    <table class="details-table">
+      <tbody>
+        <tr>
+          <td class="label">Record Id</td>
+          <td class="value">
+            MED/DP/<%= String(reportData?.form_id || 0).padStart(3, '0' ) %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Area Name</td>
+          <td class="value">
+            <%= reportData?.area_name || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Acceptance Criteria</td>
+          <td class="value">
+            <%= reportData?.acceptance_criteria || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Differential Pressure</td>
+          <td class="value">
+            <%= reportData?.differential_pressure || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Instrument ID No</td>
+          <td class="value">
+            <%= reportData?.instrument_id_no || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Department</td>
+          <td class="value">
+            <%= reportData?.departmentName || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Lower Action Limit</td>
+          <td class="value">
+            <%= reportData?.limitData?.lowerActionLimit || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Upper Action Limit</td>
+          <td class="value">
+            <%= reportData?.limitData?.upperActionLimit || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Lower Allocation Limit</td>
+          <td class="value">
+            <%= reportData?.limitData?.lowerAllocationLimit || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Upper Allocation Limit</td>
+          <td class="value">
+            <%= reportData?.limitData?.upperAllocationLimit || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Lower Acceptance Criteria</td>
+          <td class="value">
+            <%= reportData?.limitData?.lowerAcceptanceLimit || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Upper Acceptance Criteria</td>
+          <td class="value">
+            <%= reportData?.limitData?.upperAcceptanceLimit || "Not Applicable" %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- ================= RECORDS ================= -->
-  <h2 class="heading">Differential Pressure Records</h2>
+    <!-- ================= RECORDS ================= -->
+    <h2 class="heading">Differential Pressure Records</h2>
 
-  <% if (reportData.DifferentialPressureRecords && reportData.DifferentialPressureRecords.length > 0) { %>
-  <table>
-    <thead>
-      <tr>
-        <th>S.No</th>
-        <th>Unique ID</th>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Differential Pressure</th>
-        <th>Done By</th>
-        <th>Checked By</th>
-        <!-- <th>Supporting Docs</th> -->
-        <th>Remark</th>
-      </tr>
-    </thead>
-    <tbody>
+    <% if (reportData.DifferentialPressureRecords && reportData.DifferentialPressureRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Unique ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Differential Pressure</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <!-- <th>Supporting Docs</th> -->
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
 
-      <% reportData.DifferentialPressureRecords.forEach((record, index) => { %>
-      <tr>
-        <td><%= index + 1 %></td>
-        <td><%= record?.unique_id || "Not Applicable" %></td>
-        <td><%=  formatDateOnly(record?.date) || "Not Applicable" %></td>
-        <td><%= record?.time || "Not Applicable" %></td>
-        <%
-          const value = parseFloat(record?.differential_pressure);
-          const lower = parseFloat(reportData?.limitData?.lowerAllocationLimit);
-          const upper = parseFloat(reportData?.limitData?.upperAllocationLimit);
+          <% reportData.DifferentialPressureRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+              <td>
+                <%= record?.unique_id || "Not Applicable" %>
+              </td>
+              <td>
+                <%= formatDateOnly(record?.date) || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.time || "Not Applicable" %>
+              </td>
+              <% const value=parseFloat(record?.differential_pressure); const
+                lower=parseFloat(reportData?.limitData?.lowerAllocationLimit); const
+                upper=parseFloat(reportData?.limitData?.upperAllocationLimit); let colorClass='black' ; if
+                (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) { if (value < lower) { colorClass='red' ; } else if
+                (value> upper) {
+                colorClass = 'red';
+                } else {
+                colorClass = 'green';
+                }
+                }
+                %>
 
-          let colorClass = 'black';
-
-          if (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) {
-            if (value < lower) {
-              colorClass = 'red';
-            } else if (value > upper) {
-              colorClass = 'red';
-            } else {
-              colorClass = 'green';
-            }
-          }
-        %>
-
-<td class="<%= colorClass %>">
-  <%= record?.differential_pressure ?? "Not Applicable" %>
-</td>
+                <td class="<%= colorClass %>">
+                  <%= record?.differential_pressure ?? "Not Applicable" %>
+                </td>
 
 
-        <td><%= record?.done_by || "Not Applicable" %></td>
-        <td><%= record?.reviewed_by || "Not Applicable" %></td>
-        <!-- <td>
+                <td>
+                  <%= record?.done_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.reviewed_by || "Not Applicable" %>
+                </td>
+                <!-- <td>
           <% if (record?.supporting_docs) { %>
             <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
           <% } else { %>
             Not Applicable
           <% } %>
         </td> -->
-        <td><%= record?.remarks || "Not Applicable" %></td>
-      </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } else { %>
-    <p>No Records Found.</p>
-  <% } %>
-
-  <!-- ================= ADDITIONAL ================= -->
-<% if (
-  reportData?.additionalAttachment ||
-  reportData?.additionalInfo
-) { %>
-
-<h2 class="heading">Additional</h2>
-<table>
-  <tr>
-    <th>Additional Attachment</th>
-    <td>
-      <% if (reportData?.additionalAttachment) { %>
-        <a href="<%= reportData.additionalAttachment %>" target="_blank">
-          View File
-        </a>
+                <td>
+                  <%= record?.remarks || "Not Applicable" %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
       <% } else { %>
-        Not Applicable
-      <% } %>
-    </td>
-  </tr>
+        <p>No Records Found.</p>
+        <% } %>
 
-  <tr>
-    <th>Additional Info</th>
-    <td>
-      <%= reportData?.additionalInfo || "Not Applicable" %>
-    </td>
-  </tr>
-</table>
+          <!-- ================= ADDITIONAL ================= -->
+          <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
 
-<% } %>
+            <h2 class="heading">Additional</h2>
+            <table>
+              <tr>
+                <th>Additional Attachment</th>
+                <td>
+                  <% if (reportData?.additionalAttachment) { %>
+                    <a href="<%= reportData.additionalAttachment %>" target="_blank">
+                      View File
+                    </a>
+                    <% } else { %>
+                      Not Applicable
+                      <% } %>
+                </td>
+              </tr>
+
+              <tr>
+                <th>Additional Info</th>
+                <td>
+                  <%= reportData?.additionalInfo || "Not Applicable" %>
+                </td>
+              </tr>
+            </table>
+
+            <% } %>
 
 
 </body>
+
 </html>
