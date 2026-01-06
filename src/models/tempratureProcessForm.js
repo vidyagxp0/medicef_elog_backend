@@ -129,6 +129,15 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
   approverAttachment: {
     type: DataTypes.STRING,
   },
+  initiatorName: {
+    type: DataTypes.STRING,
+  },
+  reviewerName: {
+    type: DataTypes.STRING,
+  },
+  approverName : {
+    type: DataTypes.STRING,
+  },
   additionalAttachment: {
     type: DataTypes.STRING,
   },

@@ -26,6 +26,9 @@ const TempraturePressureRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    date: {
+      type: DataTypes.DATEONLY,
+    },
     temprature_record: {
       type: DataTypes.STRING,
     },
@@ -35,24 +38,21 @@ const TempraturePressureRecord = sequelize.define(
     done_by: {
       type: DataTypes.STRING,
     },
-    date: {
-      type: DataTypes.STRING,
-    },
     humidity_record: {
       type: DataTypes.STRING,
     },
-    done_by: {
-      type: DataTypes.STRING,
-    },
     approver_remarks: {
+      type: DataTypes.STRING,
+    },    
+    done_by: {
       type: DataTypes.STRING,
     },
     checked_by: {
       type: DataTypes.STRING,
     },
-    supporting_docs: {
-      type: DataTypes.STRING,
-    },
+    // supporting_docs: {
+    //   type: DataTypes.STRING,
+    // },
     reviewed_by: {
       type: DataTypes.STRING,
     },

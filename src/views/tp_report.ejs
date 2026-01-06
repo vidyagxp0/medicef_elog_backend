@@ -1,256 +1,391 @@
 <!DOCTYPE html>
 <html>
-<head>
-    
-  <style>
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 14px;
-        margin: 20px;
-        line-height: 1.6;
-      }
-      
-      .report-content {
-        margin-top: 30px; /* Increase margin top for more spacing */
-      }
-      
-      h1, h2 {
-        margin-bottom: 20px;
-        text-align: left; /* Align headings to the left */
-        clear: both; /* Clear floats to prevent overlap */
-      }
-      
-      h1 {
-        font-size: 24px;
-      }
-      
-      h2 {
-        font-size: 18px;
-        color: #0066CC;
-      }
-      
-      p {
-        font-size: 14px;
-        margin-bottom: 10px;
-      }
-      
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 30px; /* Increase margin bottom for more spacing */
-        border: 1px solid #000; /* Add border to the table */
-      }
-      
-      th, td {
-        border: 1px solid #000; /* Add border to table cells */
-        padding: 10px; /* Adjusted padding for better spacing */
-        text-align: left;
-      }
-      
-      th {
-        background-color: #f8f8f8;
-        font-weight: bold;
-      }
-      
-      .remarks {
-        page-break-inside: avoid;
-      }
-      .heading
-      {
-        padding-top: 35px;
-      }
-             .green {
-        color: green;
-        font-weight: bold;
-    }
-    .red {
-        color: red;
-        font-weight: bold;
-    }
-.black {
-        color: black;
-        font-weight: bold;
-    }
-      </style>
-      
-    
-    <body>
-    <div class="report-content">
-        <h2 class="heading">General Information</h2>
-        <table>
-            <!-- <tr>
-                <th>Site</th>
-                <td><%= reportData?.site || "Not Applicable" %></td>
-                <th>Status</th>
-                <td><%= reportData?.status || "Not Applicable" %></td>
-            </tr> -->
-            <tr>
-                <th>Initiator</th>
-                <td><%= reportData?.initiator_name || "Not Applicable" %></td>
-                <th>Date of Initiation</th>
-                <td><%= (reportData?.date_of_initiation ? new Date(reportData.date_of_initiation).toLocaleDateString() : "Not Applicable") %></td>
-            </tr>
-            
-            <tr>
-                <th>Description</th>
-                <td ><%- reportData?.description || "Not Applicable" %></td>
-                 <th>Limit</th>
-                <td ><%- reportData?.limit || "Not Applicable" %></td>
-            </tr>
-            <tr>
-                <th>Area name</th>
-                <td ><%- reportData?.area_name || "Not Applicable" %></td>
-                 <th>Room ID</th>
-                <td ><%- reportData?.room_id || "Not Applicable" %></td>
-            </tr>
-            <tr>
-                <th>Instrument Id. No.</th>
-                <td ><%- reportData?.instrument_id || "Not Applicable" %></td>
-                 <th>Department</th>
-                <td ><%- reportData?.department || "Not Applicable" %></td>
-            </tr>
-            <tr>
-                <th>Acceptance Temperature</th>
-                <td ><%- reportData?.acceptance_temperature || "Not Applicable" %></td>
-                 <th>Relative Humidity Criteria</th>
-                <td ><%- reportData?.relative_humidity_criteria || "Not Applicable" %></td>
-            </tr>
-        </table>
-        <hr />
 
-        <h2 class="heading">Temperature Process Records</h2>
-        <% if (reportData.TempratureRecords && reportData.TempratureRecords.length > 0) { %>
-            <% reportData.TempratureRecords.forEach(record => { %>
-            <div class="listItem">
-                <table>
+<head>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13.5px;
+            color: #000;
+            margin: 25px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        h2.heading {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            border-left: 4px solid #495057;
+            padding: 6px 10px;
+            font-size: 15px;
+            background-color: #e9ecef;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            /* border: 1px solid #000; */
+            page-break-inside: auto;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+            /* text-align: left; */
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f8f8f8;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        /* 🔥 DETAILS TABLE */
+        .details-table td.label {
+            width: 35%;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+        .details-table td.value {
+            width: 65%;
+        }
+
+        .green {
+            color: green;
+            font-weight: bold;
+        }
+
+        .yellow {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .red {
+            color: red;
+            font-weight: bold;
+        }
+
+        .black {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <% const formatDateTime=(date)=> {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        });
+        };
+
+        const formatDateOnly = (date) => {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        });
+        };
+        %>
+
+        <div class="report-content">
+            <h2 class="heading">General Information</h2>
+
+            <table class="details-table">
+                <tbody>
                     <tr>
-                        <th>Unique Id</th>
-                        <td><%= record?.unique_id || "Not Applicable" %></td>
-                        <th>Time</th>
-                        <td><%= record?.time || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Temperature Records</th>
-                        <td class="<%= 
-    record?.temprature_record < reportData?.limit 
-        ? 'green' 
-        : record?.temprature_record > reportData?.limit 
-            ? 'red' 
-            : 'black' 
-%>"><%= record?.temprature_record || "Not Applicable" %></td>
-                        <th>Remark</th>
-                        <td><%= record?.remarks || "Not Applicable" %></td>
-                    </tr>
-                    <tr>
-                        <th>Checked By</th>
-                        <td><%= record?.checked_by || "Not Applicable" %></td>
-                        <th>Supporting Documents</th>
-                        <td>
-                            <% if (record?.supporting_docs) { %>
-                                <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
-                            <% } else { %>
-                                Not Applicable
-                            <% } %>
+                        <td class="label">Record Id</td>
+                        <td class="value">
+                            MED/TR/<%= String(reportData?.form_id || 0).padStart(3, '0' ) %>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="label">Initiator name</td>
+                        <td class="value">
+                            <%= reportData?.initiator_name || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Initiation Date</td>
+                        <td class="value">
+                            <%= formatDateTime(reportData?.date_of_initiation) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Area Name</td>
+                        <td class="value">
+                            <%= reportData?.area_name || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Room Id</td>
+                        <td class="value">
+                            <%= reportData?.room_id || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Instrument ID No</td>
+                        <td class="value">
+                            <%= reportData?.instrument_id_no || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Department</td>
+                        <td class="value">
+                            <%= reportData?.departmentName || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Approver</td>
+                        <td class="value">
+                            <%= reportData?.approver?.name || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Reviewer</td>
+                        <td class="value">
+                            <% if (Array.isArray(reportData?.reviewerData) && reportData.reviewerData.length) { %>
+                                <%= reportData.reviewerData.map(r=> r.name).join(', ') %>
+                                    <% } else { %>
+                                        Not Applicable
+                                        <% } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Description</td>
+                        <td class="value">
+                            <%= reportData?.description || "Not Applicable" %>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2 class="heading">Acceptance Temperature Limits</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lower Action Limit</th>
+                        <th>Lower Allocation Limit</th>
+                        <th>Lower Acceptance Criteria</th>
+                        <th>Upper Action Limit</th>
+                        <th>Upper Allocation Limit</th>
+                        <th>Upper Acceptance Criteria</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (Array.isArray(reportData?.acceptanceTempData) && reportData.acceptanceTempData.length) { %>
+                        <% reportData.acceptanceTempData.forEach(row => { %>
+                            <tr>
+                                <td><%= row.lowerActionLimit || "NA" %></td>
+                                <td><%= row.lowerAllocationLimit || "NA" %></td>
+                                <td><%= row.lowerAcceptanceLimit || "NA" %></td>
+                                <td><%= row.upperActionLimit || "NA" %></td>
+                                <td><%= row.upperAllocationLimit || "NA" %></td>
+                                <td><%= row.upperAcceptanceLimit || "NA" %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" style="text-align:center;">No Data Available</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <h2 class="heading">Relative Humidity Criteria Limits</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Lower Action Limit</th>
+                        <th>Lower Allocation Limit</th>
+                        <th>Lower Acceptance Criteria</th>
+                        <th>Upper Action Limit</th>
+                        <th>Upper Allocation Limit</th>
+                        <th>Upper Acceptance Criteria</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% if (Array.isArray(reportData?.relHumidityData) && reportData.relHumidityData.length) { %>
+                        <% reportData.relHumidityData.forEach(row => { %>
+                            <tr>
+                                <td><%= row.lowerActionLimit || "NA" %></td>
+                                <td><%= row.lowerAllocationLimit || "NA" %></td>
+                                <td><%= row.lowerAcceptanceLimit || "NA" %></td>
+                                <td><%= row.upperActionLimit || "NA" %></td>
+                                <td><%= row.upperAllocationLimit || "NA" %></td>
+                                <td><%= row.upperAcceptanceLimit || "NA" %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" style="text-align:center;">No Data Available</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <hr />
+
+            <div class="remarks">
+                <h2 class="heading">Initiator Remarks</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Initiator Name</th>
+                            <th> Initiator Comment</th>
+                            <th>Attachment</th>
+                            <th>Date of Initiator Review</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                <%= reportData?.initiatorName || "Not Applicable" %>
+                            </td>
+
+                            <td>
+                                <%= reportData?.initiatorComment || "Not Applicable" %>
+                            </td>
+
+                            <td>
+                                <% if (reportData?.initiatorAttachment) { %>
+                                    <a href="<%= reportData.initiatorAttachment %>" target="_blank">
+                                        View File
+                                    </a>
+                                    <% } else { %>
+                                        Not Applicable
+                                        <% } %>
+                            </td>
+
+                            <td>
+                                <%= formatDateOnly(reportData?.initiatorDate) %>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
+
+            <div class="remarks">
+                <h2 class="heading">Reviewer Remarks</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reviewer Name</th>
+                            <th>Reviewer Comment</th>
+                            <th>Attachment</th>
+                            <th>Date of Reviewer Review</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                <%= reportData?.reviewerName || "Not Applicable" %>
+                            </td>
+
+                            <td>
+                                <%= reportData?.reviewerComment || "Not Applicable" %>
+                            </td>
+
+                            <td>
+                                <% if (reportData?.reviewerAttachment) { %>
+                                    <a href="<%= reportData.reviewerAttachment %>" target="_blank">
+                                        View File
+                                    </a>
+                                    <% } else { %>
+                                        Not Applicable
+                                        <% } %>
+                            </td>
+
+                            <td>
+                                <%= formatDateOnly(reportData?.reviewerDate) %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <hr />
-            <% }) %>
-        <% } else { %>
-            <p>No Temperature Process Records Found.</p>
-            <hr />
-        <% } %>
 
-        <div class="remarks">
-            <h2 class="heading">Initiator Remarks</h2>
-            <table>
-                <tr>
-                    <th>Initiator</th>
-                    <td><%= reportData?.initiator_name || "Not Applicable" %></td>
-                </tr>
-                <tr>
-                    <th>Comment</th>
-                    <td><%= reportData?.initiatorComment || "Not Applicable" %></td>
-                </tr>
-                <tr>
-                    <th>Attachment</th>
-                    <td>
-                        <% if (reportData?.initiatorAttachment) { %>
-                            <a href="<%= reportData.initiatorAttachment %>" target="_blank">View File</a>
-                        <% } else { %>
-                            Not Applicable
-                        <% } %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Date of Initiation</th>
-                    <td><%= (reportData?.date_of_initiation ? new Date(reportData.date_of_initiation).toLocaleDateString() : "Not Applicable") %></td>
-                </tr>
-                
-            </table>
-        </div>
-        <hr />
+            <div class="remarks">
+                <h2 class="heading">Approver Remarks</h2>
 
-        <div class="remarks">
-            <h2 class="heading">Reviewer Remarks</h2>
-            <table>
-                <tr>
-                    <th>Reviewer</th>
-                    <td><%= reportData?.tpreviewer?.name || "Not Applicable" %></td>
-                </tr>
-                <tr>
-                    <th>Comment</th>
-                    <td><%= reportData?.reviewComment || "Not Applicable" %></td>
-                </tr>
-                <tr>
-                    <th>Attachment</th>
-                    <td>
-                        <% if (reportData?.reviewerAttachment) { %>
-                            <a href="<%= reportData.reviewerAttachment %>" target="_blank">View File</a>
-                        <% } else { %>
-                            Not Applicable
-                        <% } %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Date of Review</th>
-                    <td><%= (reportData?.date_of_review ? new Date(reportData.date_of_review).toLocaleDateString() : "Not Applicable") %></td>
-                </tr>
-                
-            </table>
-        </div>
-        <hr />
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Approver Name</th>
+                            <th>Approver Comment</th>
+                            <th>Attachment</th>
+                            <th>Date of Approver Review</th>
+                        </tr>
+                    </thead>
 
-        <div class="remarks">
-            <h2 class="heading">Approver Remarks</h2>
-            <table>
-                <tr>
-                    <th>Approver</th>
-                    <td><%= reportData?.tpapprover?.name || "Not Applicable" %></td>
-                </tr>
-                <tr>
-                    <th>Comment</th>
-                    <td><%= reportData?.approverComment || "Not Applicable" %></td>
-                </tr>
-                <tr>
-                    <th>Attachment</th>
-                    <td>
-                        <% if (reportData?.approverAttachment) { %>
-                            <a href="<%= reportData.approverAttachment %>" target="_blank">View File</a>
-                        <% } else { %>
-                            Not Applicable
-                        <% } %>
-                    </td>
-                </tr>
-                <tr>
-                    <th>Date of Approval</th>
-                    <td><%= (reportData?.date_of_approval ? new Date(reportData.date_of_approval).toLocaleDateString() : "Not Applicable") %></td>
-                </tr>
-                
-            </table>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <%= reportData?.approverName || "Not Applicable" %>
+                            </td>
+
+                            <td>
+                                <%= reportData?.approverComment || "Not Applicable" %>
+                            </td>
+
+                            <td>
+                                <% if (reportData?.approverAttachment) { %>
+                                    <a href="<%= reportData.approverAttachment %>" target="_blank">
+                                        View File
+                                    </a>
+                                    <% } else { %>
+                                        Not Applicable
+                                        <% } %>
+                            </td>
+
+                            <td>
+                                <%= formatDateOnly(reportData?.approverDate) %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
         </div>
-        <hr />
-    </div>
 </body>
+
 </html>

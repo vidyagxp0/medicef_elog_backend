@@ -57,51 +57,6 @@ router.get(
   TempratureProcess.GetAllTempratureRecordElog
 );
 
-//send differential pressure elog for review
-router.put(
-  "/send-TR-elog-for-review",
-  Auth.checkUserJwtToken,
-  upload.any(),
-  Auth.authorizeUserRole(2, 1),
-  TempratureProcess.SendTRElogForReview
-);
-
-// change status of differential pressure elog from review to open
-router.put(
-  "/send-TR-elog-from-review-to-open",
-  Auth.checkUserJwtToken,
-  upload.single("initiatorAttachment"),
-  Auth.authorizeUserRole(2, 2),
-  TempratureProcess.SendTRElogfromReviewToOpen
-);
-
-// send differential pressure elog from review to approval
-router.put(
-  "/send-TR-from-review-to-approval",
-  Auth.checkUserJwtToken,
-  upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(2, 2),
-  TempratureProcess.SendTRfromReviewToApproval
-);
-
-// send differential pressure elog from under-approval to open
-router.put(
-  "/send-TR-elog-from-approval-to-open",
-  Auth.checkUserJwtToken,
-  upload.single("reviewerAttachment"),
-  Auth.authorizeUserRole(2, 3),
-  TempratureProcess.SendTRfromApprovalToOpen
-);
-
-// APPROVE differential pressure elog
-router.put(
-  "/approve-TR-elog",
-  Auth.checkUserJwtToken,
-  upload.single("approverAttachment"),
-  Auth.authorizeUserRole(2, 3),
-  TempratureProcess.ApproveTRElog
-);
-
 router.get(
   "/get-audit-trail-for-elog/:id",
   Auth.checkUserJwtToken,

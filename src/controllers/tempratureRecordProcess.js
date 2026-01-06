@@ -12,6 +12,7 @@ const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const Process = require("../models/processes");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -347,7 +348,6 @@ exports.InsertTempratureRecord = async (req, res) => {
     if (error instanceof ValidationError) {
       errorMessage = error.errors.map((e) => e.message).join(", ");
     }
-    console.log(error);
 
     return res.status(500).json({
       error: true,
@@ -430,16 +430,17 @@ exports.EditTempratureRecord = async (req, res) => {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
-      } else if (file.fieldname.startsWith("TempratureRecords[")) {
-        // Extract the index from the fieldname
-        const match = file.fieldname.match(
-          /TempratureRecords\[(\d+)\]\[supporting_docs\]/
-        );
-        if (match) {
-          const index = match[1];
-          supportingDocs[index] = file;
-        }
       }
+      //  else if (file.fieldname.startsWith("TempratureRecords[")) {
+      //   // Extract the index from the fieldname
+      //   const match = file.fieldname.match(
+      //     /TempratureRecords\[(\d+)\]\[supporting_docs\]/
+      //   );
+      //   if (match) {
+      //     const index = match[1];
+      //     supportingDocs[index] = file;
+      //   }
+      // }
     });
     }
 
@@ -469,8 +470,6 @@ exports.EditTempratureRecord = async (req, res) => {
       area_name,
       room_id,
       instrument_id_no,
-      // acceptance_temperature,
-      // relative_humidity_criteria,
       acceptanceTempData,
       relHumidityData,
       // reviewer: reviewerNames,
@@ -483,6 +482,40 @@ exports.EditTempratureRecord = async (req, res) => {
         ? getElogDocsUrl(additionalAttachment)
         : form.additionalAttachment,
       additionalInfo,
+    };
+
+
+    const normalizeValue = (val) => {
+      if (val === null || val === undefined) return val;
+
+      if (Array.isArray(val)) {
+        return val
+          .map(normalizeValue)
+          .sort((a, b) =>
+            JSON.stringify(a).localeCompare(JSON.stringify(b))
+          );
+      }
+
+      if (typeof val === "object") {
+        return Object.keys(val)
+          .sort()
+          .reduce((acc, key) => {
+            acc[key] = normalizeValue(val[key]);
+            return acc;
+          }, {});
+      }
+
+      return val;
+    };
+
+    const hasChanged = (oldVal, newVal) => {
+      // number safe compare
+      if (typeof oldVal === "number" && typeof newVal === "number") {
+        return !areFloatsEqual(oldVal, newVal);
+      }
+
+      return JSON.stringify(normalizeValue(oldVal)) !==
+        JSON.stringify(normalizeValue(newVal));
     };
 
   const formatAuditValue = (value) => {
@@ -526,55 +559,19 @@ exports.EditTempratureRecord = async (req, res) => {
       });
     }
 
-    const normalizeValueForAudit = (value) => {
-      if (value === null || value === undefined) return value;
-
-      if (Array.isArray(value)) {
-        return value
-          .map(normalizeValueForAudit)
-          .sort((a, b) =>
-            JSON.stringify(a).localeCompare(JSON.stringify(b))
-          );
-      }
-
-      if (typeof value === "object") {
-        return Object.keys(value)
-          .sort()
-          .reduce((acc, key) => {
-            acc[key] = normalizeValueForAudit(value[key]);
-            return acc;
-          }, {});
-      }
-
-      return value;
-    };
-
-
-    const isDifferent = (oldVal, newVal) => {
-      const oldNorm = normalizeValueForAudit(oldVal);
-      const newNorm = normalizeValueForAudit(newVal);
-
-      // number (float safe)
-      if (typeof oldNorm === "number" && typeof newNorm === "number") {
-        return !areFloatsEqual(oldNorm, newNorm);
-      }
-
-      // object / array / string
-      return JSON.stringify(oldNorm) !== JSON.stringify(newNorm);
-    };
 
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
 
-      if (newValue !== undefined && isDifferent(oldValue, newValue)) {
+      if (newValue !== undefined && hasChanged(oldValue, newValue)) {
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
-          previous_value: formatAuditValue(oldValue),
+          previous_value: formatAuditValue(oldValue) || null,
           new_value: formatAuditValue(newValue),
           changed_by: user.user_id,
           previous_status: form.status,
-          new_status: "Opened",
+          new_status: form.status,
           action: "Update Elog",
         });
       }
@@ -584,7 +581,6 @@ exports.EditTempratureRecord = async (req, res) => {
     // Update the form details
     await form.update(
       {
-        process_id,
         department_id,
         description,
         departmentName,
@@ -638,31 +634,31 @@ exports.EditTempratureRecord = async (req, res) => {
             approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
-            supporting_docs:
-              newRecord.supporting_docs ||
-              getElogDocsUrl(supportingDocs[index]),
+            // supporting_docs:
+            //   newRecord.supporting_docs ||
+            //   getElogDocsUrl(supportingDocs[index]),
           };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            const oldValue = existingRecord[field];
-            if ( 
-              newValue !== undefined &&
-              ((typeof newValue === "number" &&
-                !areFloatsEqual(oldValue, newValue)) ||
-                oldValue != newValue)
-            ) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}`,
-                previous_value: oldValue || null,
-                new_value: newValue || "",
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                action: "Update Elog",
-              });
-            }
-          }
+          // for (const [field, newValue] of Object.entries(recordFields)) {
+          //   const oldValue = existingRecord[field];
+          //   if ( 
+          //     newValue !== undefined &&
+          //     ((typeof newValue === "number" &&
+          //       !areFloatsEqual(oldValue, newValue)) ||
+          //       oldValue != newValue)
+          //   ) {
+          //     auditTrailEntries.push({
+          //       form_id: form.form_id,
+          //       field_name: `${field}`,
+          //       previous_value: oldValue || null,
+          //       new_value: newValue || "",
+          //       changed_by: user.user_id,
+          //       previous_status: form.status,
+          //       new_status: "Opened",
+          //       action: "Update Elog",
+          //     });
+          //   }
+          // }
         }
       });
       // Handle new records added
@@ -685,22 +681,22 @@ exports.EditTempratureRecord = async (req, res) => {
             approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
-            supporting_docs:
-              newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+            // supporting_docs:
+            //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
           };
 
           for (const [field, newValue] of Object.entries(recordFields)) {
             if (newValue !== undefined) {
-              auditTrailEntries.push({
-                form_id: form.form_id,
-                field_name: `${field}`,
-                previous_value: null,
-                new_value: newValue || "",
-                changed_by: user.user_id,
-                previous_status: form.status,
-                new_status: "Opened",
-                action: "Update Elog",
-              });
+              // auditTrailEntries.push({
+              //   form_id: form.form_id,
+              //   field_name: `${field}`,
+              //   previous_value: null,
+              //   new_value: newValue || "",
+              //   changed_by: user.user_id,
+              //   previous_status: form.status,
+              //   new_status: "Opened",
+              //   action: "Update Elog",
+              // });
             }
           }
         }
@@ -711,26 +707,24 @@ exports.EditTempratureRecord = async (req, res) => {
         where: { form_id: form_id },
         transaction,
       });
-
-      // Create new records
+      // Create new records  
       const formRecords = TempratureRecords.map((record, index) => ({
         form_id: form_id,
-        unique_id: record?.unique_id || "",
-        time: record?.time || "",
-        date: record?.date || "",
-        temprature_record: record?.temprature_record || "",
-        humidity_record: record?.humidity_record || "",
-        remarks: record?.remarks || "",
-        done_by: record?.done_by || "",
-        approver_remarks: record?.approver_remarks || "",
-        checked_by: record?.checked_by || "",
-        reviewed_by: record?.reviewed_by || "",
-        approved_by: record?.approved_by || "",
-        supporting_docs: record?.supporting_docs
-          ? record?.supporting_docs
-          : getElogDocsUrl(supportingDocs[index]),
+        unique_id: record?.unique_id,
+        time: record?.time,
+        date: record?.date,
+        temprature_record: record?.temprature_record,
+        humidity_record: record?.humidity_record,
+        remarks: record?.remarks,
+        done_by: record?.done_by,
+        approver_remarks: record?.approver_remarks,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
+        // supporting_docs: record?.supporting_docs
+        //   ? record?.supporting_docs
+        //   : getElogDocsUrl(supportingDocs[index]),
       }));
-
       await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
     }
 
@@ -827,737 +821,6 @@ exports.GetAllTempratureRecordElog = async (req, res) => {
     });
 };
 
-//send tempratre record elog for review
-exports.SendTRElogForReview = async (req, res) => {
-  const { form_id, email, password, initiatorDeclaration, initiatorComment } =
-    req.body;
-
-  // Check for required fields and provide specific error messages
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
-  }
-
-  // Start a transaction
-  const transaction = await sequelize.transaction();
-
-  try {
-    // Verify user credentials
-    const user = await User.findOne({
-      where: { user_id: req.user.userId, isActive: true },
-      transaction,
-    });
-
-    if (!user) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    // Find the form
-    const form = await TempratureProcessForm.findOne({
-      where: { form_id },
-      transaction,
-    });
-
-    if (!form) {
-      await transaction.rollback();
-      return res.status(404).json({ error: true, message: "Elog not found." });
-    }
-
-    // if (form.stage !== 1) {
-    //   await transaction.rollback();
-    //   return res.status(400).json({
-    //     error: true,
-    //     message: "Elog is not in a valid stage to be sent for review.",
-    //   });
-    // }
-
-    const auditTrailEntries = [];
-     let initiatorAttachment = null;
-     let additionalAttachment = null;
-     // Process files
-     req?.files?.forEach((file) => {
-       if (file.fieldname === "initiatorAttachment") {
-         initiatorAttachment = file;
-       } else if (file.fieldname === "additionalAttachment") {
-         additionalAttachment = file;
-       }
-     });
-    // Add audit trail entry for the attachment if it exists
-    if (initiatorAttachment) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "initiatorAttachment",
-        previous_value: form.initiatorAttachment || null,
-        new_value: getElogDocsUrl(initiatorAttachment) || "",
-        changed_by: user.user_id,
-        previous_status: "Opened",
-        new_status: "Under Review",
-        action: "Send For Review",
-      });
-    }
-    if (additionalAttachment) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "additionalAttachment",
-        previous_value: form.additionalAttachment || "",
-        new_value: getElogDocsUrl(additionalAttachment),
-        changed_by: user.user_id,
-        previous_status: "Opened",
-        new_status: "Under Review",
-        action: "Send For Review",
-      });
-    }
-
-    auditTrailEntries.push({
-      form_id: form.form_id,
-      field_name: "stage Change",
-      previous_value: "Not Applicable",
-      new_value: "Not Applicable",
-      changed_by: user.user_id,
-      previous_status: "Opened",
-      new_status: "Under Review",
-      action: "Send For Review",
-    });
-
-    // Update the form details
-    await form.update(
-      {
-        status: "Under Review",
-        stage: 2,
-        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
-        initiatorComment: initiatorComment,
-        additionalAttachment: getElogDocsUrl(additionalAttachment),
-      },
-      { transaction }
-    );
-
-    // Insert audit trail entries
-    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
-
-    // Commit the transaction
-    await transaction.commit();
-
-    return res.status(200).json({
-      error: false,
-      message: "E-log successfully sent for review",
-    });
-   
-  } catch (error) {
-    // Rollback the transaction in case of error
-    await transaction.rollback();
-
-    return res.status(500).json({
-      error: true,
-      message: `Error during sending E-log for review: ${error.message}`,
-    });
-  }
-};
-
-// change status of tempratre record elog from review to open
-exports.SendTRElogfromReviewToOpen = async (req, res) => {
-  const { form_id, email, password, reviewerDeclaration } = req.body;
-
-  // Check for required fields and provide specific error messages
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
-  }
-
-  // Start a transaction
-  const transaction = await sequelize.transaction();
-
-  try {
-    // Verify user credentials
-    const user = await User.findOne({
-      where: { user_id: req.user.userId, email, isActive: true },
-      transaction,
-    });
-
-    if (!user) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    // Find the form
-    const form = await TempratureProcessForm.findOne({
-      where: { form_id },
-      transaction,
-    });
-
-    if (!form) {
-      await transaction.rollback();
-      return res.status(404).json({ error: true, message: "Elog not found." });
-    }
-
-    if (form.stage !== 2) {
-      await transaction.rollback();
-      return res.status(400).json({
-        error: true,
-        message: "Elog is not in a valid stage.",
-      });
-    }
-
-    const auditTrailEntries = [];
-
-    // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "reviewerAttachment",
-        previous_value: form.reviewerAttachment || null,
-        new_value: getElogDocsUrl(req.file),
-        changed_by: user.user_id,
-        previous_status: "Under Review",
-        new_status: "Opened",
-        action: "Open Elog",
-      });
-    }
-
-    auditTrailEntries.push({
-      form_id: form.form_id,
-      field_name: "stage Change",
-      previous_value: "Not Applicable",
-      new_value: "Not Applicable",
-      changed_by: user.user_id,
-      previous_status: "Under Review",
-      new_status: "Opened",
-      action: "Open Elog",
-    });
-
-    // Update the form details
-    await form.update(
-      {
-        status: "Opened",
-        stage: 1,
-        reviewerAttachment: getElogDocsUrl(req?.file),
-      },
-      { transaction }
-    );
-
-    // Insert audit trail entries
-    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
-
-    // Commit the transaction
-    await transaction.commit();
-
-    // try {
-    //   const initiator = await getUserById(form.initiator_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderInitiator", {
-    //     initiatorName: initiator.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     status: "Opened",
-    //     recipients: initiator.email,
-    //   });
-
-    return res.status(200).json({
-      error: false,
-      message: "E-log status successfully changed from review to Opened",
-    });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
-  } catch (error) {
-    // Rollback the transaction in case of error
-    await transaction.rollback();
-
-    return res.status(500).json({
-      error: true,
-      message: `Error during changing stage of elog: ${error.message}`,
-    });
-  }
-};
-
-// send tempratre record elog from review to approval
-exports.SendTRfromReviewToApproval = async (req, res) => {
-  const { form_id, reviewComment, email, password, reviewerDeclaration } =
-    req.body;
-
-  // Check for required fields and provide specific error messages
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!reviewComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a review comment." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
-  }
-
-  // Start a transaction
-  const transaction = await sequelize.transaction();
-
-  try {
-    // Verify user credentials
-    const user = await User.findOne({
-      where: { user_id: req.user.userId, email, isActive: true },
-      transaction,
-    });
-
-    if (!user) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    // Find the form
-    const form = await TempratureProcessForm.findOne({
-      where: { form_id },
-      transaction,
-    });
-
-    if (!form) {
-      await transaction.rollback();
-      return res.status(404).json({ error: true, message: "Elog not found." });
-    }
-
-    if (form.stage !== 2) {
-      await transaction.rollback();
-      return res.status(400).json({
-        error: true,
-        message: "Elog is not in a valid stage to be sent for approval.",
-      });
-    }
-
-    const auditTrailEntries = [];
-
-    if (reviewComment) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "reviewComment",
-        previous_value: form.reviewComment || null,
-        new_value: reviewComment,
-        changed_by: user.user_id,
-        previous_status: "Under Review",
-        new_status: "Under Approval",
-        action: "Send For Approval",
-      });
-    }
-
-    // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "reviewerAttachment",
-        previous_value: form.reviewerAttachment || null,
-        new_value: getElogDocsUrl(req.file),
-        changed_by: user.user_id,
-        previous_status: "Under Review",
-        new_status: "Under Approval",
-        action: "Send For Approval",
-      });
-    }
-
-    auditTrailEntries.push({
-      form_id: form.form_id,
-      field_name: "stage Change",
-      previous_value: "Not Applicable",
-      new_value: "Not Applicable",
-      changed_by: user.user_id,
-      previous_status: "Under Review",
-      new_status: "Under Approval",
-      action: "Send For Approval",
-    });
-
-    // Update the form details
-    await form.update(
-      {
-        status: "Under Approval",
-        stage: 3,
-        reviewComment: reviewComment,
-        reviewerDeclaration: reviewerDeclaration,
-        reviewerAttachment: getElogDocsUrl(req?.file),
-        date_of_review: new Date(),
-      },
-      { transaction }
-    );
-
-    // Insert audit trail entries
-    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
-
-    // Commit the transaction
-    await transaction.commit();
-
-    try {
-      const approver = await getUserById(form.approver_id);
-      // Send emails
-      await Mailer.sendEmail("reminderApprover", {
-        approverName: approver.name,
-        dateOfInitiation: new Date().toISOString().split("T")[0],
-        description: form.description,
-        reviewer: user.name,
-        status: "Under Approval",
-        recipients: approver.email,
-      });
-
-      return res.status(200).json({
-        error: false,
-        message:
-          "E-log status successfully changed from review to under-approval",
-      });
-    } catch (emailError) {
-      console.error("Failed to send emails:", emailError.message);
-      return res.json({
-        error: true,
-        message: "E-log Created but failed to send emails.",
-      });
-    }
-  } catch (error) {
-    // Rollback the transaction in case of error
-    await transaction.rollback();
-
-    return res.status(500).json({
-      error: true,
-      message: `Error during sending E-log for approval: ${error.message}`,
-    });
-  }
-};
-
-// send tempratre record elog from under approval to open
-exports.SendTRfromApprovalToOpen = async (req, res) => {
-  const { form_id, email, password, approverDeclaration } = req.body;
-
-  // Check for required fields and provide specific error messages
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
-  }
-
-  // Start a transaction
-  const transaction = await sequelize.transaction();
-
-  try {
-    // Verify user credentials
-    const user = await User.findOne({
-      where: { user_id: req.user.userId, email, isActive: true },
-      transaction,
-    });
-
-    if (!user) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    // Find the form
-    const form = await TempratureProcessForm.findOne({
-      where: { form_id },
-      transaction,
-    });
-
-    if (!form) {
-      await transaction.rollback();
-      return res.status(404).json({ error: true, message: "Elog not found." });
-    }
-
-    if (form.stage !== 3) {
-      await transaction.rollback();
-      return res.status(400).json({
-        error: true,
-        message: "Elog is not in a valid stage.",
-      });
-    }
-
-    const auditTrailEntries = [];
-
-    // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "approverAttachment",
-        previous_value: form.approverAttachment || null,
-        new_value: getElogDocsUrl(req.file),
-        changed_by: user.user_id,
-        previous_status: "Under Approval",
-        new_status: "Under Review",
-        action: "Open Elog",
-      });
-    }
-
-    auditTrailEntries.push({
-      form_id: form.form_id,
-      field_name: "stage Change",
-      previous_value: "Not Applicable",
-      new_value: "Not Applicable",
-      changed_by: user.user_id,
-      previous_status: "Under Approval",
-      new_status: "Under Review",
-      action: "Open Elog",
-    });
-
-    // Update the form details
-    await form.update(
-      {
-        status: "Under Review",
-        stage: 2,
-        approverAttachment: getElogDocsUrl(req?.file),
-      },
-      { transaction }
-    );
-
-    // Insert audit trail entries
-    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
-
-    // Commit the transaction
-    await transaction.commit();
-
-    // try {
-    //   const initiator = await getUserById(form.initiator_id);
-    //   // Send emails
-    //   await Mailer.sendEmail("reminderInitiator", {
-    //     initiatorName: initiator.name,
-    //     dateOfInitiation: new Date().toISOString().split("T")[0],
-    //     description: form.description,
-    //     status: "Opened",
-    //     recipients: initiator.email,
-    //   });
-
-    return res.status(200).json({
-      error: false,
-      message:
-        "E-log status successfully changed from under-approval to under-review",
-    });
-    // } catch (emailError) {
-    //   console.error("Failed to send emails:", emailError.message);
-    //   return res.json({
-    //     error: true,
-    //     message: "E-log Created but failed to send emails.",
-    //   });
-    // }
-  } catch (error) {
-    // Rollback the transaction in case of error
-    await transaction.rollback();
-
-    return res.status(500).json({
-      error: true,
-      message: `Error during changing stage of elog: ${error.message}`,
-    });
-  }
-};
-
-// APPROVE tempratre record elog
-exports.ApproveTRElog = async (req, res) => {
-  const { form_id, approverComment, email, password, approverDeclaration } =
-    req.body;
-
-  // Check for required fields and provide specific error messages
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
-  }
-  if (!approverComment) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an approver comment." });
-  }
-  if (!email || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email and password." });
-  }
-
-  // Start a transaction
-  const transaction = await sequelize.transaction();
-
-  try {
-    // Verify user credentials
-    const user = await User.findOne({
-      where: { user_id: req.user.userId, email, isActive: true },
-      transaction,
-    });
-
-    if (!user) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid email or password." });
-    }
-
-    // Find the form
-    const form = await TempratureProcessForm.findOne({
-      where: { form_id },
-      transaction,
-    });
-
-    if (!form) {
-      await transaction.rollback();
-      return res.status(404).json({ error: true, message: "Elog not found." });
-    }
-
-    if (form.stage !== 3) {
-      await transaction.rollback();
-      return res.status(400).json({
-        error: true,
-        message: "Elog is not in a valid stage.",
-      });
-    }
-
-    const auditTrailEntries = [];
-
-    if (approverComment) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "approverComment",
-        previous_value: form.approverComment || null,
-        new_value: approverComment,
-        changed_by: user.user_id,
-        previous_status: "Under Approval",
-        new_status: "Closed",
-        action: "Closed",
-      });
-    }
-
-    // Add audit trail entry for the attachment if it exists
-    if (req?.file) {
-      auditTrailEntries.push({
-        form_id: form.form_id,
-        field_name: "approverAttachment",
-        previous_value: form.approverAttachment || null,
-        new_value: getElogDocsUrl(req.file),
-        changed_by: user.user_id,
-        previous_status: "Under Approval",
-        new_status: "Closed",
-        action: "Closed",
-      });
-    }
-
-    auditTrailEntries.push({
-      form_id: form.form_id,
-      field_name: "stage Change",
-      previous_value: "Not Applicable",
-      new_value: "Not Applicable",
-      changed_by: user.user_id,
-      previous_status: "Under Approval",
-      new_status: "Closed",
-      action: "Closed",
-    });
-
-    // Update the form details
-    await form.update(
-      {
-        status: "Closed",
-        stage: 4,
-        approverComment: approverComment,
-        approverAttachment: req?.file
-          ? getElogDocsUrl(req.file)
-          : form.approverAttachment,
-        date_of_approval: new Date(),
-      },
-      { transaction }
-    );
-
-    // Insert audit trail entries
-    await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
-
-    // Commit the transaction
-    await transaction.commit();
-
-    return res.status(200).json({
-      error: false,
-      message: "E-log successfully Closed!!",
-    });
-  } catch (error) {
-    // Rollback the transaction in case of error
-    await transaction.rollback();
-
-    return res.status(500).json({
-      error: true,
-      message: `Error approving elog: ${error.message}`,
-    });
-  }
-};
 exports.getAuditTrailForAnElog = async (req, res) => {
   try {
     // Extract form_id from request parameters
@@ -1689,9 +952,28 @@ const removeHtmlTags = (htmlString) => {
 };
 exports.chatByPdf = async (req, res) => {
   try {
-    const reportData = req.body.reportData;
-    // console.log(reportData,"reportData");
-    const formId = req.params.form_id;
+    const { form_id } = req.params;
+    const formData = await TempratureProcessForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: Process,
+        },
+        {
+          model: User,
+          as: "approver",
+        }
+      ],
+    });
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
     reportData.description = removeHtmlTags(reportData.description);
 
     const date = new Date();
@@ -1755,8 +1037,8 @@ exports.chatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "120px",
-        right: "50px",
+        top: "130px",
+        right: "30px",
         bottom: "50px",
         left: "30px",
       },
@@ -1779,7 +1061,28 @@ exports.chatByPdf = async (req, res) => {
 };
 exports.viewReport = async (req, res) => {
   try {
-    let reportData = req.body.reportData;
+    const { form_id } = req.params;
+    const formData = await TempratureProcessForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: Process,
+        },
+        {
+          model: User,
+          as: "approver",
+        }
+      ],
+    });
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
     // Render HTML using EJS template
     req.app.render("tp_report", { reportData }, (err, html) => {
       if (err) {
@@ -1865,8 +1168,8 @@ exports.effetiveChatByPdf = async (req, res) => {
         );
       }),
       margin: {
-        top: "120px",
-        right: "50px",
+        top: "130px",
+        right: "30px",
         bottom: "50px",
         left: "30px",
       },
