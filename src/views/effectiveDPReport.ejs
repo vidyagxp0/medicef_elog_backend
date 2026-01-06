@@ -184,7 +184,7 @@ const formatDateOnly = (date) => {
 
           if (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) {
             if (value < lower) {
-              colorClass = 'yellow';
+              colorClass = 'red';
             } else if (value > upper) {
               colorClass = 'red';
             } else {
@@ -217,23 +217,36 @@ const formatDateOnly = (date) => {
   <% } %>
 
   <!-- ================= ADDITIONAL ================= -->
-  <h2 class="heading">Additional</h2>
-  <table>
-    <tr>
-      <th>Additional Attachment</th>
-      <td>
-        <% if (reportData?.additionalAttachment) { %>
-          <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
-        <% } else { %>
-          Not Applicable
-        <% } %>
-      </td>
-    </tr>
-    <tr>
-      <th>Additional Info</th>
-      <td><%= reportData?.additionalInfo || "Not Applicable" %></td>
-    </tr>
-  </table>
+<% if (
+  reportData?.additionalAttachment ||
+  reportData?.additionalInfo
+) { %>
+
+<h2 class="heading">Additional</h2>
+<table>
+  <tr>
+    <th>Additional Attachment</th>
+    <td>
+      <% if (reportData?.additionalAttachment) { %>
+        <a href="<%= reportData.additionalAttachment %>" target="_blank">
+          View File
+        </a>
+      <% } else { %>
+        Not Applicable
+      <% } %>
+    </td>
+  </tr>
+
+  <tr>
+    <th>Additional Info</th>
+    <td>
+      <%= reportData?.additionalInfo || "Not Applicable" %>
+    </td>
+  </tr>
+</table>
+
+<% } %>
+
 
 </body>
 </html>

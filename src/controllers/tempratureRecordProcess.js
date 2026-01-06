@@ -1101,8 +1101,56 @@ exports.viewReport = async (req, res) => {
 
 exports.effetiveChatByPdf = async (req, res) => {
   try {
-    const reportData = req.body.reportData;
-    const formId = req.params.form_id;
+
+const { form_id } = req.params;
+const { fromDate, toDate } = req.body;
+
+if (!form_id) {
+  return res.status(400).json({ error: true, message: "Form Id Required" });
+}
+
+      let recordWhere = {};
+
+      if (fromDate && toDate) {
+        // fromDate, toDate expected in 'YYYY/MM/DD'
+        const [fy, fm, fd] = fromDate.split("/"); 
+        const [ty, tm, td] = toDate.split("/");
+        
+
+        // create Date objects
+        const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
+        const to = new Date(ty, tm - 1, td);
+         console.log("form",from,"to",to)
+        recordWhere.date = {
+          [Op.between]: [from, to],
+        };
+      }
+
+    const formData = await TempratureProcessForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: TempratureProcessRecord,
+          // where: recordWhere, // directly use literal or undefined
+          // required: false,
+          // separate: true,
+          // order: [["date", "ASC"], ["time", "ASC"]],
+        },
+        { model: Process },
+      ],
+    });
+
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
+    console.log("reportData",reportData)
+    reportData.description = removeHtmlTags(reportData.description);
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
       : "Not Applicable";

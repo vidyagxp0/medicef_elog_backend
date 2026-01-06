@@ -172,7 +172,7 @@ exports.GetTransitions = async (req, res) => {
     }
     if (!action || !declaration ) {
       return res.status(400).json({
-        message: "action, declaration are required",
+        message: "Comments are required",
       });
     }
 
