@@ -1011,7 +1011,7 @@ exports.effetiveChatByPdf = async (req, res) => {
   try {
 
 const { form_id } = req.params;
-const { fromDate, toDate } = req.query;
+const { fromDate, toDate } = req.body;
 
 if (!form_id) {
   return res.status(400).json({ error: true, message: "Form Id Required" });

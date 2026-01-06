@@ -75,7 +75,7 @@ router.post(
   TempratureProcess.chatByPdf
 );
 
-router.post("/view-report", TempratureProcess.viewReport);
+router.post("/view-report/:form_id", TempratureProcess.viewReport);
 
 router.post(
   "/effective-chat-pdf/:form_id",
