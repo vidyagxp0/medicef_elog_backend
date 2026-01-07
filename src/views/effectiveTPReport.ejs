@@ -286,7 +286,7 @@
         <!-- ================= RECORDS ================= -->
         <h2 class="heading">Tempreture Records</h2>
 
-        <% if (reportData.DifferentialPressureRecords && reportData.DifferentialPressureRecords.length> 0) { %>
+        <% if (reportData.TempratureRecords && reportData.TempratureRecords.length> 0) { %>
             <table>
                 <thead>
                     <tr>
@@ -303,7 +303,7 @@
                 </thead>
                 <tbody>
 
-                    <% reportData.DifferentialPressureRecords.forEach((record, index)=> { %>
+                    <% reportData.TempratureRecords.forEach((record, index)=> { %>
                         <tr>
                             <td>
                                 <%= index + 1 %>

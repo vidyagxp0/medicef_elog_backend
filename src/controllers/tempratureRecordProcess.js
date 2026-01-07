@@ -55,6 +55,12 @@ exports.InsertTempratureRecord = async (req, res) => {
     additionalInfo,
   } = req.body;
 
+  if (!description) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Description field is mandatory." });
+  }
+
   if (!approver_id) {
     return res
       .status(400)
@@ -396,6 +402,17 @@ exports.EditTempratureRecord = async (req, res) => {
 
   // Check for required fields and provide specific error messages
 
+  if (!form_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a form ID." });
+  }  
+  
+  if (!description) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Description field is mandatory." });
+  }
   if (!approver_id) {
     return res
       .status(400)
@@ -405,11 +422,6 @@ exports.EditTempratureRecord = async (req, res) => {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
-  }
-  if (!form_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a form ID." });
   }
   
   if (!email || !password) {
