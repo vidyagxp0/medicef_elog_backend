@@ -39,9 +39,6 @@ const DifferentialPressureRecord = sequelize.define(
     done_by: {
       type: DataTypes.STRING,
     },
-    approver_remarks: {
-      type: DataTypes.STRING,
-    },
     checked_by: {
       type: DataTypes.STRING,
     },

@@ -231,7 +231,6 @@ exports.InsertTempratureRecord = async (req, res) => {
     //     humidity_record: record?.humidity_record,
     //     remarks: record?.remarks,
     //     done_by: record?.done_by,
-    //     approver_remarks: record?.approver_remarks,
     //     checked_by: record?.checked_by,
     //     reviewed_by: record?.reviewed_by,
     //     approved_by: record?.approved_by,
@@ -407,7 +406,7 @@ exports.EditTempratureRecord = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }  
-  
+
   if (!description) {
     return res
       .status(400)
@@ -666,7 +665,6 @@ exports.EditTempratureRecord = async (req, res) => {
             time: newRecord.time,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
-            approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
             // supporting_docs:
@@ -714,7 +712,6 @@ exports.EditTempratureRecord = async (req, res) => {
             date: newRecord.date,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
-            approver_remarks: newRecord?.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
             // supporting_docs:
@@ -754,7 +751,6 @@ exports.EditTempratureRecord = async (req, res) => {
         humidity_record: record?.humidity_record,
         remarks: record?.remarks,
         done_by: record?.done_by,
-        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
@@ -1157,7 +1153,6 @@ if (!form_id) {
         // create Date objects
         const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
         const to = new Date(ty, tm - 1, td);
-         console.log("form",from,"to",to)
         recordWhere.date = {
           [Op.between]: [from, to],
         };
@@ -1168,9 +1163,9 @@ if (!form_id) {
       include: [
         {
           model: TempratureProcessRecord,
-          // where: recordWhere, // directly use literal or undefined
-          // required: false,
-          // separate: true,
+          where: recordWhere, // directly use literal or undefined
+          required: false,
+          separate: true,
           // order: [["date", "ASC"], ["time", "ASC"]],
         },
         { model: Process },
@@ -1186,7 +1181,6 @@ if (!form_id) {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
-    console.log("reportData",reportData)
     reportData.description = removeHtmlTags(reportData.description);
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
@@ -1321,7 +1315,6 @@ exports.blankReport = async (req, res) => {
       humidity_record: record?.humidity_record || "",
       remarks: record?.remarks || "",
       done_by: record?.done_by || "",
-      approver_remarks: record?.approver_remarks ||"",
       reviewed_by: record?.reviewed_by || "",
       approved_by: record?.approved_by ||"",
       supporting_docs: record?.supporting_docs || "",

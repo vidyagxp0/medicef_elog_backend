@@ -290,15 +290,19 @@
             <table>
                 <thead>
                     <tr>
-                        <th>S.No</th>
-                        <th>Unique ID</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Differential Pressure</th>
-                        <th>Done By</th>
-                        <th>Checked By</th>
+                        <th rowspan="2">S.No</th>
+                        <th rowspan="2">Unique ID</th>
+                        <th rowspan="2">Date</th>
+                        <th rowspan="2">Time</th>
+                        <th colspan="2">Tempreture Record</th>
+                        <th rowspan="2">Done By</th>
+                        <th rowspan="2">Checked By</th>
                         <!-- <th>Supporting Docs</th> -->
-                        <th>Remark</th>
+                        <th rowspan="2">Remark</th>
+                    </tr>
+                    <tr>
+                        <th>Min</th>
+                        <th>Max</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -317,7 +321,7 @@
                             <td>
                                 <%= record?.time || "Not Applicable" %>
                             </td>
-                            <% const value=parseFloat(record?.differential_pressure); const
+                            <!-- <% const value=parseFloat(record?.differential_pressure); const
                                 lower=parseFloat(reportData?.limitData?.lowerAcceptanceLimit); const
                                 upper=parseFloat(reportData?.limitData?.upperAcceptanceLimit); let colorClass='black' ;
                                 if (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) { 
@@ -329,10 +333,13 @@
                                       colorClass = 'green';
                                     }
                                  }
-                                %>
+                                %> -->
 
                                 <td class="<%= colorClass %>">
-                                    <%= record?.differential_pressure ?? "Not Applicable" %>
+                                    <%= record?.min_temprature_record ?? "Not Applicable" %>
+                                </td>
+                                <td class="<%= colorClass %>">
+                                    <%= record?.max_temprature_record ?? "Not Applicable" %>
                                 </td>
 
 

@@ -230,7 +230,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         done_by: record?.done_by,
-        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,
@@ -625,7 +624,6 @@ exports.EditDifferentialPressure = async (req, res) => {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
-            approver_remarks: newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
             // supporting_docs:
@@ -672,7 +670,6 @@ exports.EditDifferentialPressure = async (req, res) => {
             differential_pressure: newRecord.differential_pressure,
             remarks: newRecord.remarks,
             done_by: newRecord.done_by,
-            approver_remarks: newRecord.approver_remarks,
             reviewed_by: newRecord?.reviewed_by,
             approved_by: newRecord?.approved_by,
             // supporting_docs:
@@ -711,7 +708,6 @@ exports.EditDifferentialPressure = async (req, res) => {
         differential_pressure: record?.differential_pressure,
         remarks: record?.remarks,
         done_by: record?.done_by,
-        approver_remarks: record?.approver_remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         approved_by: record?.approved_by,

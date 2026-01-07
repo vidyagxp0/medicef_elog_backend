@@ -43,10 +43,7 @@ const TempraturePressureRecord = sequelize.define(
     },
     humidity_record: {
       type: DataTypes.STRING,
-    },
-    approver_remarks: {
-      type: DataTypes.STRING,
-    },    
+    }, 
     done_by: {
       type: DataTypes.STRING,
     },
