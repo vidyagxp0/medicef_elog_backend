@@ -190,94 +190,90 @@
             </tbody>
         </table>
 
-        <h2 class="heading">Acceptance Temperature Limits</h2>
+            <% if (reportData?.acceptanceTempData) { %>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Lower Action Limit</th>
-                    <th>Lower Allocation Limit</th>
-                    <th>Lower Acceptance Criteria</th>
-                    <th>Upper Action Limit</th>
-                    <th>Upper Allocation Limit</th>
-                    <th>Upper Acceptance Criteria</th>
-                </tr>
-            </thead>
+                <h2 class="heading">Acceptance Temperature Limits</h2>
 
-            <tbody>
-                <% if (reportData?.acceptanceTempData) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lower Action Limit</th>
+                            <th>Lower Allocation Limit</th>
+                            <th>Lower Acceptance Criteria</th>
+                            <th>Upper Action Limit</th>
+                            <th>Upper Allocation Limit</th>
+                            <th>Upper Acceptance Criteria</th>
+                        </tr>
+                    </thead>
 
+                    <tbody>
                         <tr>
                             <td>
-                                <%= reportData?.acceptanceTempData?.lowerActionLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.lowerActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.acceptanceTempData?.lowerAllocationLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.lowerAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.acceptanceTempData?.lowerAcceptanceLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.lowerAcceptanceLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.acceptanceTempData?.upperActionLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.upperActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.acceptanceTempData?.upperAllocationLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.upperAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.acceptanceTempData?.upperAcceptanceLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.upperAcceptanceLimit || "NA" %>
                             </td>
                         </tr>
-                <% } else { %>
-                    <tr>
-                        <td colspan="6" style="text-align:center;">No Data Available</td>
-                    </tr>
-                    <% } %>
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
 
-        <h2 class="heading">Relative Humidity Criteria Limits</h2>
+                <% } %>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Lower Action Limit</th>
-                    <th>Lower Allocation Limit</th>
-                    <th>Lower Acceptance Criteria</th>
-                    <th>Upper Action Limit</th>
-                    <th>Upper Allocation Limit</th>
-                    <th>Upper Acceptance Criteria</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                <% if (reportData?.relHumidityData) { %>
+            <% if (reportData?.relHumidityData) { %>
+
+                <h2 class="heading">Relative Humidity Criteria Limits</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lower Action Limit</th>
+                            <th>Lower Allocation Limit</th>
+                            <th>Lower Acceptance Criteria</th>
+                            <th>Upper Action Limit</th>
+                            <th>Upper Allocation Limit</th>
+                            <th>Upper Acceptance Criteria</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
                         <tr>
                             <td>
-                                <%= reportData?.relHumidityData?.lowerActionLimit || "NA" %>
+                                <%= reportData.relHumidityData.lowerActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.relHumidityData?.lowerAllocationLimit || "NA" %>
+                                <%= reportData.relHumidityData.lowerAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.relHumidityData?.lowerAcceptanceLimit || "NA" %>
+                                <%= reportData.relHumidityData.lowerAcceptanceLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.relHumidityData?.upperActionLimit || "NA" %>
+                                <%= reportData.relHumidityData.upperActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.relHumidityData?.upperAllocationLimit || "NA" %>
+                                <%= reportData.relHumidityData.upperAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData?.relHumidityData?.upperAcceptanceLimit || "NA" %>
+                                <%= reportData.relHumidityData.upperAcceptanceLimit || "NA" %>
                             </td>
                         </tr>
-                        <% } else { %>
-                            <tr>
-                                <td colspan="6" style="text-align:center;">No Data Available</td>
-                            </tr>
-                            <% } %>
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+
+                <% } %>
 
         <hr />
         <!-- ================= RECORDS ================= -->
