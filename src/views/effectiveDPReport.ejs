@@ -219,10 +219,11 @@
               <td>
                 <%= record?.time || "Not Applicable" %>
               </td>
-              <% const value=parseFloat(record?.differential_pressure); const
-                lower=parseFloat(reportData?.limitData?.lowerAcceptanceLimit); const
-                upper=parseFloat(reportData?.limitData?.upperAcceptanceLimit); let colorClass='black' ; if
-                (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) {
+              <% const value=parseFloat(record?.differential_pressure);
+               const lower=parseFloat(reportData?.limitData?.lowerAcceptanceLimit); 
+               const upper=parseFloat(reportData?.limitData?.upperAcceptanceLimit); 
+               let colorClass='black' ; 
+               if  (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) {
                    if (value < lower) { 
                     colorClass='red' ; } 
                     else if (value> upper) {

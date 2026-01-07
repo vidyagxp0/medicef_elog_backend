@@ -288,6 +288,7 @@
                         <th rowspan="2">Date</th>
                         <th rowspan="2">Time</th>
                         <th colspan="2">Tempreture Record</th>
+                        <th rowspan="2">Humidity Record</th>
                         <th rowspan="2">Done By</th>
                         <th rowspan="2">Checked By</th>
                         <!-- <th>Supporting Docs</th> -->
@@ -314,28 +315,59 @@
                             <td>
                                 <%= record?.time || "Not Applicable" %>
                             </td>
-                            <!-- <% const value=parseFloat(record?.differential_pressure); const
-                                lower=parseFloat(reportData?.limitData?.lowerAcceptanceLimit); const
-                                upper=parseFloat(reportData?.limitData?.upperAcceptanceLimit); let colorClass='black' ;
-                                if (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) { 
-                                    if (value < lower) {
+                            <% const minValue=parseFloat(record?.min_temprature_record); 
+                            const minLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceLimit); 
+                            const minUpper=parseFloat(reportData?.acceptanceTempData?.upperAcceptanceLimit);
+                            let colorClass='black' ;
+                                if (!isNaN(minValue) && !isNaN(minLower) && !isNaN(minUpper)) { 
+                                    if (minValue < minLower) {
                                       colorClass='red' ;
-                                    } else if (value> upper) {
+                                    } else if (minValue > minUpper) {
                                       colorClass = 'red';
                                     } else {
                                       colorClass = 'green';
                                     }
                                  }
-                                %> -->
+                                %>
 
                                 <td class="<%= colorClass %>">
-                                    <%= record?.min_temprature_record ?? "Not Applicable" %>
+                                    <%= record?.min_temprature_record || "Not Applicable" %>
                                 </td>
-                                <td class="<%= colorClass %>">
-                                    <%= record?.max_temprature_record ?? "Not Applicable" %>
+                            <% const maxValue=parseFloat(record?.max_temprature_record); 
+                            const maxLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceLimit); 
+                            const maxUpper=parseFloat(reportData?.acceptanceTempData?.upperAcceptanceLimit);
+                            let maxColorClass='black' ;
+                                if (!isNaN(maxValue) && !isNaN(maxLower) && !isNaN(maxUpper)) { 
+                                    if (maxValue < maxLower) {
+                                      maxColorClass='red' ;
+                                    } else if (maxValue > maxUpper) {
+                                      maxColorClass = 'red';
+                                    } else {
+                                      maxColorClass = 'green';
+                                    }
+                                 }
+                                %>                                
+                                <td class="<%= maxColorClass %>">
+                                    <%= record?.max_temprature_record || "Not Applicable" %>
                                 </td>
 
-
+                            <% const humidityValue = parseFloat(record?.humidity_record); 
+                            const humidityLower = parseFloat(reportData?.relHumidityData?.lowerAcceptanceLimit); 
+                            const humidityUpper = parseFloat(reportData?.relHumidityData?.upperAcceptanceLimit);
+                            let humidityColorClass = 'black' ;
+                                if (!isNaN(humidityValue) && !isNaN(humidityLower) && !isNaN(humidityUpper)) { 
+                                    if (humidityValue < humidityLower) {
+                                      humidityColorClass='red' ;
+                                    } else if (humidityValue > humidityUpper) {
+                                      humidityColorClass = 'red';
+                                    } else {
+                                      humidityColorClass = 'green';
+                                    }
+                                 }
+                                %>                                    
+                                <td class="<%= humidityColorClass %>">
+                                    <%= record?.humidity_record || "Not Applicable" %>
+                                </td>
                                 <td>
                                     <%= record?.done_by || "Not Applicable" %>
                                 </td>
