@@ -590,8 +590,17 @@ exports.generateAuditPdfbyId = async (req, res) => {
       order: [["auditTrail_id", "ASC"]],
     });
 
-const stripHtml = (html) =>
-  html ? html.replace(/<[^>]*>/g, "") : "";
+const stripHtml = (value) => {
+  if (value === null || value === undefined) return "";
+
+  // If not string, convert safely
+  if (typeof value !== "string") {
+    return JSON.stringify(value);
+  }
+
+  return value.replace(/<[^>]*>/g, "");
+};
+
 
     const response = auditTrail.map((row) => {
       const data = row.toJSON();
