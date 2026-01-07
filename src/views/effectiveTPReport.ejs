@@ -318,15 +318,17 @@
                                 <%= record?.time || "Not Applicable" %>
                             </td>
                             <% const value=parseFloat(record?.differential_pressure); const
-                                lower=parseFloat(reportData?.limitData?.lowerAllocationLimit); const
-                                upper=parseFloat(reportData?.limitData?.upperAllocationLimit); let colorClass='black' ;
-                                if (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) { if (value < lower) {
-                                colorClass='yellow' ; } else if (value> upper) {
-                                colorClass = 'red';
-                                } else {
-                                colorClass = 'green';
-                                }
-                                }
+                                lower=parseFloat(reportData?.limitData?.lowerAcceptanceLimit); const
+                                upper=parseFloat(reportData?.limitData?.upperAcceptanceLimit); let colorClass='black' ;
+                                if (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) { 
+                                    if (value < lower) {
+                                      colorClass='red' ;
+                                    } else if (value> upper) {
+                                      colorClass = 'red';
+                                    } else {
+                                      colorClass = 'green';
+                                    }
+                                 }
                                 %>
 
                                 <td class="<%= colorClass %>">
@@ -341,12 +343,12 @@
                                     <%= record?.reviewed_by || "Not Applicable" %>
                                 </td>
                                 <!-- <td>
-          <% if (record?.supporting_docs) { %>
-            <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
-          <% } else { %>
-            Not Applicable
-          <% } %>
-        </td> -->
+                                    <% if (record?.supporting_docs) { %>
+                                        <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
+                                    <% } else { %>
+                                        Not Applicable
+                                    <% } %>
+                                    </td> -->
                                 <td>
                                     <%= record?.remarks || "Not Applicable" %>
                                 </td>

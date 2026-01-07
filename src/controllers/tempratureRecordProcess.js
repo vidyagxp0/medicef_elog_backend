@@ -384,6 +384,17 @@ exports.EditTempratureRecord = async (req, res) => {
   } = req.body;
 
   // Check for required fields and provide specific error messages
+
+  if (!approver_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver." });
+  }
+  if (!reviewer_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a reviewer." });
+  }
   if (!form_id) {
     return res
       .status(400)

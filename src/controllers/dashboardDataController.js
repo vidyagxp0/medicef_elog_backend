@@ -659,7 +659,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const pdfBuffer = await page.pdf({
       format: "A4",
-      // landscape:true,
+      landscape:true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: headerHtml,

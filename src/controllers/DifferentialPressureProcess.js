@@ -375,6 +375,16 @@ exports.EditDifferentialPressure = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  if (!approver_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver." });
+  }
+  if (!reviewer_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide a reviewer." });
+  }
   if (!email || !password) {
     return res
       .status(400)
