@@ -29,7 +29,10 @@ const TempraturePressureRecord = sequelize.define(
     date: {
       type: DataTypes.DATEONLY,
     },
-    temprature_record: {
+    min_temprature_record: {
+      type: DataTypes.STRING,
+    },
+    max_temprature_record: {
       type: DataTypes.STRING,
     },
     remarks: {

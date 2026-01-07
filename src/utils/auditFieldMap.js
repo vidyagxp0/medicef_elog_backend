@@ -32,6 +32,8 @@ module.exports = {
   acceptanceTempData: "Acceptance Temperature Details",
   relative_humidity_criteria: "Relative Humidity Criteria",
   relHumidityData: "Relative Humidity Details",
+  max_temprature_record:"Max Tempreture Record",
+  min_temprature_record:"Min Tempreture Record",
 
   // ===== WORKFLOW / AUDIT =====
   STAGE_CHANGE: "Stage Change",
