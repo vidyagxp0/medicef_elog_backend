@@ -590,13 +590,16 @@ exports.generateAuditPdfbyId = async (req, res) => {
       order: [["auditTrail_id", "ASC"]],
     });
 
+const stripHtml = (html) =>
+  html ? html.replace(/<[^>]*>/g, "") : "";
+
     const response = auditTrail.map((row) => {
       const data = row.toJSON();
 
       return {
         ...data,
-        new_value: formatAuditValue(data.new_value),
-        previous_value: formatAuditValue(data.previous_value),
+        new_value: stripHtml(formatAuditValue(data.new_value)),
+        previous_value: stripHtml(formatAuditValue(data.previous_value)),
 
         field_name:
           auditFieldMap[data.field_name] ||
@@ -629,7 +632,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
 
     const headerHtml = await new Promise((resolve, reject) => {
       req.app.render(
-        "header",
+        "auditHeader",
         { reportData: data, logoDataUri: logoDataUri },
         (err, html) => {
           if (err) return reject(err);

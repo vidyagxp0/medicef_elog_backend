@@ -375,6 +375,11 @@ exports.EditDifferentialPressure = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
   }
+  if (!description) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Description field is mandatory." });
+  }
   if (!approver_id) {
     return res
       .status(400)
