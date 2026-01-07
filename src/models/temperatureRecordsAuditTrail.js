@@ -32,11 +32,11 @@ const TemperatureRecordsAuditTrail = sequelize.define(
       allowNull: false,
     },
     previous_value: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     new_value: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
     previous_status: {
@@ -47,10 +47,10 @@ const TemperatureRecordsAuditTrail = sequelize.define(
         type: DataTypes.STRING,
         allowNull: false
     },
-    // declaration: {
-    //     type: DataTypes.STRING,
-    //     allowNull: false
-    // },
+    declaration: {
+        type: DataTypes.STRING,
+        // allowNull: false,
+    },
     action: {
       type: DataTypes.STRING,
       allowNull: false
@@ -58,7 +58,7 @@ const TemperatureRecordsAuditTrail = sequelize.define(
   }
 );
 
-TemperatureRecordsAuditTrail.belongsTo(User, { foreignKey: "changed_by" });
+TemperatureRecordsAuditTrail.belongsTo(User, { foreignKey: "changed_by",as: "changedByUser" });
 User.hasMany(TemperatureRecordsAuditTrail, { foreignKey: "changed_by" });
 
 TemperatureRecordsAuditTrail.belongsTo(TempratureProcessForm, {

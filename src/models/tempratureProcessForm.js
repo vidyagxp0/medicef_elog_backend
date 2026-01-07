@@ -70,7 +70,7 @@ const TempratureProcessForm = sequelize.define("TempratureProcessForm", {
     },
   },
   description: {
-    type: DataTypes.JSON,
+    type: DataTypes.TEXT,
   },
   status: {
     type: DataTypes.STRING,
