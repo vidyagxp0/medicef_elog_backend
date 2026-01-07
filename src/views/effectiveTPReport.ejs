@@ -205,34 +205,33 @@
             </thead>
 
             <tbody>
-                <% if (Array.isArray(reportData?.acceptanceTempData) && reportData.acceptanceTempData.length) { %>
-                    <% reportData.acceptanceTempData.forEach(row=> { %>
+                <% if (reportData?.acceptanceTempData) { %>
+
                         <tr>
                             <td>
-                                <%= row.lowerActionLimit || "NA" %>
+                                <%= reportData?.acceptanceTempData?.lowerActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.lowerAllocationLimit || "NA" %>
+                                <%= reportData?.acceptanceTempData?.lowerAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.lowerAcceptanceLimit || "NA" %>
+                                <%= reportData?.acceptanceTempData?.lowerAcceptanceLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.upperActionLimit || "NA" %>
+                                <%= reportData?.acceptanceTempData?.upperActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.upperAllocationLimit || "NA" %>
+                                <%= reportData?.acceptanceTempData?.upperAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.upperAcceptanceLimit || "NA" %>
+                                <%= reportData?.acceptanceTempData?.upperAcceptanceLimit || "NA" %>
                             </td>
                         </tr>
-                        <% }) %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="6" style="text-align:center;">No Data Available</td>
-                                </tr>
-                                <% } %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" style="text-align:center;">No Data Available</td>
+                    </tr>
+                    <% } %>
             </tbody>
         </table>
 
@@ -251,34 +250,32 @@
             </thead>
 
             <tbody>
-                <% if (Array.isArray(reportData?.relHumidityData) && reportData.relHumidityData.length) { %>
-                    <% reportData.relHumidityData.forEach(row=> { %>
+                <% if (reportData?.relHumidityData) { %>
                         <tr>
                             <td>
-                                <%= row.lowerActionLimit || "NA" %>
+                                <%= reportData?.relHumidityData?.lowerActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.lowerAllocationLimit || "NA" %>
+                                <%= reportData?.relHumidityData?.lowerAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.lowerAcceptanceLimit || "NA" %>
+                                <%= reportData?.relHumidityData?.lowerAcceptanceLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.upperActionLimit || "NA" %>
+                                <%= reportData?.relHumidityData?.upperActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.upperAllocationLimit || "NA" %>
+                                <%= reportData?.relHumidityData?.upperAllocationLimit || "NA" %>
                             </td>
                             <td>
-                                <%= row.upperAcceptanceLimit || "NA" %>
+                                <%= reportData?.relHumidityData?.upperAcceptanceLimit || "NA" %>
                             </td>
                         </tr>
-                        <% }) %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="6" style="text-align:center;">No Data Available</td>
-                                </tr>
-                                <% } %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" style="text-align:center;">No Data Available</td>
+                            </tr>
+                            <% } %>
             </tbody>
         </table>
 
