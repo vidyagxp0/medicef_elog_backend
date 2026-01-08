@@ -602,123 +602,172 @@ exports.EditDifferentialPressure = async (req, res) => {
     );
 
     // Update the Form Records if provided
-    if (
-      Array.isArray(DifferentialPressureRecords) &&
-      DifferentialPressureRecords.length > 0
-    ) {
-      const existingRecords = await DifferentialPressureRecord.findAll({
-        where: { form_id: form_id },
-        raw: true,
-        // order: [["record_id", "DESC"]],
-        transaction,
-      });
+    // if (
+    //   Array.isArray(DifferentialPressureRecords) &&
+    //   DifferentialPressureRecords.length > 0
+    // ) {
+    //   const existingRecords = await DifferentialPressureRecord.findAll({
+    //     where: { form_id: form_id },
+    //     raw: true,
+    //     // order: [["record_id", "DESC"]],
+    //     transaction,
+    //   });
 
-      // Track changes for existing records
-      existingRecords.forEach((existingRecord, index) => {
-        DifferentialPressureRecords.sort(
-          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
-        );
-        const newRecord = DifferentialPressureRecords[index];
-        if (newRecord) {
-          const recordFields = {
-            differential_pressure: newRecord.differential_pressure,
-            remarks: newRecord.remarks,
-            done_by: newRecord.done_by,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
-            // supporting_docs:
-            //   newRecord.supporting_docs ||
-            //   getElogDocsUrl(supportingDocs[index]),
-          };
+    //   // Track changes for existing records
+    //   existingRecords.forEach((existingRecord, index) => {
+    //     DifferentialPressureRecords.sort(
+    //       (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
+    //     );
+    //     const newRecord = DifferentialPressureRecords[index];
+    //     if (newRecord) {
+    //       const recordFields = {
+    //         differential_pressure: newRecord.differential_pressure,
+    //         remarks: newRecord.remarks,
+    //         done_by: newRecord.done_by,
+    //         reviewed_by: newRecord?.reviewed_by,
+    //         approved_by: newRecord?.approved_by,
+    //         // supporting_docs:
+    //         //   newRecord.supporting_docs ||
+    //         //   getElogDocsUrl(supportingDocs[index]),
+    //       };
 
-          // for (const [field, newValue] of Object.entries(recordFields)) {
-          //   const oldValue = existingRecord[field];
-          //   if (
-          //     newValue !== undefined &&
-          //     ((typeof newValue === "number" &&
-          //       !areFloatsEqual(oldValue, newValue)) ||
-          //       oldValue != newValue)
-          //   ) {
-          //     auditTrailEntries.push({
-          //       form_id: form.form_id,
-          //       field_name: `${field}[${index}]`,
-          //       previous_value: oldValue || null,
-          //       new_value: newValue,
-          //       changed_by: user.user_id,
-          //       previous_status: form.status,
-          //       new_status: form.status,
-          //       action: "Update Elog",
-          //     });
-          //   }
-          // }
-        }
-      });
+    //       // for (const [field, newValue] of Object.entries(recordFields)) {
+    //       //   const oldValue = existingRecord[field];
+    //       //   if (
+    //       //     newValue !== undefined &&
+    //       //     ((typeof newValue === "number" &&
+    //       //       !areFloatsEqual(oldValue, newValue)) ||
+    //       //       oldValue != newValue)
+    //       //   ) {
+    //       //     auditTrailEntries.push({
+    //       //       form_id: form.form_id,
+    //       //       field_name: `${field}[${index}]`,
+    //       //       previous_value: oldValue || null,
+    //       //       new_value: newValue,
+    //       //       changed_by: user.user_id,
+    //       //       previous_status: form.status,
+    //       //       new_status: form.status,
+    //       //       action: "Update Elog",
+    //       //     });
+    //       //   }
+    //       // }
+    //     }
+    //   });
 
-      // Handle new records added
-      if (DifferentialPressureRecords.length > existingRecords.length) {
-        for (
-          let i = existingRecords.length;
-          i < DifferentialPressureRecords.length;
-          i++
-        ) {
-          const newRecord = DifferentialPressureRecords[i];
-          const recordFields = {
-            unique_id: newRecord?.unique_id,
-            time: newRecord?.time,
-            date: newRecord?.date,
-            checked_by: newRecord?.checked_by,
-            differential_pressure: newRecord.differential_pressure,
-            remarks: newRecord.remarks,
-            done_by: newRecord.done_by,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
-            // supporting_docs:
-            //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
-          };
+    //   // Handle new records added
+    //   if (DifferentialPressureRecords.length > existingRecords.length) {
+    //     for (
+    //       let i = existingRecords.length;
+    //       i < DifferentialPressureRecords.length;
+    //       i++
+    //     ) {
+    //       const newRecord = DifferentialPressureRecords[i];
+    //       const recordFields = {
+    //         unique_id: newRecord?.unique_id,
+    //         time: newRecord?.time,
+    //         date: newRecord?.date,
+    //         checked_by: newRecord?.checked_by,
+    //         differential_pressure: newRecord.differential_pressure,
+    //         remarks: newRecord.remarks,
+    //         done_by: newRecord.done_by,
+    //         reviewed_by: newRecord?.reviewed_by,
+    //         approved_by: newRecord?.approved_by,
+    //         // supporting_docs:
+    //         //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+    //       };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            if (newValue !== undefined) {
-              // auditTrailEntries.push({
-              //   form_id: form.form_id,
-              //   field_name: `${field}[${i}]`,
-              //   previous_value: null,
-              //   new_value: newValue || "",
-              //   changed_by: user.user_id,
-              //   previous_status: form.status,
-              //   new_status: "Opened",
-              //   action: "Update Elog",
-              // });
-            }
+    //       for (const [field, newValue] of Object.entries(recordFields)) {
+    //         if (newValue !== undefined) {
+    //           // auditTrailEntries.push({
+    //           //   form_id: form.form_id,
+    //           //   field_name: `${field}[${i}]`,
+    //           //   previous_value: null,
+    //           //   new_value: newValue || "",
+    //           //   changed_by: user.user_id,
+    //           //   previous_status: form.status,
+    //           //   new_status: "Opened",
+    //           //   action: "Update Elog",
+    //           // });
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   // Delete existing records for the form
+    //   await DifferentialPressureRecord.destroy({
+    //     where: { form_id: form_id },
+    //     transaction,
+    //   });
+
+    //   // Create new records
+    //   const formRecords = DifferentialPressureRecords.map((record, index) => ({
+    //     form_id: form_id,
+    //     unique_id: record?.unique_id,
+    //     time: record?.time,
+    //     date: record?.date,
+    //     differential_pressure: record?.differential_pressure,
+    //     remarks: record?.remarks,
+    //     done_by: record?.done_by,
+    //     checked_by: record?.checked_by,
+    //     reviewed_by: record?.reviewed_by,
+    //     approved_by: record?.approved_by,
+    //     // supporting_docs: record?.supporting_docs
+    //     //   ? record?.supporting_docs
+    //     //   : getElogDocsUrl(supportingDocs[index]),
+    //   }));
+
+    //   await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+    // }
+
+// Update / Create Temperature Records (NO DELETE)
+
+      if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
+
+        for (const record of DifferentialPressureRecords) {
+
+          if (record.record_id) {
+            // UPDATE existing row
+            await DifferentialPressureRecord.update(
+              {
+                unique_id: record?.unique_id,
+                time: record?.time,
+                date: record?.date,
+                differential_pressure: record?.differential_pressure,
+                remarks: record?.remarks,
+                done_by: record?.done_by,
+                checked_by: record?.checked_by,
+                reviewed_by: record?.reviewed_by,
+                approved_by: record?.approved_by,
+              },
+              {
+                where: {
+                  record_id: record.record_id,
+                  form_id: form_id,
+                },
+                transaction,
+              }
+            );
+
+          } else {
+            // CREATE only new row
+            await DifferentialPressureRecord.create(
+              {
+                form_id: form_id,
+                unique_id: record?.unique_id,
+                time: record?.time,
+                date: record?.date,
+                differential_pressure: record?.differential_pressure,
+                remarks: record?.remarks,
+                done_by: record?.done_by,
+                checked_by: record?.checked_by,
+                reviewed_by: record?.reviewed_by,
+                approved_by: record?.approved_by,
+              },
+              { transaction }
+            );
           }
         }
       }
-
-      // Delete existing records for the form
-      await DifferentialPressureRecord.destroy({
-        where: { form_id: form_id },
-        transaction,
-      });
-
-      // Create new records
-      const formRecords = DifferentialPressureRecords.map((record, index) => ({
-        form_id: form_id,
-        unique_id: record?.unique_id,
-        time: record?.time,
-        date: record?.date,
-        differential_pressure: record?.differential_pressure,
-        remarks: record?.remarks,
-        done_by: record?.done_by,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        // supporting_docs: record?.supporting_docs
-        //   ? record?.supporting_docs
-        //   : getElogDocsUrl(supportingDocs[index]),
-      }));
-
-      await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
-    }
-
     await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
