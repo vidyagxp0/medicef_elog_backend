@@ -642,128 +642,180 @@ exports.EditTempratureRecord = async (req, res) => {
 
     // Update the Form Records if provided
 
-    if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
-      const existingRecords = await TempratureProcessRecord.findAll({
-        where: { form_id: form_id },
-        raw: true,
-        // order: [["record_id", "DESC"]],
-        transaction,
-      });
+    // if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
+    //   const existingRecords = await TempratureProcessRecord.findAll({
+    //     where: { form_id: form_id },
+    //     raw: true,
+    //     // order: [["record_id", "DESC"]],
+    //     transaction,
+    //   });
 
-      // Track changes for existing records
-      existingRecords.forEach((existingRecord, index) => {
-        TempratureRecords.sort(
-          (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
-        );
-        const newRecord = TempratureRecords[index];
-        if (newRecord) {
-          const recordFields = {
-            min_temprature_record: newRecord.min_temprature_record,
-            max_temprature_record: newRecord.max_temprature_record,
-            humidity_record: newRecord.humidity_record,
-            date: newRecord.date,
-            time: newRecord.time,
-            remarks: newRecord.remarks,
-            done_by: newRecord.done_by,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
-            // supporting_docs:
-            //   newRecord.supporting_docs ||
-            //   getElogDocsUrl(supportingDocs[index]),
-          };
+    //   // Track changes for existing records
+    //   existingRecords.forEach((existingRecord, index) => {
+    //     TempratureRecords.sort(
+    //       (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
+    //     );
+    //     const newRecord = TempratureRecords[index];
+    //     if (newRecord) {
+    //       const recordFields = {
+    //         min_temprature_record: newRecord.min_temprature_record,
+    //         max_temprature_record: newRecord.max_temprature_record,
+    //         humidity_record: newRecord.humidity_record,
+    //         date: newRecord.date,
+    //         time: newRecord.time,
+    //         remarks: newRecord.remarks,
+    //         done_by: newRecord.done_by,
+    //         reviewed_by: newRecord?.reviewed_by,
+    //         approved_by: newRecord?.approved_by,
+    //         // supporting_docs:
+    //         //   newRecord.supporting_docs ||
+    //         //   getElogDocsUrl(supportingDocs[index]),
+    //       };
 
-          // for (const [field, newValue] of Object.entries(recordFields)) {
-          //   const oldValue = existingRecord[field];
-          //   if ( 
-          //     newValue !== undefined &&
-          //     ((typeof newValue === "number" &&
-          //       !areFloatsEqual(oldValue, newValue)) ||
-          //       oldValue != newValue)
-          //   ) {
-          //     auditTrailEntries.push({
-          //       form_id: form.form_id,
-          //       field_name: `${field}`,
-          //       previous_value: oldValue || null,
-          //       new_value: newValue || "",
-          //       changed_by: user.user_id,
-          //       previous_status: form.status,
-          //       new_status: "Opened",
-          //       action: "Update Elog",
-          //     });
-          //   }
-          // }
-        }
-      });
-      // Handle new records added
-      if (TempratureRecords.length > existingRecords.length) {
-        for (
-          let i = existingRecords.length;
-          i < TempratureRecords.length;
-          i++
-        ) {
-          const newRecord = TempratureRecords[i];
-          const recordFields = {
-            unique_id: newRecord?.unique_id,
-            time: newRecord?.time,
-            checked_by: newRecord?.checked_by,
-            min_temprature_record: newRecord.min_temprature_record,
-            max_temprature_record: newRecord.max_temprature_record,
-            humidity_record: newRecord.humidity_record,
-            date: newRecord.date,
-            remarks: newRecord.remarks,
-            done_by: newRecord.done_by,
-            reviewed_by: newRecord?.reviewed_by,
-            approved_by: newRecord?.approved_by,
-            // supporting_docs:
-            //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
-          };
+    //       // for (const [field, newValue] of Object.entries(recordFields)) {
+    //       //   const oldValue = existingRecord[field];
+    //       //   if ( 
+    //       //     newValue !== undefined &&
+    //       //     ((typeof newValue === "number" &&
+    //       //       !areFloatsEqual(oldValue, newValue)) ||
+    //       //       oldValue != newValue)
+    //       //   ) {
+    //       //     auditTrailEntries.push({
+    //       //       form_id: form.form_id,
+    //       //       field_name: `${field}`,
+    //       //       previous_value: oldValue || null,
+    //       //       new_value: newValue || "",
+    //       //       changed_by: user.user_id,
+    //       //       previous_status: form.status,
+    //       //       new_status: "Opened",
+    //       //       action: "Update Elog",
+    //       //     });
+    //       //   }
+    //       // }
+    //     }
+    //   });
+    //   // Handle new records added
+    //   if (TempratureRecords.length > existingRecords.length) {
+    //     for (
+    //       let i = existingRecords.length;
+    //       i < TempratureRecords.length;
+    //       i++
+    //     ) {
+    //       const newRecord = TempratureRecords[i];
+    //       const recordFields = {
+    //         unique_id: newRecord?.unique_id,
+    //         time: newRecord?.time,
+    //         checked_by: newRecord?.checked_by,
+    //         min_temprature_record: newRecord.min_temprature_record,
+    //         max_temprature_record: newRecord.max_temprature_record,
+    //         humidity_record: newRecord.humidity_record,
+    //         date: newRecord.date,
+    //         remarks: newRecord.remarks,
+    //         done_by: newRecord.done_by,
+    //         reviewed_by: newRecord?.reviewed_by,
+    //         approved_by: newRecord?.approved_by,
+    //         // supporting_docs:
+    //         //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
+    //       };
 
-          for (const [field, newValue] of Object.entries(recordFields)) {
-            if (newValue !== undefined) {
-              // auditTrailEntries.push({
-              //   form_id: form.form_id,
-              //   field_name: `${field}`,
-              //   previous_value: null,
-              //   new_value: newValue || "",
-              //   changed_by: user.user_id,
-              //   previous_status: form.status,
-              //   new_status: "Opened",
-              //   action: "Update Elog",
-              // });
-            }
+    //       for (const [field, newValue] of Object.entries(recordFields)) {
+    //         if (newValue !== undefined) {
+    //           // auditTrailEntries.push({
+    //           //   form_id: form.form_id,
+    //           //   field_name: `${field}`,
+    //           //   previous_value: null,
+    //           //   new_value: newValue || "",
+    //           //   changed_by: user.user_id,
+    //           //   previous_status: form.status,
+    //           //   new_status: "Opened",
+    //           //   action: "Update Elog",
+    //           // });
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   // Delete existing records for the form
+    //   await TempratureProcessRecord.destroy({
+    //     where: { form_id: form_id },
+    //     transaction,
+    //   });
+    //   // Create new records  
+    //   const formRecords = TempratureRecords.map((record, index) => ({
+    //     form_id: form_id,
+    //     unique_id: record?.unique_id,
+    //     time: record?.time,
+    //     date: record?.date,
+    //     min_temprature_record: record?.min_temprature_record,
+    //     max_temprature_record: record?.max_temprature_record,
+    //     humidity_record: record?.humidity_record,
+    //     remarks: record?.remarks,
+    //     done_by: record?.done_by,
+    //     checked_by: record?.checked_by,
+    //     reviewed_by: record?.reviewed_by,
+    //     approved_by: record?.approved_by,
+    //     // supporting_docs: record?.supporting_docs
+    //     //   ? record?.supporting_docs
+    //     //   : getElogDocsUrl(supportingDocs[index]),
+    //   }));
+    //   await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
+    // }
+
+// Update / Create Temperature Records (NO DELETE)
+
+      if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
+
+        for (const record of TempratureRecords) {
+
+          if (record.record_id) {
+            // UPDATE existing row
+            await TempratureProcessRecord.update(
+              {
+                time: record.time,
+                date: record.date,
+                min_temprature_record: record.min_temprature_record,
+                max_temprature_record: record.max_temprature_record,
+                humidity_record: record.humidity_record,
+                remarks: record.remarks,
+                done_by: record.done_by,
+                reviewed_by: record?.reviewed_by,
+                approved_by: record?.approved_by,
+              },
+              {
+                where: {
+                  record_id: record.record_id,
+                  form_id: form_id,
+                },
+                transaction,
+              }
+            );
+
+          } else {
+            // CREATE only new row
+            await TempratureProcessRecord.create(
+              {
+                form_id: form_id,
+                unique_id: record?.unique_id,
+                time: record?.time,
+                date: record?.date,
+                min_temprature_record: record.min_temprature_record,
+                max_temprature_record: record.max_temprature_record,
+                humidity_record: record?.humidity_record,
+                remarks: record?.remarks,
+                done_by: record?.done_by,
+                reviewed_by: record?.reviewed_by,
+                approved_by: record?.approved_by,
+              },
+              { transaction }
+            );
           }
         }
       }
 
-      // Delete existing records for the form
-      await TempratureProcessRecord.destroy({
-        where: { form_id: form_id },
-        transaction,
-      });
-      // Create new records  
-      const formRecords = TempratureRecords.map((record, index) => ({
-        form_id: form_id,
-        unique_id: record?.unique_id,
-        time: record?.time,
-        date: record?.date,
-        min_temprature_record: record?.min_temprature_record,
-        max_temprature_record: record?.max_temprature_record,
-        humidity_record: record?.humidity_record,
-        remarks: record?.remarks,
-        done_by: record?.done_by,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        // supporting_docs: record?.supporting_docs
-        //   ? record?.supporting_docs
-        //   : getElogDocsUrl(supportingDocs[index]),
-      }));
-      await TempratureProcessRecord.bulkCreate(formRecords, { transaction });
-    }
-
       await TemperatureRecordAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
+
 
     await transaction.commit();
 
