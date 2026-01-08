@@ -457,7 +457,7 @@ exports.EditTempratureRecord = async (req, res) => {
     let additionalAttachment = null;
     const supportingDocs = {};
 
-    if(!req.files){
+    // if(!req.files){
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
@@ -475,7 +475,7 @@ exports.EditTempratureRecord = async (req, res) => {
       //   }
       // }
     });
-    }
+    // }
 
     // Find the form by ID
     const form = await TempratureProcessForm.findOne({
