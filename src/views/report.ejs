@@ -170,7 +170,7 @@
                             <%= reportData?.departmentName || "Not Applicable" %>
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td class="label">Lower Action Limit</td>
                         <td class="value">
                             <%= reportData?.limitData?.lowerActionLimit || "Not Applicable" %>
@@ -205,7 +205,7 @@
                         <td class="value">
                             <%= reportData?.limitData?.upperAcceptanceLimit || "Not Applicable" %>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td class="label">Approver</td>
                         <td class="value">
@@ -231,6 +231,49 @@
                 </tbody>
             </table>
             <hr />
+
+
+            <% if (reportData?.limitData) { %>
+
+                <h2 class="heading"> Limits</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Lower Action Limit</th>
+                            <th>Lower Allocation Limit</th>
+                            <th>Lower Acceptance Criteria</th>
+                            <th>Upper Action Limit</th>
+                            <th>Upper Allocation Limit</th>
+                            <th>Upper Acceptance Criteria</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>
+                                <%= reportData?.limitData?.lowerActionLimit || "NA" %>
+                            </td>
+                            <td>
+                                <%= reportData?.limitData?.lowerAllocationLimit || "NA" %>
+                            </td>
+                            <td>
+                                <%= reportData?.limitData?.lowerAcceptanceLimit || "NA" %>
+                            </td>
+                            <td>
+                                <%= reportData?.limitData?.upperActionLimit || "NA" %>
+                            </td>
+                            <td>
+                                <%= reportData?.limitData?.upperAllocationLimit || "NA" %>
+                            </td>
+                            <td>
+                                <%= reportData?.limitData?.upperAcceptanceLimit || "NA" %>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <% } %>
 
             <% if ( reportData?.initiatorName || reportData?.initiatorComment || reportData?.initiatorAttachment ||
                 reportData?.initiatorDate ) { %>
@@ -269,7 +312,7 @@
                                 </td>
 
                                 <td>
-                                    <%= reportData?.initiatorDate ? formatDateOnly(reportData.initiatorDate)
+                                    <%= reportData?.initiatorDate ? formatDateTime(reportData.initiatorDate)
                                         : "Not Applicable" %>
                                 </td>
                             </tr>
@@ -317,7 +360,7 @@
                                         </td>
 
                                         <td>
-                                            <%= formatDateOnly(reportData?.reviewerDate) %>
+                                            <%= formatDateTime(reportData?.reviewerDate) %>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -363,7 +406,7 @@
                                                 </td>
 
                                                 <td>
-                                                    <%= formatDateOnly(reportData?.approverDate) %>
+                                                    <%= formatDateTime(reportData?.approverDate) %>
                                                 </td>
                                             </tr>
                                         </tbody>

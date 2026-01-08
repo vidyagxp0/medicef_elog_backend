@@ -4,18 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+
     <style>
+      body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+  }
+
       .header-container {
         width: 100%;
-        padding: 0 50px; /* Increased margin from left and right */
+        padding: 0 50px;
         box-sizing: border-box;
       }
 
       .header-table {
         width: 100%;
         border-collapse: collapse;
-        text-align: left;
-        font-size: 14px;
+        /* text-align: left; */
+        font-size: 13px;
         table-layout: fixed;
       }
 
@@ -23,55 +29,84 @@
       .header-table td {
         border: 1px solid #000;
         padding: 8px;
+        vertical-align: middle;
       }
 
-      .header-table th {
+      /* .header-table th {
         background-color: #f8f8f8;
         font-weight: bold;
-      }
+      } */
 
-      .header-logo {
-        text-align: center;
-        width: 100px;
-        
-      }
+       .company-name {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+  }
 
-      .header-title {
-        text-align: center;
-        font-size: 18px;
-        margin: 10px 0;
-      }
+      .company-address {
+    font-size: 13px;
+    font-weight: normal;
+    margin-top: 4px;
+    display: block;
+  }
 
-      .header-info {
-        font-size: 12px;
-        text-align: center;
-      }
+       .header-logo {
+    width: 110px;
+    text-align: center;
+  }
+
+  .header-logo img {
+    max-width: 95px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .header-info {
+    font-size: 12.5px;
+    text-align: center;
+  }
+
+  .label {
+    font-weight: 600;
+  }
     </style>
   </head>
+
   <body>
     <div class="header-container">
       <table class="header-table">
         <tr>
-          <th colspan="2" class="header-title">
-            Indian Pharmacopeia Commission
+          <th colspan="2">
+            <div class="company-name">
+          Medicef Pharma
+          <span class="company-address">
+            Plot No. 28, 29, 48, EPIP Phase-I, Jharmajri, Baddi,
+            Dist. Solan (H.P.)
+          </span>
+        </div>
           </th>
+
           <th rowspan="2" class="header-logo">
-            <img
-              src="<%= logoDataUri %>"
-              alt="Logo"
-              style="max-width: 50px; height: auto; object-fit: cover"
-            />
+             <% if (logoDataUri) { %>
+          <img src="<%= logoDataUri %>" alt="Company Logo" />
+        <% } else { %>
+          Logo
+        <% } %>
           </th>
         </tr>
+
         <tr>
           <td class="header-info">
-            <span style="font-weight: 600">Form ID:</span><%=reportData?.form_id
-            %>
+            <span class="label">Department Name:</span>
+        <%= reportData?.departmentName || "Not Applicable" %>
           </td>
+
           <td class="header-info">
-            <h2>Audit Report</h2>
+            <!-- <span class="label">Process:</span> -->
+        <%= reportData?.title || "Not Applicable" %>
           </td>
         </tr>
+
       </table>
     </div>
   </body>
