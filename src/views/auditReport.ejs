@@ -67,24 +67,36 @@
                 <td><%= audit?.field_name || 'N/A' %></td>
 
                 <!-- Previous Value -->
-                <td style="white-space: pre-wrap; word-wrap: break-word;">
+                <td style="word-wrap: break-word;">
                   <%= audit?.previous_value || 'N/A' %>
                 </td>
 
-                <!-- New Value (CLICKABLE ATTACHMENT LOGIC) -->
-                <td style="white-space: pre-wrap; word-wrap: break-word;">
+                <td style="word-wrap: break-word;">
                   <%
                     const newVal = audit?.new_value;
+
                     const isAttachment =
                       typeof newVal === 'string' &&
                       newVal.startsWith('http') &&
                       /\.(jpg|jpeg|png|pdf|docx)$/i.test(newVal);
+
+                    const colonCount =
+                      typeof newVal === 'string'
+                        ? (newVal.match(/:/g) || []).length
+                        : 0;
+
+                    const isStructuredKeyValueList =
+                      typeof newVal === 'string' && colonCount >= 2;
+
+                    const formattedValue = isStructuredKeyValueList
+                      ? newVal.replace(/,\s*(?=[^,]+?:)/g, '\n')
+                      : newVal;
                   %>
 
                   <% if (isAttachment) { %>
                     <a href="<%= newVal %>" target="_blank">View Attachment</a>
                   <% } else { %>
-                    <%= newVal || 'N/A' %>
+                    <%= formattedValue || 'N/A' %>
                   <% } %>
                 </td>
 
@@ -111,9 +123,9 @@
                       ) %>
                   <br />
 
-                  <b>Declaration:</b>
+                  <!-- <b>Declaration:</b>
                   <%= audit?.declaration || 'N/A' %>
-                </td>
+                </td> -->
 
                 <td><%= audit?.action || 'N/A' %></td>
               </tr>
