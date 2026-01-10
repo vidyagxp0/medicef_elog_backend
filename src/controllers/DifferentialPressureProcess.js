@@ -1088,7 +1088,7 @@ if (!form_id) {
         // create Date objects
         const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
         const to = new Date(ty, tm - 1, td);
-         console.log("form",from,"to",to)
+
         recordWhere.date = {
           [Op.between]: [from, to],
         };
