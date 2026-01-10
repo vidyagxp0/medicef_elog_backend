@@ -262,23 +262,30 @@ exports.GetTransitions = async (req, res) => {
 
     const currentState = form.workflow_state.name; 
 
-    const resolveActiveRole = (userId, form, currentState) => {
-      if (currentState === "Opened" && userId === form.initiator_id)
-        return "initiator";
+const resolveActiveRole = (userId, form, currentState) => {
+  if (currentState === "Opened" && userId === form.initiator_id)
+    return "initiator";
 
-      if (
-        currentState === "Under Review" &&
-        Array.isArray(form.reviewer_id) &&
-        form.reviewer_id.includes(userId)
-      )
-        return "reviewer";
+  if (currentState === "Under Review") {
+    let reviewers = form.reviewer_id;
+    if (typeof reviewers === "string") {
+      try {
+        reviewers = JSON.parse(reviewers);
+      } catch (e) {
+        console.error("Failed to parse reviewer_id", e);
+        reviewers = [];
+      }
+    }
+    if (Array.isArray(reviewers) && reviewers.includes(userId))
+      return "reviewer";
+  }
 
-      if (currentState === "Under Approval" && userId === form.approver_id)
-        return "approver";
+  if (currentState === "Under Approval" && userId === form.approver_id)
+    return "approver";
 
-      return null;
-    };
-
+  return null;
+};
+ 
 const activeRole = resolveActiveRole(user.userId, form, currentState);
 
 

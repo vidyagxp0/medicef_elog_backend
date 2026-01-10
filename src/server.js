@@ -92,7 +92,7 @@ const startServer = async () => {
       );
     });
   } catch (error) {
-    console.error("Server startup failed:", error);
+    console.error("Server Connection failed:", error);
     process.exit(1);
   }
 };
