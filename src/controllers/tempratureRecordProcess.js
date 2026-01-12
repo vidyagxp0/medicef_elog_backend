@@ -27,6 +27,20 @@ const getUsersByIdsReviewer = async (user_ids) => {
     attributes: ["name"],
   });
 };
+const parseIfString = (value, fallback = null) => {
+  if (value === null || value === undefined) return fallback;
+
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return fallback;
+    }
+  }
+
+  return value;
+};
+
 
 // Fill tempratre record form and insert its records.
 exports.InsertTempratureRecord = async (req, res) => {
@@ -503,8 +517,8 @@ exports.EditTempratureRecord = async (req, res) => {
       area_name,
       room_id,
       instrument_id_no,
-      acceptanceTempData,
-      relHumidityData,
+      // acceptanceTempData,
+      // relHumidityData,
       // reviewer: reviewerNames,
       // approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -557,12 +571,16 @@ exports.EditTempratureRecord = async (req, res) => {
     }
     return value;
     };
+
+    const dbReviewerIds = parseIfString(form?.reviewer_id, []);
+    const reqReviewerIds = parseIfString(reviewer_id, []);
     if (
       reviewer_id &&
-      JSON.stringify(form.reviewer_id) !== JSON.stringify(reviewer_id)
-    ) {
-      const oldReviewers = await getUsersByIdsReviewer(form.reviewer_id);
-      const newReviewers = await getUsersByIdsReviewer(reviewer_id);
+        JSON.stringify(dbReviewerIds?.sort()) !==
+        JSON.stringify(reqReviewerIds?.sort())   
+     ) {
+      const oldReviewers = await getUsersByIdsReviewer(dbReviewerIds);
+      const newReviewers = await getUsersByIdsReviewer(reqReviewerIds);
 
       auditTrailEntries.push({
         form_id: form.form_id,
@@ -591,6 +609,46 @@ exports.EditTempratureRecord = async (req, res) => {
         action: "Update Elog",
       });
     }
+    // ===== acceptanceTempData DIFF =====
+    const dbAcceptanceTemp = parseIfString(form.acceptanceTempData, {});
+    const reqAcceptanceTemp = parseIfString(acceptanceTempData, {});
+
+    if (
+      JSON.stringify(normalizeValue(dbAcceptanceTemp)) !==
+      JSON.stringify(normalizeValue(reqAcceptanceTemp))
+    ) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "acceptanceTempData",
+        previous_value: JSON.stringify(dbAcceptanceTemp),
+        new_value: JSON.stringify(reqAcceptanceTemp),
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: form.status,
+        action: "Update Elog",
+      });
+    }
+
+    // ===== relHumidityData DIFF =====
+    const dbRelHumidity = parseIfString(form.relHumidityData, {});
+    const reqRelHumidity = parseIfString(relHumidityData, {});
+
+    if (
+      JSON.stringify(normalizeValue(dbRelHumidity)) !==
+      JSON.stringify(normalizeValue(reqRelHumidity))
+    ) {
+      auditTrailEntries.push({
+        form_id: form.form_id,
+        field_name: "relHumidityData",
+        previous_value: JSON.stringify(dbRelHumidity),
+        new_value: JSON.stringify(reqRelHumidity),
+        changed_by: user.user_id,
+        previous_status: form.status,
+        new_status: form.status,
+        action: "Update Elog",
+      });
+    }
+
 
 
     for (const [field, newValue] of Object.entries(fields)) {
