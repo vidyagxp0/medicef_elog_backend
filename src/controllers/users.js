@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
   const { password, email, name, rolesArray, age, gender } = req.body;
 
   // Check if required fields are provided
-  if (!password || !email || !name || !rolesArray) {
+  if (!password || !email || !name || !rolesArray || !age) {
     return res.status(400).json({
       error: true,
       message: "Please provide proper user details!",
@@ -100,10 +100,13 @@ exports.signup = async (req, res) => {
 //Update user
 exports.editUser = async (req, res) => {
   // Check if request body is empty
-  if (!req.body && !req.files) {
+  const {  email, name, rolesArray, age, gender } = req.body;
+
+  // Check if required fields are provided
+  if (!email || !name || !rolesArray || !age) {
     return res.status(400).json({
       error: true,
-      message: "Please provide details to update!",
+      message: "Please provide proper user details!",
     });
   }
 
@@ -113,10 +116,10 @@ exports.editUser = async (req, res) => {
   try {
     // Update user details
     const userdetails = {
-      name: req.body.name,
-      email: req.body.email,
-      age: req.body.age,
-      gender: req.body.gender,
+      name: name,
+      email: email,
+      age: age,
+      gender: gender,
       profile_pic: getFileUrl(req?.file),
     };
 
@@ -132,7 +135,7 @@ exports.editUser = async (req, res) => {
     });
 
     // Process roles array
-    const rolesArray = req.body.rolesArray;
+    // const rolesArray = req.body.rolesArray;
     for (const role of rolesArray) {
       const singleRole = role.label.split("-");
       const roleId = await Role.findOne({
