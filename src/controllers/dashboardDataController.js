@@ -1,12 +1,11 @@
 const User = require("../models/users");
 const processFormRegistry = require("../utils/processFormRegistry");
-const formRegistry = require("../utils/formModelRegistry");
+const formModelRegistry = require("../utils/formModelRegistry");
 
 const Process = require("../models/processes");
 const Department = require("../models/departments");
 const { Op } = require("sequelize");
 const WorkflowState = require("../models/workflowState");
-const formModelRegistry = require("../utils/formModelRegistry");
 const UserRole = require("../models/userRoles");
 const auditFieldMap = require("../utils/auditFieldMap");
 
@@ -125,7 +124,7 @@ exports.GetElogById = async (req, res) => {
       });
     }
 
-    const registry = formRegistry[process_id];
+    const registry = formModelRegistry[process_id];
     if (!registry) {
       return res.status(400).json({
         error: true,
@@ -231,7 +230,7 @@ exports.GetEffectiveElogsById = async (req, res) => {
       });
     }
 
-    const registry = formRegistry[process_id];
+    const registry = formModelRegistry[process_id];
     if (!registry) {
       return res.status(400).json({
         error: true,
