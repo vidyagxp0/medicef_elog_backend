@@ -42,4 +42,7 @@ router.get( "/get-audit-report/:form_id/:process_id/:type", Auth.checkUserJwtTok
 //Attachment Delete
 router.post("/delete-attachment/:form_id/:process_id", Auth.checkUserJwtToken,dashboardDataController.deleteAttachment);
 router.post("/add-attachment/:form_id/:process_id",upload.any(), Auth.checkUserJwtToken,dashboardDataController.addAttachment);
+
+// delete record by id
+router.post("/delete-record/:form_id/:process_id/:record_id", Auth.checkUserJwtToken,dashboardDataController.deleteRecordById);
 module.exports = router;

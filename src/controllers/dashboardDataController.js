@@ -875,7 +875,70 @@ exports.addAttachment = async (req, res) => {
   }
 };
 
+//Delete Record by ID
 
+exports.deleteRecordById = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const { form_id, process_id, record_id } = req.params;
+    const user = req.user;
+
+    if (!form_id || !process_id || !record_id) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "form_id, process_id and record_id are required",
+      });
+    }
+
+    const registry = formModelRegistry[process_id];
+    if (!registry || !registry.record) {
+      await transaction.rollback();
+      return res.status(400).json({
+        error: true,
+        message: "Invalid process_id",
+      });
+    }
+
+    const RecordModel = registry.record;
+
+    // Find record using ALL conditions
+    const record = await RecordModel.findOne({
+      where: {
+         record_id,      
+         form_id,
+      },
+      transaction,
+    });
+
+    if (!record) {
+      await transaction.rollback();
+      return res.status(404).json({
+        error: true,
+        message: "Record not found",
+      });
+    }
+
+    await record.destroy({ transaction });
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message: "Record deleted successfully",
+    });
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Error deleting record:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: error.message,
+    });
+  }
+};
 
 
 

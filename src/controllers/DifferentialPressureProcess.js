@@ -416,7 +416,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         .status(400)
         .json({ error: true, message: "Please provide a reviewer." });
     }
-        
+
     if (!approver_id) {
       return res
         .status(400)
@@ -999,8 +999,20 @@ exports.chatByPdf = async (req, res) => {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
-    reportData.description = removeHtmlTags(reportData.description);
+    const safeParse = (data) => {
+      try {
+        return typeof data === "string" ? JSON.parse(data) : data;
+      } catch {
+        return null;
+      }
+    };
 
+    reportData.reviewerData = safeParse(reportData.reviewerData);
+    reportData.limitData = safeParse(reportData.limitData);
+    reportData.description = removeHtmlTags(reportData.description);
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1174,9 +1186,20 @@ if (!form_id) {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
-    // reportData.addtionalInfo = reportData?.addtionalInfo
-    //   ? removeHtmlTags(reportData?.addtionalInfo)
-    //   : "Not Applicable";
+    const safeParse = (data) => {
+      try {
+        return typeof data === "string" ? JSON.parse(data) : data;
+      } catch {
+        return null;
+      }
+    };
+
+    reportData.reviewerData = safeParse(reportData.reviewerData);
+    reportData.limitData = safeParse(reportData.limitData);
+    reportData.description = removeHtmlTags(reportData.description);
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
