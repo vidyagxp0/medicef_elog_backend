@@ -70,26 +70,28 @@ exports.InsertTempratureRecord = async (req, res) => {
   } = req.body;
 
 
-  if (!area_name) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Area name field is mandatory." });
-  }
   if (!description) {
     return res
       .status(400)
       .json({ error: true, message: "Description field is mandatory." });
   }
 
-  if (!approver_id) {
+  if (!area_name) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide an approver." });
+      .json({ error: true, message: "Area name field is mandatory." });
   }
+
   if (!reviewer_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
+  }
+
+  if (!approver_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver." });
   }
   if (!reviewerData) {
     return res
@@ -427,27 +429,30 @@ exports.EditTempratureRecord = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }  
 
+  if (!description) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Description field is mandatory." });
+  }
+
   if (!area_name) {
     return res
       .status(400)
       .json({ error: true, message: "Area name field is mandatory." });
   }
   
-  if (!description) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Description field is mandatory." });
-  }
-  if (!approver_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an approver." });
-  }
   if (!reviewer_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
   }
+
+  if (!approver_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver." });
+  }
+
   
   if (!email || !password) {
     return res
@@ -1125,10 +1130,22 @@ exports.chatByPdf = async (req, res) => {
       return res.status(404).json({ error: true, message: "Form not found" });
     }
 
-    // Sequelize → Plain JS object
+        // Sequelize → Plain JS object
     const formJson = formData.toJSON();
-
     const reportData = formJson;
+
+    const safeParse = (data) => {
+      try {
+        return typeof data === "string" ? JSON.parse(data) : data;
+      } catch {
+        return null;
+      }
+    };
+
+    reportData.reviewerData = safeParse(reportData.reviewerData);
+    reportData.acceptanceTempData = safeParse(reportData.acceptanceTempData);
+    reportData.relHumidityData = safeParse(reportData.relHumidityData);
+
     reportData.description = removeHtmlTags(reportData.description);
 
     const date = new Date();
@@ -1303,11 +1320,22 @@ if (!form_id) {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
+    const safeParse = (data) => {
+      try {
+        return typeof data === "string" ? JSON.parse(data) : data;
+      } catch {
+        return null;
+      }
+    };
+
+    reportData.reviewerData = safeParse(reportData.reviewerData);
+    reportData.acceptanceTempData = safeParse(reportData.acceptanceTempData);
+    reportData.relHumidityData = safeParse(reportData.relHumidityData);
     reportData.description = removeHtmlTags(reportData.description);
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
       : "Not Applicable";
-
+      
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",

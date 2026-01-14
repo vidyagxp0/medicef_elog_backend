@@ -198,10 +198,10 @@
                     <thead>
                         <tr>
                             <th>Lower Action Limit</th>
-                            <th>Lower Allocation Limit</th>
+                            <th>Lower Allot Limit</th>
                             <th>Lower Acceptance Criteria</th>
                             <th>Upper Action Limit</th>
-                            <th>Upper Allocation Limit</th>
+                            <th>Upper Allot Limit</th>
                             <th>Upper Acceptance Criteria</th>
                         </tr>
                     </thead>
@@ -212,19 +212,19 @@
                                 <%= reportData.acceptanceTempData.lowerActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.acceptanceTempData.lowerAllocationLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.lowerAllotLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.acceptanceTempData.lowerAcceptanceLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.lowerAcceptanceCriteria || "NA" %>
                             </td>
                             <td>
                                 <%= reportData.acceptanceTempData.upperActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.acceptanceTempData.upperAllocationLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.upperAllotLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.acceptanceTempData.upperAcceptanceLimit || "NA" %>
+                                <%= reportData.acceptanceTempData.upperAcceptanceCriteria || "NA" %>
                             </td>
                         </tr>
                     </tbody>
@@ -241,10 +241,10 @@
                     <thead>
                         <tr>
                             <th>Lower Action Limit</th>
-                            <th>Lower Allocation Limit</th>
+                            <th>Lower Allot Limit</th>
                             <th>Lower Acceptance Criteria</th>
                             <th>Upper Action Limit</th>
-                            <th>Upper Allocation Limit</th>
+                            <th>Upper Allot Limit</th>
                             <th>Upper Acceptance Criteria</th>
                         </tr>
                     </thead>
@@ -255,19 +255,19 @@
                                 <%= reportData.relHumidityData.lowerActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.relHumidityData.lowerAllocationLimit || "NA" %>
+                                <%= reportData.relHumidityData.lowerAllotLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.relHumidityData.lowerAcceptanceLimit || "NA" %>
+                                <%= reportData.relHumidityData.lowerAcceptanceCriteria || "NA" %>
                             </td>
                             <td>
                                 <%= reportData.relHumidityData.upperActionLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.relHumidityData.upperAllocationLimit || "NA" %>
+                                <%= reportData.relHumidityData.upperAllotLimit || "NA" %>
                             </td>
                             <td>
-                                <%= reportData.relHumidityData.upperAcceptanceLimit || "NA" %>
+                                <%= reportData.relHumidityData.upperAcceptanceCriteria || "NA" %>
                             </td>
                         </tr>
                     </tbody>
@@ -316,8 +316,8 @@
                                 <%= record?.time || "Not Applicable" %>
                             </td>
                             <% const minValue=parseFloat(record?.min_temprature_record); 
-                            const minLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceLimit); 
-                            const minUpper=parseFloat(reportData?.acceptanceTempData?.upperAcceptanceLimit);
+                            const minLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceCriteria); 
+                            const minUpper=parseFloat(reportData?.acceptanceTempData?.upperAcceptanceCriteria);
                             let colorClass='black' ;
                                 if (!isNaN(minValue) && !isNaN(minLower) && !isNaN(minUpper)) { 
                                     if (minValue < minLower) {
@@ -334,8 +334,8 @@
                                     <%= record?.min_temprature_record || "Not Applicable" %>
                                 </td>
                             <% const maxValue=parseFloat(record?.max_temprature_record); 
-                            const maxLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceLimit); 
-                            const maxUpper=parseFloat(reportData?.acceptanceTempData?.upperAcceptanceLimit);
+                            const maxLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceCriteria); 
+                            const maxUpper=parseFloat(reportData?.acceptanceTempData?.upperAcceptanceCriteria);
                             let maxColorClass='black' ;
                                 if (!isNaN(maxValue) && !isNaN(maxLower) && !isNaN(maxUpper)) { 
                                     if (maxValue < maxLower) {
@@ -352,8 +352,8 @@
                                 </td>
 
                             <% const humidityValue = parseFloat(record?.humidity_record); 
-                            const humidityLower = parseFloat(reportData?.relHumidityData?.lowerAcceptanceLimit); 
-                            const humidityUpper = parseFloat(reportData?.relHumidityData?.upperAcceptanceLimit);
+                            const humidityLower = parseFloat(reportData?.relHumidityData?.lowerAcceptanceCriteria); 
+                            const humidityUpper = parseFloat(reportData?.relHumidityData?.upperAcceptanceCriteria);
                             let humidityColorClass = 'black' ;
                                 if (!isNaN(humidityValue) && !isNaN(humidityLower) && !isNaN(humidityUpper)) { 
                                     if (humidityValue < humidityLower) {

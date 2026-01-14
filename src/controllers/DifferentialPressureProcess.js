@@ -68,26 +68,30 @@ exports.InsertDifferentialPressure = async (req, res) => {
     additionalInfo,
   } = req.body;
 
-  if (!area_name) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Area name field is mandatory." });
-  }
   if (!description) {
     return res
       .status(400)
       .json({ error: true, message: "Description field is mandatory." });
   }
-  if (!approver_id) {
+
+  if (!area_name) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide an approver." });
+      .json({ error: true, message: "Area name field is mandatory." });
   }
+
   if (!reviewer_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer." });
   }
+
+  if (!approver_id) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Please provide an approver." });
+  }
+
   if (!reviewerData) {
     return res
       .status(400)
@@ -388,31 +392,37 @@ exports.InsertDifferentialPressure = async (req, res) => {
     } = req.body;
 
     const { form_id } = req.params;
+
     if (!form_id) {
       return res
         .status(400)
         .json({ error: true, message: "Please provide a form ID." });
     }
-    if (!area_name) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Area name field is mandatory." });
-    }
+
     if (!description) {
       return res
         .status(400)
         .json({ error: true, message: "Description field is mandatory." });
     }
-    if (!approver_id) {
+
+    if (!area_name) {
       return res
         .status(400)
-        .json({ error: true, message: "Please provide an approver." });
+        .json({ error: true, message: "Area name field is mandatory." });
     }
+
     if (!reviewer_id) {
       return res
         .status(400)
         .json({ error: true, message: "Please provide a reviewer." });
     }
+        
+    if (!approver_id) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Please provide an approver." });
+    }
+
     if (!email || !password) {
       return res
         .status(400)

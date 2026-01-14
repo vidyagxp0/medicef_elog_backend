@@ -159,27 +159,27 @@
           </td>
         </tr>
         <tr>
-          <td class="label">Lower Allocation Limit</td>
+          <td class="label">Lower Allot Limit</td>
           <td class="value">
-            <%= reportData?.limitData?.lowerAllocationLimit || "Not Applicable" %>
+            <%= reportData?.limitData?.lowerAllotLimit || "Not Applicable" %>
           </td>
         </tr>
         <tr>
-          <td class="label">Upper Allocation Limit</td>
+          <td class="label">Upper Allot Limit</td>
           <td class="value">
-            <%= reportData?.limitData?.upperAllocationLimit || "Not Applicable" %>
+            <%= reportData?.limitData?.upperAllotLimit || "Not Applicable" %>
           </td>
         </tr>
         <tr>
           <td class="label">Lower Acceptance Criteria</td>
           <td class="value">
-            <%= reportData?.limitData?.lowerAcceptanceLimit || "Not Applicable" %>
+            <%= reportData?.limitData?.lowerAcceptanceCriteria || "Not Applicable" %>
           </td>
         </tr>
         <tr>
           <td class="label">Upper Acceptance Criteria</td>
           <td class="value">
-            <%= reportData?.limitData?.upperAcceptanceLimit || "Not Applicable" %>
+            <%= reportData?.limitData?.upperAcceptanceCriteria || "Not Applicable" %>
           </td>
         </tr>
       </tbody>
@@ -220,8 +220,8 @@
                 <%= record?.time || "Not Applicable" %>
               </td>
               <% const value=parseFloat(record?.differential_pressure);
-               const lower=parseFloat(reportData?.limitData?.lowerAcceptanceLimit); 
-               const upper=parseFloat(reportData?.limitData?.upperAcceptanceLimit); 
+               const lower=parseFloat(reportData?.limitData?.lowerAcceptanceCriteria); 
+               const upper=parseFloat(reportData?.limitData?.upperAcceptanceCriteria); 
                let colorClass='black' ; 
                if  (!isNaN(value) && !isNaN(lower) && !isNaN(upper)) {
                    if (value < lower) { 
