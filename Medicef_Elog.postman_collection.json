@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "1cb32698-efd2-4068-99c6-e46db331d6a9",
+		"name": "Medicef_Elog",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29545942",
+		"_collection_link": "https://api-team-1851.postman.co/workspace/New-Team-Workspace~5777f34c-a223-4dba-92a0-d7d9b7c833d8/collection/29545942-1cb32698-efd2-4068-99c6-e46db331d6a9?action=share&source=collection_link&creator=29545942"
+	},
+	"item": [
+		{
+			"name": "diffrential pressure",
+			"item": [
+				{
+					"name": "Create Record",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 1,\r\n  \"description\": \"<p>Differential Pressure Monitoring for Compression Area</p>\",\r\n  \"department\": \"Quality Assurance\",\r\n  \"compression_area\": \"Compression Area A\",\r\n  \"limit\": \"10-15\",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_criteria\": \"Within limit\",\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"12 Pa\",\r\n\r\n  \"reviewer_id\": [2, 6],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        },\r\n        {\r\n            \"user_id\": 6,\r\n            \"name\": \"Full Permission\",\r\n            \"email\": \"fullpermission@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 3,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/differential-pressure/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"differential-pressure",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Effective Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"form_id\": 1,\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"DifferentialPressureRecords\": [\r\n    {\r\n      \"unique_id\": \"DP-001\",\r\n      \"time\": \"09:00\",\r\n      \"date\": \"2025-12-22\",\r\n      \"differential_pressure\": \"13 Pa\",\r\n      \"remarks\": \"Within limit\",\r\n      \"done_by\": \"Operator A\",\r\n      \"checked_by\": \"Supervisor A\",\r\n      \"reviewed_by\": 5,\r\n      \"approved_by\": 6,\r\n      \"approver_remarks\": \"Accepted\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/differential-pressure/update-effective",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"differential-pressure",
+								"update-effective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "effective report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 1,\r\n  \"description\": \"<p>Differential Pressure Monitoring for Compression Area</p>\",\r\n  \"department\": \"Quality Assurance\",\r\n  \"compression_area\": \"Compression Area A\",\r\n  \"limit\": \"10-15\",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_criteria\": \"Within limit\",\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"12 Pa\",\r\n\r\n  \"reviewer_id\": [2, 6],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        },\r\n        {\r\n            \"user_id\": 6,\r\n            \"name\": \"Full Permission\",\r\n            \"email\": \"fullpermission@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 3,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/differential-pressure/effective-chat-pdf/12",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"differential-pressure",
+								"effective-chat-pdf",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Form Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/differential-pressure/chat-pdf/12",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"differential-pressure",
+								"chat-pdf",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Effective View report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/differential-pressure/effective-view-report/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"differential-pressure",
+								"effective-view-report",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Form View Report",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DashBoard Data",
+			"item": [
+				{
+					"name": "Get Department",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"form_id\": 101,\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"DifferentialPressureRecords\": [\r\n    {\r\n      \"unique_id\": \"DP-001\",\r\n      \"time\": \"09:00\",\r\n      \"date\": \"2025-12-22\",\r\n      \"differential_pressure\": \"12 Pa\",\r\n      \"remarks\": \"Within limit\",\r\n      \"done_by\": \"Operator A\",\r\n      \"checked_by\": \"Supervisor A\",\r\n      \"reviewed_by\": 5,\r\n      \"approved_by\": 6,\r\n      \"approver_remarks\": \"Accepted\"\r\n    },\r\n    {\r\n      \"unique_id\": \"DP-002\",\r\n      \"time\": \"13:00\",\r\n      \"date\": \"2025-12-22\",\r\n      \"differential_pressure\": \"11 Pa\",\r\n      \"remarks\": \"Normal\",\r\n      \"done_by\": \"Operator B\",\r\n      \"checked_by\": \"Supervisor B\",\r\n      \"reviewed_by\": 5,\r\n      \"approved_by\": 6,\r\n      \"approver_remarks\": \"OK\"\r\n    }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/dashboard-data/get-departments?departmentName=Quality Control",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"get-departments"
+							],
+							"query": [
+								{
+									"key": "departmentName",
+									"value": "Quality Control"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Process",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/dashboard-data/get-processes?process=temp",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"get-processes"
+							],
+							"query": [
+								{
+									"key": "process",
+									"value": "temp"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/user/get-all-users",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"get-all-users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Process Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/dashboard-data/get-all",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"get-all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Server Time",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/dashboard-data/get-server-time",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"get-server-time"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Effective process Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/dashboard-data/get-all-effective",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"get-all-effective"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Effective by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/dashboard-data/get-effective-by-id/1/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"get-effective-by-id",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Dashboard data By id",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Audit Trail",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Basis on user role group",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "DOWNLOAD AUDIT REPORT",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Attachment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fieldname\":\"inititorAttachment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/dashboard-data/delete-attachment/1/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"delete-attachment",
+								"1",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Record",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/dashboard-data/delete-record/1/2/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"dashboard-data",
+								"delete-record",
+								"1",
+								"2",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "admin-login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Amit@121",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/user/admin-login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"admin-login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user-login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "initiator@vidyagxp.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Amit@121",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/user/user-login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"user",
+								"user-login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All User RoleGroup",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Workflow",
+			"item": [
+				{
+					"name": "Get all stages",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 1,\r\n  \"description\": \"<p>Differential Pressure Monitoring for Compression Area</p>\",\r\n  \"department\": \"Quality Assurance\",\r\n  \"compression_area\": \"Compression Area A\",\r\n  \"limit\": \"10-15\",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_criteria\": \"Within limit\",\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"12 Pa\",\r\n\r\n  \"reviewer_id\": [2, 6],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        },\r\n        {\r\n            \"user_id\": 6,\r\n            \"name\": \"Full Permission\",\r\n            \"email\": \"fullpermission@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 3,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/workflow/get-all-stages",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workflow",
+								"get-all-stages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get current stage",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 1,\r\n  \"description\": \"<p>Differential Pressure Monitoring for Compression Area</p>\",\r\n  \"department\": \"Quality Assurance\",\r\n  \"compression_area\": \"Compression Area A\",\r\n  \"limit\": \"10-15\",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_criteria\": \"Within limit\",\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"12 Pa\",\r\n\r\n  \"reviewer_id\": [2, 6],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        },\r\n        {\r\n            \"user_id\": 6,\r\n            \"name\": \"Full Permission\",\r\n            \"email\": \"fullpermission@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 3,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/workflow/current-stage/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workflow",
+								"current-stage",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Transitions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 1,\r\n  \"description\": \"<p>Differential Pressure Monitoring for Compression Area</p>\",\r\n  \"department\": \"Quality Assurance\",\r\n  \"compression_area\": \"Compression Area A\",\r\n  \"limit\": \"10-15\",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_criteria\": \"Within limit\",\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"12 Pa\",\r\n\r\n  \"reviewer_id\": [2, 6],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        },\r\n        {\r\n            \"user_id\": 6,\r\n            \"name\": \"Full Permission\",\r\n            \"email\": \"fullpermission@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 3,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n"
+						},
+						"url": {
+							"raw": "{{url}}/workflow/transitions/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workflow",
+								"transitions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Stage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"form_id\":1,\r\n    \"process_id\":1,\r\n    \"action\":\"FORWARD\",\r\n    \"initiatorDeclaration\":\"dsjbljsbdlfa ar show we have use this phalana and dhimkana\",\r\n    \"initiatorComment\":\"djfglsjbdgkbja;dskf;ferential pressure elog\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/workflow/move-stage",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"workflow",
+								"move-stage"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tempreture Record",
+			"item": [
+				{
+					"name": "Create Record",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 1,\r\n  \"process_id\": 2,\r\n  \"description\": \"<p>ring for Compression Area</p>\",\r\n  \"departmentName\": \"Warehouse\",\r\n  \"compression_area\": \"Compression Area \",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_temperature\": \"Within limit\",\r\n  \"relative_humidity_criteria\":\"DOne\",\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"12 Pa\",\r\n  \"room_id\": \"12 Pa\",\r\n  \"acceptanceTempData\":[\r\n        {\r\n            \"user_id\": 3,\r\n            \"name\": \"kjsadklfja\",\r\n            \"email\": \"sdfgdf@vidyagxp.com\",\r\n            \"isActive\": \"1asdfas\",\r\n            \"createdAt\": \"2025-12-asdfasasdfasd23T08:51:26.000Z\",\r\n            \"updatedAt\": \"adsfasdf3T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"relHumidityData\":[\r\n        {\r\n            \"user_id\": 34,\r\n            \"name\": \"adsfasdf\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1dfsgdfadfasdfasdf\",\r\n            \"createdAt\": \"asdfasdf2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"asdfasdf2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"reviewer_id\": [4, 6],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        },\r\n        {\r\n            \"user_id\": 6,\r\n            \"name\": \"Full Permission\",\r\n            \"email\": \"fullpermission@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 5,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/temprature-record/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"temprature-record",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Data",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"department_id\": 4,\r\n  \"process_id\": 2,\r\n  \"description\": \"<p>ring for Compression Area</p>\",\r\n  \"departmentName\": \"Warehouse\",\r\n  \"compression_area\": \"Compression Area C\",\r\n  \"area_name\": \"Block A\",\r\n  \"acceptance_temperature\": \"Within limit\",\r\n  \"relative_humidity_criteria\":\"DOne\",\r\n  \"acceptanceTempData\":[\r\n        {\r\n            \"user_id\": 3,\r\n            \"name\": \"kjsadklfja\",\r\n            \"email\": \"sdfgdf@vv.com\",\r\n            \"isActive\": \"1asdfas\",\r\n            \"createdAt\": \"2025-12-asdfasasdfasd23T08:51:26.000Z\",\r\n            \"updatedAt\": \"adsfasdf3T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"relHumidityData\":[\r\n        {\r\n            \"user_id\": 34,\r\n            \"name\": \"adsfasdf\",\r\n            \"email\": \"kajsndlkands@vidyagxp.com\",\r\n            \"isActive\": \"1dfsgdfadfasdfasdf\",\r\n            \"createdAt\": \"asdfasdf025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"instrument_id_no\": \"DP-INS-001\",\r\n  \"differential_pressure\": \"13 Pa\",\r\n  \"room_id\": \"12 Pa\",\r\n\r\n  \"reviewer_id\": [4],\r\n  \"reviewerData\":[\r\n        {\r\n            \"user_id\": 4,\r\n            \"name\": \"Reviewer\",\r\n            \"email\": \"reviewer@vidyagxp.com\",\r\n            \"isActive\": \"1\",\r\n            \"createdAt\": \"2025-12-23T08:51:26.000Z\",\r\n            \"updatedAt\": \"2025-12-23T08:51:26.000Z\"\r\n        }\r\n    ],\r\n  \"approver_id\": 5,\r\n\r\n  \"initiatorComment\": \"Initial entry for differential pressure elog\",\r\n\r\n  \"email\": \"initiator@vidyagxp.com\",\r\n  \"password\": \"Amit@121\",\r\n\r\n  \"initiatorDeclaration\": \"I hereby declare that the information provided is correct.\",\r\n\r\n  \"additionalInfo\": \"No deviation observed during monitoring.\",\r\n\r\n  \"FormRecordsArray\": [\r\n    // {\r\n    //   \"unique_id\": \"DP-001\",\r\n    //   \"time\": \"09:00\",\r\n    //   \"differential_pressure\": \"12 Pa\",\r\n    //   \"remarks\": \"Within limit\",\r\n    //   \"done_by\": \"Operator A\",\r\n    //   \"checked_by\": \"Supervisor A\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"Accepted\"\r\n    // },\r\n    // {\r\n    //   \"unique_id\": \"DP-002\",\r\n    //   \"time\": \"13:00\",\r\n    //   \"differential_pressure\": \"11 Pa\",\r\n    //   \"remarks\": \"Normal\",\r\n    //   \"done_by\": \"Operator B\",\r\n    //   \"checked_by\": \"Supervisor B\",\r\n    //   \"reviewed_by\": 5,\r\n    //   \"approved_by\": 6,\r\n    //   \"approver_remarks\": \"OK\"\r\n    // }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/temprature-record/update/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"temprature-record",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Form Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/temprature-record/chat-pdf/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"temprature-record",
+								"chat-pdf",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Effective Report",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/temprature-record/chat-pdf/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"temprature-record",
+								"chat-pdf",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
