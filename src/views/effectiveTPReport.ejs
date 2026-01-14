@@ -303,16 +303,16 @@
 
                     <% reportData.TempratureRecords.forEach((record, index)=> { %>
                         <tr>
-                            <td>
+                            <td style="word-break: break-word;">
                                 <%= index + 1 %>
                             </td>
-                            <td>
+                            <td >
                                 <%= record?.unique_id || "Not Applicable" %>
                             </td>
-                            <td>
+                            <td style="word-break: break-word;">
                                 <%= formatDateOnly(record?.date) || "Not Applicable" %>
                             </td>
-                            <td>
+                            <td style="word-break: break-word;">
                                 <%= record?.time || "Not Applicable" %>
                             </td>
                             <% const minValue=parseFloat(record?.min_temprature_record); 
@@ -330,7 +330,7 @@
                                  }
                                 %>
 
-                                <td class="<%= colorClass %>">
+                                <td style="word-break: break-word;" class="<%= colorClass %>">
                                     <%= record?.min_temprature_record || "Not Applicable" %>
                                 </td>
                             <% const maxValue=parseFloat(record?.max_temprature_record); 
@@ -347,7 +347,7 @@
                                     }
                                  }
                                 %>                                
-                                <td class="<%= maxColorClass %>">
+                                <td style="word-break: break-word;" class="<%= maxColorClass %>">
                                     <%= record?.max_temprature_record || "Not Applicable" %>
                                 </td>
 
@@ -365,13 +365,13 @@
                                     }
                                  }
                                 %>                                    
-                                <td class="<%= humidityColorClass %>">
+                                <td style="word-break: break-word;" class="<%= humidityColorClass %>">
                                     <%= record?.humidity_record || "Not Applicable" %>
                                 </td>
-                                <td>
+                                <td style="word-break: break-word;">
                                     <%= record?.done_by || "Not Applicable" %>
                                 </td>
-                                <td>
+                                <td style="word-break: break-word;">
                                     <%= record?.reviewed_by || "Not Applicable" %>
                                 </td>
                                 <!-- <td>
@@ -381,7 +381,7 @@
                                         Not Applicable
                                     <% } %>
                                     </td> -->
-                                <td>
+                                <td style="word-break: break-word;">
                                     <%= record?.remarks || "Not Applicable" %>
                                 </td>
                         </tr>
