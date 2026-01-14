@@ -69,6 +69,12 @@ exports.InsertTempratureRecord = async (req, res) => {
     additionalInfo,
   } = req.body;
 
+
+  if (!area_name) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Area name field is mandatory." });
+  }
   if (!description) {
     return res
       .status(400)
@@ -421,6 +427,12 @@ exports.EditTempratureRecord = async (req, res) => {
       .json({ error: true, message: "Please provide a form ID." });
   }  
 
+  if (!area_name) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Area name field is mandatory." });
+  }
+  
   if (!description) {
     return res
       .status(400)

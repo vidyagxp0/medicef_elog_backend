@@ -68,6 +68,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
     additionalInfo,
   } = req.body;
 
+  if (!area_name) {
+    return res
+      .status(400)
+      .json({ error: true, message: "Area name field is mandatory." });
+  }
   if (!description) {
     return res
       .status(400)
@@ -387,6 +392,11 @@ exports.InsertDifferentialPressure = async (req, res) => {
       return res
         .status(400)
         .json({ error: true, message: "Please provide a form ID." });
+    }
+    if (!area_name) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Area name field is mandatory." });
     }
     if (!description) {
       return res
