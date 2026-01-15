@@ -1210,9 +1210,9 @@ exports.chatByPdf = async (req, res) => {
       }),
       margin: {
         top: "130px",
-        right: "30px",
+        right: "15px",
         bottom: "50px",
-        left: "30px",
+        left: "15px",
       },
     });
 
