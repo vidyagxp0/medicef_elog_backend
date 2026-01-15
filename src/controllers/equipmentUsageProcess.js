@@ -362,7 +362,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
       reviewerData,
       reviewer_id,
       approver_id,
-      DifferentialPressureRecords,
+      EquipmentUsageRecords,
       email,
       password,
       initiatorComment,
@@ -442,9 +442,9 @@ exports.InsertEquipmentUsage = async (req, res) => {
         } else if (file.fieldname === "additionalAttachment") {
           additionalAttachment = file;
         }
-        //  else if (file.fieldname.startsWith("DifferentialPressureRecords[")) {
+        //  else if (file.fieldname.startsWith("EquipmentUsageRecords[")) {
         //   const match = file.fieldname.match(
-        //     /DifferentialPressureRecords\[(\d+)\]\[supporting_docs\]/
+        //     /EquipmentUsageRecords\[(\d+)\]\[supporting_docs\]/
         //   );
         //   if (match) {
         //     const index = match[1];
@@ -457,7 +457,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
         where: { form_id: form_id },
         transaction,
       });
-
 
       if (!form) {
         await transaction.rollback();
@@ -611,8 +610,8 @@ exports.InsertEquipmentUsage = async (req, res) => {
 
       // Update the Form Records if provided
       // if (
-      //   Array.isArray(DifferentialPressureRecords) &&
-      //   DifferentialPressureRecords.length > 0
+      //   Array.isArray(EquipmentUsageRecords) &&
+      //   EquipmentUsageRecords.length > 0
       // ) {
       //   const existingRecords = await EquipmentUsageRecord.findAll({
       //     where: { form_id: form_id },
@@ -623,10 +622,10 @@ exports.InsertEquipmentUsage = async (req, res) => {
 
       //   // Track changes for existing records
       //   existingRecords.forEach((existingRecord, index) => {
-      //     DifferentialPressureRecords.sort(
+      //     EquipmentUsageRecords.sort(
       //       (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
       //     );
-      //     const newRecord = DifferentialPressureRecords[index];
+      //     const newRecord = EquipmentUsageRecords[index];
       //     if (newRecord) {
       //       const recordFields = {
       //         differential_pressure: newRecord.differential_pressure,
@@ -663,13 +662,13 @@ exports.InsertEquipmentUsage = async (req, res) => {
       //   });
 
       //   // Handle new records added
-      //   if (DifferentialPressureRecords.length > existingRecords.length) {
+      //   if (EquipmentUsageRecords.length > existingRecords.length) {
       //     for (
       //       let i = existingRecords.length;
-      //       i < DifferentialPressureRecords.length;
+      //       i < EquipmentUsageRecords.length;
       //       i++
       //     ) {
-      //       const newRecord = DifferentialPressureRecords[i];
+      //       const newRecord = EquipmentUsageRecords[i];
       //       const recordFields = {
       //         unique_id: newRecord?.unique_id,
       //         time: newRecord?.time,
@@ -708,7 +707,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
       //   });
 
       //   // Create new records
-      //   const formRecords = DifferentialPressureRecords.map((record, index) => ({
+      //   const formRecords = EquipmentUsageRecords.map((record, index) => ({
       //     form_id: form_id,
       //     unique_id: record?.unique_id,
       //     time: record?.time,
@@ -728,23 +727,28 @@ exports.InsertEquipmentUsage = async (req, res) => {
       // }
 
   // Update / Create Temperature Records (NO DELETE)
+       console.log("EquipmentUsageRecords",EquipmentUsageRecords)
+        if (Array.isArray(EquipmentUsageRecords) && EquipmentUsageRecords.length > 0) {
 
-        if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
-
-          for (const record of DifferentialPressureRecords) {
+          for (const record of EquipmentUsageRecords) {
 
             if (record.record_id) {
               // UPDATE existing row
               await EquipmentUsageRecord.update(
                 {
                   unique_id: record?.unique_id,
-                  time: record?.time,
                   date: record?.date,
-                  differential_pressure: record?.differential_pressure,
+                  time: record?.time,
+                  productName: record?.productName,
+                  batchNo: record?.batchNo,
+                  batchSize: record?.batchSize,
+                  activityType: record?.activityType,
+                  startTime: record?.startTime,
+                  endTime: record?.endTime,
                   remarks: record?.remarks,
                   done_by: record?.done_by,
                   checked_by: record?.checked_by,
-                  reviewed_by: record?.reviewed_by,
+                  verified_by: record?.verified_by,
                   approved_by: record?.approved_by,
                 },
                 {
@@ -762,13 +766,18 @@ exports.InsertEquipmentUsage = async (req, res) => {
                 {
                   form_id: form_id,
                   unique_id: record?.unique_id,
-                  time: record?.time,
                   date: record?.date,
-                  differential_pressure: record?.differential_pressure,
+                  time: record?.time,
+                  productName: record?.productName,
+                  batchNo: record?.batchNo,
+                  batchSize: record?.batchSize,
+                  activityType: record?.activityType,
+                  startTime: record?.startTime,
+                  endTime: record?.endTime,
                   remarks: record?.remarks,
                   done_by: record?.done_by,
                   checked_by: record?.checked_by,
-                  reviewed_by: record?.reviewed_by,
+                  verified_by: record?.verified_by,
                   approved_by: record?.approved_by,
                 },
                 { transaction }
@@ -1317,7 +1326,7 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.DifferentialPressureRecords?.map((record) => ({
+    const data = reportData?.EquipmentUsageRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
       time: record?.time || "",
       date: record?.date || "",
