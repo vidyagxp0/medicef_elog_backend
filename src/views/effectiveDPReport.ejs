@@ -123,17 +123,17 @@
           </td>
         </tr>
         <tr>
-          <td class="label">Acceptance Criteria</td>
+          <td class="label">Room ID</td>
           <td class="value">
-            <%= reportData?.acceptance_criteria || "Not Applicable" %>
+            <%= reportData?.room_id || "Not Applicable" %>
           </td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td class="label">Differential Pressure</td>
           <td class="value">
             <%= reportData?.differential_pressure || "Not Applicable" %>
           </td>
-        </tr>
+        </tr> -->
         <tr>
           <td class="label">Instrument ID No</td>
           <td class="value">
@@ -146,44 +146,50 @@
             <%= reportData?.departmentName || "Not Applicable" %>
           </td>
         </tr>
-        <tr>
-          <td class="label">Lower Action Limit</td>
-          <td class="value">
-            <%= reportData?.limitData?.lowerActionLimit || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Upper Action Limit</td>
-          <td class="value">
-            <%= reportData?.limitData?.upperActionLimit || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Lower Allot Limit</td>
-          <td class="value">
-            <%= reportData?.limitData?.lowerAllotLimit || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Upper Allot Limit</td>
-          <td class="value">
-            <%= reportData?.limitData?.upperAllotLimit || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Lower Acceptance Criteria</td>
-          <td class="value">
-            <%= reportData?.limitData?.lowerAcceptanceCriteria || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Upper Acceptance Criteria</td>
-          <td class="value">
-            <%= reportData?.limitData?.upperAcceptanceCriteria || "Not Applicable" %>
-          </td>
-        </tr>
       </tbody>
     </table>
+
+    <% if (reportData?.limitData) { %>
+
+        <h2 class="heading">Differential Pressure Limits</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Lower Action Limit</th>
+                    <th>Lower Alert Limit</th>
+                    <th>Lower Acceptance Criteria</th>
+                    <th>Upper Action Limit</th>
+                    <th>Upper Alert Limit</th>
+                    <th>Upper Acceptance Criteria</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <%= reportData?.limitData?.lowerActionLimit || "NA" %>
+                    </td>
+                    <td>
+                        <%= reportData?.limitData?.lowerAllotLimit || "NA" %>
+                    </td>
+                    <td>
+                        <%= reportData?.limitData?.lowerAcceptanceCriteria || "NA" %>
+                    </td>
+                    <td>
+                        <%= reportData?.limitData?.upperActionLimit || "NA" %>
+                    </td>
+                    <td>
+                        <%= reportData?.limitData?.upperAllotLimit || "NA" %>
+                    </td>
+                    <td>
+                        <%= reportData?.limitData?.upperAcceptanceCriteria || "NA" %>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <% } %>
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Differential Pressure Records</h2>

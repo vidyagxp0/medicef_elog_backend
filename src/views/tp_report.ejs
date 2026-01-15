@@ -197,10 +197,10 @@
                     <thead>
                         <tr>
                             <th>Lower Action Limit</th>
-                            <th>Lower Allot Limit</th>
+                            <th>Lower Alert Limit</th>
                             <th>Lower Acceptance Criteria</th>
                             <th>Upper Action Limit</th>
-                            <th>Upper Allot Limit</th>
+                            <th>Upper Alert Limit</th>
                             <th>Upper Acceptance Criteria</th>
                         </tr>
                     </thead>
@@ -240,10 +240,10 @@
                     <thead>
                         <tr>
                             <th>Lower Action Limit</th>
-                            <th>Lower Allot Limit</th>
+                            <th>Lower Alert Limit</th>
                             <th>Lower Acceptance Criteria</th>
                             <th>Upper Action Limit</th>
-                            <th>Upper Allot Limit</th>
+                            <th>Upper Alert Limit</th>
                             <th>Upper Acceptance Criteria</th>
                         </tr>
                     </thead>
@@ -364,13 +364,8 @@
 
                 <% } %>
 
-
-                <hr />
-
                 <% if ( reportData?.approverName || reportData?.approverComment ||
                     reportData?.approverAttachment || reportData?.approverDate ) { %>
-
-                    <hr />
 
                     <div class="remarks">
                         <h2 class="heading">Approver Remarks</h2>

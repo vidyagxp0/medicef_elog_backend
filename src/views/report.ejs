@@ -147,17 +147,17 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="label">Acceptance Criteria</td>
+                        <td class="label">Room ID</td>
                         <td class="value">
-                            <%= reportData?.acceptance_criteria || "Not Applicable" %>
+                            <%= reportData?.room_id || "Not Applicable" %>
                         </td>
                     </tr>
-                    <tr>
+                    <!-- <tr>
                         <td class="label">Differential Pressure</td>
                         <td class="value">
                             <%= reportData?.differential_pressure || "Not Applicable" %>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr>
                         <td class="label">Instrument ID No</td>
                         <td class="value">
@@ -230,21 +230,20 @@
                     </tr>
                 </tbody>
             </table>
-            <hr />
 
 
             <% if (reportData?.limitData) { %>
 
-                <h2 class="heading"> Limits</h2>
+                <h2 class="heading">Differential Pressure Limits</h2>
 
                 <table>
                     <thead>
                         <tr>
                             <th>Lower Action Limit</th>
-                            <th>Lower Allot Limit</th>
+                            <th>Lower Alert Limit</th>
                             <th>Lower Acceptance Criteria</th>
                             <th>Upper Action Limit</th>
-                            <th>Upper Allot Limit</th>
+                            <th>Upper Alert Limit</th>
                             <th>Upper Acceptance Criteria</th>
                         </tr>
                     </thead>
@@ -367,7 +366,6 @@
                             </table>
                         </div>
                         <% } %>
-                            <hr />
 
                             <% if ( reportData?.approverName || reportData?.approverComment ||
                                 reportData?.approverAttachment || reportData?.approverDate ) { %>
