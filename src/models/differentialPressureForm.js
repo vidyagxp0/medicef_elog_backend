@@ -4,6 +4,7 @@ const Department = require("./departments");
 const User = require("./users");
 const Process = require("./processes");
 const WorkflowState = require("./workflowState");
+const { room_id } = require("../utils/auditFieldMap");
 
 const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   form_id: {
@@ -131,13 +132,16 @@ const DifferentialPressureForm = sequelize.define("DifferentialPressureForm", {
   area_name: {
     type: DataTypes.STRING,
   },
-  acceptance_criteria: {
+  room_id: {
     type: DataTypes.STRING,
   },
+  // acceptance_criteria: {
+  //   type: DataTypes.STRING,
+  // },
+  // differential_pressure: {
+  //   type: DataTypes.STRING,
+  // },
   instrument_id_no: {
-    type: DataTypes.STRING,
-  },
-  differential_pressure: {
     type: DataTypes.STRING,
   },
 workflow_state_id: {

@@ -22,6 +22,7 @@ module.exports = {
 
   // ===== DIFFERENTIAL PRESSURE =====
   limit: "Limit",
+  room_id: "Room ID",
   limitData: "Limit Details",
   differential_pressure: "Differential Pressure",
   acceptance_criteria: "Acceptance Criteria",
