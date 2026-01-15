@@ -920,6 +920,14 @@ exports.deleteRecordById = async (req, res) => {
       });
     }
 
+    if (record.reviewed_by && record.reviewed_by.trim() !== "") {
+      await transaction.rollback();
+      return res.status(403).json({
+        error: true,
+        message: "Checked record cannot be deleted",
+      });
+    }
+
     await record.destroy({ transaction });
 
     await transaction.commit();

@@ -232,98 +232,97 @@ exports.InsertEquipmentUsage = async (req, res) => {
       });
     }
 
-    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record, index) => ({
-        form_id: newForm?.form_id,
-        unique_id: record?.unique_id,
-        time: record?.time,
-        differential_pressure: record?.differential_pressure,
-        remarks: record?.remarks,
-        done_by: record?.done_by,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
-        // supporting_docs: getElogDocsUrl(supportingDocs),
-      }));
+    // if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
+    //   const formRecords = FormRecordsArray.map((record, index) => ({
+    //     form_id: newForm?.form_id,
+    //     unique_id: record?.unique_id,
+    //     time: record?.time,
+    //     differential_pressure: record?.differential_pressure,
+    //     remarks: record?.remarks,
+    //     done_by: record?.done_by,
+    //     reviewed_by: record?.reviewed_by,
+    //     approved_by: record?.approved_by,
+    //     // supporting_docs: getElogDocsUrl(supportingDocs),
+    //   }));
 
-      // await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
+    //   // await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
 
-      formRecords.forEach((record, index) => {
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Unique Id",
-          previous_value: null,
-          new_value: record.unique_id || "",
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Time",
-          previous_value: null,
-          new_value: record.time,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Differential Pressure",
-          previous_value: null,
-          new_value: record.differential_pressure,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
+    //   formRecords.forEach((record, index) => {
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Unique Id",
+    //       previous_value: null,
+    //       new_value: record.unique_id || "",
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Time",
+    //       previous_value: null,
+    //       new_value: record.time,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Differential Pressure",
+    //       previous_value: null,
+    //       new_value: record.differential_pressure,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
 
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Remarks",
-          previous_value: null,
-          new_value: record.remarks,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Done By",
-          previous_value: null,
-          new_value: record.done_by,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "CheckedBy",
-          previous_value: null,
-          new_value: record.checked_by,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        if (supportingDocs[index]) {
-          auditTrailEntries.push({
-            form_id: newForm.form_id,
-            field_name: "SupportingDocs",
-            previous_value: null,
-            new_value: getElogDocsUrl(supportingDocs),
-            changed_by: user.user_id,
-            previous_status: "Not Applicable",
-            new_status: "Opened",
-            action: "Opened",
-          });
-        }
-      });
-    }
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Remarks",
+    //       previous_value: null,
+    //       new_value: record.remarks,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "Done By",
+    //       previous_value: null,
+    //       new_value: record.done_by,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     auditTrailEntries.push({
+    //       form_id: newForm.form_id,
+    //       field_name: "CheckedBy",
+    //       previous_value: null,
+    //       new_value: record.checked_by,
+    //       changed_by: user.user_id,
+    //       previous_status: "Not Applicable",
+    //       new_status: "Opened",
+    //       action: "Opened",
+    //     });
+    //     if (supportingDocs[index]) {
+    //       auditTrailEntries.push({
+    //         form_id: newForm.form_id,
+    //         field_name: "SupportingDocs",
+    //         previous_value: null,
+    //         new_value: getElogDocsUrl(supportingDocs),
+    //         changed_by: user.user_id,
+    //         previous_status: "Not Applicable",
+    //         new_status: "Opened",
+    //         action: "Opened",
+    //       });
+    //     }
+    //   });
+    // }
 
     await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
@@ -608,124 +607,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
         { transaction }
       );
 
-      // Update the Form Records if provided
-      // if (
-      //   Array.isArray(EquipmentUsageRecords) &&
-      //   EquipmentUsageRecords.length > 0
-      // ) {
-      //   const existingRecords = await EquipmentUsageRecord.findAll({
-      //     where: { form_id: form_id },
-      //     raw: true,
-      //     // order: [["record_id", "DESC"]],
-      //     transaction,
-      //   });
-
-      //   // Track changes for existing records
-      //   existingRecords.forEach((existingRecord, index) => {
-      //     EquipmentUsageRecords.sort(
-      //       (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
-      //     );
-      //     const newRecord = EquipmentUsageRecords[index];
-      //     if (newRecord) {
-      //       const recordFields = {
-      //         differential_pressure: newRecord.differential_pressure,
-      //         remarks: newRecord.remarks,
-      //         done_by: newRecord.done_by,
-      //         reviewed_by: newRecord?.reviewed_by,
-      //         approved_by: newRecord?.approved_by,
-      //         // supporting_docs:
-      //         //   newRecord.supporting_docs ||
-      //         //   getElogDocsUrl(supportingDocs[index]),
-      //       };
-
-      //       // for (const [field, newValue] of Object.entries(recordFields)) {
-      //       //   const oldValue = existingRecord[field];
-      //       //   if (
-      //       //     newValue !== undefined &&
-      //       //     ((typeof newValue === "number" &&
-      //       //       !areFloatsEqual(oldValue, newValue)) ||
-      //       //       oldValue != newValue)
-      //       //   ) {
-      //       //     auditTrailEntries.push({
-      //       //       form_id: form.form_id,
-      //       //       field_name: `${field}[${index}]`,
-      //       //       previous_value: oldValue || null,
-      //       //       new_value: newValue,
-      //       //       changed_by: user.user_id,
-      //       //       previous_status: form.status,
-      //       //       new_status: form.status,
-      //       //       action: "Update Elog",
-      //       //     });
-      //       //   }
-      //       // }
-      //     }
-      //   });
-
-      //   // Handle new records added
-      //   if (EquipmentUsageRecords.length > existingRecords.length) {
-      //     for (
-      //       let i = existingRecords.length;
-      //       i < EquipmentUsageRecords.length;
-      //       i++
-      //     ) {
-      //       const newRecord = EquipmentUsageRecords[i];
-      //       const recordFields = {
-      //         unique_id: newRecord?.unique_id,
-      //         time: newRecord?.time,
-      //         date: newRecord?.date,
-      //         checked_by: newRecord?.checked_by,
-      //         differential_pressure: newRecord.differential_pressure,
-      //         remarks: newRecord.remarks,
-      //         done_by: newRecord.done_by,
-      //         reviewed_by: newRecord?.reviewed_by,
-      //         approved_by: newRecord?.approved_by,
-      //         // supporting_docs:
-      //         //   newRecord.supporting_docs || getElogDocsUrl(supportingDocs[i]),
-      //       };
-
-      //       for (const [field, newValue] of Object.entries(recordFields)) {
-      //         if (newValue !== undefined) {
-      //           // auditTrailEntries.push({
-      //           //   form_id: form.form_id,
-      //           //   field_name: `${field}[${i}]`,
-      //           //   previous_value: null,
-      //           //   new_value: newValue || "",
-      //           //   changed_by: user.user_id,
-      //           //   previous_status: form.status,
-      //           //   new_status: "Opened",
-      //           //   action: "Update Elog",
-      //           // });
-      //         }
-      //       }
-      //     }
-      //   }
-
-      //   // Delete existing records for the form
-      //   await EquipmentUsageRecord.destroy({
-      //     where: { form_id: form_id },
-      //     transaction,
-      //   });
-
-      //   // Create new records
-      //   const formRecords = EquipmentUsageRecords.map((record, index) => ({
-      //     form_id: form_id,
-      //     unique_id: record?.unique_id,
-      //     time: record?.time,
-      //     date: record?.date,
-      //     differential_pressure: record?.differential_pressure,
-      //     remarks: record?.remarks,
-      //     done_by: record?.done_by,
-      //     checked_by: record?.checked_by,
-      //     reviewed_by: record?.reviewed_by,
-      //     approved_by: record?.approved_by,
-      //     // supporting_docs: record?.supporting_docs
-      //     //   ? record?.supporting_docs
-      //     //   : getElogDocsUrl(supportingDocs[index]),
-      //   }));
-
-      //   await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
-      // }
-
   // Update / Create Temperature Records (NO DELETE)
        console.log("EquipmentUsageRecords",EquipmentUsageRecords)
         if (Array.isArray(EquipmentUsageRecords) && EquipmentUsageRecords.length > 0) {
@@ -747,9 +628,8 @@ exports.InsertEquipmentUsage = async (req, res) => {
                   endTime: record?.endTime,
                   remarks: record?.remarks,
                   done_by: record?.done_by,
-                  checked_by: record?.checked_by,
+                  reviewed_by: record?.reviewed_by,
                   verified_by: record?.verified_by,
-                  approved_by: record?.approved_by,
                 },
                 {
                   where: {
@@ -776,9 +656,8 @@ exports.InsertEquipmentUsage = async (req, res) => {
                   endTime: record?.endTime,
                   remarks: record?.remarks,
                   done_by: record?.done_by,
-                  checked_by: record?.checked_by,
+                  reviewed_by: record?.reviewed_by,
                   verified_by: record?.verified_by,
-                  approved_by: record?.approved_by,
                 },
                 { transaction }
               );
