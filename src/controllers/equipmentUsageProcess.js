@@ -8,9 +8,9 @@ const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
-const DifferentialPressureForm = require("../models/differentialPressureForm");
-const DifferentialPressureRecord = require("../models/differentialPressureRecords");
-const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const EquipmentUsageForm = require("../models/EquipmentUsageForm");
+const EquipmentUsageRecord = require("../models/EquipmentUsageRecords");
+const EquipmentUsageAuditTrail = require("../models/EquipmentUsageAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
 
@@ -44,19 +44,15 @@ const parseIfString = (value, fallback = null) => {
 
 
 // Fill Differential pressure form and insert its records.
-exports.InsertDifferentialPressure = async (req, res) => {
+exports.InsertEquipmentUsage = async (req, res) => {
   const {
     department_id,
     process_id,
     description,
     departmentName,
-    compression_area,
-    // limit,
-    limitData,
+    equipmentName,
+    equipmentID,
     area_name,
-    acceptance_criteria,
-    instrument_id_no,
-    differential_pressure,
     reviewer_id,
     reviewerData,
     approver_id,
@@ -67,7 +63,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
-
   if (!description) {
     return res
       .status(400)
@@ -153,7 +148,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     });
 
     // Create new Differential Pressure Form
-    const newForm = await DifferentialPressureForm.create(
+    const newForm = await EquipmentUsageForm.create(
       {
         department_id: department_id,
         process_id: process_id,
@@ -163,9 +158,8 @@ exports.InsertDifferentialPressure = async (req, res) => {
         status: "Opened",
         stage: 1,
         departmentName: departmentName,
-        compression_area: compression_area,
-        // limit: limit,
-        limitData: limitData,
+        equipmentName: equipmentName,
+        equipmentID:equipmentID,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -174,9 +168,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
         area_name: area_name,
-        acceptance_criteria: acceptance_criteria,
-        instrument_id_no: instrument_id_no,
-        differential_pressure: differential_pressure,
       },
 
       { transaction }
@@ -189,13 +180,9 @@ exports.InsertDifferentialPressure = async (req, res) => {
     const fields = {
       description,
       departmentName,
-      compression_area,
+      equipmentName,
+      equipmentID,
       area_name,
-      acceptance_criteria,
-      instrument_id_no,
-      differential_pressure,
-      // limit,
-      limitData,
       reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -259,7 +246,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         // supporting_docs: getElogDocsUrl(supportingDocs),
       }));
 
-      // await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+      // await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
 
       formRecords.forEach((record, index) => {
         auditTrailEntries.push({
@@ -338,7 +325,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       });
     }
 
-    await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+    await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -364,18 +351,14 @@ exports.InsertDifferentialPressure = async (req, res) => {
 };
 
 // edit differential pressure elog details
-  exports.EditDifferentialPressure = async (req, res) => {
+  exports.EditEquipmentUsage = async (req, res) => {
     const {
       department_id,
       description,
       departmentName,
-      compression_area,
-      // limit,
-      limitData,
+      equipmentName,
+      equipmentID,
       area_name,
-      acceptance_criteria,
-      instrument_id_no,
-      differential_pressure,
       reviewerData,
       reviewer_id,
       approver_id,
@@ -470,7 +453,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         // }
       });
 
-      const form = await DifferentialPressureForm.findOne({
+      const form = await EquipmentUsageForm.findOne({
         where: { form_id: form_id },
         transaction,
       });
@@ -492,14 +475,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
       const fields = {
         description,
         departmentName,
-        compression_area,
-        // limit,
-        // limitData,
+        equipmentName,
+        equipmentID,
         initiatorComment,
         area_name,
-        acceptance_criteria,
-        instrument_id_no,
-        differential_pressure,
         initiatorComment,
         initiatorAttachment: initiatorAttachment
           ? getElogDocsUrl(initiatorAttachment)
@@ -588,25 +567,6 @@ exports.InsertDifferentialPressure = async (req, res) => {
         });
       }
 
-// ================= limitData =================
-      const dbLimitData = parseIfString(form.limitData, {});
-      const reqLimitData = parseIfString(limitData, {});
-
-      if (
-        JSON.stringify(normalizeValue(dbLimitData)) !==
-        JSON.stringify(normalizeValue(reqLimitData))
-      ) {
-        auditTrailEntries.push({
-          form_id: form.form_id,
-          field_name: "limitData",
-          previous_value: JSON.stringify(dbLimitData),
-          new_value: JSON.stringify(reqLimitData),
-          changed_by: user.user_id,
-          previous_status: form.status,
-          new_status: form.status,
-          action: "Update Elog",
-        });
-      }
 
       for (const [field, newValue] of Object.entries(fields)) {
         const oldValue = form[field];
@@ -631,20 +591,15 @@ exports.InsertDifferentialPressure = async (req, res) => {
           department_id,
           description,
           departmentName,
-          compression_area,
-          // limit,
-          limitData,
+          equipmentName,
+          equipmentID,
           area_name,
-          acceptance_criteria,
-          instrument_id_no,
-          differential_pressure,
           reviewer_id,
           reviewerData,
           approver_id,
           initiatorAttachment: initiatorAttachment
             ? getElogDocsUrl(initiatorAttachment)
             : form.initiatorAttachment,
-
           additionalAttachment: additionalAttachment
             ? getElogDocsUrl(additionalAttachment)
             : form.additionalAttachment,
@@ -659,7 +614,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       //   Array.isArray(DifferentialPressureRecords) &&
       //   DifferentialPressureRecords.length > 0
       // ) {
-      //   const existingRecords = await DifferentialPressureRecord.findAll({
+      //   const existingRecords = await EquipmentUsageRecord.findAll({
       //     where: { form_id: form_id },
       //     raw: true,
       //     // order: [["record_id", "DESC"]],
@@ -747,7 +702,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       //   }
 
       //   // Delete existing records for the form
-      //   await DifferentialPressureRecord.destroy({
+      //   await EquipmentUsageRecord.destroy({
       //     where: { form_id: form_id },
       //     transaction,
       //   });
@@ -769,7 +724,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       //     //   : getElogDocsUrl(supportingDocs[index]),
       //   }));
 
-      //   await DifferentialPressureRecord.bulkCreate(formRecords, { transaction });
+      //   await EquipmentUsageRecord.bulkCreate(formRecords, { transaction });
       // }
 
   // Update / Create Temperature Records (NO DELETE)
@@ -780,7 +735,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
             if (record.record_id) {
               // UPDATE existing row
-              await DifferentialPressureRecord.update(
+              await EquipmentUsageRecord.update(
                 {
                   unique_id: record?.unique_id,
                   time: record?.time,
@@ -803,7 +758,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
             } else {
               // CREATE only new row
-              await DifferentialPressureRecord.create(
+              await EquipmentUsageRecord.create(
                 {
                   form_id: form_id,
                   unique_id: record?.unique_id,
@@ -821,7 +776,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
             }
           }
         }
-      await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
+      await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
 
@@ -859,7 +814,7 @@ exports.getAuditTrailForAnElog = async (req, res) => {
     }
 
     // Find all audit trail entries for the given form_id
-    const auditTrail = await DifferentialPressureAuditTrail.findAll({
+    const auditTrail = await EquipmentUsageAuditTrail.findAll({
       where: { form_id: formId },
       include: {
         model: User,
@@ -974,7 +929,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await DifferentialPressureForm.findOne({
+    const formData = await EquipmentUsageForm.findOne({
       where: { form_id },
       include: [
         {
@@ -1096,7 +1051,7 @@ exports.chatByPdf = async (req, res) => {
 exports.viewReport = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await DifferentialPressureForm.findOne({
+    const formData = await EquipmentUsageForm.findOne({
       where: { form_id },
       include: [
         {
@@ -1159,11 +1114,11 @@ if (!form_id) {
         };
       }
 
-    const formData = await DifferentialPressureForm.findOne({
+    const formData = await EquipmentUsageForm.findOne({
       where: { form_id },
       include: [
         {
-          model: DifferentialPressureRecord,
+          model: EquipmentUsageRecord,
           where: recordWhere, // directly use literal or undefined
           required: false,
           separate: true, // important for order to work on hasMany
@@ -1306,11 +1261,11 @@ if (!form_id) {
       //   };
       // }
 
-    const formData = await DifferentialPressureForm.findOne({
+    const formData = await EquipmentUsageForm.findOne({
       where: { form_id },
       include: [
         {
-          model: DifferentialPressureRecord,
+          model: EquipmentUsageRecord,
           // where: recordWhere, // directly use literal or undefined
           // required: false,
           // separate: true, 
