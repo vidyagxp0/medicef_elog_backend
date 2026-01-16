@@ -52,6 +52,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
     departmentName,
     equipmentName,
     equipmentID,
+    room_id,
     area_name,
     reviewer_id,
     reviewerData,
@@ -160,6 +161,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
         departmentName: departmentName,
         equipmentName: equipmentName,
         equipmentID:equipmentID,
+        room_id:room_id,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -182,6 +184,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
       departmentName,
       equipmentName,
       equipmentID,
+      room_id,
       area_name,
       reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
@@ -357,6 +360,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
       departmentName,
       equipmentName,
       equipmentID,
+      room_id,
       area_name,
       reviewerData,
       reviewer_id,
@@ -475,6 +479,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
         departmentName,
         equipmentName,
         equipmentID,
+        room_id,
         initiatorComment,
         area_name,
         initiatorComment,
@@ -591,6 +596,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
           departmentName,
           equipmentName,
           equipmentID,
+          room_id,
           area_name,
           reviewer_id,
           reviewerData,
@@ -608,7 +614,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
       );
 
   // Update / Create Temperature Records (NO DELETE)
-       console.log("EquipmentUsageRecords",EquipmentUsageRecords)
         if (Array.isArray(EquipmentUsageRecords) && EquipmentUsageRecords.length > 0) {
 
           for (const record of EquipmentUsageRecords) {
@@ -847,7 +852,6 @@ exports.chatByPdf = async (req, res) => {
     };
 
     reportData.reviewerData = safeParse(reportData.reviewerData);
-    reportData.limitData = safeParse(reportData.limitData);
     reportData.description = removeHtmlTags(reportData.description);
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
@@ -865,7 +869,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("report", { reportData }, (err, html) => {
+      req.app.render("eu_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });

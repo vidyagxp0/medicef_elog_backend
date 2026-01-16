@@ -69,6 +69,9 @@ const EquipmentUsageForm = sequelize.define("EquipmentUsageForm", {
   equipmentID: {
     type: DataTypes.STRING,
   },
+  room_id: {
+    type: DataTypes.STRING,
+  },
   departmentName: {
     type: DataTypes.STRING,
   },
