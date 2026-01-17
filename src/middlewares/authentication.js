@@ -46,7 +46,7 @@ function checkUserJwtToken(req, res, next) {
 function hasAccess(userRoles, department_id, processId, roleId) {
   return userRoles.some(
     (role) =>
-      (role.role_id === 4 && // Grant access if role_id is 5 (full permissions)
+      (role.role_id === 4 && // Grant access if role_id is 4 (full permissions)
         role.department_id === department_id &&
         role.process_id === processId) ||
       (role.department_id === department_id &&

@@ -39,7 +39,7 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  // Auth.authorizeUserRole(2, 1),
+  Auth.authorizeUserRole(2, 1),
   TempratureProcess.EditTempratureRecord
 );
 
