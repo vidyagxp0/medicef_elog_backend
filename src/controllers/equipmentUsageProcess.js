@@ -748,7 +748,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("report", { reportData }, (err, html) => {
+      res.render("eu_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -965,7 +965,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("report", { reportData }, (err, html) => {
+    req.app.render("eu_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1027,8 +1027,8 @@ if (!form_id) {
 
     // Sequelize → Plain JS object
     const formJson = formData.toJSON();
-
     const reportData = formJson;
+    console.log("reportData",reportData)
     const safeParse = (data) => {
       try {
         return typeof data === "string" ? JSON.parse(data) : data;
@@ -1057,7 +1057,7 @@ if (!form_id) {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveDPReport", { reportData }, (err, html) => {
+      req.app.render("effectiveEUReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1176,7 +1176,7 @@ if (!form_id) {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveDPReport", { reportData }, (err, html) => {
+    req.app.render("effectiveEUReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
