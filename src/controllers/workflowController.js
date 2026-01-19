@@ -1,8 +1,5 @@
 const WorkflowState = require("../models/workflowState");
-const differential_pressure = require("../models/differentialPressureForm")
-const processFormRegistry = require("../utils/processFormRegistry");
 const workflow_transitions = require("../models/workflowTransition");
-const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
 const { sequelize } = require("../config/db");
@@ -46,7 +43,8 @@ exports.GetCurrentStage = async (req, res) => {
       });
     }
 
-    const FormModel = processFormRegistry[process_id];
+    const Form = formModelRegistry[process_id];
+   const FormModel = Form.form;
     if (!FormModel) {
       return res.status(400).json({
         error: true,
@@ -97,8 +95,9 @@ exports.GetTransitions = async (req, res) => {
         message: "form_id and process_id are required",
       });
     }
-
-    const FormModel = processFormRegistry[process_id];
+ 
+    const Form = formModelRegistry[process_id];
+    const FormModel = Form.form
     if (!FormModel) {
       return res.status(400).json({
         error: true,
@@ -219,8 +218,7 @@ exports.GetTransitions = async (req, res) => {
 
       const FormModel = registry.form;
       const AuditModel = registry.audit;
-
-
+   
     // Fetch form with current workflow state
     const form = await FormModel.findOne({
       where: { form_id, process_id },

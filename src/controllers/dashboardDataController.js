@@ -1,5 +1,4 @@
 const User = require("../models/users");
-const processFormRegistry = require("../utils/processFormRegistry");
 const formModelRegistry = require("../utils/formModelRegistry");
 
 const Process = require("../models/processes");
@@ -71,8 +70,12 @@ exports.GetAllElogs = async (req, res) => {
     let response = [];
 
     for (const process of processes) {
-      const FormModel = processFormRegistry[process.process_id];
-      if (!FormModel) continue; // Agar model registry me na ho toh skip
+      const registry = formModelRegistry[process.process_id];
+
+      if (!registry || !registry.form) continue; // registry ya form na ho toh skip
+
+      const FormModel = registry.form;
+      const approverAlias = registry.approverAlias || "approver";
 
       // Apply filters
       const filters = buildFilters(req.query);
@@ -86,7 +89,7 @@ exports.GetAllElogs = async (req, res) => {
           },
           {
             model: User,
-            as: "approver",
+            as: approverAlias,
             attributes: ["user_id", "name"],
             required: false,
           },
@@ -173,9 +176,12 @@ exports.GetAllEffectiveElogs = async (req, res) => {
     let response = [];
 
     for (const process of processes) {
-      const FormModel = processFormRegistry[process.process_id];
-      if (!FormModel) continue; // Agar model registry me na ho toh skip
+      const registry = formModelRegistry[process.process_id];
 
+      if (!registry || !registry.form) continue; // registry ya form na ho toh skip
+
+      const FormModel = registry.form;
+      const approverAlias = registry.approverAlias || "approver";
       // Apply filters
       const filters = buildFilters(req.query);
 
@@ -192,7 +198,7 @@ exports.GetAllEffectiveElogs = async (req, res) => {
           },
           {
             model: User,
-            as: "approver",
+            as: approverAlias,
             attributes: ["user_id", "name"],
             required: false,
           },

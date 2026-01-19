@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 13.5px;
+      color: #000;
+      margin: 25px;
+      line-height: 1.6;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 25px;
+      letter-spacing: 0.5px;
+    }
+
+    h2.heading {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      border-left: 4px solid #495057;
+      padding: 6px 10px;
+      font-size: 15px;
+      background-color: #e9ecef;
+      margin-bottom: 8px;
+      page-break-after: avoid;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      /* border: 1px solid #000; */
+      page-break-inside: auto;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 8px;
+      /* text-align: left; */
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f8f8f8;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    tr {
+      page-break-inside: avoid;
+    }
+
+    /* 🔥 DETAILS TABLE */
+    .details-table td.label {
+      width: 35%;
+      font-weight: 600;
+      background-color: #f8f9fa;
+    }
+
+    .details-table td.value {
+      width: 65%;
+    }
+
+    .green {
+      color: green;
+      font-weight: bold;
+    }
+
+    .yellow {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .red {
+      color: red;
+      font-weight: bold;
+    }
+
+    .black {
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <% const formatDateOnly=(date)=> {
+    if (!date) return "Not Applicable";
+    return new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    });
+    };
+    %>
+
+    <!-- ================= DETAILS ================= -->
+    <h2 class="heading">Details</h2>
+
+    <table class="details-table">
+      <tbody>
+        <tr>
+          <td class="label">Record Id</td>
+          <td class="value">
+            MED/APR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Area Name</td>
+          <td class="value">
+            <%= reportData?.area_name || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Room ID</td>
+          <td class="value">
+            <%= reportData?.room_id || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Month</td>
+          <td class="value">
+            <%= reportData?.month || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Year</td>
+          <td class="value">
+            <%= reportData?.year || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Department</td>
+          <td class="value">
+            <%= reportData?.departmentName || "Not Applicable" %>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ================= RECORDS ================= -->
+    <h2 class="heading">Area Cleaning Records</h2>
+
+    <% if (reportData.AreaCleaningRecords && reportData.AreaCleaningRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">S.No</th>
+            <th rowspan="2">Unique ID</th>
+            <th rowspan="2">Date</th>
+            <th colspan="2" style="text-align: center;">Time</th>
+            <th rowspan="2">Cleaning Agent</th>
+            <th rowspan="2">Disinfectant used</th>
+            <th rowspan="2">Ceiling</th>
+            <th rowspan="2">Light Fixtures</th>
+          </tr>
+          <tr>
+            <th>From Time</th>
+            <th>To Time</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.AreaCleaningRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+              <td>
+                <%= record?.unique_id || "Not Applicable" %>
+              </td>
+              <td>
+                <%= formatDateOnly(record?.date) || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.fromTime || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.toTime || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.cleaningAgent || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.disinfectantUsed || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.ceiling || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.lightFixtures || "Not Applicable" %>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+
+    <% if (reportData.AreaCleaningRecords && reportData.AreaCleaningRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Walls</th>
+            <th>Riser grills</th>
+            <th>Door &amp; door closer</th>
+            <th>Electric fixtures</th>
+            <th>window and viewing glass panel</th>
+            <th>Floor &amp; coving</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.AreaCleaningRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+              <td>
+                <%= record?.walls || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.riserGrills || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.doorCloser || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.electricFixtures || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.viewingGlassPanel || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.floorCoving || "Not Applicable" %>
+              </td>
+                <td>
+                  <%= record?.done_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.checked_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.remarks || "Not Applicable" %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+
+          <!-- ================= ADDITIONAL ================= -->
+          <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
+
+            <h2 class="heading">Additional</h2>
+            <table>
+              <tr>
+                <th>Additional Attachment</th>
+                <td>
+                  <% if (reportData?.additionalAttachment) { %>
+                    <a href="<%= reportData.additionalAttachment %>" target="_blank">
+                      View File
+                    </a>
+                    <% } else { %>
+                      Not Applicable
+                      <% } %>
+                </td>
+              </tr>
+
+              <tr>
+                <th>Additional Info</th>
+                <td>
+                  <%= reportData?.additionalInfo || "Not Applicable" %>
+                </td>
+              </tr>
+            </table>
+
+            <% } %>
+
+
+</body>
+
+</html>

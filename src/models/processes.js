@@ -24,7 +24,8 @@ Process.addHook('afterSync', async () => {
             await Process.bulkCreate([
                 {  process: 'Differential Pressure Record' },
                 { process: 'Temperature & Relative Humidity Record' },
-                { process: 'Equipment Usage' },
+                { process: 'Equipment Usage Record' },
+                { process: 'Area Cleaning Record' },
             ]);
             console.log('Processes created');
         } else {
