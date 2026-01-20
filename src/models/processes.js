@@ -26,6 +26,9 @@ Process.addHook('afterSync', async () => {
                 { process: 'Temperature & Relative Humidity Record' },
                 { process: 'Equipment Usage Record' },
                 { process: 'Area Cleaning Record' },
+                { process: `DP Monitoring across Filters`},
+                { process: `Operation of Air Handling Unit`},
+
             ]);
             console.log('Processes created');
         } else {
