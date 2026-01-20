@@ -19,6 +19,10 @@ const dpMonitoringAuditTrail = require("../models/dpMonitoringAuditTrail");
 const dpMonitoringForm = require("../models/dpMonitoringForm");
 const dpMonitoringRecord = require("../models/dpMonitoringRecord");
 
+const AhuOperationAuditTrail = require("../models/ahuOperationAuditTrail");
+const AhuOperationForm = require("../models/ahuOperationForm");
+const AhuOperationRecord = require("../models/ahuOperationRecord");
+
 module.exports = {
   1: {
     form: DifferentialPressureForm,
@@ -48,6 +52,12 @@ module.exports = {
     form: dpMonitoringForm,
     record: dpMonitoringRecord,
     audit: dpMonitoringAuditTrail,
+    approverAlias: "approver",
+  },
+  6: {
+    form: AhuOperationForm,
+    record: AhuOperationRecord,
+    audit: AhuOperationAuditTrail,
     approverAlias: "approver",
   },
 };
