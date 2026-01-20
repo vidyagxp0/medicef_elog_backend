@@ -144,20 +144,12 @@
       <table>
         <thead>
           <tr>
-            <th rowspan="2">S.No</th>
-            <th rowspan="2">Unique ID</th>
-            <th rowspan="2">Date</th>
-            <th rowspan="3">Time</th>
-            <th rowspan="3">Equipment ID</th>
-            <th rowspan="3">Operation Status<br>ON/OFF</th>
-            <th colspan="3">Differential Pressure&nbsp;&nbsp;(mmwc)</th>
-            <th rowspan="2">Done By<br>(Sign/Date)</th>
-            <th rowspan="2">Remarks</th>
-          </tr>
-          <tr>
-            <th> Pre Filter<br>(EU4-10µ)<br>(5 to 10)</th>
-            <th>Fine Filter<br>(EU6-5µ)<br>(7 to 20)</th>
-            <th>Fine Filter-<br>(EU7/EU8 -<br>3µ/1µ)<br>(8 to 20)</th>
+            <th>S.No</th>
+            <th>Unique ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Equipment ID</th>
+            <th>Operation Status<br>ON/OFF</th>
           </tr>
         </thead>
         <tbody>
@@ -181,6 +173,37 @@
               </td>
               <td>
                 <%= record?.operationStatus || "Not Applicable" %>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+
+    <% if (reportData.DPMonitoringRecords && reportData.DPMonitoringRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">S.No</th>
+            <th colspan="3">Differential Pressure&nbsp;&nbsp;(mmwc)</th>
+            <th rowspan="2">Done By<br>(Sign/Date)</th>
+            <th rowspan="2">Remarks</th>
+            <th rowspan="2">Reviewed By</th>
+          </tr>
+          <tr>
+            <th> Pre Filter<br>(EU4-10µ)<br>(5 to 10)</th>
+            <th>Fine Filter<br>(EU6-5µ)<br>(7 to 20)</th>
+            <th>Fine Filter-<br>(EU7/EU8 -<br>3µ/1µ)<br>(8 to 20)</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData?.DPMonitoringRecords?.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
               </td>
               <td>
                 <%= record?.preFilter5to10 || "Not Applicable" %>
