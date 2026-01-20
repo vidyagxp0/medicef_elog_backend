@@ -335,7 +335,6 @@ const rolesArray4 = [
   { label: "Regulatory Affairs-Operation of Air Handling Unit-Fullpermission", value: 240 },
 ];
 
-
     const processInitiatorRoles = async (rolesArray, initiatorUser) => {
     try {
       await sequelize.transaction(async (transaction) => {

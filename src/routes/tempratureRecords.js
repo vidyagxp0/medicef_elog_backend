@@ -39,28 +39,8 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(2, 1),
+  // Auth.authorizeUserRole(2, 1),
   TempratureProcess.EditTempratureRecord
-);
-
-//get a differential pressure elog by id
-router.get(
-  "/get-temprature-record/:id",
-  Auth.checkUserJwtToken,
-  TempratureProcess.GetTempratureRecordElog
-);
-
-//get all the differential pressure elogs
-router.get(
-  "/get-all-temprature-record",
-  Auth.checkUserJwtToken,
-  TempratureProcess.GetAllTempratureRecordElog
-);
-
-router.get(
-  "/get-audit-trail-for-elog/:id",
-  Auth.checkUserJwtToken,
-  TempratureProcess.getAuditTrailForAnElog
 );
 
 router.post(

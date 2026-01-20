@@ -39,14 +39,8 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(3, 1),
+  // Auth.authorizeUserRole(3, 1),
   EquipmentUsageProcess.EditEquipmentUsage
-);
-
-router.get(
-  "/get-audit-trail-for-elog/:id",
-  Auth.checkUserJwtToken,
-  EquipmentUsageProcess.getAuditTrailForAnElog
 );
 
 router.post(

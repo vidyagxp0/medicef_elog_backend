@@ -15,6 +15,7 @@ const differentialPressureRoutes = require("./routes/differentialPressure");
 const tempratureRecordRoutes = require("./routes/tempratureRecords");
 const equipmentUsageRoutes = require("./routes/equipmentUsage");
 const areaCleaningRoutes = require("./routes/areaCleaning");
+const dpMonitoringRoutes = require("./routes/dpMonitoring");
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const dashboardData = require("./routes/dashboardData");
 const workFLow = require("./routes/workflow");
@@ -73,6 +74,7 @@ app.use("/dashboard-data", dashboardData);
 app.use("/temprature-record", tempratureRecordRoutes);
 app.use("/equipment-usage", equipmentUsageRoutes);
 app.use("/area-cleaning", areaCleaningRoutes);
+app.use("/dp-monitoring", dpMonitoringRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

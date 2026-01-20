@@ -39,14 +39,8 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  // Auth.authorizeUserRole(1, 1),
   DifferentialPressureProcess.EditDifferentialPressure
-);
-
-router.get(
-  "/get-audit-trail-for-elog/:id",
-  Auth.checkUserJwtToken,
-  DifferentialPressureProcess.getAuditTrailForAnElog
 );
 
 router.post(

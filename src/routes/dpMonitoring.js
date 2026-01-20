@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
-const AreaCleaningProcess = require("../controllers/areaCleaningProcess");
+const DPMonitoringProcess = require("../controllers/dpMonitoringProcess");
 const multer = require("multer");
 const path = require("path");
 
@@ -30,8 +30,8 @@ router.post(
   "/create",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(4, 1),
-  AreaCleaningProcess.InsertAreaCleaning
+  Auth.authorizeUserRole(5, 1),
+  DPMonitoringProcess.InsertDPMonitoring
 );
 
 // edit differential pressure elog details
@@ -39,46 +39,41 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  // Auth.authorizeUserRole(4, 1),
-  AreaCleaningProcess.EditAreaCleaning
+//   Auth.authorizeUserRole(5, 1),
+  DPMonitoringProcess.EditDPMonitoring
 );
 
 router.post(
   "/generate-pdf",
   Auth.checkUserJwtToken,
-  AreaCleaningProcess.generateReport
+  DPMonitoringProcess.generateReport
 );
 
 router.post(
   "/chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  AreaCleaningProcess.chatByPdf
+  DPMonitoringProcess.chatByPdf
 );
 
-router.post("/view-report/:form_id", AreaCleaningProcess.viewReport);
+router.post("/view-report/:form_id", DPMonitoringProcess.viewReport);
 
 router.post(
   "/effective-chat-pdf/:form_id",
   Auth.checkUserJwtToken,
-  AreaCleaningProcess.effetiveChatByPdf
+  DPMonitoringProcess.effetiveChatByPdf
 );
+router.post(
+  "/blank-report/:form_id",
+  Auth.checkUserJwtToken,
+  DPMonitoringProcess.blankReport
+);
+
+router.post("/effective-view-report", DPMonitoringProcess.effetiveViewReport);
 
 router.post(
   "/blank-report/:form_id",
   Auth.checkUserJwtToken,
-  AreaCleaningProcess.blankReport
+  DPMonitoringProcess.blankReport
 );
-
-router.post(
-  "/effective-view-report/:form_id",
-  AreaCleaningProcess.effetiveViewReport
-);
-router.post(
-  "/send-report-on-mail/:id",
-  upload.any(),
-  AreaCleaningProcess.sendReportOnMail
-);
-
-// router.get("/search", AreaCleaningProcess.GetAll);
 
 module.exports = router;
