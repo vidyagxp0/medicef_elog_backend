@@ -15,6 +15,10 @@ const AreaCleaningAuditTrail = require("../models/areaCleaningAuditTrail");
 const AreaCleaningForm = require("../models/areaCleaningForm");
 const AreaCleaningRecord = require("../models/areaCleaningRecord");
 
+const dpMonitoringAuditTrail = require("../models/dpMonitoringAuditTrail");
+const dpMonitoringForm = require("../models/dpMonitoringForm");
+const dpMonitoringRecord = require("../models/dpMonitoringRecord");
+
 module.exports = {
   1: {
     form: DifferentialPressureForm,
@@ -38,6 +42,12 @@ module.exports = {
     form: AreaCleaningForm,
     record: AreaCleaningRecord,
     audit: AreaCleaningAuditTrail,
+    approverAlias: "approver",
+  },
+  5: {
+    form: dpMonitoringForm,
+    record: dpMonitoringRecord,
+    audit: dpMonitoringAuditTrail,
     approverAlias: "approver",
   },
 };
