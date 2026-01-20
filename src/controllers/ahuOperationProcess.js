@@ -977,7 +977,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("dpm_report", { reportData }, (err, html) => {
+      req.app.render("ahu_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1072,7 +1072,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("dpm_report", { reportData }, (err, html) => {
+    req.app.render("ahu_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1163,7 +1163,7 @@ if (!form_id) {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveDPMReport", { reportData }, (err, html) => {
+      req.app.render("effectiveAHUReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1222,10 +1222,10 @@ if (!form_id) {
     await browser.close();
     const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `DPM_Elog_Report_${uniqueId}.pdf`);
+    const filePath = path.resolve("public", `AHU_Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `DPM_Elog_Report_${uniqueId}.pdf` });
+    res.status(200).json({ filename: `AHU_Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
@@ -1237,7 +1237,7 @@ exports.effetiveViewReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
     // Render HTML using EJS template
-    req.app.render("effectiveDPMReport", { reportData }, (err, html) => {
+    req.app.render("effectiveAHUReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);

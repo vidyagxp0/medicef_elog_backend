@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13.5px;
+            color: #000;
+            margin: 25px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        h2.heading {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            border-left: 4px solid #495057;
+            padding: 6px 10px;
+            font-size: 15px;
+            background-color: #e9ecef;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            /* border: 1px solid #000; */
+            page-break-inside: auto;
+        }
+
+        th,
+        td {
+            border: 1px solid #000;
+            padding: 8px;
+            /* text-align: left; */
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f8f8f8;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            page-break-inside: avoid;
+        }
+
+        /* 🔥 DETAILS TABLE */
+        .details-table td.label {
+            width: 35%;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+        .details-table td.value {
+            width: 65%;
+        }
+
+        .green {
+            color: green;
+            font-weight: bold;
+        }
+
+        .yellow {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .red {
+            color: red;
+            font-weight: bold;
+        }
+
+        .black {
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <% const formatDateTime=(date)=> {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        });
+        };
+
+        const formatDateOnly = (date) => {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        });
+        };
+        %>
+
+        <div class="report-content">
+            <h2 class="heading">General Information</h2>
+
+            <table class="details-table">
+                <tbody>
+                    <tr>
+                        <td class="label">Record Id</td>
+                        <td class="value">
+                            MED/APR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Initiator name</td>
+                        <td class="value">
+                            <%= reportData?.initiator_name || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Initiation Date</td>
+                        <td class="value">
+                            <%= formatDateTime(reportData?.date_of_initiation) %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Area Name</td>
+                        <td class="value">
+                            <%= reportData?.area_name || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Room ID</td>
+                        <td class="value">
+                            <%= reportData?.room_id || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Department</td>
+                        <td class="value">
+                            <%= reportData?.departmentName || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Approver</td>
+                        <td class="value">
+                            <%= reportData?.approver?.name || "Not Applicable" %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Reviewer</td>
+                        <td class="value">
+                            <% if (Array.isArray(reportData?.reviewerData) && reportData.reviewerData.length) { %>
+                                <%= reportData.reviewerData.map(r=> r.name).join(', ') %>
+                                    <% } else { %>
+                                        Not Applicable
+                                        <% } %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Description</td>
+                        <td class="value">
+                            <%= reportData?.description || "Not Applicable" %>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <% if ( reportData?.initiatorName || reportData?.initiatorComment || reportData?.initiatorAttachment ||
+                reportData?.initiatorDate ) { %>
+
+                <div class="remarks">
+                    <h2 class="heading">Initiator Remarks</h2>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Initiator Name</th>
+                                <th>Initiator Comment</th>
+                                <th>Attachment</th>
+                                <th>Date of Initiator Review</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <%= reportData?.initiatorName || "Not Applicable" %>
+                                </td>
+
+                                <td>
+                                    <%= reportData?.initiatorComment || "Not Applicable" %>
+                                </td>
+
+                                <td>
+                                    <% if (reportData?.initiatorAttachment) { %>
+                                        <a href="<%= reportData.initiatorAttachment %>" target="_blank">
+                                            View File
+                                        </a>
+                                        <% } else { %>
+                                            Not Applicable
+                                            <% } %>
+                                </td>
+
+                                <td>
+                                    <%= reportData?.initiatorDate ? formatDateTime(reportData.initiatorDate)
+                                        : "Not Applicable" %>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <% } %>
+
+                    <% if ( reportData?.reviewerName || reportData?.reviewerComment || reportData?.reviewerAttachment ||
+                        reportData?.reviewerDate ) { %>
+
+                        <div class="remarks">
+                            <h2 class="heading">Reviewer Remarks</h2>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Reviewer Name</th>
+                                        <th>Reviewer Comment</th>
+                                        <th>Attachment</th>
+                                        <th>Date of Reviewer Review</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <%= reportData?.reviewerName || "Not Applicable" %>
+                                        </td>
+
+                                        <td>
+                                            <%= reportData?.reviewerComment || "Not Applicable" %>
+                                        </td>
+
+                                        <td>
+                                            <% if (reportData?.reviewerAttachment) { %>
+                                                <a href="<%= reportData.reviewerAttachment %>" target="_blank">
+                                                    View File
+                                                </a>
+                                                <% } else { %>
+                                                    Not Applicable
+                                                    <% } %>
+                                        </td>
+
+                                        <td>
+                                            <%= formatDateTime(reportData?.reviewerDate) %>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } %>
+
+                            <% if ( reportData?.approverName || reportData?.approverComment ||
+                                reportData?.approverAttachment || reportData?.approverDate ) { %>
+
+                                <div class="remarks">
+                                    <h2 class="heading">Approver Remarks</h2>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Approver Name</th>
+                                                <th>Approver Comment</th>
+                                                <th>Attachment</th>
+                                                <th>Date of Approver Review</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <%= reportData?.approverName || "Not Applicable" %>
+                                                </td>
+
+                                                <td>
+                                                    <%= reportData?.approverComment || "Not Applicable" %>
+                                                </td>
+
+                                                <td>
+                                                    <% if (reportData?.approverAttachment) { %>
+                                                        <a href="<%= reportData.approverAttachment %>" target="_blank">
+                                                            View File
+                                                        </a>
+                                                        <% } else { %>
+                                                            Not Applicable
+                                                            <% } %>
+                                                </td>
+
+                                                <td>
+                                                    <%= formatDateTime(reportData?.approverDate) %>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <% } %>
+
+        </div>
+</body>
+
+</html>

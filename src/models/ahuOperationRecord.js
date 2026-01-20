@@ -49,7 +49,7 @@ const AhuOperationRecord = sequelize.define(
     done_by: {
         type: DataTypes.STRING,
     },
-    checked_by: {
+    reviewed_by: {
         type: DataTypes.STRING,
     },
     remarks: {
