@@ -761,7 +761,7 @@ exports.InsertAreaCleaning = async (req, res) => {
                   floorCoving: record?.floorCoving,
                   remarks: record?.remarks,
                   done_by: record?.done_by,
-                  checked_by: record?.checked_by,
+                  reviewed_by: record?.reviewed_by,
                 },
                 {
                   where: {
@@ -793,7 +793,7 @@ exports.InsertAreaCleaning = async (req, res) => {
                   viewingGlassPanel: record?.viewingGlassPanel,
                   floorCoving: record?.floorCoving,
                   done_by: record?.done_by,
-                  checked_by: record?.checked_by,
+                  reviewed_by: record?.reviewed_by,
                   remarks: record?.remarks,
                 },
                 { transaction }
