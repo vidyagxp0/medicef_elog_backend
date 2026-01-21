@@ -28,6 +28,7 @@ Process.addHook('afterSync', async () => {
                 { process: 'Area Cleaning Record' },
                 { process: `DP Monitoring Across Filters`},
                 { process: `Operation of Air Handling Unit`},
+                { process: `Instrument Usage Record`},
 
             ]);
             console.log('Processes created');

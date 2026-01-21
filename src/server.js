@@ -19,6 +19,7 @@ const dpMonitoringRoutes = require("./routes/dpMonitoring");
 const vidyagxpFeedback = require("./config/vidyagxp_feedback");
 const dashboardData = require("./routes/dashboardData");
 const ahuOperation = require("./routes/ahuOperation");
+const instrumentUsageRoutes = require("./routes/instrumentUsage");
 const workFLow = require("./routes/workflow");
 
 const app = express();
@@ -77,6 +78,7 @@ app.use("/equipment-usage", equipmentUsageRoutes);
 app.use("/area-cleaning", areaCleaningRoutes);
 app.use("/dp-monitoring", dpMonitoringRoutes);
 app.use("/ahu-operation", ahuOperation);
+app.use("/instrument-usage", instrumentUsageRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

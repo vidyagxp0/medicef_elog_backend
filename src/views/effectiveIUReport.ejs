@@ -95,15 +95,28 @@
 
 <body>
 
-  <% const formatDateOnly=(date)=> {
-    if (!date) return "Not Applicable";
-    return new Date(date).toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    });
-    };
-    %>
+    <% const formatDateTime=(date)=> {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        });
+        };
+
+        const formatDateOnly = (date) => {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        });
+        };
+        %>
 
     <!-- ================= DETAILS ================= -->
     <h2 class="heading">Details</h2>
@@ -111,53 +124,63 @@
     <table class="details-table">
       <tbody>
         <tr>
-          <td class="label">Record Id</td>
-          <td class="value">
-            MED/AHR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Area Name</td>
-          <td class="value">
-            <%= reportData?.area_name || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Room ID</td>
-          <td class="value">
-            <%= reportData?.room_id || "Not Applicable" %>
-          </td>
-        </tr>
-        <tr>
-          <td class="label">Department</td>
-          <td class="value">
-            <%= reportData?.departmentName || "Not Applicable" %>
-          </td>
-        </tr>
+            <tr>
+                <td class="label">Record Id</td>
+                <td class="value">
+                    MED/IUR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Initiator name</td>
+                <td class="value">
+                    <%= reportData?.initiator_name || "Not Applicable" %>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Initiation Date</td>
+                <td class="value">
+                    <%= formatDateTime(reportData?.date_of_initiation) %>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Area Name</td>
+                <td class="value">
+                    <%= reportData?.area_name || "Not Applicable" %>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Room Id</td>
+                <td class="value">
+                    <%= reportData?.room_id || "Not Applicable" %>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Department</td>
+                <td class="value">
+                    <%= reportData?.departmentName || "Not Applicable" %>
+                </td>
+            </tr>
       </tbody>
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Air Handling Unit Records</h2>
+    <h2 class="heading">Equipment Usage Records</h2>
 
-    <% if (reportData.AhuOperationRecords && reportData.AhuOperationRecords.length> 0) { %>
+    <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
-            <th rowspan="2">S.No</th>
-            <th rowspan="2">Unique ID</th>
-            <th rowspan="2">Date</th>
-            <th rowspan="2">Equipment ID</th>
-            <th colspan="2" style="text-align: center;">Operation Status<br>ON/OFF</th>
-          </tr>
-          <tr>
-            <th>Start Time</th>
-            <th>Started By <br> (Sign/Date)</th>
+            <th>S.No</th>
+            <th>Unique ID</th>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Batch No</th>
+            <th>Test Name</th>
           </tr>
         </thead>
         <tbody>
 
-          <% reportData?.AhuOperationRecords?.forEach((record, index)=> { %>
+          <% reportData.instrumentUsageRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -168,15 +191,15 @@
               <td>
                 <%= formatDateOnly(record?.date) || "Not Applicable" %>
               </td>
-              <td>
-                <%= record?.equipmentId || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.startTime || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.startedBy || "Not Applicable" %>
-              </td>
+                <td>
+                  <%= record?.productName || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.batchNo || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.testname || "Not Applicable" %>
+                </td>
             </tr>
             <% }) %>
         </tbody>
@@ -185,52 +208,51 @@
         <p>No Records Found.</p>
         <% } %>
 
-    <% if (reportData.AhuOperationRecords && reportData.AhuOperationRecords.length> 0) { %>
+    <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
-            <th rowspan="2">S.No</th>
-            <th colspan="2" style="text-align: center;">Operation Status<br>ON/OFF</th>
-            <th rowspan="2">Done By</th>
-            <th rowspan="2">Reviewed By</th>
-            <th rowspan="2">Remarks</th>
-          </tr>
-          <tr>
-            <th>Stop Time</th>
-            <th>Stopped By <br> (Sign/Date)</th>
+            <th>S.No</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Done By</th>
+            <th>Analyzed By</th>
+            <th>Checked By</th>
+            <th>Remarks</th>
           </tr>
         </thead>
         <tbody>
 
-          <% reportData?.AhuOperationRecords?.forEach((record, index)=> { %>
+          <% reportData.instrumentUsageRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
               </td>
               <td>
-                <%= record?.stopTime || "Not Applicable" %>
+                <%= record?.startTime || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.stoppedBy || "Not Applicable" %>
+                <%= record?.endTime || "Not Applicable" %>
               </td>
-              <td>
-                <%= record?.done_by || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.reviewed_by || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.remarks || "Not Applicable" %>
-              </td>
+                <td>
+                  <%= record?.done_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.analyzed_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.reviewed_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.remarks || "Not Applicable" %>
+                </td>
             </tr>
             <% }) %>
         </tbody>
       </table>
       <% } else { %>
-        <p>No Records Found.</p>
+        <!-- <p>No Records Found.</p> -->
         <% } %>
-
-
 
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
