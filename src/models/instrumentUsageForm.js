@@ -63,10 +63,7 @@ const instrumentUsageForm = sequelize.define("instrumentUsageForm", {
   description: {
     type: DataTypes.TEXT,
   },
-  equipmentName: {
-    type: DataTypes.STRING,
-  },
-  equipmentID: {
+  instrumentID: {
     type: DataTypes.STRING,
   },
   room_id: {
