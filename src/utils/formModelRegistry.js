@@ -23,6 +23,10 @@ const AhuOperationAuditTrail = require("../models/ahuOperationAuditTrail");
 const AhuOperationForm = require("../models/ahuOperationForm");
 const AhuOperationRecord = require("../models/ahuOperationRecord");
 
+const instrumentUsageForm = require("../models/instrumentUsageForm");
+const instrumentUsageRecord = require("../models/instrumentUsageRecord");
+const instrumentUsageAuditTrail = require("../models/instrumentUsageAuditTrail");
+
 module.exports = {
   1: {
     form: DifferentialPressureForm,
@@ -58,6 +62,12 @@ module.exports = {
     form: AhuOperationForm,
     record: AhuOperationRecord,
     audit: AhuOperationAuditTrail,
+    approverAlias: "approver",
+  },
+  7: {
+    form: instrumentUsageForm,
+    record: instrumentUsageRecord,
+    audit: instrumentUsageAuditTrail,
     approverAlias: "approver",
   },
 };

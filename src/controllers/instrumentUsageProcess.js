@@ -956,7 +956,6 @@ if (!form_id) {
         const [fy, fm, fd] = fromDate.split("/"); 
         const [ty, tm, td] = toDate.split("/");
         
-
         // create Date objects
         const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
         const to = new Date(ty, tm - 1, td);
