@@ -377,7 +377,7 @@ exports.InsertAHU = async (req, res) => {
 };
 
 // edit tempratre record elog details
-exports.EditDP = async (req, res) => {
+exports.EditAHU = async (req, res) => {
   const {form_id} = req.params;
   const {
     process_id,
@@ -387,7 +387,7 @@ exports.EditDP = async (req, res) => {
     reviewer_id,
     reviewerData,
     approver_id,
-    ahuOperationRecords,
+    AhuOperationRecords,
     email,
     password,
     area_name,
@@ -471,10 +471,10 @@ exports.EditDP = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       }
-      //  else if (file.fieldname.startsWith("ahuOperationRecords[")) {
+      //  else if (file.fieldname.startsWith("AhuOperationRecords[")) {
       //   // Extract the index from the fieldname
       //   const match = file.fieldname.match(
-      //     /ahuOperationRecords\[(\d+)\]\[supporting_docs\]/
+      //     /AhuOperationRecords\[(\d+)\]\[supporting_docs\]/
       //   );
       //   if (match) {
       //     const index = match[1];
@@ -641,7 +641,7 @@ exports.EditDP = async (req, res) => {
 
     // Update the Form Records if provided
 
-    // if (Array.isArray(ahuOperationRecords) && ahuOperationRecords.length > 0) {
+    // if (Array.isArray(AhuOperationRecords) && AhuOperationRecords.length > 0) {
     //   const existingRecords = await ahuOperationRecord.findAll({
     //     where: { form_id: form_id },
     //     raw: true,
@@ -651,10 +651,10 @@ exports.EditDP = async (req, res) => {
 
     //   // Track changes for existing records
     //   existingRecords.forEach((existingRecord, index) => {
-    //     ahuOperationRecords.sort(
+    //     AhuOperationRecords.sort(
     //       (a, b) => parseInt(a.record_id) - parseInt(b.record_id)
     //     );
-    //     const newRecord = ahuOperationRecords[index];
+    //     const newRecord = AhuOperationRecords[index];
     //     if (newRecord) {
     //       const recordFields = {
     //         min_temprature_record: newRecord.min_temprature_record,
@@ -694,13 +694,13 @@ exports.EditDP = async (req, res) => {
     //     }
     //   });
     //   // Handle new records added
-    //   if (ahuOperationRecords.length > existingRecords.length) {
+    //   if (AhuOperationRecords.length > existingRecords.length) {
     //     for (
     //       let i = existingRecords.length;
-    //       i < ahuOperationRecords.length;
+    //       i < AhuOperationRecords.length;
     //       i++
     //     ) {
-    //       const newRecord = ahuOperationRecords[i];
+    //       const newRecord = AhuOperationRecords[i];
     //       const recordFields = {
     //         unique_id: newRecord?.unique_id,
     //         time: newRecord?.time,
@@ -740,7 +740,7 @@ exports.EditDP = async (req, res) => {
     //     transaction,
     //   });
     //   // Create new records  
-    //   const formRecords = ahuOperationRecords.map((record, index) => ({
+    //   const formRecords = AhuOperationRecords.map((record, index) => ({
     //     form_id: form_id,
     //     unique_id: record?.unique_id,
     //     time: record?.time,
@@ -762,9 +762,9 @@ exports.EditDP = async (req, res) => {
 
 // Update / Create Temperature Records (NO DELETE)
 
-      if (Array.isArray(ahuOperationRecords) && ahuOperationRecords.length > 0) {
+      if (Array.isArray(AhuOperationRecords) && AhuOperationRecords.length > 0) {
 
-        for (const record of ahuOperationRecords) {
+        for (const record of AhuOperationRecords) {
 
           if (record.record_id) {
             // UPDATE existing row

@@ -40,7 +40,7 @@ router.put(
   Auth.checkUserJwtToken,
   upload.any(),
 //   Auth.authorizeUserRole(6, 1),
-  ahuOperationProcess.EditDP
+  ahuOperationProcess.EditAHU
 );
 
 router.post(
