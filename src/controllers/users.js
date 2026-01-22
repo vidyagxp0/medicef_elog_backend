@@ -10,6 +10,7 @@ const RoleGroup = require("../models/roleGroups");
 const EffectiveRoleGroup = require("../models/effectiveRoleGroup");
 const { sequelize } = require("../config/db");
 const { getFileUrl } = require("../middlewares/authentication");
+const { Op } = require("sequelize");
 
 //register user
 exports.signup = async (req, res) => {
@@ -311,6 +312,8 @@ exports.getAUser = async (req, res) => {
       user_id: user.user_id,
       name: user.name,
       email: user.email,
+      userName: user.userName,
+      employeeID: user.employeeID,
       age: user.age,
       gender: user.gender,
       profile_pic: user.profile_pic,
@@ -395,7 +398,7 @@ exports.Userlogin = async (req, res) => {
   try {
     const { loginInput, password } = req.body;
 
-    if (!email || !password) {
+    if (!loginInput || !password) {
       return res.status(400).json({
         error: true,
         message: "Email or UserName and password are required",
