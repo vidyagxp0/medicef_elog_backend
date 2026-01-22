@@ -13,10 +13,10 @@ const { getFileUrl } = require("../middlewares/authentication");
 
 //register user
 exports.signup = async (req, res) => {
-  const { password, email, name, rolesArray, age, gender } = req.body;
+  const { password, email, name, rolesArray, age, gender,employeeID,userName } = req.body;
 
   // Check if required fields are provided
-  if (!password || !email || !name || !rolesArray || !age) {
+  if (!password || !employeeID || !name || !rolesArray || !userName ) {
     return res.status(400).json({
       error: true,
       message: "Please provide proper user details!",
@@ -37,6 +37,27 @@ exports.signup = async (req, res) => {
         message: "User already registered!",
       });
     }
+    // Check if user already exists
+    const existingEmpID = await User.findOne({
+      where: { employeeID: employeeID, isActive: true },
+    });
+    if (existingEmpID) {
+      return res.status(400).json({
+        error: true,
+        message: "User already registered with this Employee Id!",
+      });
+    }
+    // Check if user already exists
+    const existingUserName = await User.findOne({
+      where: { userName: userName, isActive: true },
+    });
+
+    if (existingEmpID) {
+      return res.status(400).json({
+        error: true,
+        message: "User already registered with this User Name",
+      });
+    }
 
     // Hash the password
     const salt = await bcrypt.genSalt(10);
@@ -47,6 +68,8 @@ exports.signup = async (req, res) => {
       {
         name: name,
         email: email,
+        employeeID: employeeID,
+        userName: userName,
         password: hashpass,
         age: age,
         gender: gender,
@@ -100,10 +123,10 @@ exports.signup = async (req, res) => {
 //Update user
 exports.editUser = async (req, res) => {
   // Check if request body is empty
-  const {  email, name, rolesArray, age, gender } = req.body;
+  const {  email, name, rolesArray, age, gender,employeeID,userName } = req.body;
 
   // Check if required fields are provided
-  if (!email || !name || !rolesArray || !age) {
+  if (!employeeID || !name || !rolesArray || !userName) {
     return res.status(400).json({
       error: true,
       message: "Please provide proper user details!",
@@ -118,6 +141,8 @@ exports.editUser = async (req, res) => {
     const userdetails = {
       name: name,
       email: email,
+      employeeID: employeeID,
+      userName: userName,
       age: age,
       gender: gender,
       profile_pic: getFileUrl(req?.file),
@@ -368,19 +393,22 @@ exports.getAllRoleGroups = async (req, res) => {
 // user login
 exports.Userlogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { loginInput, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
         error: true,
-        message: "Email and password are required",
+        message: "Email or UserName and password are required",
       });
     }
 
     const user = await User.findOne({
       where: {
-        email: email.toLowerCase(),
-        isActive: true,
+        isActive: true, 
+        [Op.or]: [
+          { email: loginInput.toLowerCase()},
+          { username: loginInput } 
+        ],
       },
       raw: true,
     });

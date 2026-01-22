@@ -12,6 +12,14 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  employeeID: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  userName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -52,26 +60,44 @@ User.addHook("afterSync", async () => {
     const hashpass = await bcrypt.hash("Amit@121", salt);
     if (processesCount === 0) {
       await User.bulkCreate([
-        { name: "Admin", email: "admin@vidyagxp.com", password: hashpass },
-        { name: "Amit", email: "amit@vidyagxp.com", password: hashpass },
+        { name: "Admin", 
+          email: "admin@vidyagxp.com",
+          userName: "admin",
+          employeeID: "admin1",
+          password: hashpass 
+        },
+        { name: "Amit", 
+          email: "amit@vidyagxp.com",
+          userName: "amit",
+          employeeID: "amit1", 
+          password: hashpass 
+        },
         {
           name: "Initiator",
           email: "initiator@vidyagxp.com",
+          userName: "initiator",
+          employeeID: "Initiator1",
           password: hashpass,
         },
         {
           name: "Reviewer",
           email: "reviewer@vidyagxp.com",
+          userName: "reviewer",
+          employeeID: "reviewer1",
           password: hashpass,
         },
         {
           name: "Approver",
           email: "approver@vidyagxp.com",
+          userName: "approver",
+          employeeID: "approver1",          
           password: hashpass,
         },
         {
           name: "Full Permission",
           email: "fullpermission@vidyagxp.com",
+          userName: "fullpermission",
+          employeeID: "fullpermission1",
           password: hashpass,
         },
       ]);
