@@ -46,9 +46,9 @@ const instrumentUsageRecord = sequelize.define(
     analyzed_by: {
       type: DataTypes.STRING,
     },
-    done_by: {
-        type: DataTypes.STRING,
-    },
+    // done_by: {
+    //     type: DataTypes.STRING,
+    // },
     reviewed_by: {
         type: DataTypes.STRING,
     },

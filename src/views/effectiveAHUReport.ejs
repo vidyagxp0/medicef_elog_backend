@@ -144,15 +144,15 @@
       <table>
         <thead>
           <tr>
-            <th rowspan="2">S.No</th>
-            <th rowspan="2">Unique ID</th>
-            <th rowspan="2">Date</th>
-            <th rowspan="2">Equipment ID</th>
-            <th colspan="2" style="text-align: center;">Operation Status<br>ON/OFF</th>
-          </tr>
-          <tr>
-            <th>Start Time</th>
-            <th>Started By <br> (Sign/Date)</th>
+            <th>S.No</th>
+            <th>Unique ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Equipment ID</th>
+            <th>Operation Status</th>
+            <th>Done by</th>
+            <th>Checked by</th>
+            <th>Remarks</th>
           </tr>
         </thead>
         <tbody>
@@ -169,49 +169,13 @@
                 <%= formatDateOnly(record?.date) || "Not Applicable" %>
               </td>
               <td>
+                <%= record?.time || "Not Applicable" %>
+              </td>
+              <td>
                 <%= record?.equipmentId || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.startTime || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.startedBy || "Not Applicable" %>
-              </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-    <% if (reportData.AhuOperationRecords && reportData.AhuOperationRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2">S.No</th>
-            <th colspan="2" style="text-align: center;">Operation Status<br>ON/OFF</th>
-            <th rowspan="2">Done By</th>
-            <th rowspan="2">Reviewed By</th>
-            <th rowspan="2">Remarks</th>
-          </tr>
-          <tr>
-            <th>Stop Time</th>
-            <th>Stopped By <br> (Sign/Date)</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData?.AhuOperationRecords?.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.stopTime || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.stoppedBy || "Not Applicable" %>
+                <%= record?.operationStatus || "Not Applicable" %>
               </td>
               <td>
                 <%= record?.done_by || "Not Applicable" %>

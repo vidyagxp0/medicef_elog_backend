@@ -30,22 +30,26 @@ const AhuOperationRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    startTime: {
+    time: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    startedBy: {
+    operationStatus: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    stopTime: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    stoppedBy: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+    // startedBy: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    // stopTime: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    // stoppedBy: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
     done_by: {
         type: DataTypes.STRING,
     },
