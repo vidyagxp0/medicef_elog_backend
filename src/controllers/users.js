@@ -29,15 +29,22 @@ exports.signup = async (req, res) => {
 
   try {
     // Check if user already exists
-    const existingUser = await User.findOne({
-      where: { email: email, isActive: true },
-    });
-    if (existingUser) {
-      return res.status(400).json({
-        error: true,
-        message: "User already registered!",
+    if (email) {
+      const existingUser = await User.findOne({
+        where: {
+          email,
+          isActive: true
+        },
       });
+
+      if (existingUser) {
+        return res.status(400).json({
+          error: true,
+          message: "User already registered!"
+        });
+      }
     }
+
     // Check if user already exists
     const existingEmpID = await User.findOne({
       where: { employeeID: employeeID, isActive: true },
@@ -138,21 +145,22 @@ exports.editUser = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
-    const existingEmail = await User.findOne({
-      where: {
-        email: email,
-        isActive: true,
-        user_id: { [Op.ne]: req.params.id }
-      },
-      transaction
-    });
-
-    if (existingEmail) {
-      return res.status(400).json({
-        error: true,
-        message: "Email already used by another user!"
+    if (email) {
+      const existingUser = await User.findOne({
+        where: {
+          email,
+          isActive: true
+        },
       });
+
+      if (existingUser) {
+        return res.status(400).json({
+          error: true,
+          message: "User already registered!"
+        });
+      }
     }
+
 
     const existingEmpID = await User.findOne({
       where: {
