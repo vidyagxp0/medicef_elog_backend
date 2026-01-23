@@ -4,11 +4,11 @@
 <head>
   <style>
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      font-size: 13.5px;
       color: #000;
       margin: 25px;
-      line-height: 1.6;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 12px;   
+      line-height: 1.4; 
     }
 
     h1 {
@@ -90,6 +90,22 @@
     .black {
       color: black;
     }
+
+th,
+td {
+  font-size: 11.5px; 
+  padding: 6px;     
+}
+
+h2.heading {
+  font-size: 14px;   
+  padding: 5px 8px;
+}
+
+h1 {
+  font-size: 18px;   
+}
+
   </style>
 </head>
 
@@ -152,120 +168,63 @@
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Area Cleaning Records</h2>
 
-    <% if (reportData.AreaCleaningRecords && reportData.AreaCleaningRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2">S.No</th>
-            <th rowspan="2">Unique ID</th>
-            <th rowspan="2">Date</th>
-            <th colspan="2" style="text-align: center;">Time</th>
-            <th rowspan="2">Cleaning Agent</th>
-            <th rowspan="2">Disinfectant used</th>
-            <th rowspan="2">Ceiling</th>
-            <th rowspan="2">Light Fixtures</th>
-          </tr>
-          <tr>
-            <th>From Time</th>
-            <th>To Time</th>
-          </tr>
-        </thead>
-        <tbody>
+<% if (reportData.AreaCleaningRecords && reportData.AreaCleaningRecords.length > 0) { %>
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">S.No</th>
+      <th rowspan="2">Unique ID</th>
+      <th rowspan="2">Date</th>
+      <th colspan="2" style="text-align:center;">Time</th>
+      <th rowspan="2">Cleaning Agent</th>
+      <th rowspan="2">Disinfectant Used</th>
+      <th rowspan="2">Ceiling</th>
+      <th rowspan="2">Light Fixtures</th>
+      <th rowspan="2">Walls</th>
+      <th rowspan="2">Riser Grills</th>
+      <th rowspan="2">Door & Door Closer</th>
+      <th rowspan="2">Electric Fixtures</th>
+      <th rowspan="2">Window / Viewing Glass Panel</th>
+      <th rowspan="2">Floor & Coving</th>
+      <th rowspan="2">Done By</th>
+      <th rowspan="2">Checked By</th>
+      <th rowspan="2">Remark</th>
+    </tr>
+    <tr>
+      <th>From Time</th>
+      <th>To Time</th>
+    </tr>
+  </thead>
 
-          <% reportData.AreaCleaningRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.unique_id || "Not Applicable" %>
-              </td>
-              <td>
-                <%= formatDateOnly(record?.date) || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.fromTime || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.toTime || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.cleaningAgent || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.disinfectantUsed || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.ceiling || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.lightFixtures || "Not Applicable" %>
-              </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
+  <tbody>
+    <% reportData.AreaCleaningRecords.forEach((record, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= record?.unique_id || "Not Applicable" %></td>
+      <td><%= formatDateOnly(record?.date) %></td>
+      <td><%= record?.fromTime || "Not Applicable" %></td>
+      <td><%= record?.toTime || "Not Applicable" %></td>
+      <td><%= record?.cleaningAgent || "Not Applicable" %></td>
+      <td><%= record?.disinfectantUsed || "Not Applicable" %></td>
+      <td><%= record?.ceiling || "Not Applicable" %></td>
+      <td><%= record?.lightFixtures || "Not Applicable" %></td>
+      <td><%= record?.walls || "Not Applicable" %></td>
+      <td><%= record?.riserGrills || "Not Applicable" %></td>
+      <td><%= record?.doorCloser || "Not Applicable" %></td>
+      <td><%= record?.electricFixtures || "Not Applicable" %></td>
+      <td><%= record?.viewingGlassPanel || "Not Applicable" %></td>
+      <td><%= record?.floorCoving || "Not Applicable" %></td>
+      <td><%= record?.done_by || "Not Applicable" %></td>
+      <td><%= record?.reviewed_by || "Not Applicable" %></td>
+      <td><%= record?.remarks || "Not Applicable" %></td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+<% } else { %>
+<p>No Records Found.</p>
+<% } %>
 
-    <% if (reportData.AreaCleaningRecords && reportData.AreaCleaningRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Walls</th>
-            <th>Riser grills</th>
-            <th>Door &amp; door closer</th>
-            <th>Electric fixtures</th>
-            <th>window and viewing glass panel</th>
-            <th>Floor &amp; coving</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.AreaCleaningRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.walls || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.riserGrills || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.doorCloser || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.electricFixtures || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.viewingGlassPanel || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.floorCoving || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.remarks || "Not Applicable" %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
 
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>

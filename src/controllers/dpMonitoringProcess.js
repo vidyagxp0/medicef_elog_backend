@@ -1189,6 +1189,7 @@ if (!form_id) {
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
+      landscape:true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {

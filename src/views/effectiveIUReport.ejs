@@ -5,10 +5,10 @@
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
-      font-size: 13.5px;
+      font-size: 12px;
       color: #000;
       margin: 25px;
-      line-height: 1.6;
+      line-height: 1.35;
     }
 
     h1 {
@@ -41,9 +41,9 @@
     th,
     td {
       border: 1px solid #000;
-      padding: 8px;
+      padding: 5px;
       /* text-align: left; */
-      font-size: 13px;
+      font-size: 11px;
       vertical-align: top;
     }
 
@@ -90,6 +90,15 @@
     .black {
       color: black;
     }
+
+    h1 {
+      font-size: 18px;
+    }
+
+    h2.heading {
+      font-size: 13.5px;
+      padding: 5px 8px;
+    }    
   </style>
 </head>
 
@@ -172,7 +181,51 @@
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Equipment Usage Records</h2>
 
-    <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
+<% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length > 0) { %>
+<table>
+  <thead>
+    <tr>
+      <th>S.No</th>
+      <th>Unique ID</th>
+      <th>Date</th>
+      <th>Product Name</th>
+      <th>Batch No</th>
+      <th>Test Name</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+      <th>Analyzed By</th>
+      <th>Checked By</th>
+      <th>Remarks</th>
+    </tr>
+    <tr>
+
+    </tr>
+  </thead>
+
+  <tbody>
+    <% reportData.instrumentUsageRecords.forEach((record, index) => { %>
+    <tr>
+      <td><%= index + 1 %></td>
+      <td><%= record?.unique_id || "Not Applicable" %></td>
+      <td><%= formatDateOnly(record?.date) || "Not Applicable" %></td>
+      <td><%= record?.productName || "Not Applicable" %></td>
+      <td><%= record?.batchNo || "Not Applicable" %></td>
+      <td><%= record?.testname || "Not Applicable" %></td>
+      <td><%= record?.startTime || "Not Applicable" %></td>
+      <td><%= record?.endTime || "Not Applicable" %></td>
+      <td><%= record?.analyzed_by || "Not Applicable" %></td>
+      <td><%= record?.reviewed_by || "Not Applicable" %></td>
+      <td><%= record?.remarks || "Not Applicable" %></td>
+    </tr>
+    <% }) %>
+  </tbody>
+</table>
+<% } else { %>
+<p>No Records Found.</p>
+<% } %>
+
+
+    <!-- <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
@@ -221,7 +274,6 @@
             <th>S.No</th>
             <th>Start Time</th>
             <th>End Time</th>
-            <!-- <th>Done By</th> -->
             <th>Analyzed By</th>
             <th>Checked By</th>
             <th>Remarks</th>
@@ -240,9 +292,6 @@
               <td>
                 <%= record?.endTime || "Not Applicable" %>
               </td>
-                <!-- <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td> -->
                 <td>
                   <%= record?.analyzed_by || "Not Applicable" %>
                 </td>
@@ -257,8 +306,7 @@
         </tbody>
       </table>
       <% } else { %>
-        <!-- <p>No Records Found.</p> -->
-        <% } %>
+        <% } %> -->
 
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
