@@ -6,6 +6,7 @@ const { sequelize } = require("../config/db");
 const formModelRegistry = require("../utils/formModelRegistry");
 const WorkflowTransition = require("../models/workflowTransition");
 const User = require("../models/users");
+const { Op } = require("sequelize");
 
 exports.GetAllStages = async (req, res) => {
     try {
@@ -179,8 +180,8 @@ exports.GetTransitions = async (req, res) => {
       where: {
         isActive: true, 
         [Op.or]: [
-          { email: loginInput.toLowerCase()},
-          { username: loginInput } 
+          { email: esignInput.toLowerCase()},
+          { username: esignInput } 
         ],
       },
       raw: true,
