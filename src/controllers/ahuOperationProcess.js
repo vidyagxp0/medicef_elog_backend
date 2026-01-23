@@ -53,7 +53,7 @@ exports.InsertAHU = async (req, res) => {
     reviewerData,
     approver_id,
     initiatorComment,
-    email,
+    esignInput,
     password,
     FormRecordsArray,
     initiatorDeclaration,
@@ -92,10 +92,10 @@ exports.InsertAHU = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide a reviewer data." });
   }
-  if (!email || !password) {
+  if (!esignInput || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+      .json({ error: true, message: "Please provide email or username and password." });
   }
 
   // Start a transaction
@@ -388,7 +388,7 @@ exports.EditAHU = async (req, res) => {
     reviewerData,
     approver_id,
     AhuOperationRecords,
-    email,
+    esignInput,
     password,
     area_name,
     room_id,
@@ -430,10 +430,10 @@ exports.EditAHU = async (req, res) => {
   }
 
   
-  if (!email || !password) {
+  if (!esignInput || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+      .json({ error: true, message: "Please provide email or username and password." });
   }
 
   const transaction = await sequelize.transaction();

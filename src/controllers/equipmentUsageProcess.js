@@ -58,7 +58,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
     reviewerData,
     approver_id,
     initiatorComment,
-    email,
+    esignInput,
     password,
     FormRecordsArray,
     initiatorDeclaration,
@@ -94,10 +94,10 @@ exports.InsertEquipmentUsage = async (req, res) => {
       .json({ error: true, message: "Please provide a reviewer data." });
   }
 
-  if (!email || !password) {
+  if (!esignInput || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+      .json({ error: true, message: "Please provide email or username and password." });
   }
 
   // Start a transaction
@@ -366,7 +366,7 @@ exports.InsertEquipmentUsage = async (req, res) => {
       reviewer_id,
       approver_id,
       EquipmentUsageRecords,
-      email,
+      esignInput,
       password,
       initiatorComment,
       initiatorDeclaration,
@@ -405,10 +405,10 @@ exports.InsertEquipmentUsage = async (req, res) => {
         .json({ error: true, message: "Please provide an approver." });
     }
 
-    if (!email || !password) {
+    if (!esignInput || !password) {
       return res
         .status(400)
-        .json({ error: true, message: "Please provide email and password." });
+        .json({ error: true, message: "Please provide email or username and password." });
     }
 
     const transaction = await sequelize.transaction();
