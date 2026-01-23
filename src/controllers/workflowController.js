@@ -153,15 +153,15 @@ exports.GetTransitions = async (req, res) => {
 };
  exports.updateWorkflowStage = async (req, res) => {
   const { form_id, process_id } = req.params;
-  const { action ,declaration,email, password,  } = req.body;
+  const { action ,declaration,esignInput, password,  } = req.body;
   const user = req.user; // logged-in user
   const files = req.files;
   // Start a transaction
   const transaction = await sequelize.transaction();
   try {
-    if (!email || !password) {
+    if (!esignInput || !password) {
       return res.status(400).json({
-        message: "email, password are required",
+        message: "email or username, password are required",
       });
     }
     if (!form_id || !process_id ) {
@@ -177,8 +177,11 @@ exports.GetTransitions = async (req, res) => {
 
     const dbUser = await User.findOne({
       where: {
-        email: email.toLowerCase(),
-        isActive: true,
+        isActive: true, 
+        [Op.or]: [
+          { email: loginInput.toLowerCase()},
+          { username: loginInput } 
+        ],
       },
       raw: true,
     });

@@ -53,7 +53,7 @@ exports.signup = async (req, res) => {
       where: { userName: userName, isActive: true },
     });
 
-    if (existingEmpID) {
+    if (existingUserName) {
       return res.status(400).json({
         error: true,
         message: "User already registered with this User Name",
@@ -138,12 +138,60 @@ exports.editUser = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
+    const existingEmail = await User.findOne({
+      where: {
+        email: email,
+        isActive: true,
+        user_id: { [Op.ne]: req.params.id }
+      },
+      transaction
+    });
+
+    if (existingEmail) {
+      return res.status(400).json({
+        error: true,
+        message: "Email already used by another user!"
+      });
+    }
+
+    const existingEmpID = await User.findOne({
+      where: {
+        employeeID: employeeID,
+        isActive: true,
+        user_id: { [Op.ne]: req.params.id }
+      },
+      transaction
+    });
+
+    if (existingEmpID) {
+      return res.status(400).json({
+        error: true,
+        message: "Employee ID already used by another user!"
+      });
+    }
+
+    const existingUserName = await User.findOne({
+      where: {
+        userName: userName,
+        isActive: true,
+        user_id: { [Op.ne]: req.params.id }
+      },
+      transaction
+    });
+
+    if (existingUserName) {
+      return res.status(400).json({
+        error: true,
+        message: "Username already used by another user!"
+      });
+    }
+
     // Update user details
     const userdetails = {
       name: name,
       email: email,
       employeeID: employeeID,
-      userName: userName,
+      userName: userName, 
       age: age,
       gender: gender,
       profile_pic: getFileUrl(req?.file),
@@ -376,7 +424,6 @@ exports.getUserRoles = async (req, res) => {
       });
     });
 };
-
 exports.getAllRoleGroups = async (req, res) => {
   RoleGroup.findAll()
     .then((result) => {
