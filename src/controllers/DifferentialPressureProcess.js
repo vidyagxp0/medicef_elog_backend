@@ -62,7 +62,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     reviewerData,
     approver_id,
     initiatorComment,
-    email,
+    esignInput,
     password,
     FormRecordsArray,
     initiatorDeclaration,
@@ -99,10 +99,10 @@ exports.InsertDifferentialPressure = async (req, res) => {
       .json({ error: true, message: "Please provide a reviewer data." });
   }
 
-  if (!email || !password) {
+  if (!esignInput || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide email and password." });
+      .json({ error: true, message: "Please provide email or username and password." });
   }
 
   // Start a transaction
@@ -384,7 +384,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
       reviewer_id,
       approver_id,
       DifferentialPressureRecords,
-      email,
+      esignInput,
       password,
       initiatorComment,
       initiatorDeclaration,
@@ -423,7 +423,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         .json({ error: true, message: "Please provide an approver." });
     }
 
-    if (!email || !password) {
+    if (!esignInput || !password) {
       return res
         .status(400)
         .json({ error: true, message: "Please provide email and password." });
