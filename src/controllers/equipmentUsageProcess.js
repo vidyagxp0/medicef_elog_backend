@@ -1019,7 +1019,7 @@ if (!form_id) {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveEUReport", { reportData }, (err, html) => {
+      req.app.render("EffectiveEUReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
