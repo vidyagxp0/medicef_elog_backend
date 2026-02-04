@@ -50,7 +50,7 @@ exports.InsertareaFogging = async (req, res) => {
     process_id,
     description,
     departmentName,
-    instrumentID,
+    // instrumentID,
     room_id,
     area_name,
     reviewer_id,
@@ -158,7 +158,7 @@ exports.InsertareaFogging = async (req, res) => {
         status: "Opened",
         stage: 1,
         departmentName: departmentName,
-        instrumentID:instrumentID,
+        // instrumentID:instrumentID,
         room_id:room_id,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
@@ -180,7 +180,7 @@ exports.InsertareaFogging = async (req, res) => {
     const fields = {
       description,
       departmentName,
-      instrumentID,
+    //   instrumentID,
       room_id,
       area_name,
       reviewer: reviewerNames,
@@ -355,7 +355,7 @@ exports.InsertareaFogging = async (req, res) => {
       department_id,
       description,
       departmentName,
-      instrumentID,
+    //   instrumentID,
       room_id,
       area_name,
       reviewerData,
@@ -473,7 +473,7 @@ exports.InsertareaFogging = async (req, res) => {
       const fields = {
         description,
         departmentName,
-        instrumentID,
+        // instrumentID,
         room_id,
         initiatorComment,
         area_name,
@@ -589,7 +589,7 @@ exports.InsertareaFogging = async (req, res) => {
           department_id,
           description,
           departmentName,
-          instrumentID,
+        //   instrumentID,
           room_id,
           area_name,
           reviewer_id,
@@ -823,7 +823,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("iu_report", { reportData }, (err, html) => {
+      req.app.render("af_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -919,7 +919,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("iu_report", { reportData }, (err, html) => {
+    req.app.render("af_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1009,7 +1009,7 @@ if (!form_id) {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveIUReport", { reportData }, (err, html) => {
+      req.app.render("effectiveAFReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1129,7 +1129,7 @@ if (!form_id) {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveIUReport", { reportData }, (err, html) => {
+    req.app.render("effectiveAFReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);

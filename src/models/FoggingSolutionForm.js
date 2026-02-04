@@ -63,9 +63,9 @@ const foggingSolutionForm = sequelize.define("foggingSolutionForm", {
   description: {
     type: DataTypes.TEXT,
   },
-  instrumentID: {
-    type: DataTypes.STRING,
-  },
+  // instrumentID: {
+  //   type: DataTypes.STRING,
+  // },
   room_id: {
     type: DataTypes.STRING,
   },

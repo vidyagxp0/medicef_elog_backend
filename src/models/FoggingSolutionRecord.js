@@ -26,29 +26,22 @@ const foggingSolutionRecord = sequelize.define(
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    productName: {
+    virosilTaken: {
       type: DataTypes.STRING,
     },
-    batchNo: {
+    waterTaken: {
       type: DataTypes.STRING,
     },
-    testname: {
+    totalSolution: {
       type: DataTypes.STRING,
     },
-    startTime: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    endTime: {
+    time: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    analyzed_by: {
-      type: DataTypes.STRING,
+    done_by: {
+        type: DataTypes.STRING,
     },
-    // done_by: {
-    //     type: DataTypes.STRING,
-    // },
     reviewed_by: {
         type: DataTypes.STRING,
     },
