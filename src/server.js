@@ -21,6 +21,7 @@ const dashboardData = require("./routes/dashboardData");
 const ahuOperation = require("./routes/ahuOperation");
 const instrumentUsageRoutes = require("./routes/instrumentUsage");
 const foggingSolutionRoutes = require("./routes/foggingSolution");
+const areaFoggingRoutes = require("./routes/areaFogging");
 const workFLow = require("./routes/workflow");
 
 const app = express();
@@ -81,6 +82,7 @@ app.use("/dp-monitoring", dpMonitoringRoutes);
 app.use("/ahu-operation", ahuOperation);
 app.use("/instrument-usage", instrumentUsageRoutes);
 app.use("/fogging-solution", foggingSolutionRoutes);
+app.use("/area-fogging", areaFoggingRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

@@ -29,6 +29,9 @@ const instrumentUsageAuditTrail = require("../models/instrumentUsageAuditTrail")
 const foggingSolutionForm = require("../models/FoggingSolutionForm");
 const foggingSolutionRecord = require("../models/FoggingSolutionRecord");
 const foggingSolutionAuditTrail = require("../models/FoggingSolutionAuditTrail");
+const areaFoggingForm = require("../models/areaFoggingForm");
+const areaFoggingRecord = require("../models/areaFoggingRecord");
+const areaFoggingAuditTrail = require("../models/areaFoggingAuditTrail");
 
 module.exports = {
   1: {
@@ -77,6 +80,12 @@ module.exports = {
     form: foggingSolutionForm,
     record: foggingSolutionRecord,
     audit: foggingSolutionAuditTrail,
+    approverAlias: "approver",
+  },
+  9: {
+    form: areaFoggingForm,
+    record: areaFoggingRecord,
+    audit: areaFoggingAuditTrail,
     approverAlias: "approver",
   },
 };
