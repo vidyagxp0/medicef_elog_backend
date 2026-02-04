@@ -145,21 +145,21 @@ exports.editUser = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
-    if (email) {
-      const existingUser = await User.findOne({
-        where: {
-          email,
-          isActive: true
-        },
-      });
+    // if (email) {
+    //   const existingUser = await User.findOne({
+    //     where: {
+    //       email,
+    //       isActive: true
+    //     },
+    //   });
 
-      if (existingUser) {
-        return res.status(400).json({
-          error: true,
-          message: "User already registered!"
-        });
-      }
-    }
+    //   if (existingUser) {
+    //     return res.status(400).json({
+    //       error: true,
+    //       message: "User already registered!"
+    //     });
+    //   }
+    // }
 
 
     const existingEmpID = await User.findOne({
