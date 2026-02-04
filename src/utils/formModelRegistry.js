@@ -26,6 +26,9 @@ const AhuOperationRecord = require("../models/ahuOperationRecord");
 const instrumentUsageForm = require("../models/instrumentUsageForm");
 const instrumentUsageRecord = require("../models/instrumentUsageRecord");
 const instrumentUsageAuditTrail = require("../models/instrumentUsageAuditTrail");
+const foggingSolutionForm = require("../models/FoggingSolutionForm");
+const foggingSolutionRecord = require("../models/FoggingSolutionRecord");
+const foggingSolutionAuditTrail = require("../models/FoggingSolutionAuditTrail");
 
 module.exports = {
   1: {
@@ -68,6 +71,12 @@ module.exports = {
     form: instrumentUsageForm,
     record: instrumentUsageRecord,
     audit: instrumentUsageAuditTrail,
+    approverAlias: "approver",
+  },
+  8: {
+    form: foggingSolutionForm,
+    record: foggingSolutionRecord,
+    audit: foggingSolutionAuditTrail,
     approverAlias: "approver",
   },
 };

@@ -8,8 +8,8 @@
             "host": "localhost",
             "JWT_SECRET": "NAHKNAHRAF",
             "JWT_ADMIN_SECRET": "ADMINNAHKNAHRAF",
-             "GMAILUSER": "swapnil.vidyagxp@gmail.com",
-      "GMAILPASS": "fbbb hfuf xirg hgdk"
+             "GMAILUSER": "mailer.vidyagxp@gmail.com",
+      "GMAILPASS": "juqu plpj knaj jcba "
 
     },
     "production": {
