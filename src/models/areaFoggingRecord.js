@@ -22,33 +22,39 @@ const areaFoggingRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date: {
+    foggingDueOn: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+    },
+    dateOfFogging: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    productName: {
-      type: DataTypes.STRING,
-    },
-    batchNo: {
-      type: DataTypes.STRING,
-    },
-    testname: {
-      type: DataTypes.STRING,
-    },
-    startTime: {
+    foggingTimeStart: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    endTime: {
+    foggingTimeStop: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    analyzed_by: {
+    foggingHoldingStart: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    foggingHoldingStop: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    area: {
       type: DataTypes.STRING,
     },
-    // done_by: {
-    //     type: DataTypes.STRING,
-    // },
+    verified_by: {
+      type: DataTypes.STRING,
+    },
+    done_by: {
+        type: DataTypes.STRING,
+    },
     reviewed_by: {
         type: DataTypes.STRING,
     },

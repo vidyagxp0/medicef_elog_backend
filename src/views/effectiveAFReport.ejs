@@ -114,7 +114,7 @@
         minute: "2-digit",
         second: "2-digit",
         hour12: false,
-        });
+        }).replace(/\//g, "-");
         };
 
         const formatDateOnly = (date) => {
@@ -123,7 +123,7 @@
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
-        });
+        }).replace(/\//g, "-");
         };
         %>
 
@@ -136,7 +136,7 @@
             <tr>
                 <td class="label">Record Id</td>
                 <td class="value">
-                    MED/IUR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+                    MED/AFR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
                 </td>
             </tr>
             <tr>
@@ -179,23 +179,29 @@
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Instrument Usage Records</h2>
+    <h2 class="heading">Area Fogging Records</h2>
 
-<% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length > 0) { %>
+<% if (reportData.areaFoggingRecords && reportData.areaFoggingRecords.length > 0) { %>
 <table>
   <thead>
     <tr>
-      <th>S.No</th>
-      <th>Unique ID</th>
-      <th>Date</th>
-      <th>Product Name</th>
-      <th>Batch No</th>
-      <th>Test Name</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Analyzed By</th>
-      <th>Checked By</th>
-      <th>Remarks</th>
+      <th rowspan="2" >S.No</th>
+      <th rowspan="2" >Unique ID</th>
+      <th rowspan="2" >Area</th>
+      <th rowspan="2" >Date of Fogging</th>
+      <th colspan="2">Fogging time</th>
+      <th colspan="2">Fogging holding time</th>
+      <th rowspan="2" >Fogging due on</th>
+      <th rowspan="2" >Done by</th>
+      <th rowspan="2" >Checked By</th>
+      <th rowspan="2" >Verified by</th>
+      <th rowspan="2" >Remarks</th>
+    </tr>
+    <tr>
+      <th>Start</th>
+      <th>Stop</th>
+      <th>Start</th>
+      <th>Stop</th>
     </tr>
     <tr>
 
@@ -203,18 +209,23 @@
   </thead>
 
   <tbody>
-    <% reportData.instrumentUsageRecords.forEach((record, index) => { %>
+    <% reportData.areaFoggingRecords.forEach((record, index) => { %>
     <tr>
       <td><%= index + 1 %></td>
       <td><%= record?.unique_id || "Not Applicable" %></td>
-      <td><%= formatDateOnly(record?.date) || "Not Applicable" %></td>
-      <td><%= record?.productName || "Not Applicable" %></td>
-      <td><%= record?.batchNo || "Not Applicable" %></td>
-      <td><%= record?.testname || "Not Applicable" %></td>
-      <td><%= record?.startTime || "Not Applicable" %></td>
-      <td><%= record?.endTime || "Not Applicable" %></td>
-      <td><%= record?.analyzed_by || "Not Applicable" %></td>
+      <td><%= record?.area || "Not Applicable" %></td>
+      <td><%= formatDateOnly(record?.dateOfFogging) || "Not Applicable" %></td>
+      <td><%= record?.foggingTimeStart || "Not Applicable" %></td>
+      <td><%= record?.foggingTimeStop || "Not Applicable" %></td>
+      <td><%= record?.foggingHoldingStart || "Not Applicable" %></td>
+      <td><%= record?.foggingHoldingStop || "Not Applicable" %></td>
+     
+      <td><%= formatDateOnly(record?.foggingDueOn) || "Not Applicable" %></td>
+      <td><%= record?.done_by || "Not Applicable" %></td>
       <td><%= record?.reviewed_by || "Not Applicable" %></td>
+      <td>
+     <%= record?.verified_by || "Not Applicable" %>
+                </td>
       <td><%= record?.remarks || "Not Applicable" %></td>
     </tr>
     <% }) %>
@@ -225,7 +236,7 @@
 <% } %>
 
 
-    <!-- <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
+    <!-- <% if (reportData.areaFoggingRecords && reportData.areaFoggingRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
@@ -239,7 +250,7 @@
         </thead>
         <tbody>
 
-          <% reportData.instrumentUsageRecords.forEach((record, index)=> { %>
+          <% reportData.areaFoggingRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -267,7 +278,7 @@
         <p>No Records Found.</p>
         <% } %>
 
-    <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
+    <% if (reportData.areaFoggingRecords && reportData.areaFoggingRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
@@ -281,7 +292,7 @@
         </thead>
         <tbody>
 
-          <% reportData.instrumentUsageRecords.forEach((record, index)=> { %>
+          <% reportData.areaFoggingRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>

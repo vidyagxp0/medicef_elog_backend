@@ -35,6 +35,9 @@ const foggingSolutionRecord = sequelize.define(
     totalSolution: {
       type: DataTypes.STRING,
     },
+    preparedBy: {
+      type: DataTypes.STRING,
+    },
     time: {
       type: DataTypes.STRING,
       allowNull: false,

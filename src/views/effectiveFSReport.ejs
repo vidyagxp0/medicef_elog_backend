@@ -114,8 +114,7 @@
         minute: "2-digit",
         second: "2-digit",
         hour12: false,
-        });
-        };
+}).replace(/\//g, "-");        };
 
         const formatDateOnly = (date) => {
         if (!date) return "Not Applicable";
@@ -123,8 +122,7 @@
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
-        });
-        };
+}).replace(/\//g, "-");        };
         %>
 
     <!-- ================= DETAILS ================= -->
@@ -136,7 +134,7 @@
             <tr>
                 <td class="label">Record Id</td>
                 <td class="value">
-                    MED/IUR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+                    MED/FSR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
                 </td>
             </tr>
             <tr>
@@ -179,21 +177,21 @@
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Instrument Usage Records</h2>
+    <h2 class="heading">Fogging Solution Preparation Records</h2>
 
-<% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length > 0) { %>
+<% if (reportData.foggingSolutionRecords && reportData.foggingSolutionRecords.length > 0) { %>
 <table>
   <thead>
     <tr>
       <th>S.No</th>
       <th>Unique ID</th>
       <th>Date</th>
-      <th>Product Name</th>
-      <th>Batch No</th>
-      <th>Test Name</th>
-      <th>Start Time</th>
-      <th>End Time</th>
-      <th>Analyzed By</th>
+      <th>Time</th>
+      <th>Qty of Virosil taken (ml)</th>
+      <th>Qty of water taken (ml)</th>
+      <th>Total solution</th>
+      <th>Done By</th>
+      <th>Prepared by</th>
       <th>Checked By</th>
       <th>Remarks</th>
     </tr>
@@ -203,17 +201,17 @@
   </thead>
 
   <tbody>
-    <% reportData.instrumentUsageRecords.forEach((record, index) => { %>
+    <% reportData.foggingSolutionRecords.forEach((record, index) => { %>
     <tr>
       <td><%= index + 1 %></td>
       <td><%= record?.unique_id || "Not Applicable" %></td>
       <td><%= formatDateOnly(record?.date) || "Not Applicable" %></td>
-      <td><%= record?.productName || "Not Applicable" %></td>
-      <td><%= record?.batchNo || "Not Applicable" %></td>
-      <td><%= record?.testname || "Not Applicable" %></td>
-      <td><%= record?.startTime || "Not Applicable" %></td>
-      <td><%= record?.endTime || "Not Applicable" %></td>
-      <td><%= record?.analyzed_by || "Not Applicable" %></td>
+      <td><%= record?.time || "Not Applicable" %></td>
+      <td><%= record?.virosilTaken || "Not Applicable" %></td>
+      <td><%= record?.waterTaken || "Not Applicable" %></td>
+      <td><%= record?.totalSolution || "Not Applicable" %></td>
+      <td><%= record?.done_by || "Not Applicable" %></td>
+      <td><%= record?.preparedBy || "Not Applicable" %></td>
       <td><%= record?.reviewed_by || "Not Applicable" %></td>
       <td><%= record?.remarks || "Not Applicable" %></td>
     </tr>
@@ -225,7 +223,7 @@
 <% } %>
 
 
-    <!-- <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
+    <!-- <% if (reportData.foggingSolutionRecords && reportData.foggingSolutionRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
@@ -239,7 +237,7 @@
         </thead>
         <tbody>
 
-          <% reportData.instrumentUsageRecords.forEach((record, index)=> { %>
+          <% reportData.foggingSolutionRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -267,7 +265,7 @@
         <p>No Records Found.</p>
         <% } %>
 
-    <% if (reportData.instrumentUsageRecords && reportData.instrumentUsageRecords.length> 0) { %>
+    <% if (reportData.foggingSolutionRecords && reportData.foggingSolutionRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
@@ -281,7 +279,7 @@
         </thead>
         <tbody>
 
-          <% reportData.instrumentUsageRecords.forEach((record, index)=> { %>
+          <% reportData.foggingSolutionRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
