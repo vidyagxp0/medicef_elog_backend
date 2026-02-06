@@ -937,7 +937,7 @@ if (!form_id) {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveAFReport", { reportData }, (err, html) => {
+      req.app.render("effectiveFCReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1057,7 +1057,7 @@ if (!form_id) {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveAFReport", { reportData }, (err, html) => {
+    req.app.render("effectiveFCReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
