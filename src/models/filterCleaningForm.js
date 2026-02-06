@@ -160,7 +160,7 @@ filterCleaningForm.belongsTo(User, {
 });
 User.hasMany(filterCleaningForm, {
   foreignKey: "approver_id",
-  as: "AFApprovals",
+  as: "FCApprovals",
 });
 
 filterCleaningForm.belongsTo(WorkflowState, {

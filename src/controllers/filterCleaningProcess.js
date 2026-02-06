@@ -232,97 +232,6 @@ exports.InsertfilterCleaning = async (req, res) => {
       });
     }
 
-    // if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-    //   const formRecords = FormRecordsArray.map((record, index) => ({
-    //     form_id: newForm?.form_id,
-    //     unique_id: record?.unique_id,
-    //     time: record?.time,
-    //     differential_pressure: record?.differential_pressure,
-    //     remarks: record?.remarks,
-    //     done_by: record?.done_by,
-    //     reviewed_by: record?.reviewed_by,
-    //     approved_by: record?.approved_by,
-    //     // supporting_docs: getElogDocsUrl(supportingDocs),
-    //   }));
-
-    //   // await filterCleaningRecord.bulkCreate(formRecords, { transaction });
-
-    //   formRecords.forEach((record, index) => {
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: "Unique Id",
-    //       previous_value: null,
-    //       new_value: record.unique_id || "",
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       action: "Opened",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: "Time",
-    //       previous_value: null,
-    //       new_value: record.time,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       action: "Opened",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: "Differential Pressure",
-    //       previous_value: null,
-    //       new_value: record.differential_pressure,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       action: "Opened",
-    //     });
-
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: "Remarks",
-    //       previous_value: null,
-    //       new_value: record.remarks,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       action: "Opened",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: "Done By",
-    //       previous_value: null,
-    //       new_value: record.done_by,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       action: "Opened",
-    //     });
-    //     auditTrailEntries.push({
-    //       form_id: newForm.form_id,
-    //       field_name: "CheckedBy",
-    //       previous_value: null,
-    //       new_value: record.checked_by,
-    //       changed_by: user.user_id,
-    //       previous_status: "Not Applicable",
-    //       new_status: "Opened",
-    //       action: "Opened",
-    //     });
-    //     if (supportingDocs[index]) {
-    //       auditTrailEntries.push({
-    //         form_id: newForm.form_id,
-    //         field_name: "SupportingDocs",
-    //         previous_value: null,
-    //         new_value: getElogDocsUrl(supportingDocs),
-    //         changed_by: user.user_id,
-    //         previous_status: "Not Applicable",
-    //         new_status: "Opened",
-    //         action: "Opened",
-    //       });
-    //     }
-    //   });
-    // }
 
     await filterCleaningAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
@@ -617,13 +526,22 @@ exports.InsertfilterCleaning = async (req, res) => {
               await filterCleaningRecord.update(
                 {
                   unique_id: record?.unique_id,
-                  dateOfFogging: record?.dateOfFogging,
-                  foggingTimeStart: record?.foggingTimeStart,
-                  foggingTimeStop: record?.foggingTimeStop,
-                  foggingHoldingStart: record?.foggingHoldingStart,
-                  foggingHoldingStop: record?.foggingHoldingStop,
-                  foggingDueOn: record?.foggingDueOn || null,
-                  area: record?.area,
+                  date: record?.date,
+                  equipmentID: record?.equipmentID,
+                  preFilterID: record?.preFilterID,
+                  preFilterQty: record?.preFilterQty,
+                  returnRiserFilterID: record?.returnRiserFilterID,
+                  returnRiserFilterQty: record?.returnRiserFilterQty,
+                  fineFilterID: record?.fineFilterID,
+                  fineFilterQty: record?.fineFilterQty,
+                  cleaningStartTime: record?.cleaningStartTime,
+                  cleaningEndTime: record?.cleaningEndTime,
+                  physicalCondition: record?.physicalCondition,
+                  dryingStartTime: record?.dryingStartTime,
+                  dryingStopTime: record?.dryingStopTime,
+                  fineCleaningStart: record?.fineCleaningStart,
+                  fineCleaningEnd: record?.fineCleaningEnd,
+                  finePhysicalCondition: record?.finePhysicalCondition,
                   verified_by: record?.verified_by,
                   done_by: record?.done_by,
                   reviewed_by: record?.reviewed_by,
@@ -644,12 +562,22 @@ exports.InsertfilterCleaning = async (req, res) => {
                 {
                   form_id: form_id,
                   unique_id: record?.unique_id,
-                  dateOfFogging: record?.dateOfFogging,
-                  foggingTimeStart: record?.foggingTimeStart,
-                  foggingTimeStop: record?.foggingTimeStop,
-                  foggingHoldingStart: record?.foggingHoldingStart,
-                  foggingHoldingStop: record?.foggingHoldingStop,
-                  foggingDueOn: record?.foggingDueOn || null,
+                  date: record?.date,
+                  equipmentID: record?.equipmentID,
+                  preFilterID: record?.preFilterID,
+                  preFilterQty: record?.preFilterQty,
+                  returnRiserFilterID: record?.returnRiserFilterID,
+                  returnRiserFilterQty: record?.returnRiserFilterQty,
+                  fineFilterID: record?.fineFilterID,
+                  fineFilterQty: record?.fineFilterQty,
+                  cleaningStartTime: record?.cleaningStartTime,
+                  cleaningEndTime: record?.cleaningEndTime,
+                  physicalCondition: record?.physicalCondition,
+                  dryingStartTime: record?.dryingStartTime,
+                  dryingStopTime: record?.dryingStopTime,
+                  fineCleaningStart: record?.fineCleaningStart,
+                  fineCleaningEnd: record?.fineCleaningEnd,
+                  finePhysicalCondition: record?.finePhysicalCondition,
                   area: record?.area,
                   verified_by: record?.verified_by,
                   done_by: record?.done_by,
@@ -823,7 +751,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("af_report", { reportData }, (err, html) => {
+      req.app.render("fc_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -919,7 +847,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("af_report", { reportData }, (err, html) => {
+    req.app.render("fc_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1164,16 +1092,24 @@ exports.blankReport = async (req, res) => {
 
     const data = reportData?.filterCleaningRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
-      dateOfFogging: record?.dateOfFogging || "",
-      foggingDueOn: record?.foggingDueOn || null,
-      foggingTimeStart: record?.foggingTimeStart || "",
-      foggingTimeStop: record?.foggingTimeStop || "",
-      foggingHoldingStart: record?.foggingHoldingStart || "",
-      foggingHoldingStop: record?.foggingHoldingStop || "",
-      area: record?.area || "",
+      date: record?.date || "",
+      equipmentID: record?.equipmentID || "",
+      preFilterID: record?.preFilterID || "",
+      preFilterQty: record?.preFilterQty || "",
+      returnRiserFilterID: record?.returnRiserFilterID || "",
+      returnRiserFilterQty: record?.returnRiserFilterQty || "",
+      cleaningStartTime: record?.cleaningStartTime || "",
+      cleaningEndTime: record?.cleaningEndTime || "",
+      physicalCondition: record?.physicalCondition || "",
+      dryingStartTime: record?.dryingStartTime || "",
+      dryingStopTime: record?.dryingStopTime || "",
+      fineFilterID: record?.fineFilterID || "",
+      fineFilterQty: record?.fineFilterQty || "",
+      fineCleaningStart: record?.fineCleaningStart || "",
+      fineCleaningEnd: record?.fineCleaningEnd || "",
+      finePhysicalCondition: record?.finePhysicalCondition || "",
       remarks: record?.remarks || "",
       done_by: record?.done_by || "",
-      verified_by: record?.verified_by || "",
       // supporting_docs: record?.supporting_docs || "",
     }));
 
