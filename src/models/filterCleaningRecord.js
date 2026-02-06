@@ -22,35 +22,70 @@ const filterCleaningRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    foggingDueOn: {
+    date: {
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
-    dateOfFogging: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-    },
-    foggingTimeStart: {
+    equipmentID: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    foggingTimeStop: {
+    preFilterID: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    foggingHoldingStart: {
+    preFilterQty: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    foggingHoldingStop: {
+    returnRiserFilterID: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    area: {
+    returnRiserFilterQty: {
       type: DataTypes.STRING,
+      allowNull: false,
     },
-    verified_by: {
+    fineFilterID: {
       type: DataTypes.STRING,
+      allowNull: false,
+
+    },
+    fineFilterQty: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    cleaningStartTime: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    cleaningEndTime: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    physicalCondition: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    dryingStartTime: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    dryingStopTime: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fineCleaningStart: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fineCleaningEnd: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    finePhysicalCondition: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     done_by: {
         type: DataTypes.STRING,
