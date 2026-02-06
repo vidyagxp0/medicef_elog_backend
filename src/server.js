@@ -22,6 +22,7 @@ const ahuOperation = require("./routes/ahuOperation");
 const instrumentUsageRoutes = require("./routes/instrumentUsage");
 const foggingSolutionRoutes = require("./routes/foggingSolution");
 const areaFoggingRoutes = require("./routes/areaFogging");
+const filterCleaningRoutes = require("./routes/filterCleaning");
 const workFLow = require("./routes/workflow");
 
 const app = express();
@@ -83,6 +84,7 @@ app.use("/ahu-operation", ahuOperation);
 app.use("/instrument-usage", instrumentUsageRoutes);
 app.use("/fogging-solution", foggingSolutionRoutes);
 app.use("/area-fogging", areaFoggingRoutes);
+app.use("/filter-cleaning", filterCleaningRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");
