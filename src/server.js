@@ -23,6 +23,7 @@ const instrumentUsageRoutes = require("./routes/instrumentUsage");
 const foggingSolutionRoutes = require("./routes/foggingSolution");
 const areaFoggingRoutes = require("./routes/areaFogging");
 const filterCleaningRoutes = require("./routes/filterCleaning");
+const mediaConsumptionRoutes = require("./routes/mediaConsumption");
 const workFLow = require("./routes/workflow");
 
 const app = express();
@@ -85,6 +86,7 @@ app.use("/instrument-usage", instrumentUsageRoutes);
 app.use("/fogging-solution", foggingSolutionRoutes);
 app.use("/area-fogging", areaFoggingRoutes);
 app.use("/filter-cleaning", filterCleaningRoutes);
+app.use("/media-consumption", mediaConsumptionRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

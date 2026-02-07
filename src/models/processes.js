@@ -32,6 +32,7 @@ Process.addHook('afterSync', async () => {
                 { process: `Fogging Solution Preparation Record`},
                 { process: `Area Fogging Record`},
                 { process: `Filter Cleaning Record`},
+                { process: `Media Consumption Record`},
 
             ]);
             console.log('Processes created');
