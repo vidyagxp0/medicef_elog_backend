@@ -4,450 +4,907 @@ const Role = require("../../models/roles");
 const Department = require("../../models/departments");
 const User = require("../../models/users");
 const Process = require("../../models/processes");
-const RoleGroup = require("../../models/userRoles");
+const RoleGroup = require("../../models/roleGroups");
 const UserRole = require("../../models/userRoles");
 
 const rolesArray1 = [
   // Quality Assurance
-  { label: "Quality Assurance-Differential Pressure Record-Initiator", value: 1 },
-  { label: "Quality Assurance-Temperature & Relative Humidity Record-Initiator", value: 2 },
-  { label: "Quality Assurance-Equipment Usage Record-Initiator", value: 3 },
-  { label: "Quality Assurance-Area Cleaning Record-Initiator", value: 4 },
-  { label: "Quality Assurance-DP Monitoring Across Filters-Initiator", value: 5 },
-  { label: "Quality Assurance-Operation of Air Handling Unit-Initiator", value: 6 },
-  { label: "Quality Assurance-Instrument Usage Record-Initiator", value: 7 },
+  {
+    label: "Quality Assurance-Differential Pressure Record-Initiator",
+     },
+  {
+    label: "Quality Assurance-Temperature & Relative Humidity Record-Initiator",
+     },
+  { label: "Quality Assurance-Equipment Usage Record-Initiator", },
+  { label: "Quality Assurance-Area Cleaning Record-Initiator", },
+  {
+    label: "Quality Assurance-DP Monitoring Across Filters-Initiator",
+     },
+  {
+    label: "Quality Assurance-Operation of Air Handling Unit-Initiator",
+     },
+  { label: "Quality Assurance-Instrument Usage Record-Initiator",},
 
   // Quality Control
-  { label: "Quality Control-Differential Pressure Record-Initiator", value: 8 },
-  { label: "Quality Control-Temperature & Relative Humidity Record-Initiator", value: 9 },
-  { label: "Quality Control-Equipment Usage Record-Initiator", value: 10 },
-  { label: "Quality Control-Area Cleaning Record-Initiator", value: 11 },
-  { label: "Quality Control-DP Monitoring Across Filters-Initiator", value: 12 },
-  { label: "Quality Control-Operation of Air Handling Unit-Initiator", value: 13 },
-  { label: "Quality Control-Instrument Usage Record-Initiator", value: 14 },
+  { label: "Quality Control-Differential Pressure Record-Initiator",} ,
+  {
+    label: "Quality Control-Temperature & Relative Humidity Record-Initiator",
+     },
+  { label: "Quality Control-Equipment Usage Record-Initiator" },
+  { label: "Quality Control-Area Cleaning Record-Initiator"},
+  {
+    label: "Quality Control-DP Monitoring Across Filters-Initiator",
+      },
+  {
+    label: "Quality Control-Operation of Air Handling Unit-Initiator",
+      },
+  { label: "Quality Control-Instrument Usage Record-Initiator",} ,
 
   // Production
-  { label: "Production-Differential Pressure Record-Initiator", value: 15 },
-  { label: "Production-Temperature & Relative Humidity Record-Initiator", value: 16 },
-  { label: "Production-Equipment Usage Record-Initiator", value: 17 },
-  { label: "Production-Area Cleaning Record-Initiator", value: 18 },
-  { label: "Production-DP Monitoring Across Filters-Initiator", value: 19 },
-  { label: "Production-Operation of Air Handling Unit-Initiator", value: 20 },
-  { label: "Production-Instrument Usage Record-Initiator", value: 21 },
+  { label: "Production-Differential Pressure Record-Initiator", },
+  {
+    label: "Production-Temperature & Relative Humidity Record-Initiator",
+      },
+  { label: "Production-Equipment Usage Record-Initiator", },
+  { label: "Production-Area Cleaning Record-Initiator", },
+  { label: "Production-DP Monitoring Across Filters-Initiator",} ,
+  { label: "Production-Operation of Air Handling Unit-Initiator",} ,
+  { label: "Production-Instrument Usage Record-Initiator", },
 
   // Warehouse
-  { label: "Warehouse-Differential Pressure Record-Initiator", value: 22 },
-  { label: "Warehouse-Temperature & Relative Humidity Record-Initiator", value: 23 },
-  { label: "Warehouse-Equipment Usage Record-Initiator", value: 24 },
-  { label: "Warehouse-Area Cleaning Record-Initiator", value: 25 },
-  { label: "Warehouse-DP Monitoring Across Filters-Initiator", value: 26 },
-  { label: "Warehouse-Operation of Air Handling Unit-Initiator", value: 27 },
-  { label: "Warehouse-Instrument Usage Record-Initiator", value: 28 },
+  { label: "Warehouse-Differential Pressure Record-Initiator", },
+  {
+    label: "Warehouse-Temperature & Relative Humidity Record-Initiator",
+      },
+  { label: "Warehouse-Equipment Usage Record-Initiator", },
+  { label: "Warehouse-Area Cleaning Record-Initiator", },
+  { label: "Warehouse-DP Monitoring Across Filters-Initiator", },
+  { label: "Warehouse-Operation of Air Handling Unit-Initiator", },
+  { label: "Warehouse-Instrument Usage Record-Initiator", },
 
   // Engineering
-  { label: "Engineering-Differential Pressure Record-Initiator", value: 29 },
-  { label: "Engineering-Temperature & Relative Humidity Record-Initiator", value: 30 },
-  { label: "Engineering-Equipment Usage Record-Initiator", value: 31 },
-  { label: "Engineering-Area Cleaning Record-Initiator", value: 32 },
-  { label: "Engineering-DP Monitoring Across Filters-Initiator", value: 33 },
-  { label: "Engineering-Operation of Air Handling Unit-Initiator", value: 34 },
-  { label: "Engineering-Instrument Usage Record-Initiator", value: 35 },
+  { label: "Engineering-Differential Pressure Record-Initiator", },
+  {
+    label: "Engineering-Temperature & Relative Humidity Record-Initiator",
+      },
+  { label: "Engineering-Equipment Usage Record-Initiator", },
+  { label: "Engineering-Area Cleaning Record-Initiator", },
+  { label: "Engineering-DP Monitoring Across Filters-Initiator", },
+  { label: "Engineering-Operation of Air Handling Unit-Initiator", },
+  { label: "Engineering-Instrument Usage Record-Initiator", },
 
   // Human Resources
-  { label: "Human Resources-Differential Pressure Record-Initiator", value: 36 },
-  { label: "Human Resources-Temperature & Relative Humidity Record-Initiator", value: 37 },
-  { label: "Human Resources-Equipment Usage Record-Initiator", value: 38 },
-  { label: "Human Resources-Area Cleaning Record-Initiator", value: 39 },
-  { label: "Human Resources-DP Monitoring Across Filters-Initiator", value: 40 },
-  { label: "Human Resources-Operation of Air Handling Unit-Initiator", value: 41 },
-  { label: "Human Resources-Instrument Usage Record-Initiator", value: 42 },
+  {
+    label: "Human Resources-Differential Pressure Record-Initiator",
+      },
+  {
+    label: "Human Resources-Temperature & Relative Humidity Record-Initiator",
+      },
+  { label: "Human Resources-Equipment Usage Record-Initiator",} ,
+  { label: "Human Resources-Area Cleaning Record-Initiator",} ,
+  {
+    label: "Human Resources-DP Monitoring Across Filters-Initiator",
+      },
+  {
+    label: "Human Resources-Operation of Air Handling Unit-Initiator",
+      },
+  { label: "Human Resources-Instrument Usage Record-Initiator", },
 
   // Information Technology
-  { label: "Information Technology-Differential Pressure Record-Initiator", value: 43 },
-  { label: "Information Technology-Temperature & Relative Humidity Record-Initiator", value: 44 },
-  { label: "Information Technology-Equipment Usage Record-Initiator", value: 45 },
-  { label: "Information Technology-Area Cleaning Record-Initiator", value: 46 },
-  { label: "Information Technology-DP Monitoring Across Filters-Initiator", value: 47 },
-  { label: "Information Technology-Operation of Air Handling Unit-Initiator", value: 48 },
-  { label: "Information Technology-Instrument Usage Record-Initiator", value: 49 },
+  {
+    label: "Information Technology-Differential Pressure Record-Initiator",
+      },
+  {
+    label:
+      "Information Technology-Temperature & Relative Humidity Record-Initiator",
+      },
+  {
+    label: "Information Technology-Equipment Usage Record-Initiator",
+      },
+  { label: "Information Technology-Area Cleaning Record-Initiator",} ,
+  {
+    label: "Information Technology-DP Monitoring Across Filters-Initiator",
+      },
+  {
+    label: "Information Technology-Operation of Air Handling Unit-Initiator",
+      },
+  {
+    label: "Information Technology-Instrument Usage Record-Initiator",
+      },
 
   // Accounts
-  { label: "Accounts-Differential Pressure Record-Initiator", value: 50 },
-  { label: "Accounts-Temperature & Relative Humidity Record-Initiator", value: 51 },
-  { label: "Accounts-Equipment Usage Record-Initiator", value: 52 },
-  { label: "Accounts-Area Cleaning Record-Initiator", value: 53 },
-  { label: "Accounts-DP Monitoring Across Filters-Initiator", value: 54 },
-  { label: "Accounts-Operation of Air Handling Unit-Initiator", value: 55 },
-  { label: "Accounts-Instrument Usage Record-Initiator", value: 56 },
+  { label: "Accounts-Differential Pressure Record-Initiator",  },
+  {
+    label: "Accounts-Temperature & Relative Humidity Record-Initiator",
+      },
+  { label: "Accounts-Equipment Usage Record-Initiator", },
+  { label: "Accounts-Area Cleaning Record-Initiator", },
+  { label: "Accounts-DP Monitoring Across Filters-Initiator", },
+  { label: "Accounts-Operation of Air Handling Unit-Initiator", },
+  { label: "Accounts-Instrument Usage Record-Initiator", },
 
   // PPIC
-  { label: "Production Planning and Inventory Control-Differential Pressure Record-Initiator", value: 57 },
-  { label: "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Initiator", value: 58 },
-  { label: "Production Planning and Inventory Control-Equipment Usage Record-Initiator", value: 59 },
-  { label: "Production Planning and Inventory Control-Area Cleaning Record-Initiator", value: 60 },
-  { label: "Production Planning and Inventory Control-DP Monitoring Across Filters-Initiator", value: 61 },
-  { label: "Production Planning and Inventory Control-Operation of Air Handling Unit-Initiator", value: 62 },
-  { label: "Production Planning and Inventory Control-Instrument Usage Record-Initiator", value: 63 },
+  {
+    label:
+      "Production Planning and Inventory Control-Differential Pressure Record-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Equipment Usage Record-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Area Cleaning Record-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-DP Monitoring Across Filters-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Operation of Air Handling Unit-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Instrument Usage Record-Initiator",
+      },
 
   // Regulatory Affairs
-  { label: "Regulatory Affairs-Differential Pressure Record-Initiator", value: 64 },
-  { label: "Regulatory Affairs-Temperature & Relative Humidity Record-Initiator", value: 65 },
-  { label: "Regulatory Affairs-Equipment Usage Record-Initiator", value: 66 },
-  { label: "Regulatory Affairs-Area Cleaning Record-Initiator", value: 67 },
-  { label: "Regulatory Affairs-DP Monitoring Across Filters-Initiator", value: 68 },
-  { label: "Regulatory Affairs-Operation of Air Handling Unit-Initiator", value: 69 },
-  { label: "Regulatory Affairs-Instrument Usage Record-Initiator", value: 70 },
+  {
+    label: "Regulatory Affairs-Differential Pressure Record-Initiator",
+      },
+  {
+    label:
+      "Regulatory Affairs-Temperature & Relative Humidity Record-Initiator",
+      },
+  { label: "Regulatory Affairs-Equipment Usage Record-Initiator", },
+  { label: "Regulatory Affairs-Area Cleaning Record-Initiator", },
+  {
+    label: "Regulatory Affairs-DP Monitoring Across Filters-Initiator",
+      },
+  {
+    label: "Regulatory Affairs-Operation of Air Handling Unit-Initiator",
+      },
+  { label: "Regulatory Affairs-Instrument Usage Record-Initiator", },
+  { label: "Regulatory Affairs-Disinfectant Stock Record-Initiator", },
 ];
 
 const rolesArray2 = [
   // Quality Assurance
-  { label: "Quality Assurance-Differential Pressure Record-Reviewer", value: 61 },
-  { label: "Quality Assurance-Temperature & Relative Humidity Record-Reviewer", value: 62 },
-  { label: "Quality Assurance-Equipment Usage Record-Reviewer", value: 63 },
-  { label: "Quality Assurance-Area Cleaning Record-Reviewer", value: 64 },
-  { label: "Quality Assurance-DP Monitoring Across Filters-Reviewer", value: 65 },
-  { label: "Quality Assurance-Operation of Air Handling Unit-Reviewer", value: 66 },
-  { label: "Quality Assurance-Instrument Usage Record-Reviewer", value: 121 },
+  {
+    label: "Quality Assurance-Differential Pressure Record-Reviewer",
+      },
+  {
+    label: "Quality Assurance-Temperature & Relative Humidity Record-Reviewer",
+      },
+  { label: "Quality Assurance-Equipment Usage Record-Reviewer", },
+  { label: "Quality Assurance-Area Cleaning Record-Reviewer", },
+  {
+    label: "Quality Assurance-DP Monitoring Across Filters-Reviewer",
+      },
+  {
+    label: "Quality Assurance-Operation of Air Handling Unit-Reviewer",
+      },
+  { label: "Quality Assurance-Instrument Usage Record-Reviewer", },
 
   // Quality Control
-  { label: "Quality Control-Differential Pressure Record-Reviewer", value: 67 },
-  { label: "Quality Control-Temperature & Relative Humidity Record-Reviewer", value: 68 },
-  { label: "Quality Control-Equipment Usage Record-Reviewer", value: 69 },
-  { label: "Quality Control-Area Cleaning Record-Reviewer", value: 70 },
-  { label: "Quality Control-DP Monitoring Across Filters-Reviewer", value: 71 },
-  { label: "Quality Control-Operation of Air Handling Unit-Reviewer", value: 72 },
-  { label: "Quality Control-Instrument Usage Record-Reviewer", value: 122 },
+  { label: "Quality Control-Differential Pressure Record-Reviewer",} ,
+  {
+    label: "Quality Control-Temperature & Relative Humidity Record-Reviewer",
+      },
+  { label: "Quality Control-Equipment Usage Record-Reviewer", },
+  { label: "Quality Control-Area Cleaning Record-Reviewer", },
+  { label: "Quality Control-DP Monitoring Across Filters-Reviewer", },
+  {
+    label: "Quality Control-Operation of Air Handling Unit-Reviewer",
+      },
+  { label: "Quality Control-Instrument Usage Record-Reviewer", },
 
   // Production
-  { label: "Production-Differential Pressure Record-Reviewer", value: 73 },
-  { label: "Production-Temperature & Relative Humidity Record-Reviewer", value: 74 },
-  { label: "Production-Equipment Usage Record-Reviewer", value: 75 },
-  { label: "Production-Area Cleaning Record-Reviewer", value: 76 },
-  { label: "Production-DP Monitoring Across Filters-Reviewer", value: 77 },
-  { label: "Production-Operation of Air Handling Unit-Reviewer", value: 78 },
-  { label: "Production-Instrument Usage Record-Reviewer", value: 123 },
+  { label: "Production-Differential Pressure Record-Reviewer", },
+  {
+    label: "Production-Temperature & Relative Humidity Record-Reviewer",
+      },
+  { label: "Production-Equipment Usage Record-Reviewer", },
+  { label: "Production-Area Cleaning Record-Reviewer", },
+  { label: "Production-DP Monitoring Across Filters-Reviewer", },
+  { label: "Production-Operation of Air Handling Unit-Reviewer", },
+  { label: "Production-Instrument Usage Record-Reviewer", },
 
   // Warehouse
-  { label: "Warehouse-Differential Pressure Record-Reviewer", value: 79 },
-  { label: "Warehouse-Temperature & Relative Humidity Record-Reviewer", value: 80 },
-  { label: "Warehouse-Equipment Usage Record-Reviewer", value: 81 },
-  { label: "Warehouse-Area Cleaning Record-Reviewer", value: 82 },
-  { label: "Warehouse-DP Monitoring Across Filters-Reviewer", value: 83 },
-  { label: "Warehouse-Operation of Air Handling Unit-Reviewer", value: 84 },
-  { label: "Warehouse-Instrument Usage Record-Reviewer", value: 124 },
+  { label: "Warehouse-Differential Pressure Record-Reviewer", },
+  {
+    label: "Warehouse-Temperature & Relative Humidity Record-Reviewer",
+      },
+  { label: "Warehouse-Equipment Usage Record-Reviewer", },
+  { label: "Warehouse-Area Cleaning Record-Reviewer", },
+  { label: "Warehouse-DP Monitoring Across Filters-Reviewer", },
+  { label: "Warehouse-Operation of Air Handling Unit-Reviewer", },
+  { label: "Warehouse-Instrument Usage Record-Reviewer", },
 
   // Engineering
-  { label: "Engineering-Differential Pressure Record-Reviewer", value: 85 },
-  { label: "Engineering-Temperature & Relative Humidity Record-Reviewer", value: 86 },
-  { label: "Engineering-Equipment Usage Record-Reviewer", value: 87 },
-  { label: "Engineering-Area Cleaning Record-Reviewer", value: 88 },
-  { label: "Engineering-DP Monitoring Across Filters-Reviewer", value: 89 },
-  { label: "Engineering-Operation of Air Handling Unit-Reviewer", value: 90 },
-  { label: "Engineering-Instrument Usage Record-Reviewer", value: 125 },
+  { label: "Engineering-Differential Pressure Record-Reviewer", },
+  {
+    label: "Engineering-Temperature & Relative Humidity Record-Reviewer",
+      },
+  { label: "Engineering-Equipment Usage Record-Reviewer", },
+  { label: "Engineering-Area Cleaning Record-Reviewer", },
+  { label: "Engineering-DP Monitoring Across Filters-Reviewer", },
+  { label: "Engineering-Operation of Air Handling Unit-Reviewer", },
+  { label: "Engineering-Instrument Usage Record-Reviewer", },
 
   // Human Resources
-  { label: "Human Resources-Differential Pressure Record-Reviewer", value: 91 },
-  { label: "Human Resources-Temperature & Relative Humidity Record-Reviewer", value: 92 },
-  { label: "Human Resources-Equipment Usage Record-Reviewer", value: 93 },
-  { label: "Human Resources-Area Cleaning Record-Reviewer", value: 94 },
-  { label: "Human Resources-DP Monitoring Across Filters-Reviewer", value: 95 },
-  { label: "Human Resources-Operation of Air Handling Unit-Reviewer", value: 96 },
-  { label: "Human Resources-Instrument Usage Record-Reviewer", value: 126 },
+  { label: "Human Resources-Differential Pressure Record-Reviewer", },
+  {
+    label: "Human Resources-Temperature & Relative Humidity Record-Reviewer",
+      },
+  { label: "Human Resources-Equipment Usage Record-Reviewer", },
+  { label: "Human Resources-Area Cleaning Record-Reviewer", },
+  { label: "Human Resources-DP Monitoring Across Filters-Reviewer", },
+  {
+    label: "Human Resources-Operation of Air Handling Unit-Reviewer",
+      },
+  { label: "Human Resources-Instrument Usage Record-Reviewer", },
 
   // Information Technology
-  { label: "Information Technology-Differential Pressure Record-Reviewer", value: 97 },
-  { label: "Information Technology-Temperature & Relative Humidity Record-Reviewer", value: 98 },
-  { label: "Information Technology-Equipment Usage Record-Reviewer", value: 99 },
-  { label: "Information Technology-Area Cleaning Record-Reviewer", value: 100 },
-  { label: "Information Technology-DP Monitoring Across Filters-Reviewer", value: 101 },
-  { label: "Information Technology-Operation of Air Handling Unit-Reviewer", value: 102 },
-  { label: "Information Technology-Instrument Usage Record-Reviewer", value: 127 },
+  {
+    label: "Information Technology-Differential Pressure Record-Reviewer",
+      },
+  {
+    label:
+      "Information Technology-Temperature & Relative Humidity Record-Reviewer",
+      },
+  {
+    label: "Information Technology-Equipment Usage Record-Reviewer",
+      },
+  { label: "Information Technology-Area Cleaning Record-Reviewer", },
+  {
+    label: "Information Technology-DP Monitoring Across Filters-Reviewer",
+    
+  },
+  {
+    label: "Information Technology-Operation of Air Handling Unit-Reviewer",
+    
+  },
+  {
+    label: "Information Technology-Instrument Usage Record-Reviewer",
+    
+  },
 
   // Accounts
-  { label: "Accounts-Differential Pressure Record-Reviewer", value: 103 },
-  { label: "Accounts-Temperature & Relative Humidity Record-Reviewer", value: 104 },
-  { label: "Accounts-Equipment Usage Record-Reviewer", value: 105 },
-  { label: "Accounts-Area Cleaning Record-Reviewer", value: 106 },
-  { label: "Accounts-DP Monitoring Across Filters-Reviewer", value: 107 },
-  { label: "Accounts-Operation of Air Handling Unit-Reviewer", value: 108 },
-  { label: "Accounts-Instrument Usage Record-Reviewer", value: 128 },
+  { label: "Accounts-Differential Pressure Record-Reviewer", },
+  {
+    label: "Accounts-Temperature & Relative Humidity Record-Reviewer",
+    
+  },
+  { label: "Accounts-Equipment Usage Record-Reviewer", },
+  { label: "Accounts-Area Cleaning Record-Reviewer", },
+  { label: "Accounts-DP Monitoring Across Filters-Reviewer", },
+  { label: "Accounts-Operation of Air Handling Unit-Reviewer", },
+  { label: "Accounts-Instrument Usage Record-Reviewer", },
 
   // PPIC
-  { label: "Production Planning and Inventory Control-Differential Pressure Record-Reviewer", value: 109 },
-  { label: "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Reviewer", value: 110 },
-  { label: "Production Planning and Inventory Control-Equipment Usage Record-Reviewer", value: 111 },
-  { label: "Production Planning and Inventory Control-Area Cleaning Record-Reviewer", value: 112 },
-  { label: "Production Planning and Inventory Control-DP Monitoring Across Filters-Reviewer", value: 113 },
-  { label: "Production Planning and Inventory Control-Operation of Air Handling Unit-Reviewer", value: 114 },
-  { label: "Production Planning and Inventory Control-Instrument Usage Record-Reviewer", value: 129 },
+  {
+    label:
+      "Production Planning and Inventory Control-Differential Pressure Record-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Equipment Usage Record-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Area Cleaning Record-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-DP Monitoring Across Filters-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Operation of Air Handling Unit-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Instrument Usage Record-Reviewer",
+    
+  },
 
   // Regulatory Affairs
-  { label: "Regulatory Affairs-Differential Pressure Record-Reviewer", value: 115 },
-  { label: "Regulatory Affairs-Temperature & Relative Humidity Record-Reviewer", value: 116 },
-  { label: "Regulatory Affairs-Equipment Usage Record-Reviewer", value: 117 },
-  { label: "Regulatory Affairs-Area Cleaning Record-Reviewer", value: 118 },
-  { label: "Regulatory Affairs-DP Monitoring Across Filters-Reviewer", value: 119 },
-  { label: "Regulatory Affairs-Operation of Air Handling Unit-Reviewer", value: 120 },
-  { label: "Regulatory Affairs-Instrument Usage Record-Reviewer", value: 130 },
+  {
+    label: "Regulatory Affairs-Differential Pressure Record-Reviewer",
+    
+  },
+  {
+    label: "Regulatory Affairs-Temperature & Relative Humidity Record-Reviewer",
+    
+  },
+  { label: "Regulatory Affairs-Equipment Usage Record-Reviewer", },
+  { label: "Regulatory Affairs-Area Cleaning Record-Reviewer", },
+  {
+    label: "Regulatory Affairs-DP Monitoring Across Filters-Reviewer",
+    
+  },
+  {
+    label: "Regulatory Affairs-Operation of Air Handling Unit-Reviewer",
+    
+  },
+  { label: "Regulatory Affairs-Instrument Usage Record-Reviewer", },
+  { label: "Regulatory Affairs-Disinfectant Stock Record-Reviewer", },
 ];
 
 const rolesArray3 = [
   // Quality Assurance
-  { label: "Quality Assurance-Differential Pressure Record-Approver", value: 121 },
-  { label: "Quality Assurance-Temperature & Relative Humidity Record-Approver", value: 122 },
-  { label: "Quality Assurance-Equipment Usage Record-Approver", value: 123 },
-  { label: "Quality Assurance-Area Cleaning Record-Approver", value: 124 },
-  { label: "Quality Assurance-DP Monitoring Across Filters-Approver", value: 125 },
-  { label: "Quality Assurance-Operation of Air Handling Unit-Approver", value: 126 },
-  { label: "Quality Assurance-Instrument Usage Record-Approver", value: 241 },
+  {
+    label: "Quality Assurance-Differential Pressure Record-Approver",
+    
+  },
+  {
+    label: "Quality Assurance-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Quality Assurance-Equipment Usage Record-Approver", },
+  { label: "Quality Assurance-Area Cleaning Record-Approver", },
+  {
+    label: "Quality Assurance-DP Monitoring Across Filters-Approver",
+    
+  },
+  {
+    label: "Quality Assurance-Operation of Air Handling Unit-Approver",
+    
+  },
+  { label: "Quality Assurance-Instrument Usage Record-Approver", },
 
   // Quality Control
-  { label: "Quality Control-Differential Pressure Record-Approver", value: 127 },
-  { label: "Quality Control-Temperature & Relative Humidity Record-Approver", value: 128 },
-  { label: "Quality Control-Equipment Usage Record-Approver", value: 129 },
-  { label: "Quality Control-Area Cleaning Record-Approver", value: 130 },
-  { label: "Quality Control-DP Monitoring Across Filters-Approver", value: 131 },
-  { label: "Quality Control-Operation of Air Handling Unit-Approver", value: 132 },
-  { label: "Quality Control-Instrument Usage Record-Approver", value: 242 },
+  {
+    label: "Quality Control-Differential Pressure Record-Approver",
+    
+  },
+  {
+    label: "Quality Control-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Quality Control-Equipment Usage Record-Approver", },
+  { label: "Quality Control-Area Cleaning Record-Approver", },
+  {
+    label: "Quality Control-DP Monitoring Across Filters-Approver",
+    
+  },
+  {
+    label: "Quality Control-Operation of Air Handling Unit-Approver",
+    
+  },
+  { label: "Quality Control-Instrument Usage Record-Approver", },
 
   // Production
-  { label: "Production-Differential Pressure Record-Approver", value: 133 },
-  { label: "Production-Temperature & Relative Humidity Record-Approver", value: 134 },
-  { label: "Production-Equipment Usage Record-Approver", value: 135 },
-  { label: "Production-Area Cleaning Record-Approver", value: 136 },
-  { label: "Production-DP Monitoring Across Filters-Approver", value: 137 },
-  { label: "Production-Operation of Air Handling Unit-Approver", value: 138 },
-  { label: "Production-Instrument Usage Record-Approver", value: 243 },
+  { label: "Production-Differential Pressure Record-Approver", },
+  {
+    label: "Production-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Production-Equipment Usage Record-Approver", },
+  { label: "Production-Area Cleaning Record-Approver", },
+  { label: "Production-DP Monitoring Across Filters-Approver", },
+  { label: "Production-Operation of Air Handling Unit-Approver", },
+  { label: "Production-Instrument Usage Record-Approver", },
 
   // Warehouse
-  { label: "Warehouse-Differential Pressure Record-Approver", value: 139 },
-  { label: "Warehouse-Temperature & Relative Humidity Record-Approver", value: 140 },
-  { label: "Warehouse-Equipment Usage Record-Approver", value: 141 },
-  { label: "Warehouse-Area Cleaning Record-Approver", value: 142 },
-  { label: "Warehouse-DP Monitoring Across Filters-Approver", value: 143 },
-  { label: "Warehouse-Operation of Air Handling Unit-Approver", value: 144 },
-  { label: "Warehouse-Instrument Usage Record-Approver", value: 244 },
+  { label: "Warehouse-Differential Pressure Record-Approver", },
+  {
+    label: "Warehouse-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Warehouse-Equipment Usage Record-Approver", },
+  { label: "Warehouse-Area Cleaning Record-Approver", },
+  { label: "Warehouse-DP Monitoring Across Filters-Approver", },
+  { label: "Warehouse-Operation of Air Handling Unit-Approver", },
+  { label: "Warehouse-Instrument Usage Record-Approver", },
 
   // Engineering
-  { label: "Engineering-Differential Pressure Record-Approver", value: 145 },
-  { label: "Engineering-Temperature & Relative Humidity Record-Approver", value: 146 },
-  { label: "Engineering-Equipment Usage Record-Approver", value: 147 },
-  { label: "Engineering-Area Cleaning Record-Approver", value: 148 },
-  { label: "Engineering-DP Monitoring Across Filters-Approver", value: 149 },
-  { label: "Engineering-Operation of Air Handling Unit-Approver", value: 150 },
-  { label: "Engineering-Instrument Usage Record-Approver", value: 245 },
+  { label: "Engineering-Differential Pressure Record-Approver", },
+  {
+    label: "Engineering-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Engineering-Equipment Usage Record-Approver", },
+  { label: "Engineering-Area Cleaning Record-Approver", },
+  { label: "Engineering-DP Monitoring Across Filters-Approver", },
+  { label: "Engineering-Operation of Air Handling Unit-Approver", },
+  { label: "Engineering-Instrument Usage Record-Approver", },
 
   // Human Resources
-  { label: "Human Resources-Differential Pressure Record-Approver", value: 151 },
-  { label: "Human Resources-Temperature & Relative Humidity Record-Approver", value: 152 },
-  { label: "Human Resources-Equipment Usage Record-Approver", value: 153 },
-  { label: "Human Resources-Area Cleaning Record-Approver", value: 154 },
-  { label: "Human Resources-DP Monitoring Across Filters-Approver", value: 155 },
-  { label: "Human Resources-Operation of Air Handling Unit-Approver", value: 156 },
-  { label: "Human Resources-Instrument Usage Record-Approver", value: 246 },
+  {
+    label: "Human Resources-Differential Pressure Record-Approver",
+    
+  },
+  {
+    label: "Human Resources-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Human Resources-Equipment Usage Record-Approver", },
+  { label: "Human Resources-Area Cleaning Record-Approver", },
+  {
+    label: "Human Resources-DP Monitoring Across Filters-Approver",
+    
+  },
+  {
+    label: "Human Resources-Operation of Air Handling Unit-Approver",
+    
+  },
+  { label: "Human Resources-Instrument Usage Record-Approver", },
 
   // Information Technology
-  { label: "Information Technology-Differential Pressure Record-Approver", value: 157 },
-  { label: "Information Technology-Temperature & Relative Humidity Record-Approver", value: 158 },
-  { label: "Information Technology-Equipment Usage Record-Approver", value: 159 },
-  { label: "Information Technology-Area Cleaning Record-Approver", value: 160 },
-  { label: "Information Technology-DP Monitoring Across Filters-Approver", value: 161 },
-  { label: "Information Technology-Operation of Air Handling Unit-Approver", value: 162 },
-  { label: "Information Technology-Instrument Usage Record-Approver", value: 247 },
+  {
+    label: "Information Technology-Differential Pressure Record-Approver",
+    
+  },
+  {
+    label:
+      "Information Technology-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  {
+    label: "Information Technology-Equipment Usage Record-Approver",
+    
+  },
+  { label: "Information Technology-Area Cleaning Record-Approver", },
+  {
+    label: "Information Technology-DP Monitoring Across Filters-Approver",
+    
+  },
+  {
+    label: "Information Technology-Operation of Air Handling Unit-Approver",
+    
+  },
+  {
+    label: "Information Technology-Instrument Usage Record-Approver",
+    
+  },
 
   // Accounts
-  { label: "Accounts-Differential Pressure Record-Approver", value: 163 },
-  { label: "Accounts-Temperature & Relative Humidity Record-Approver", value: 164 },
-  { label: "Accounts-Equipment Usage Record-Approver", value: 165 },
-  { label: "Accounts-Area Cleaning Record-Approver", value: 166 },
-  { label: "Accounts-DP Monitoring Across Filters-Approver", value: 167 },
-  { label: "Accounts-Operation of Air Handling Unit-Approver", value: 168 },
-  { label: "Accounts-Instrument Usage Record-Approver", value: 248 },
+  { label: "Accounts-Differential Pressure Record-Approver", },
+  {
+    label: "Accounts-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Accounts-Equipment Usage Record-Approver", },
+  { label: "Accounts-Area Cleaning Record-Approver", },
+  { label: "Accounts-DP Monitoring Across Filters-Approver", },
+  { label: "Accounts-Operation of Air Handling Unit-Approver", },
+  { label: "Accounts-Instrument Usage Record-Approver", },
 
   // PPIC
-  { label: "Production Planning and Inventory Control-Differential Pressure Record-Approver", value: 169 },
-  { label: "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Approver", value: 170 },
-  { label: "Production Planning and Inventory Control-Equipment Usage Record-Approver", value: 171 },
-  { label: "Production Planning and Inventory Control-Area Cleaning Record-Approver", value: 172 },
-  { label: "Production Planning and Inventory Control-DP Monitoring Across Filters-Approver", value: 173 },
-  { label: "Production Planning and Inventory Control-Operation of Air Handling Unit-Approver", value: 174 },
-  { label: "Production Planning and Inventory Control-Instrument Usage Record-Approver", value: 249 },
+  {
+    label:
+      "Production Planning and Inventory Control-Differential Pressure Record-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Equipment Usage Record-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Area Cleaning Record-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-DP Monitoring Across Filters-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Operation of Air Handling Unit-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Instrument Usage Record-Approver",
+    
+  },
 
   // Regulatory Affairs
-  { label: "Regulatory Affairs-Differential Pressure Record-Approver", value: 175 },
-  { label: "Regulatory Affairs-Temperature & Relative Humidity Record-Approver", value: 176 },
-  { label: "Regulatory Affairs-Equipment Usage Record-Approver", value: 177 },
-  { label: "Regulatory Affairs-Area Cleaning Record-Approver", value: 178 },
-  { label: "Regulatory Affairs-DP Monitoring Across Filters-Approver", value: 179 },
-  { label: "Regulatory Affairs-Operation of Air Handling Unit-Approver", value: 180 },
-  { label: "Regulatory Affairs-Instrument Usage Record-Approver", value: 250 },
+  {
+    label: "Regulatory Affairs-Differential Pressure Record-Approver",
+    
+  },
+  {
+    label: "Regulatory Affairs-Temperature & Relative Humidity Record-Approver",
+    
+  },
+  { label: "Regulatory Affairs-Equipment Usage Record-Approver", },
+  { label: "Regulatory Affairs-Area Cleaning Record-Approver", },
+  {
+    label: "Regulatory Affairs-DP Monitoring Across Filters-Approver",
+    
+  },
+  {
+    label: "Regulatory Affairs-Operation of Air Handling Unit-Approver",
+    
+  },
+  { label: "Regulatory Affairs-Instrument Usage Record-Approver", },
 ];
+
 const rolesArray4 = [
   // Quality Assurance
-  { label: "Quality Assurance-Differential Pressure Record-Fullpermission", value: 181 },
-  { label: "Quality Assurance-Temperature & Relative Humidity Record-Fullpermission", value: 182 },
-  { label: "Quality Assurance-Equipment Usage Record-Fullpermission", value: 183 },
-  { label: "Quality Assurance-Area Cleaning Record-Fullpermission", value: 184 },
-  { label: "Quality Assurance-DP Monitoring Across Filters-Fullpermission", value: 185 },
-  { label: "Quality Assurance-Operation of Air Handling Unit-Fullpermission", value: 186 },
-  { label: "Quality Assurance-Instrument Usage Record-Fullpermission", value: 251 },
+  {
+    label: "Quality Assurance-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Quality Assurance-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-Equipment Usage Record-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-Area Cleaning Record-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-Instrument Usage Record-Fullpermission",
+    
+  },
 
   // Quality Control
-  { label: "Quality Control-Differential Pressure Record-Fullpermission", value: 187 },
-  { label: "Quality Control-Temperature & Relative Humidity Record-Fullpermission", value: 188 },
-  { label: "Quality Control-Equipment Usage Record-Fullpermission", value: 189 },
-  { label: "Quality Control-Area Cleaning Record-Fullpermission", value: 190 },
-  { label: "Quality Control-DP Monitoring Across Filters-Fullpermission", value: 191 },
-  { label: "Quality Control-Operation of Air Handling Unit-Fullpermission", value: 192 },
-  { label: "Quality Control-Instrument Usage Record-Fullpermission", value: 252 },
+  {
+    label: "Quality Control-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Quality Control-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  {
+    label: "Quality Control-Equipment Usage Record-Fullpermission",
+    
+  },
+  { label: "Quality Control-Area Cleaning Record-Fullpermission", },
+  {
+    label: "Quality Control-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Quality Control-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  {
+    label: "Quality Control-Instrument Usage Record-Fullpermission",
+    
+  },
 
   // Production
-  { label: "Production-Differential Pressure Record-Fullpermission", value: 193 },
-  { label: "Production-Temperature & Relative Humidity Record-Fullpermission", value: 194 },
-  { label: "Production-Equipment Usage Record-Fullpermission", value: 195 },
-  { label: "Production-Area Cleaning Record-Fullpermission", value: 196 },
-  { label: "Production-DP Monitoring Across Filters-Fullpermission", value: 197 },
-  { label: "Production-Operation of Air Handling Unit-Fullpermission", value: 198 },
-  { label: "Production-Instrument Usage Record-Fullpermission", value: 253 },
+  {
+    label: "Production-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label: "Production-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  { label: "Production-Equipment Usage Record-Fullpermission", },
+  { label: "Production-Area Cleaning Record-Fullpermission", },
+  {
+    label: "Production-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Production-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  { label: "Production-Instrument Usage Record-Fullpermission", },
 
   // Warehouse
-  { label: "Warehouse-Differential Pressure Record-Fullpermission", value: 199 },
-  { label: "Warehouse-Temperature & Relative Humidity Record-Fullpermission", value: 200 },
-  { label: "Warehouse-Equipment Usage Record-Fullpermission", value: 201 },
-  { label: "Warehouse-Area Cleaning Record-Fullpermission", value: 202 },
-  { label: "Warehouse-DP Monitoring Across Filters-Fullpermission", value: 203 },
-  { label: "Warehouse-Operation of Air Handling Unit-Fullpermission", value: 204 },
-  { label: "Warehouse-Instrument Usage Record-Fullpermission", value: 254 },
+  {
+    label: "Warehouse-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label: "Warehouse-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  { label: "Warehouse-Equipment Usage Record-Fullpermission", },
+  { label: "Warehouse-Area Cleaning Record-Fullpermission", },
+  {
+    label: "Warehouse-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Warehouse-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  { label: "Warehouse-Instrument Usage Record-Fullpermission", },
 
   // Engineering
-  { label: "Engineering-Differential Pressure Record-Fullpermission", value: 205 },
-  { label: "Engineering-Temperature & Relative Humidity Record-Fullpermission", value: 206 },
-  { label: "Engineering-Equipment Usage Record-Fullpermission", value: 207 },
-  { label: "Engineering-Area Cleaning Record-Fullpermission", value: 208 },
-  { label: "Engineering-DP Monitoring Across Filters-Fullpermission", value: 209 },
-  { label: "Engineering-Operation of Air Handling Unit-Fullpermission", value: 210 },
-  { label: "Engineering-Instrument Usage Record-Fullpermission", value: 255 },
+  {
+    label: "Engineering-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label: "Engineering-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  { label: "Engineering-Equipment Usage Record-Fullpermission", },
+  { label: "Engineering-Area Cleaning Record-Fullpermission", },
+  {
+    label: "Engineering-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Engineering-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  { label: "Engineering-Instrument Usage Record-Fullpermission", },
 
   // Human Resources
-  { label: "Human Resources-Differential Pressure Record-Fullpermission", value: 211 },
-  { label: "Human Resources-Temperature & Relative Humidity Record-Fullpermission", value: 212 },
-  { label: "Human Resources-Equipment Usage Record-Fullpermission", value: 213 },
-  { label: "Human Resources-Area Cleaning Record-Fullpermission", value: 214 },
-  { label: "Human Resources-DP Monitoring Across Filters-Fullpermission", value: 215 },
-  { label: "Human Resources-Operation of Air Handling Unit-Fullpermission", value: 216 },
-  { label: "Human Resources-Instrument Usage Record-Fullpermission", value: 256 },
+  {
+    label: "Human Resources-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Human Resources-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  {
+    label: "Human Resources-Equipment Usage Record-Fullpermission",
+    
+  },
+  { label: "Human Resources-Area Cleaning Record-Fullpermission", },
+  {
+    label: "Human Resources-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Human Resources-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  {
+    label: "Human Resources-Instrument Usage Record-Fullpermission",
+    
+  },
 
   // Information Technology
-  { label: "Information Technology-Differential Pressure Record-Fullpermission", value: 217 },
-  { label: "Information Technology-Temperature & Relative Humidity Record-Fullpermission", value: 218 },
-  { label: "Information Technology-Equipment Usage Record-Fullpermission", value: 219 },
-  { label: "Information Technology-Area Cleaning Record-Fullpermission", value: 220 },
-  { label: "Information Technology-DP Monitoring Across Filters-Fullpermission", value: 221 },
-  { label: "Information Technology-Operation of Air Handling Unit-Fullpermission", value: 222 },
-  { label: "Information Technology-Instrument Usage Record-Fullpermission", value: 257 },
+  {
+    label: "Information Technology-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Information Technology-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  {
+    label: "Information Technology-Equipment Usage Record-Fullpermission",
+    
+  },
+  {
+    label: "Information Technology-Area Cleaning Record-Fullpermission",
+    
+  },
+  {
+    label: "Information Technology-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label:
+      "Information Technology-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  {
+    label: "Information Technology-Instrument Usage Record-Fullpermission",
+    
+  },
 
   // Accounts
-  { label: "Accounts-Differential Pressure Record-Fullpermission", value: 223 },
-  { label: "Accounts-Temperature & Relative Humidity Record-Fullpermission", value: 224 },
-  { label: "Accounts-Equipment Usage Record-Fullpermission", value: 225 },
-  { label: "Accounts-Area Cleaning Record-Fullpermission", value: 226 },
-  { label: "Accounts-DP Monitoring Across Filters-Fullpermission", value: 227 },
-  { label: "Accounts-Operation of Air Handling Unit-Fullpermission", value: 228 },
-  { label: "Accounts-Instrument Usage Record-Fullpermission", value: 258 },
+  { label: "Accounts-Differential Pressure Record-Fullpermission", },
+  {
+    label: "Accounts-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  { label: "Accounts-Equipment Usage Record-Fullpermission", },
+  { label: "Accounts-Area Cleaning Record-Fullpermission", },
+  { label: "Accounts-DP Monitoring Across Filters-Fullpermission", },
+  {
+    label: "Accounts-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  { label: "Accounts-Instrument Usage Record-Fullpermission", },
 
   // PPIC
-  { label: "Production Planning and Inventory Control-Differential Pressure Record-Fullpermission", value: 229 },
-  { label: "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Fullpermission", value: 230 },
-  { label: "Production Planning and Inventory Control-Equipment Usage Record-Fullpermission", value: 231 },
-  { label: "Production Planning and Inventory Control-Area Cleaning Record-Fullpermission", value: 232 },
-  { label: "Production Planning and Inventory Control-DP Monitoring Across Filters-Fullpermission", value: 233 },
-  { label: "Production Planning and Inventory Control-Operation of Air Handling Unit-Fullpermission", value: 234 },
-  { label: "Production Planning and Inventory Control-Instrument Usage Record-Fullpermission", value: 259 },
+  {
+    label:
+      "Production Planning and Inventory Control-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Equipment Usage Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Area Cleaning Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Instrument Usage Record-Fullpermission",
+    
+  },
 
   // Regulatory Affairs
-  { label: "Regulatory Affairs-Differential Pressure Record-Fullpermission", value: 235 },
-  { label: "Regulatory Affairs-Temperature & Relative Humidity Record-Fullpermission", value: 236 },
-  { label: "Regulatory Affairs-Equipment Usage Record-Fullpermission", value: 237 },
-  { label: "Regulatory Affairs-Area Cleaning Record-Fullpermission", value: 238 },
-  { label: "Regulatory Affairs-DP Monitoring Across Filters-Fullpermission", value: 239 },
-  { label: "Regulatory Affairs-Operation of Air Handling Unit-Fullpermission", value: 240 },
-  { label: "Regulatory Affairs-Instrument Usage Record-Fullpermission", value: 260 },
+  {
+    label: "Regulatory Affairs-Differential Pressure Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Regulatory Affairs-Temperature & Relative Humidity Record-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-Equipment Usage Record-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-Area Cleaning Record-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-DP Monitoring Across Filters-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-Operation of Air Handling Unit-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-Instrument Usage Record-Fullpermission",
+    
+  },
 ];
 
+const processInitiatorRoles = async (rolesArray, user) => {
+  if (!user) return;
 
-    const processInitiatorRoles = async (rolesArray, initiatorUser) => {
-    try {
-      await sequelize.transaction(async (transaction) => {
-        for (const role of rolesArray) {
-          // Split label into components
-          const [departmentLabel, processLabel, roleName] = role.label.split("-");
+  await sequelize.transaction(async (transaction) => {
+    console.log(`Assigning roles to ${user.email}`);
 
-          // Fetch department, process, and role details
-          const department = await Department.findOne({
-            where: { departmentName: departmentLabel },
-            transaction,
-          });
-          const process = await Process.findOne({
-            where: { process: processLabel },
-            transaction,
-          });
-          const roleEntity = await Role.findOne({
-            where: { role: roleName },
-            transaction,
-          });
+    // 🔹 Preload masters once
+    const departments = await Department.findAll({ transaction });
+    const processes = await Process.findAll({ transaction });
+    const roles = await Role.findAll({ transaction });
+    const roleGroups = await RoleGroup.findAll({ transaction });
 
-          if (!department || !process || !roleEntity) {
-            throw new Error(`Invalid role configuration: ${role.label}`);
-          }
+    const deptMap = Object.fromEntries(
+      departments.map((d) => [d.departmentName, d]),
+    );
+    const processMap = Object.fromEntries(processes.map((p) => [p.process, p]));
+    const roleMap = Object.fromEntries(roles.map((r) => [r.role, r]));
+    const roleGroupMap = Object.fromEntries(
+      roleGroups.map((rg) => [rg.roleGroup, rg]),
+    );
 
-          // Create UserRole
-          await UserRole.create(
-            {
-              user_id: initiatorUser.user_id,
-              department_id: department.department_id,
-              process_id: process.process_id,
-              role_id: roleEntity.role_id,
-              roleGroup_id: role.value, // Assuming value corresponds to roleGroup_id
-            },
-            { transaction }
-          );
-        }
-      });
-    } catch (error) {
-      console.error("Error processing roles:", error.message);
-      throw error;
-    }
-  };
-  const assignInitiatorRoles = async () => {
-    try {
-      const initiatorUser = await User.findOne({
-        where: { email: "initiator@vidyagxp.com" },
-      });
-      const reviewerUser = await User.findOne({
-        where: { email: "reviewer@vidyagxp.com" },
-      });
-      const approverUser = await User.findOne({
-        where: { email: "approver@vidyagxp.com" },
-      });
-      const fullPermissionUser = await User.findOne({
-        where: { email: "fullpermission@vidyagxp.com" },
-      });
+    for (const item of rolesArray) {
+      // ✅ Safe split (first and last only)
+      const firstDash = item.label.indexOf("-");
+      const lastDash = item.label.lastIndexOf("-");
 
-      if (!initiatorUser) {
-        throw new Error("Initiator user not found");
+      const departmentLabel = item.label.substring(0, firstDash);
+      const processLabel = item.label.substring(firstDash + 1, lastDash);
+      const roleName = item.label.substring(lastDash + 1);
+
+      const department = deptMap[departmentLabel];
+      const process = processMap[processLabel];
+      const roleEntity = roleMap[roleName];
+      const roleGroup = roleGroupMap[item.label];
+
+      if (!department || !process || !roleEntity || !roleGroup) {
+        console.error(`❌ Invalid mapping for: ${item.label}`);
+        continue; // skip bad ones, don’t kill whole transaction
       }
 
-      await processInitiatorRoles(rolesArray1, initiatorUser);
-      await processInitiatorRoles(rolesArray2, reviewerUser);
-      await processInitiatorRoles(rolesArray3, approverUser);
-      await processInitiatorRoles(rolesArray4, fullPermissionUser);
-      
-      console.log("Roles assigned successfully.");
-    } catch (error) {
-      console.error("Error assigning roles:", error.message);
+      await UserRole.findOrCreate({
+        where: {
+          user_id: user.user_id,
+          roleGroup_id: roleGroup.roleGroup_id,
+        },
+        defaults: {
+          user_id: user.user_id,
+          department_id: department.department_id,
+          process_id: process.process_id,
+          role_id: roleEntity.role_id,
+          roleGroup_id: roleGroup.roleGroup_id,
+        },
+        transaction,
+      });
     }
-    
-  };
+  });
+};
+
+const assignInitiatorRoles = async () => {
+  try {
+    const initiatorUser = await User.findOne({
+      where: { email: "initiator@vidyagxp.com" },
+    });
+    const reviewerUser = await User.findOne({
+      where: { email: "reviewer@vidyagxp.com" },
+    });
+    const approverUser = await User.findOne({
+      where: { email: "approver@vidyagxp.com" },
+    });
+    const fullPermissionUser = await User.findOne({
+      where: { email: "fullpermission@vidyagxp.com" },
+    });
+
+    if (
+      !initiatorUser ||
+      !reviewerUser ||
+      !approverUser ||
+      !fullPermissionUser
+    ) {
+      throw new Error("One or more system users not found");
+    }
+
+    await processInitiatorRoles(rolesArray1, initiatorUser);
+    await processInitiatorRoles(rolesArray2, reviewerUser);
+    await processInitiatorRoles(rolesArray3, approverUser);
+    await processInitiatorRoles(rolesArray4, fullPermissionUser);
+
+    console.log("Roles assigned successfully.");
+  } catch (error) {
+    console.error("Error assigning roles:", error.message);
+  }
+};
 
 const userRolesSync = async () => {
   try {
@@ -464,5 +921,4 @@ const userRolesSync = async () => {
   }
 };
 
-
-   module.exports = userRolesSync;
+module.exports = userRolesSync;
