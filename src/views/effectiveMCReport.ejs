@@ -227,17 +227,17 @@
 <table>
   <thead>
     <tr>
-      <th rowspan="2" >S.No</th>
-      <th rowspan="2" >Unique ID</th>
-      <th rowspan="2" >Date of Use</th>
-      <th rowspan="2" >Container No.</th>
-      <th colspan="2">Media Quantity (g)</th>
-      <th colspan="2">Media Quantity withdrawn (g)</th>
-      <th rowspan="2">Media Balance Quantity (g)</th>
-      <th rowspan="2">Autoclave Media Lot No.</th>
-      <th rowspan="2" >Done by</th>
-      <th rowspan="2" >Checked By</th>
-      <th rowspan="2" >Remarks</th>
+      <th >S.No</th>
+      <th >Unique ID</th>
+      <th >Date of Use</th>
+      <th >Container No.</th>
+      <th >Media Quantity (g)</th>
+      <th >Media Quantity withdrawn (g)</th>
+      <th >Media Balance Quantity (g)</th>
+      <th >Autoclave Media Lot No.</th>
+      <th >Done by</th>
+      <th >Checked By</th>
+      <th >Remarks</th>
     </tr>
     <tr>
 
@@ -267,88 +267,6 @@
 <% } %>
 
 
-    <!-- <% if (reportData.mediaConsumptionRecords && reportData.mediaConsumptionRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Unique ID</th>
-            <th>Date</th>
-            <th>Product Name</th>
-            <th>Batch No</th>
-            <th>Test Name</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.mediaConsumptionRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.unique_id || "Not Applicable" %>
-              </td>
-              <td>
-                <%= formatDateOnly(record?.date) || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.productName || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.batchNo || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.testname || "Not Applicable" %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-    <% if (reportData.mediaConsumptionRecords && reportData.mediaConsumptionRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Analyzed By</th>
-            <th>Checked By</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.mediaConsumptionRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.startTime || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.endTime || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.analyzed_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.remarks || "Not Applicable" %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <% } %> -->
 
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>

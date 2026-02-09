@@ -46,9 +46,6 @@ const mediaConsumptionRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    area: {
-      type: DataTypes.STRING,
-    },
     done_by: {
         type: DataTypes.STRING,
     },
