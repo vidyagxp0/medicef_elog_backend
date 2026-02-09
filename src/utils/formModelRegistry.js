@@ -35,6 +35,9 @@ const areaFoggingAuditTrail = require("../models/areaFoggingAuditTrail");
 const filterCleaningForm = require("../models/filterCleaningForm");
 const filterCleaningAuditTrail = require("../models/filterCleaningAuditTrail");
 const filterCleaningRecord = require("../models/filterCleaningRecord");
+const mediaConsumptionForm = require("../models/mediaConsumptionForm");
+const mediaConsumptionAuditTrail = require("../models/mediaConsumptionAuditTrail");
+const mediaConsumptionRecord = require("../models/mediaConsumptionRecord");
 
 module.exports = {
   1: {
@@ -95,6 +98,12 @@ module.exports = {
     form: filterCleaningForm,
     record: filterCleaningRecord,
     audit: filterCleaningAuditTrail,
+    approverAlias: "approver",
+  },
+  11: {
+    form: mediaConsumptionForm,
+    record: mediaConsumptionRecord,
+    audit: mediaConsumptionAuditTrail,
     approverAlias: "approver",
   },
 };
