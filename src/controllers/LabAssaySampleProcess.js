@@ -41,8 +41,8 @@ const parseIfString = (value, fallback = null) => {
   return value;
 };
 
-// Fill Disinfectant Stock form and insert its records.
-exports.InsertDisinfectantStock = async (req, res) => {
+// Fill Lab Assay Sample form and insert its records.
+exports.InsertLabAssaySample = async (req, res) => {
   const {
     department_id,
     process_id,
@@ -223,18 +223,21 @@ exports.InsertDisinfectantStock = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
-        date_of_receiving: record?.date_of_receiving,
-        quantity_received: record?.quantity_received,
+        date: record?.date,
+        product_name: record?.product_name,
         batch_no: record?.batch_no,
         mfg_date: record?.mfg_date,
         exp_date: record?.exp_date,
-        received_by: record?.received_by,
-        issue_quantity: record?.issue_quantity,
-        balance_quantity: record?.balance_quantity,
-        issued_by: record?.issued_by,
-        remarks: record?.remarks,
+        ar_no: record?.ar_no,
+        analyzed_by: record?.analyzed_by,
+        average_cfu: record?.average_cfu,
+        no_of_spores: record?.no_of_spores,
+        percentage_of_spores: record?.percentage_of_spores,
+        date_of_observation: record?.date_of_observation,
+        observed_by: record?.observed_by,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
       }));
 
       formRecords.forEach((record, index) => {
@@ -308,7 +311,7 @@ exports.InsertDisinfectantStock = async (req, res) => {
   }
 };
 
-exports.EditDisinfectantStock = async (req, res) => {
+exports.EditLabAssaySample = async (req, res) => {
   const {
     department_id,
     description,
@@ -564,18 +567,21 @@ exports.EditDisinfectantStock = async (req, res) => {
           await disinfectantStockRecord.update(
             {
               unique_id: record?.unique_id,
-              date_of_receiving: record?.date_of_receiving,
-              quantity_received: record?.quantity_received,
+              date: record?.date,
+              product_name: record?.product_name,
               batch_no: record?.batch_no,
               mfg_date: record?.mfg_date,
               exp_date: record?.exp_date,
-              received_by: record?.received_by,
-              issue_quantity: record?.issue_quantity,
-              balance_quantity: record?.balance_quantity,
-              issued_by: record?.issued_by,
-              remarks: record?.remarks,
+              ar_no: record?.ar_no,
+              analyzed_by: record?.analyzed_by,
+              average_cfu: record?.average_cfu,
+              no_of_spores: record?.no_of_spores,
+              percentage_of_spores: record?.percentage_of_spores,
+              date_of_observation: record?.date_of_observation,
+              observed_by: record?.observed_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
             },
             {
               where: {
@@ -591,18 +597,21 @@ exports.EditDisinfectantStock = async (req, res) => {
             {
               form_id: form_id,
               unique_id: record?.unique_id,
-              date_of_receiving: record?.date_of_receiving,
-              quantity_received: record?.quantity_received,
+              date: record?.date,
+              product_name: record?.product_name,
               batch_no: record?.batch_no,
               mfg_date: record?.mfg_date,
               exp_date: record?.exp_date,
-              received_by: record?.received_by,
-              issue_quantity: record?.issue_quantity,
-              balance_quantity: record?.balance_quantity,
-              issued_by: record?.issued_by,
-              remarks: record?.remarks,
+              ar_no: record?.ar_no,
+              analyzed_by: record?.analyzed_by,
+              average_cfu: record?.average_cfu,
+              no_of_spores: record?.no_of_spores,
+              percentage_of_spores: record?.percentage_of_spores,
+              date_of_observation: record?.date_of_observation,
+              observed_by: record?.observed_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
             },
             { transaction },
           );

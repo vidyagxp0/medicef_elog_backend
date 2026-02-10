@@ -41,8 +41,8 @@ const parseIfString = (value, fallback = null) => {
   return value;
 };
 
-// Fill Disinfectant Stock form and insert its records.
-exports.InsertDisinfectantStock = async (req, res) => {
+// Fill Lab Assay Sample form and insert its records.
+exports.InsertMicrobialLimit = async (req, res) => {
   const {
     department_id,
     process_id,
@@ -92,12 +92,10 @@ exports.InsertDisinfectantStock = async (req, res) => {
   }
 
   if (!esignInput || !password) {
-    return res
-      .status(400)
-      .json({
-        error: true,
-        message: "Please provide email or username and password.",
-      });
+    return res.status(400).json({
+      error: true,
+      message: "Please provide email or username and password.",
+    });
   }
 
   // Start a transaction
@@ -223,18 +221,34 @@ exports.InsertDisinfectantStock = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
-        date_of_receiving: record?.date_of_receiving,
-        quantity_received: record?.quantity_received,
+        date: record?.date,
+        product_name: record?.product_name,
         batch_no: record?.batch_no,
         mfg_date: record?.mfg_date,
         exp_date: record?.exp_date,
-        received_by: record?.received_by,
-        issue_quantity: record?.issue_quantity,
-        balance_quantity: record?.balance_quantity,
-        issued_by: record?.issued_by,
-        remarks: record?.remarks,
+        ar_no: record?.ar_no,
+        analysis_date: record?.analysis_date,
+        analyzed_by: record?.analyzed_by,
+        results_of_tbc: record?.results_of_tbc,
+        results_of_tfc: record?.results_of_tfc,
+        no_of_spores: record?.no_of_spores,
+        percentage_of_spores: record?.percentage_of_spores,
+        date_of_observation: record?.date_of_observation,
+        observed1_by: record?.observed1_by,
+        observed2_by: record?.observed2_by,
+        e_coil: record?.e_coil,
+        salmonella: record?.salmonella,
+        p_aeruginosa: record?.p_aeruginosa,
+        s_aureus: record?.s_aureus,
+        shigellaboydii: record?.shigellaboydii,
+        c_albicans: record?.c_albicans,
+        clostridia: record?.clostridia,
+        bile_tolerant: record?.bile_tolerant,
+        date_of_release: record?.date_of_release,
+        done_by: record?.done_by,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
       }));
 
       formRecords.forEach((record, index) => {
@@ -308,7 +322,7 @@ exports.InsertDisinfectantStock = async (req, res) => {
   }
 };
 
-exports.EditDisinfectantStock = async (req, res) => {
+exports.EditMicrobialLimit = async (req, res) => {
   const {
     department_id,
     description,
@@ -564,18 +578,36 @@ exports.EditDisinfectantStock = async (req, res) => {
           await disinfectantStockRecord.update(
             {
               unique_id: record?.unique_id,
-              date_of_receiving: record?.date_of_receiving,
-              quantity_received: record?.quantity_received,
+              date: record?.date,
+              product_name: record?.product_name,
               batch_no: record?.batch_no,
               mfg_date: record?.mfg_date,
               exp_date: record?.exp_date,
-              received_by: record?.received_by,
-              issue_quantity: record?.issue_quantity,
-              balance_quantity: record?.balance_quantity,
-              issued_by: record?.issued_by,
-              remarks: record?.remarks,
+              ar_no: record?.ar_no,
+              analysis_date: record?.analysis_date,
+              analyzed_by: record?.analyzed_by,
+              average_cfu: record?.average_cfu,
+              no_of_spores: record?.no_of_spores,
+              percentage_of_spores: record?.percentage_of_spores,
+              date_of_observation: record?.date_of_observation,
+              observed_by: record?.observed_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
+              done_by: record?.done_by,
+              date_of_release: record?.date_of_release,
+              e_coil: record?.e_coil,
+              salmonella: record?.salmonella,
+              p_aeruginosa: record?.p_aeruginosa,
+              s_aureus: record?.s_aureus,
+              shigellaboydii: record?.shigellaboydii,
+              c_albicans: record?.c_albicans,
+              clostridia: record?.clostridia,
+              bile_tolerant: record?.bile_tolerant,
+              date_of_release: record?.date_of_release,
+              done_by: record?.done_by,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
             },
             {
               where: {
@@ -591,18 +623,21 @@ exports.EditDisinfectantStock = async (req, res) => {
             {
               form_id: form_id,
               unique_id: record?.unique_id,
-              date_of_receiving: record?.date_of_receiving,
-              quantity_received: record?.quantity_received,
+              date: record?.date,
+              product_name: record?.product_name,
               batch_no: record?.batch_no,
               mfg_date: record?.mfg_date,
               exp_date: record?.exp_date,
-              received_by: record?.received_by,
-              issue_quantity: record?.issue_quantity,
-              balance_quantity: record?.balance_quantity,
-              issued_by: record?.issued_by,
-              remarks: record?.remarks,
+              ar_no: record?.ar_no,
+              analyzed_by: record?.analyzed_by,
+              average_cfu: record?.average_cfu,
+              no_of_spores: record?.no_of_spores,
+              percentage_of_spores: record?.percentage_of_spores,
+              date_of_observation: record?.date_of_observation,
+              observed_by: record?.observed_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
             },
             { transaction },
           );
@@ -980,7 +1015,7 @@ exports.effetiveChatByPdf = async (req, res) => {
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
-      landscape:true,
+      landscape: true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {

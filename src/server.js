@@ -25,6 +25,8 @@ const areaFoggingRoutes = require("./routes/areaFogging");
 const filterCleaningRoutes = require("./routes/filterCleaning");
 const mediaConsumptionRoutes = require("./routes/mediaConsumption");
 const disinfectantStockRoutes = require("./routes/disinfectantStock");
+const labAssaySampleRoutes = require("./routes/LabAssaySample");
+const microbialLimitTestRoutes = require("./routes/microbialLimitTest");
 const workFLow = require("./routes/workflow");
 
 const app = express();
@@ -89,6 +91,8 @@ app.use("/area-fogging", areaFoggingRoutes);
 app.use("/filter-cleaning", filterCleaningRoutes);
 app.use("/media-consumption", mediaConsumptionRoutes);
 app.use("/disinfectant-stock", disinfectantStockRoutes);
+app.use("/lab-assay-sample", labAssaySampleRoutes);
+app.use("/microbial-limit", microbialLimitTestRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

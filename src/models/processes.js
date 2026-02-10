@@ -34,6 +34,8 @@ Process.addHook('afterSync', async () => {
                 { process: `Filter Cleaning Record`},
                 { process: `Media Consumption Record`},
                 { process: `Disinfectant Stock Record`},
+                { process: `Lactic Acid Bacillus Assay Sample`},
+                { process: `Microbial Limit Test Sample`},
 
             ]);
             console.log('Processes created');

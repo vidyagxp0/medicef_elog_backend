@@ -25,6 +25,8 @@ const rolesArray1 = [
      },
   { label: "Quality Assurance-Instrument Usage Record-Initiator",},
   { label: "Quality Assurance-Disinfectant Stock Record-Initiator",},
+  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Initiator",},
+  { label: "Quality Assurance-Microbial Limit Test Sample-Initiator",},
 
   // Quality Control
   { label: "Quality Control-Differential Pressure Record-Initiator",} ,
@@ -41,6 +43,8 @@ const rolesArray1 = [
       },
   { label: "Quality Control-Instrument Usage Record-Initiator",} ,
   { label: "Quality Control-Disinfectant Stock Record-Initiator",} ,
+  { label: "Quality Control-Lactic Acid Bacillus Assay Sample-Initiator",} ,
+  { label: "Quality Control-Microbial Limit Test Sample-Initiator",} ,
 
   // Production
   { label: "Production-Differential Pressure Record-Initiator", },
@@ -53,6 +57,8 @@ const rolesArray1 = [
   { label: "Production-Operation of Air Handling Unit-Initiator",} ,
   { label: "Production-Instrument Usage Record-Initiator", },
   { label: "Production-Disinfectant Stock Record-Initiator", },
+  { label: "Production-Lactic Acid Bacillus Assay Sample-Initiator", },
+  { label: "Production-Microbial Limit Test Sample-Initiator", },
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Initiator", },
@@ -65,6 +71,8 @@ const rolesArray1 = [
   { label: "Warehouse-Operation of Air Handling Unit-Initiator", },
   { label: "Warehouse-Instrument Usage Record-Initiator", },
   { label: "Warehouse-Disinfectant Stock Record-Initiator", },
+  { label: "Warehouse-Lactic Acid Bacillus Assay Sample-Initiator", },
+  { label: "Warehouse-Microbial Limit Test Sample-Initiator", },
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Initiator", },
@@ -77,6 +85,8 @@ const rolesArray1 = [
   { label: "Engineering-Operation of Air Handling Unit-Initiator", },
   { label: "Engineering-Instrument Usage Record-Initiator", },
   { label: "Engineering-Disinfectant Stock Record-Initiator", },
+  { label: "Engineering-Lactic Acid Bacillus Assay Sample-Initiator", },
+  { label: "Engineering-Microbial Limit Test Sample-Initiator", },
 
   // Human Resources
   {
@@ -95,6 +105,8 @@ const rolesArray1 = [
       },
   { label: "Human Resources-Instrument Usage Record-Initiator", },
   { label: "Human Resources-Disinfectant Stock Record-Initiator", },
+  { label: "Human Resources-Lactic Acid Bacillus Assay Sample-Initiator", },
+  { label: "Human Resources-Microbial Limit Test Sample-Initiator", },
 
   // Information Technology
   {
@@ -120,6 +132,12 @@ const rolesArray1 = [
   {
     label: "Information Technology-Disinfectant Stock Record-Initiator",
       },
+  {
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Initiator",
+      },
+  {
+    label: "Information Technology-Microbial Limit Test Sample-Initiator",
+      },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Initiator",  },
@@ -132,6 +150,8 @@ const rolesArray1 = [
   { label: "Accounts-Operation of Air Handling Unit-Initiator", },
   { label: "Accounts-Instrument Usage Record-Initiator", },
   { label: "Accounts-Disinfectant Stock Record-Initiator", },
+  { label: "Accounts-Lactic Acid Bacillus Assay Sample-Initiator", },
+  { label: "Accounts-Microbial Limit Test Sample-Initiator", },
       
   // PPIC
   {
@@ -166,6 +186,14 @@ const rolesArray1 = [
     label:
       "Production Planning and Inventory Control-Disinfectant Stock Record-Initiator",
       },
+  {
+    label:
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Microbial Limit Test Sample-Initiator",
+      },
 
   // Regulatory Affairs
   {
@@ -185,6 +213,8 @@ const rolesArray1 = [
       },
   { label: "Regulatory Affairs-Instrument Usage Record-Initiator", },
   { label: "Regulatory Affairs-Disinfectant Stock Record-Initiator", },
+  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Initiator", },
+  { label: "Regulatory Affairs-Microbial Limit Test Sample-Initiator", },
 ];
 
 const rolesArray2 = [
@@ -205,6 +235,8 @@ const rolesArray2 = [
       },
   { label: "Quality Assurance-Instrument Usage Record-Reviewer", },
   { label: "Quality Assurance-Disinfectant Stock Record-Reviewer", },
+  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Quality Assurance-Microbial Limit Test Sample-Reviewer", },
 
   // Quality Control
   { label: "Quality Control-Differential Pressure Record-Reviewer",} ,
@@ -219,6 +251,8 @@ const rolesArray2 = [
       },
   { label: "Quality Control-Instrument Usage Record-Reviewer", },
   { label: "Quality Control-Disinfectant Stock Record-Reviewer", },
+  { label: "Quality Control-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Quality Control-Microbial Limit Test Sample-Reviewer", },
 
   // Production
   { label: "Production-Differential Pressure Record-Reviewer", },
@@ -231,6 +265,8 @@ const rolesArray2 = [
   { label: "Production-Operation of Air Handling Unit-Reviewer", },
   { label: "Production-Instrument Usage Record-Reviewer", },
   { label: "Production-Disinfectant Stock Record-Reviewer", },
+  { label: "Production-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Production-Microbial Limit Test Sample-Reviewer", },
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Reviewer", },
@@ -243,6 +279,8 @@ const rolesArray2 = [
   { label: "Warehouse-Operation of Air Handling Unit-Reviewer", },
   { label: "Warehouse-Instrument Usage Record-Reviewer", },
   { label: "Warehouse-Disinfectant Stock Record-Reviewer", },
+  { label: "Warehouse-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Warehouse-Microbial Limit Test Sample-Reviewer", },
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Reviewer", },
@@ -255,6 +293,8 @@ const rolesArray2 = [
   { label: "Engineering-Operation of Air Handling Unit-Reviewer", },
   { label: "Engineering-Instrument Usage Record-Reviewer", },
   { label: "Engineering-Disinfectant Stock Record-Reviewer", },
+  { label: "Engineering-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Engineering-Microbial Limit Test Sample-Reviewer", },
 
   // Human Resources
   { label: "Human Resources-Differential Pressure Record-Reviewer", },
@@ -269,6 +309,8 @@ const rolesArray2 = [
       },
   { label: "Human Resources-Instrument Usage Record-Reviewer", },
   { label: "Human Resources-Disinfectant Stock Record-Reviewer", },
+  { label: "Human Resources-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Human Resources-Microbial Limit Test Sample-Reviewer", },
 
   // Information Technology
   {
@@ -298,6 +340,14 @@ const rolesArray2 = [
     label: "Information Technology-Disinfectant Stock Record-Reviewer",
     
   },
+  {
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Reviewer",
+    
+  },
+  {
+    label: "Information Technology-Microbial Limit Test Sample-Reviewer",
+    
+  },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Reviewer", },
@@ -311,6 +361,8 @@ const rolesArray2 = [
   { label: "Accounts-Operation of Air Handling Unit-Reviewer", },
   { label: "Accounts-Instrument Usage Record-Reviewer", },
   { label: "Accounts-Disinfectant Stock Record-Reviewer", },
+  { label: "Accounts-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Accounts-Microbial Limit Test Sample-Reviewer", },
 
   // PPIC
   {
@@ -353,6 +405,17 @@ const rolesArray2 = [
       "Production Planning and Inventory Control-Disinfectant Stock Record-Reviewer",
     
   },
+  {
+    label:
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Microbial Limit Test Sample-Reviewer",
+    
+    
+  },
 
   // Regulatory Affairs
   {
@@ -375,6 +438,8 @@ const rolesArray2 = [
   },
   { label: "Regulatory Affairs-Instrument Usage Record-Reviewer", },
   { label: "Regulatory Affairs-Disinfectant Stock Record-Reviewer", },
+  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Reviewer", },
+  { label: "Regulatory Affairs-Microbial Limit Test Sample-Reviewer", },
 ];
 
 const rolesArray3 = [
@@ -399,6 +464,8 @@ const rolesArray3 = [
   },
   { label: "Quality Assurance-Instrument Usage Record-Approver", },
   { label: "Quality Assurance-Disinfectant Stock Record-Approver", },
+  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Quality Assurance-Microbial Limit Test Sample-Approver", },
 
   // Quality Control
   {
@@ -421,6 +488,8 @@ const rolesArray3 = [
   },
   { label: "Quality Control-Instrument Usage Record-Approver", },
   { label: "Quality Control-Disinfectant Stock Record-Approver", },
+  { label: "Quality Control-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Quality Control-Microbial Limit Test Sample-Approver", },
 
   // Production
   { label: "Production-Differential Pressure Record-Approver", },
@@ -434,6 +503,8 @@ const rolesArray3 = [
   { label: "Production-Operation of Air Handling Unit-Approver", },
   { label: "Production-Instrument Usage Record-Approver", },
   { label: "Production-Disinfectant Stock Record-Approver", },
+  { label: "Production-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Production-Microbial Limit Test Sample-Approver", },
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Approver", },
@@ -447,6 +518,8 @@ const rolesArray3 = [
   { label: "Warehouse-Operation of Air Handling Unit-Approver", },
   { label: "Warehouse-Instrument Usage Record-Approver", },
   { label: "Warehouse-Disinfectant Stock Record-Approver", },
+  { label: "Warehouse-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Warehouse-Microbial Limit Test Sample-Approver", },
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Approver", },
@@ -460,6 +533,8 @@ const rolesArray3 = [
   { label: "Engineering-Operation of Air Handling Unit-Approver", },
   { label: "Engineering-Instrument Usage Record-Approver", },
   { label: "Engineering-Disinfectant Stock Record-Approver", },
+  { label: "Engineering-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Engineering-Microbial Limit Test Sample-Approver", },
 
   // Human Resources
   {
@@ -482,6 +557,8 @@ const rolesArray3 = [
   },
   { label: "Human Resources-Instrument Usage Record-Approver", },
   { label: "Human Resources-Disinfectant Stock Record-Approver", },
+  { label: "Human Resources-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Human Resources-Microbial Limit Test Sample-Approver", },
 
   // Information Technology
   {
@@ -514,6 +591,14 @@ const rolesArray3 = [
     label: "Information Technology-Disinfectant Stock Record-Approver",
     
   },
+  {
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Approver",
+    
+  },
+  {
+    label: "Information Technology-Microbial Limit Test Sample-Approver",
+    
+  },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Approver", },
@@ -527,6 +612,8 @@ const rolesArray3 = [
   { label: "Accounts-Operation of Air Handling Unit-Approver", },
   { label: "Accounts-Instrument Usage Record-Approver", },
   { label: "Accounts-Disinfectant Stock Record-Approver", },
+  { label: "Accounts-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Accounts-Microbial Limit Test Sample-Approver", },
 
   // PPIC
   {
@@ -569,6 +656,16 @@ const rolesArray3 = [
       "Production Planning and Inventory Control-Disinfectant Stock Record-Approver",
     
   },
+  {
+    label:
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Approver",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Microbial Limit Test Sample-Approver",
+    
+  },
 
   // Regulatory Affairs
   {
@@ -591,6 +688,8 @@ const rolesArray3 = [
   },
   { label: "Regulatory Affairs-Instrument Usage Record-Approver", },
   { label: "Regulatory Affairs-Disinfectant Stock Record-Approver", },
+  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Approver", },
+  { label: "Regulatory Affairs-Microbial Limit Test Sample-Approver", },
 ];
 
 const rolesArray4 = [
@@ -624,6 +723,18 @@ const rolesArray4 = [
     label: "Quality Assurance-Instrument Usage Record-Fullpermission",
     
   },
+    {
+    label: "Quality Assurance-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Quality Assurance-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // Quality Control
   {
@@ -652,6 +763,19 @@ const rolesArray4 = [
     label: "Quality Control-Instrument Usage Record-Fullpermission",
     
   },
+  {
+    label: "Quality Control-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Quality Control-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Quality Control-Microbial Limit Test Sample-Fullpermission",
+    
+  },
+
 
   // Production
   {
@@ -673,6 +797,18 @@ const rolesArray4 = [
     
   },
   { label: "Production-Instrument Usage Record-Fullpermission", },
+  {
+    label: "Production-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Production-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Production-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // Warehouse
   {
@@ -694,6 +830,18 @@ const rolesArray4 = [
     
   },
   { label: "Warehouse-Instrument Usage Record-Fullpermission", },
+  {
+    label: "Warehouse-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Warehouse-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Warehouse-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // Engineering
   {
@@ -715,6 +863,18 @@ const rolesArray4 = [
     
   },
   { label: "Engineering-Instrument Usage Record-Fullpermission", },
+  {
+    label: "Engineering-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Engineering-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Engineering-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // Human Resources
   {
@@ -741,6 +901,18 @@ const rolesArray4 = [
   },
   {
     label: "Human Resources-Instrument Usage Record-Fullpermission",
+    
+  },
+  {
+    label: "Human Resources-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Human Resources-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Human Resources-Microbial Limit Test Sample-Fullpermission",
     
   },
 
@@ -775,6 +947,18 @@ const rolesArray4 = [
     label: "Information Technology-Instrument Usage Record-Fullpermission",
     
   },
+  {
+    label: "Information Technology-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Information Technology-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Fullpermission", },
@@ -790,6 +974,18 @@ const rolesArray4 = [
     
   },
   { label: "Accounts-Instrument Usage Record-Fullpermission", },
+  {
+    label: "Accounts-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Accounts-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Accounts-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // PPIC
   {
@@ -827,6 +1023,21 @@ const rolesArray4 = [
       "Production Planning and Inventory Control-Instrument Usage Record-Fullpermission",
     
   },
+  {
+    label:
+      "Production Planning and Inventory Control-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Microbial Limit Test Sample-Fullpermission",
+    
+  },
 
   // Regulatory Affairs
   {
@@ -858,6 +1069,19 @@ const rolesArray4 = [
     label: "Regulatory Affairs-Instrument Usage Record-Fullpermission",
     
   },
+  {
+    label: "Regulatory Affairs-Disinfectant Stock Record-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    
+  },
+  {
+    label: "Regulatory Affairs-Microbial Limit Test Sample-Fullpermission",
+    
+  },
+
 ];
 
 const processInitiatorRoles = async (rolesArray, user) => {

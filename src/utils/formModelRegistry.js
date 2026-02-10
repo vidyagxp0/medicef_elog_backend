@@ -26,21 +26,34 @@ const AhuOperationRecord = require("../models/ahuOperationRecord");
 const instrumentUsageForm = require("../models/instrumentUsageForm");
 const instrumentUsageRecord = require("../models/instrumentUsageRecord");
 const instrumentUsageAuditTrail = require("../models/instrumentUsageAuditTrail");
+
 const foggingSolutionForm = require("../models/FoggingSolutionForm");
 const foggingSolutionRecord = require("../models/FoggingSolutionRecord");
 const foggingSolutionAuditTrail = require("../models/FoggingSolutionAuditTrail");
+
 const areaFoggingForm = require("../models/areaFoggingForm");
 const areaFoggingRecord = require("../models/areaFoggingRecord");
 const areaFoggingAuditTrail = require("../models/areaFoggingAuditTrail");
+
 const filterCleaningForm = require("../models/filterCleaningForm");
 const filterCleaningAuditTrail = require("../models/filterCleaningAuditTrail");
 const filterCleaningRecord = require("../models/filterCleaningRecord");
+
 const mediaConsumptionForm = require("../models/mediaConsumptionForm");
 const mediaConsumptionAuditTrail = require("../models/mediaConsumptionAuditTrail");
 const mediaConsumptionRecord = require("../models/mediaConsumptionRecord");
+
 const DisinfectantStockForm = require("../models/disinfectantStockForm");
 const DisinfectantStockRecords = require("../models/disinfectantStockRecords");
 const DisinfectantStockAuditTrail = require("../models/disinfectantStockAuditTrail");
+
+const LabAssaySampleForm = require("../models/labAssaySampleForm");
+const LabAssaySampleRecord = require("../models/labAssaySampleRecord");
+const LabAssaySampleAuditTrail = require("../models/labAssaySampleAuditTrail");
+
+const MicrobialLimitTestForm = require("../models/microbialLimitTestForm");
+const MicrobialLimitTestRecords = require("../models/microbialLimitTestRecords");
+const MicrobialLimitTestAuditTrail = require("../models/microbialLimitTestAuditTrail");
 
 module.exports = {
   1: {
@@ -113,6 +126,18 @@ module.exports = {
     form: DisinfectantStockForm,
     record: DisinfectantStockRecords,
     audit: DisinfectantStockAuditTrail,
+    approverAlias: "approver",
+  },
+  13: {
+    form: LabAssaySampleForm,
+    record: LabAssaySampleRecord,
+    audit: LabAssaySampleAuditTrail,
+    approverAlias: "approver",
+  },
+  14: {
+    form: MicrobialLimitTestForm,
+    record: MicrobialLimitTestRecords,
+    audit: MicrobialLimitTestAuditTrail,
     approverAlias: "approver",
   },
 };
