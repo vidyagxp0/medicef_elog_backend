@@ -235,7 +235,6 @@ exports.InsertDisinfectantStock = async (req, res) => {
         remarks: record?.remarks,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
-        approved_by: record?.approved_by,
       }));
 
       formRecords.forEach((record, index) => {
@@ -577,7 +576,6 @@ exports.EditDisinfectantStock = async (req, res) => {
               remarks: record?.remarks,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
-              approved_by: record?.approved_by,
             },
             {
               where: {
@@ -605,7 +603,6 @@ exports.EditDisinfectantStock = async (req, res) => {
               remarks: record?.remarks,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
-              approved_by: record?.approved_by,
             },
             { transaction },
           );

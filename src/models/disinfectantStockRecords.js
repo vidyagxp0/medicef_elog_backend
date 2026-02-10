@@ -60,9 +60,7 @@ const DisinfectantStockRecords = sequelize.define(
     reviewed_by: {
       type: DataTypes.STRING,
     },
-    approved_by: {
-      type: DataTypes.STRING,
-    },
+    
   }
 );
 
