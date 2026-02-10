@@ -24,6 +24,7 @@ const rolesArray1 = [
     label: "Quality Assurance-Operation of Air Handling Unit-Initiator",
      },
   { label: "Quality Assurance-Instrument Usage Record-Initiator",},
+  { label: "Quality Assurance-Disinfectant Stock Record-Initiator",},
 
   // Quality Control
   { label: "Quality Control-Differential Pressure Record-Initiator",} ,
@@ -39,6 +40,7 @@ const rolesArray1 = [
     label: "Quality Control-Operation of Air Handling Unit-Initiator",
       },
   { label: "Quality Control-Instrument Usage Record-Initiator",} ,
+  { label: "Quality Control-Disinfectant Stock Record-Initiator",} ,
 
   // Production
   { label: "Production-Differential Pressure Record-Initiator", },
@@ -50,6 +52,7 @@ const rolesArray1 = [
   { label: "Production-DP Monitoring Across Filters-Initiator",} ,
   { label: "Production-Operation of Air Handling Unit-Initiator",} ,
   { label: "Production-Instrument Usage Record-Initiator", },
+  { label: "Production-Disinfectant Stock Record-Initiator", },
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Initiator", },
@@ -61,6 +64,7 @@ const rolesArray1 = [
   { label: "Warehouse-DP Monitoring Across Filters-Initiator", },
   { label: "Warehouse-Operation of Air Handling Unit-Initiator", },
   { label: "Warehouse-Instrument Usage Record-Initiator", },
+  { label: "Warehouse-Disinfectant Stock Record-Initiator", },
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Initiator", },
@@ -72,6 +76,7 @@ const rolesArray1 = [
   { label: "Engineering-DP Monitoring Across Filters-Initiator", },
   { label: "Engineering-Operation of Air Handling Unit-Initiator", },
   { label: "Engineering-Instrument Usage Record-Initiator", },
+  { label: "Engineering-Disinfectant Stock Record-Initiator", },
 
   // Human Resources
   {
@@ -89,6 +94,7 @@ const rolesArray1 = [
     label: "Human Resources-Operation of Air Handling Unit-Initiator",
       },
   { label: "Human Resources-Instrument Usage Record-Initiator", },
+  { label: "Human Resources-Disinfectant Stock Record-Initiator", },
 
   // Information Technology
   {
@@ -111,6 +117,9 @@ const rolesArray1 = [
   {
     label: "Information Technology-Instrument Usage Record-Initiator",
       },
+  {
+    label: "Information Technology-Disinfectant Stock Record-Initiator",
+      },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Initiator",  },
@@ -122,7 +131,8 @@ const rolesArray1 = [
   { label: "Accounts-DP Monitoring Across Filters-Initiator", },
   { label: "Accounts-Operation of Air Handling Unit-Initiator", },
   { label: "Accounts-Instrument Usage Record-Initiator", },
-
+  { label: "Accounts-Disinfectant Stock Record-Initiator", },
+      
   // PPIC
   {
     label:
@@ -151,6 +161,10 @@ const rolesArray1 = [
   {
     label:
       "Production Planning and Inventory Control-Instrument Usage Record-Initiator",
+      },
+  {
+    label:
+      "Production Planning and Inventory Control-Disinfectant Stock Record-Initiator",
       },
 
   // Regulatory Affairs
@@ -190,6 +204,7 @@ const rolesArray2 = [
     label: "Quality Assurance-Operation of Air Handling Unit-Reviewer",
       },
   { label: "Quality Assurance-Instrument Usage Record-Reviewer", },
+  { label: "Quality Assurance-Disinfectant Stock Record-Reviewer", },
 
   // Quality Control
   { label: "Quality Control-Differential Pressure Record-Reviewer",} ,
@@ -203,6 +218,7 @@ const rolesArray2 = [
     label: "Quality Control-Operation of Air Handling Unit-Reviewer",
       },
   { label: "Quality Control-Instrument Usage Record-Reviewer", },
+  { label: "Quality Control-Disinfectant Stock Record-Reviewer", },
 
   // Production
   { label: "Production-Differential Pressure Record-Reviewer", },
@@ -214,6 +230,7 @@ const rolesArray2 = [
   { label: "Production-DP Monitoring Across Filters-Reviewer", },
   { label: "Production-Operation of Air Handling Unit-Reviewer", },
   { label: "Production-Instrument Usage Record-Reviewer", },
+  { label: "Production-Disinfectant Stock Record-Reviewer", },
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Reviewer", },
@@ -225,6 +242,7 @@ const rolesArray2 = [
   { label: "Warehouse-DP Monitoring Across Filters-Reviewer", },
   { label: "Warehouse-Operation of Air Handling Unit-Reviewer", },
   { label: "Warehouse-Instrument Usage Record-Reviewer", },
+  { label: "Warehouse-Disinfectant Stock Record-Reviewer", },
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Reviewer", },
@@ -236,6 +254,7 @@ const rolesArray2 = [
   { label: "Engineering-DP Monitoring Across Filters-Reviewer", },
   { label: "Engineering-Operation of Air Handling Unit-Reviewer", },
   { label: "Engineering-Instrument Usage Record-Reviewer", },
+  { label: "Engineering-Disinfectant Stock Record-Reviewer", },
 
   // Human Resources
   { label: "Human Resources-Differential Pressure Record-Reviewer", },
@@ -249,6 +268,7 @@ const rolesArray2 = [
     label: "Human Resources-Operation of Air Handling Unit-Reviewer",
       },
   { label: "Human Resources-Instrument Usage Record-Reviewer", },
+  { label: "Human Resources-Disinfectant Stock Record-Reviewer", },
 
   // Information Technology
   {
@@ -274,6 +294,10 @@ const rolesArray2 = [
     label: "Information Technology-Instrument Usage Record-Reviewer",
     
   },
+  {
+    label: "Information Technology-Disinfectant Stock Record-Reviewer",
+    
+  },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Reviewer", },
@@ -286,6 +310,7 @@ const rolesArray2 = [
   { label: "Accounts-DP Monitoring Across Filters-Reviewer", },
   { label: "Accounts-Operation of Air Handling Unit-Reviewer", },
   { label: "Accounts-Instrument Usage Record-Reviewer", },
+  { label: "Accounts-Disinfectant Stock Record-Reviewer", },
 
   // PPIC
   {
@@ -321,6 +346,11 @@ const rolesArray2 = [
   {
     label:
       "Production Planning and Inventory Control-Instrument Usage Record-Reviewer",
+    
+  },
+  {
+    label:
+      "Production Planning and Inventory Control-Disinfectant Stock Record-Reviewer",
     
   },
 
@@ -368,6 +398,7 @@ const rolesArray3 = [
     
   },
   { label: "Quality Assurance-Instrument Usage Record-Approver", },
+  { label: "Quality Assurance-Disinfectant Stock Record-Approver", },
 
   // Quality Control
   {
@@ -389,6 +420,7 @@ const rolesArray3 = [
     
   },
   { label: "Quality Control-Instrument Usage Record-Approver", },
+  { label: "Quality Control-Disinfectant Stock Record-Approver", },
 
   // Production
   { label: "Production-Differential Pressure Record-Approver", },
@@ -401,6 +433,7 @@ const rolesArray3 = [
   { label: "Production-DP Monitoring Across Filters-Approver", },
   { label: "Production-Operation of Air Handling Unit-Approver", },
   { label: "Production-Instrument Usage Record-Approver", },
+  { label: "Production-Disinfectant Stock Record-Approver", },
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Approver", },
@@ -413,6 +446,7 @@ const rolesArray3 = [
   { label: "Warehouse-DP Monitoring Across Filters-Approver", },
   { label: "Warehouse-Operation of Air Handling Unit-Approver", },
   { label: "Warehouse-Instrument Usage Record-Approver", },
+  { label: "Warehouse-Disinfectant Stock Record-Approver", },
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Approver", },
@@ -425,6 +459,7 @@ const rolesArray3 = [
   { label: "Engineering-DP Monitoring Across Filters-Approver", },
   { label: "Engineering-Operation of Air Handling Unit-Approver", },
   { label: "Engineering-Instrument Usage Record-Approver", },
+  { label: "Engineering-Disinfectant Stock Record-Approver", },
 
   // Human Resources
   {
@@ -446,6 +481,7 @@ const rolesArray3 = [
     
   },
   { label: "Human Resources-Instrument Usage Record-Approver", },
+  { label: "Human Resources-Disinfectant Stock Record-Approver", },
 
   // Information Technology
   {
@@ -474,6 +510,10 @@ const rolesArray3 = [
     label: "Information Technology-Instrument Usage Record-Approver",
     
   },
+  {
+    label: "Information Technology-Disinfectant Stock Record-Approver",
+    
+  },
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Approver", },
@@ -486,6 +526,7 @@ const rolesArray3 = [
   { label: "Accounts-DP Monitoring Across Filters-Approver", },
   { label: "Accounts-Operation of Air Handling Unit-Approver", },
   { label: "Accounts-Instrument Usage Record-Approver", },
+  { label: "Accounts-Disinfectant Stock Record-Approver", },
 
   // PPIC
   {
@@ -523,6 +564,11 @@ const rolesArray3 = [
       "Production Planning and Inventory Control-Instrument Usage Record-Approver",
     
   },
+  {
+    label:
+      "Production Planning and Inventory Control-Disinfectant Stock Record-Approver",
+    
+  },
 
   // Regulatory Affairs
   {
@@ -544,6 +590,7 @@ const rolesArray3 = [
     
   },
   { label: "Regulatory Affairs-Instrument Usage Record-Approver", },
+  { label: "Regulatory Affairs-Disinfectant Stock Record-Approver", },
 ];
 
 const rolesArray4 = [

@@ -318,7 +318,7 @@ exports.EditDisinfectantStock = async (req, res) => {
     reviewerData,
     reviewer_id,
     approver_id,
-    disinfectantStockRecords,
+    DisinfectantStockRecords,
     esignInput,
     password,
     initiatorComment,
@@ -555,10 +555,10 @@ exports.EditDisinfectantStock = async (req, res) => {
     // Update / Create Temperature Records (NO DELETE)
 
     if (
-      Array.isArray(disinfectantStockRecords) &&
-      disinfectantStockRecords.length > 0
+      Array.isArray(DisinfectantStockRecords) &&
+      DisinfectantStockRecords.length > 0
     ) {
-      for (const record of disinfectantStockRecords) {
+      for (const record of DisinfectantStockRecords) {
         if (record.record_id) {
           // UPDATE existing row
           await disinfectantStockRecord.update(
@@ -650,7 +650,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("report", { reportData }, (err, html) => {
+      res.render("ds_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1108,7 +1108,7 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.disinfectantStockRecords?.map((record) => ({
+    const data = reportData?.DisinfectantStockRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
       remarks: record?.remarks || "",
       checked_by: record?.checked_by || "",
