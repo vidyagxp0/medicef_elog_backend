@@ -1,7 +1,7 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const LabAssaySampleForm = require("./labAssaySampleForm");
-const MicrobialLimitForm = require("./microbialLimitForm");
+const MicrobialLimitForm = require("./MicrobialLimitForm");
 
 const MicrobialLimitRecord = sequelize.define(
   "MicrobialLimitRecord",

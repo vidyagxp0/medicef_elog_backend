@@ -1,7 +1,7 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const User = require("./users");
-const LabAssaySampleForm = require("./LabAssaySampleForm");
+const LabAssaySampleForm = require("./labAssaySampleForm");
 
 const LabAssaySampleAuditTrail = sequelize.define(
   "LabAssaySampleAuditTrail",
@@ -59,7 +59,7 @@ const LabAssaySampleAuditTrail = sequelize.define(
 );
 
 LabAssaySampleAuditTrail.belongsTo(User, { foreignKey: "changed_by",as: "changedByUser", });
-User.hasMany(LabAssaySampleAuditTrail, { foreignKey: "changed_by", as: "changedAuditTrails", });
+User.hasMany(LabAssaySampleAuditTrail, { foreignKey: "changed_by" });
 
 LabAssaySampleAuditTrail.belongsTo(LabAssaySampleForm, {
   foreignKey: "form_id",

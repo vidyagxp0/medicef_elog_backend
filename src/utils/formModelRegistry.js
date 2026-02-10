@@ -51,9 +51,9 @@ const LabAssaySampleForm = require("../models/labAssaySampleForm");
 const LabAssaySampleRecord = require("../models/labAssaySampleRecord");
 const LabAssaySampleAuditTrail = require("../models/labAssaySampleAuditTrail");
 
-const MicrobialLimitTestForm = require("../models/microbialLimitTestForm");
-const MicrobialLimitTestRecords = require("../models/microbialLimitTestRecords");
-const MicrobialLimitTestAuditTrail = require("../models/microbialLimitTestAuditTrail");
+const MicrobialLimitForm = require("../models/MicrobialLimitForm");
+const MicrobialLimitRecord = require("../models/microbialLimitRecord");
+const MicrobialAuditTrail = require("../models/microbialAuditTrail");
 
 module.exports = {
   1: {
@@ -135,9 +135,9 @@ module.exports = {
     approverAlias: "approver",
   },
   14: {
-    form: MicrobialLimitTestForm,
-    record: MicrobialLimitTestRecords,
-    audit: MicrobialLimitTestAuditTrail,
+    form: MicrobialLimitForm,
+    record: MicrobialLimitRecord,
+    audit: MicrobialAuditTrail,
     approverAlias: "approver",
   },
 };

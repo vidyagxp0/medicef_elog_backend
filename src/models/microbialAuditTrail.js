@@ -1,7 +1,7 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const User = require("./users");
-const MicrobialLimitForm = require("./microbialLimitForm");
+const MicrobialLimitForm = require("./MicrobialLimitForm");
 
 const MicrobialLimitAuditTrail = sequelize.define(
   "MicrobialLimitAuditTrail",
@@ -59,7 +59,7 @@ const MicrobialLimitAuditTrail = sequelize.define(
 );
 
 MicrobialLimitAuditTrail.belongsTo(User, { foreignKey: "changed_by",as: "changedByUser", });
-User.hasMany(MicrobialLimitAuditTrail, { foreignKey: "changed_by", as: "changedAuditTrails", });
+User.hasMany(MicrobialLimitAuditTrail, { foreignKey: "changed_by" });
 
 MicrobialLimitAuditTrail.belongsTo(MicrobialLimitForm, {
   foreignKey: "form_id",

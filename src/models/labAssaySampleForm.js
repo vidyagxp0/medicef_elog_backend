@@ -149,7 +149,7 @@ LabAssaySampleForm.belongsTo(User, {
 });
 User.hasMany(LabAssaySampleForm, {
   foreignKey: "approver_id",
-  as: "dpApprovals",
+  as: "labApprovals",
 });
 
 LabAssaySampleForm.belongsTo(WorkflowState, {
