@@ -24,6 +24,7 @@ const foggingSolutionRoutes = require("./routes/foggingSolution");
 const areaFoggingRoutes = require("./routes/areaFogging");
 const filterCleaningRoutes = require("./routes/filterCleaning");
 const mediaConsumptionRoutes = require("./routes/mediaConsumption");
+const disinfectantStockRoutes = require("./routes/disinfectantStock");
 const workFLow = require("./routes/workflow");
 
 const app = express();
@@ -87,6 +88,7 @@ app.use("/fogging-solution", foggingSolutionRoutes);
 app.use("/area-fogging", areaFoggingRoutes);
 app.use("/filter-cleaning", filterCleaningRoutes);
 app.use("/media-consumption", mediaConsumptionRoutes);
+app.use("/disinfectant-stock", disinfectantStockRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

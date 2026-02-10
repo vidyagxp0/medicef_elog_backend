@@ -149,7 +149,7 @@ DisinfectantStockForm.belongsTo(User, {
 });
 User.hasMany(DisinfectantStockForm, {
   foreignKey: "approver_id",
-  as: "dpApprovals",
+  as: "dsApprovals",
 });
 
 DisinfectantStockForm.belongsTo(WorkflowState, {

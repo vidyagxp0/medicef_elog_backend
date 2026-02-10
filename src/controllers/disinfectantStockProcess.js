@@ -42,7 +42,7 @@ const parseIfString = (value, fallback = null) => {
 };
 
 // Fill Disinfectant Stock form and insert its records.
-exports.InsertDisinfectantStockForm = async (req, res) => {
+exports.InsertDisinfectantStock = async (req, res) => {
   const {
     department_id,
     process_id,

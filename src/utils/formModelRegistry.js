@@ -38,6 +38,9 @@ const filterCleaningRecord = require("../models/filterCleaningRecord");
 const mediaConsumptionForm = require("../models/mediaConsumptionForm");
 const mediaConsumptionAuditTrail = require("../models/mediaConsumptionAuditTrail");
 const mediaConsumptionRecord = require("../models/mediaConsumptionRecord");
+const DisinfectantStockForm = require("../models/disinfectantStockForm");
+const DisinfectantStockRecords = require("../models/disinfectantStockRecords");
+const DisinfectantStockAuditTrail = require("../models/disinfectantStockAuditTrail");
 
 module.exports = {
   1: {
@@ -104,6 +107,12 @@ module.exports = {
     form: mediaConsumptionForm,
     record: mediaConsumptionRecord,
     audit: mediaConsumptionAuditTrail,
+    approverAlias: "approver",
+  },
+  12: {
+    form: DisinfectantStockForm,
+    record: DisinfectantStockRecords,
+    audit: DisinfectantStockAuditTrail,
     approverAlias: "approver",
   },
 };
