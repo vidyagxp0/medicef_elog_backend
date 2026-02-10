@@ -170,7 +170,6 @@ exports.InsertDisinfectantStock = async (req, res) => {
     const fields = {
       description,
       departmentName,
-      compression_area,
       area_name,
       room_id,
       reviewer: reviewerNames,
@@ -422,7 +421,6 @@ exports.EditDisinfectantStock = async (req, res) => {
     const fields = {
       description,
       departmentName,
-      compression_area,
       initiatorComment,
       area_name,
       room_id,

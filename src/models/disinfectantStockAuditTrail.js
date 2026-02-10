@@ -59,7 +59,7 @@ const DisinfectantStockAuditTrail = sequelize.define(
 );
 
 DisinfectantStockAuditTrail.belongsTo(User, { foreignKey: "changed_by",as: "changedByUser", });
-User.hasMany(DisinfectantStockAuditTrail, { foreignKey: "changed_by", as: "changedAuditTrails", });
+User.hasMany(DisinfectantStockAuditTrail, { foreignKey: "changed_by" });
 
 DisinfectantStockAuditTrail.belongsTo(DisinfectantStockForm, {
   foreignKey: "form_id",
