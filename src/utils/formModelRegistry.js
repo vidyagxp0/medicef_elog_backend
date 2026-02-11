@@ -51,9 +51,9 @@ const LabAssaySampleForm = require("../models/labAssaySampleForm");
 const LabAssaySampleRecord = require("../models/labAssaySampleRecord");
 const LabAssaySampleAuditTrail = require("../models/labAssaySampleAuditTrail");
 
-const MicrobialLimitForm = require("../models/MicrobialLimitForm");
 const MicrobialLimitRecord = require("../models/microbialLimitRecord");
 const MicrobialAuditTrail = require("../models/microbialAuditTrail");
+const MicrobialLimitForm = require("../models/microbialLimitForm");
 
 module.exports = {
   1: {

@@ -41,7 +41,7 @@
     th,
     td {
       border: 1px solid #000;
-      padding: 8px;
+      padding: 5px;
       /* text-align: left; */
       font-size: 13px;
       vertical-align: top;
@@ -112,7 +112,7 @@
         <tr>
           <td class="label">Record Id</td>
           <td class="value">
-            MED/DSR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+            MED/LAR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
           </td>
         </tr>
         <tr>
@@ -137,30 +137,33 @@
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Disinfectant Stock Records</h2>
+    <h2 class="heading">LabAssay Sample Records</h2>
 
-    <% if (reportData.DisinfectantStockRecords && reportData.DisinfectantStockRecords.length> 0) { %>
+    <% if (reportData.LabAssaySampleRecords && reportData.LabAssaySampleRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
             <th>S. No.</th>
             <th>Unique ID</th>
-            <th>Date of Receiving</th>
-            <th>Quantity Received</th>
+            <th>Date</th>
+            <th>Product Name</th>
             <th>Batch No.</th>
             <th>Mfg. Date</th>
             <th>Exp. Date</th>
-            <th>Received By</th>
-            <th>Issue Quantity</th>
-            <th>Balance Quantity</th>
-            <th>Issued By</th>
+            <th>A.R. No.</th>
+            <th>Analyzed By</th>
+            <th>Average CFU</th>
+            <th>No of spores</th>
+            <th>Percentage of spores</th>
+            <th>Date Of Observation</th>
+            <th>Observed By</th>
             <th>Checked By</th>
             <th>Remark</th>
           </tr>
         </thead>
         <tbody>
 
-          <% reportData.DisinfectantStockRecords.forEach((record, index)=> { %>
+          <% reportData.LabAssaySampleRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -169,13 +172,13 @@
                 <%= record?.unique_id || "Not Applicable" %>
               </td>
               <td>
-                <%= formatDateOnly(record?.date_of_receiving) || "Not Applicable" %>
+                <%= formatDateOnly(record?.date) || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.quantity_received || "Not Applicable" %>
+                <%= record?.product_name || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.batch_number || "Not Applicable" %>
+                <%= record?.batch_no || "Not Applicable" %>
               </td>
               <td>
                 <%= record?.mfg_date || "Not Applicable" %>
@@ -184,16 +187,25 @@
                 <%= record?.exp_date || "Not Applicable" %>
               </td>
                 <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
+                  <%= record?.ar_no || "Not Applicable" %>
                 </td>
                 <td>
-                  <%= record?.issue_quantity || "Not Applicable" %>
+                  <%= record?.analyzed_by || "Not Applicable" %>
                 </td>
                 <td>
-                  <%= record?.balance_quantity || "Not Applicable" %>
+                  <%= record?.average_cfu || "Not Applicable" %>
                 </td>
                 <td>
-                  <%= record?.issued_by || "Not Applicable" %>
+                  <%= record?.no_of_spores || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.percentage_of_spores || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.date_of_observation || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.observed_by || "Not Applicable" %>
                 </td>
                 <td>
                   <%= record?.reviewed_by || "Not Applicable" %>

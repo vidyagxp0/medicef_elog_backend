@@ -50,9 +50,6 @@ const TempraturePressureRecord = sequelize.define(
     checked_by: {
       type: DataTypes.STRING,
     },
-    // supporting_docs: {
-    //   type: DataTypes.STRING,
-    // },
     reviewed_by: {
       type: DataTypes.STRING,
     },

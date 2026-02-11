@@ -149,10 +149,10 @@ MicrobialLimitForm.belongsTo(User, {
   as: "approver",
 });
 
-// User.hasMany(MicrobialLimitForm, {
-//   foreignKey: "approver_id",
-//   as: "mlApprovals",
-// });
+User.hasMany(MicrobialLimitForm, {
+  foreignKey: "approver_id",
+  as: "mlApprovals",
+});
 
 MicrobialLimitForm.belongsTo(WorkflowState, {
   foreignKey: "workflow_state_id",

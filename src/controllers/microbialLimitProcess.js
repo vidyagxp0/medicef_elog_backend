@@ -231,12 +231,10 @@ exports.InsertMicrobialLimit = async (req, res) => {
         analyzed_by: record?.analyzed_by,
         results_of_tbc: record?.results_of_tbc,
         results_of_tfc: record?.results_of_tfc,
-        no_of_spores: record?.no_of_spores,
-        percentage_of_spores: record?.percentage_of_spores,
         date_of_observation: record?.date_of_observation,
         observed1_by: record?.observed1_by,
         observed2_by: record?.observed2_by,
-        e_coil: record?.e_coil,
+        e_coli: record?.e_coli,
         salmonella: record?.salmonella,
         p_aeruginosa: record?.p_aeruginosa,
         s_aureus: record?.s_aureus,
@@ -323,6 +321,9 @@ exports.InsertMicrobialLimit = async (req, res) => {
 };
 
 exports.EditMicrobialLimit = async (req, res) => {
+
+
+
   const {
     department_id,
     description,
@@ -332,7 +333,7 @@ exports.EditMicrobialLimit = async (req, res) => {
     reviewerData,
     reviewer_id,
     approver_id,
-    DisinfectantStockRecords,
+    MicrobialLimitRecords,
     esignInput,
     password,
     initiatorComment,
@@ -569,10 +570,10 @@ exports.EditMicrobialLimit = async (req, res) => {
     // Update / Create Temperature Records (NO DELETE)
 
     if (
-      Array.isArray(DisinfectantStockRecords) &&
-      DisinfectantStockRecords.length > 0
+      Array.isArray(MicrobialLimitRecords) &&
+      MicrobialLimitRecords.length > 0
     ) {
-      for (const record of DisinfectantStockRecords) {
+      for (const record of MicrobialLimitRecords) {
         if (record.record_id) {
           // UPDATE existing row
           await MicrobialLimitRecord.update(
@@ -586,16 +587,16 @@ exports.EditMicrobialLimit = async (req, res) => {
               ar_no: record?.ar_no,
               analysis_date: record?.analysis_date,
               analyzed_by: record?.analyzed_by,
-              average_cfu: record?.average_cfu,
-              no_of_spores: record?.no_of_spores,
-              percentage_of_spores: record?.percentage_of_spores,
+              results_of_tbc: record?.results_of_tbc,
+              results_of_tfc: record?.results_of_tfc,
               date_of_observation: record?.date_of_observation,
-              observed_by: record?.observed_by,
+              observed1_by: record?.observed1_by,
+              observed2_by: record?.observed2_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
               done_by: record?.done_by,
               date_of_release: record?.date_of_release,
-              e_coil: record?.e_coil,
+              e_coli: record?.e_coli,
               salmonella: record?.salmonella,
               p_aeruginosa: record?.p_aeruginosa,
               s_aureus: record?.s_aureus,
@@ -603,7 +604,6 @@ exports.EditMicrobialLimit = async (req, res) => {
               c_albicans: record?.c_albicans,
               clostridia: record?.clostridia,
               bile_tolerant: record?.bile_tolerant,
-              date_of_release: record?.date_of_release,
               done_by: record?.done_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
@@ -629,12 +629,26 @@ exports.EditMicrobialLimit = async (req, res) => {
               mfg_date: record?.mfg_date,
               exp_date: record?.exp_date,
               ar_no: record?.ar_no,
+              analysis_date: record?.analysis_date,
               analyzed_by: record?.analyzed_by,
-              average_cfu: record?.average_cfu,
-              no_of_spores: record?.no_of_spores,
-              percentage_of_spores: record?.percentage_of_spores,
+              results_of_tbc: record?.results_of_tbc,
+              results_of_tfc: record?.results_of_tfc,
               date_of_observation: record?.date_of_observation,
-              observed_by: record?.observed_by,
+              observed1_by: record?.observed1_by,
+              observed2_by: record?.observed2_by,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              done_by: record?.done_by,
+              date_of_release: record?.date_of_release,
+              e_coli: record?.e_coli,
+              salmonella: record?.salmonella,
+              p_aeruginosa: record?.p_aeruginosa,
+              s_aureus: record?.s_aureus,
+              shigellaboydii: record?.shigellaboydii,
+              c_albicans: record?.c_albicans,
+              clostridia: record?.clostridia,
+              bile_tolerant: record?.bile_tolerant,
+              done_by: record?.done_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
               remarks: record?.remarks,
@@ -685,7 +699,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("ds_report", { reportData }, (err, html) => {
+      res.render("ml_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -807,7 +821,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("ds_report", { reportData }, (err, html) => {
+      req.app.render("ml_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -903,7 +917,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("ds_report", { reportData }, (err, html) => {
+    req.app.render("ml_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -991,7 +1005,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveDSReport", { reportData }, (err, html) => {
+      req.app.render("effectiveMLReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1110,7 +1124,7 @@ exports.effetiveViewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveDSReport", { reportData }, (err, html) => {
+    req.app.render("effectiveMLReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1143,7 +1157,7 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.DisinfectantStockRecords?.map((record) => ({
+    const data = reportData?.MicrobialLimitRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
       remarks: record?.remarks || "",
       checked_by: record?.checked_by || "",

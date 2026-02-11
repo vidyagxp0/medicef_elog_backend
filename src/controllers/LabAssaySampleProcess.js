@@ -321,7 +321,7 @@ exports.EditLabAssaySample = async (req, res) => {
     reviewerData,
     reviewer_id,
     approver_id,
-    DisinfectantStockRecords,
+    LabAssaySampleRecords,
     esignInput,
     password,
     initiatorComment,
@@ -558,10 +558,10 @@ exports.EditLabAssaySample = async (req, res) => {
     // Update / Create Temperature Records (NO DELETE)
 
     if (
-      Array.isArray(DisinfectantStockRecords) &&
-      DisinfectantStockRecords.length > 0
+      Array.isArray(LabAssaySampleRecords) &&
+      LabAssaySampleRecords.length > 0
     ) {
-      for (const record of DisinfectantStockRecords) {
+      for (const record of LabAssaySampleRecords) {
         if (record.record_id) {
           // UPDATE existing row
           await LabAssaySampleRecord.update(
@@ -659,7 +659,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("ds_report", { reportData }, (err, html) => {
+      res.render("la_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -781,7 +781,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("ds_report", { reportData }, (err, html) => {
+      req.app.render("la_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -877,7 +877,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("ds_report", { reportData }, (err, html) => {
+    req.app.render("la_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -965,7 +965,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveDSReport", { reportData }, (err, html) => {
+      req.app.render("effectiveLAReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1084,7 +1084,7 @@ exports.effetiveViewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveDSReport", { reportData }, (err, html) => {
+    req.app.render("effectiveLAReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1117,7 +1117,7 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.DisinfectantStockRecords?.map((record) => ({
+    const data = reportData?.LabAssaySampleRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
       remarks: record?.remarks || "",
       checked_by: record?.checked_by || "",
