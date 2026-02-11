@@ -8,9 +8,9 @@ const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
-const disinfectantStockForm = require("../models/disinfectantStockForm");
-const disinfectantStockRecord = require("../models/disinfectantStockRecords");
-const disinfectantStockAuditTrail = require("../models/disinfectantStockAuditTrail");
+const MicrobialLimitForm = require("../models/microbialLimitForm");
+const MicrobialLimitRecord = require("../models/microbialLimitRecord");
+const MicrobialAuditTrail = require("../models/microbialAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
 
@@ -137,7 +137,7 @@ exports.InsertMicrobialLimit = async (req, res) => {
     });
 
     // Create new Disinfectant Stock Form
-    const newForm = await disinfectantStockForm.create(
+    const newForm = await MicrobialLimitForm.create(
       {
         department_id: department_id,
         process_id: process_id,
@@ -298,7 +298,7 @@ exports.InsertMicrobialLimit = async (req, res) => {
       });
     }
 
-    await disinfectantStockAuditTrail.bulkCreate(auditTrailEntries, {
+    await MicrobialAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -413,7 +413,7 @@ exports.EditMicrobialLimit = async (req, res) => {
       }
     });
 
-    const form = await disinfectantStockForm.findOne({
+    const form = await MicrobialLimitForm.findOne({
       where: { form_id: form_id },
       transaction,
     });
@@ -575,7 +575,7 @@ exports.EditMicrobialLimit = async (req, res) => {
       for (const record of DisinfectantStockRecords) {
         if (record.record_id) {
           // UPDATE existing row
-          await disinfectantStockRecord.update(
+          await MicrobialLimitRecord.update(
             {
               unique_id: record?.unique_id,
               date: record?.date,
@@ -619,7 +619,7 @@ exports.EditMicrobialLimit = async (req, res) => {
           );
         } else {
           // CREATE only new row
-          await disinfectantStockRecord.create(
+          await MicrobialLimitRecord.create(
             {
               form_id: form_id,
               unique_id: record?.unique_id,
@@ -644,7 +644,7 @@ exports.EditMicrobialLimit = async (req, res) => {
         }
       }
     }
-    await disinfectantStockAuditTrail.bulkCreate(auditTrailEntries, {
+    await MicrobialAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -759,7 +759,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await disinfectantStockForm.findOne({
+    const formData = await MicrobialLimitForm.findOne({
       where: { form_id },
       include: [
         {
@@ -881,7 +881,7 @@ exports.chatByPdf = async (req, res) => {
 exports.viewReport = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await disinfectantStockForm.findOne({
+    const formData = await MicrobialLimitForm.findOne({
       where: { form_id },
       include: [
         {
@@ -942,11 +942,11 @@ exports.effetiveChatByPdf = async (req, res) => {
       };
     }
 
-    const formData = await disinfectantStockForm.findOne({
+    const formData = await MicrobialLimitForm.findOne({
       where: { form_id },
       include: [
         {
-          model: disinfectantStockRecord,
+          model: MicrobialLimitRecord,
           where: recordWhere, // directly use literal or undefined
           required: false,
           separate: true, // important for order to work on hasMany
@@ -1087,11 +1087,11 @@ exports.effetiveViewReport = async (req, res) => {
     //   };
     // }
 
-    const formData = await disinfectantStockForm.findOne({
+    const formData = await MicrobialLimitForm.findOne({
       where: { form_id },
       include: [
         {
-          model: disinfectantStockRecord,
+          model: MicrobialLimitRecord,
           // where: recordWhere, // directly use literal or undefined
           // required: false,
           // separate: true,

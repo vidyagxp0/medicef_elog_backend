@@ -1,7 +1,7 @@
 const { sequelize } = require("../config/db");
 const { DataTypes } = require("sequelize");
 const User = require("./users");
-const MicrobialLimitForm = require("./MicrobialLimitForm");
+const MicrobialLimitForm = require("./microbialLimitForm");
 
 const MicrobialLimitAuditTrail = sequelize.define(
   "MicrobialLimitAuditTrail",

@@ -143,23 +143,16 @@ Process.hasMany(MicrobialLimitForm, { foreignKey: "process_id" });
 MicrobialLimitForm.belongsTo(User, { foreignKey: "initiator_id" });
 User.hasMany(MicrobialLimitForm, { foreignKey: "initiator_id" });
 
-// MicrobialLimitForm.belongsTo(User, {
-//   foreignKey: "reviewer_id",
-//   as: "reviewer",
-// });
-// User.hasMany(MicrobialLimitForm, {
-//   foreignKey: "reviewer_id",
-//   as: "reviewer",
-// });
 
 MicrobialLimitForm.belongsTo(User, {
   foreignKey: "approver_id",
   as: "approver",
 });
-User.hasMany(MicrobialLimitForm, {
-  foreignKey: "approver_id",
-  as: "mlApprovals",
-});
+
+// User.hasMany(MicrobialLimitForm, {
+//   foreignKey: "approver_id",
+//   as: "mlApprovals",
+// });
 
 MicrobialLimitForm.belongsTo(WorkflowState, {
   foreignKey: "workflow_state_id",
