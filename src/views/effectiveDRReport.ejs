@@ -123,7 +123,7 @@
         <tr>
           <td class="label">Record Id</td>
           <td class="value">
-            MED/MLR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+            MED/DRR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
           </td>
         </tr>
         <tr>
@@ -148,31 +148,37 @@
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Microbial Limit Test Sample Records</h2>
-    <h3 class="subheading">Part-I</h3>
-    <% if (reportData.MicrobialLimitRecords && reportData.MicrobialLimitRecords.length> 0) { %>
+    <h2 class="heading">Dispensing Records</h2>
+    <% if (reportData.DispensingRecords && reportData.DispensingRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
-            <th>S. No.</th>
-            <th>Unique ID</th>
-            <th>Date</th>
-            <th>Product Name</th>
-            <th>Batch No.</th>
-            <th>Mfg. Date</th>
-            <th>Exp. Date</th>
-            <th>A.R. No.</th>
-            <th>Analysis Date</th>
-            <th>Analyzed By</th>
-            <th>Results of TBC CFU/g or ml</th>
-            <th>Observed By</th>
-            <th>Results of TFC CFU/g or ml</th>
-            <th>Observed By</th>
+            <th rowspan="2">S. No.</th>
+            <th rowspan="2">Unique ID</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Product Name</th>
+            <th rowspan="2">Batch No.</th>
+            <th rowspan="2">Batch Size</th>
+            <th colspan="4">Dispensing</th>
+            <th colspan="1"></th>
+            <th colspan="4">Cleaning</th>
+            <th rowspan="2">Remark</th>
           </tr>
+          <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Verified By</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Done By</th>
+            <th>Verified By</th>
+        </tr>
         </thead>
         <tbody>
 
-          <% reportData.MicrobialLimitRecords.forEach((record, index)=> { %>
+          <% reportData.DispensingRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -190,103 +196,38 @@
                 <%= record?.batch_no || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.mfg_date || "Not Applicable" %>
+                <%= record?.batch_size || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.exp_date || "Not Applicable" %>
+                <%= record?.dispensingStartTime || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.ar_no || "Not Applicable" %>
+                <%= record?.dispensingEndTime || "Not Applicable" %>
               </td>
               <td>
-                <%= formatDateOnly(record?.analysis_date) || "Not Applicable" %>
+                <%= record?.dispensingDoneBy || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.analyzed_by || "Not Applicable" %>
+                <%= record?.dispensingCheckedBy || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.results_of_tbc || "Not Applicable" %>
+                <%= record?.verified_by || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.observed1_by || "Not Applicable" %>
+                <%= record?.cleaningStartTime || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.results_of_tfc || "Not Applicable" %>
+                <%= record?.cleaningEndTime || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.observed2_by || "Not Applicable" %>
+                  <%= record?.cleaningDoneBy || "Not Applicable" %>
               </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-        <h3 class="subheading">Part-II</h3>
-    <% if (reportData.MicrobialLimitRecords && reportData.MicrobialLimitRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>E. coli</th>
-            <th>Salmonella</th>
-            <th>P. Aeruginosa</th>
-            <th>S. aureus</th>
-            <th>Shigella boydii</th>
-            <th>C. albicans</th>
-            <th>Clostridia</th>
-            <th>Bile Tolerant Gram –ve bacteria</th>
-            <th>Date Of Release	</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.MicrobialLimitRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
+               <td>
+                  <%= record?.cleaningVerifiedBy || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.e_coli || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.salmonella || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.p_aeruginosa || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.s_aureus || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.shigellaboydii || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.c_albicans || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.clostridia || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.bile_tolerant || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.date_of_release || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
                   <%= record?.remarks || "Not Applicable" %>
-                </td>
+              </td>
             </tr>
             <% }) %>
         </tbody>
@@ -295,6 +236,7 @@
         <p>No Records Found.</p>
         <% } %>
 
+  
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
 

@@ -1,18 +1,18 @@
-const ahuOperationForm = require("../models/ahuOperationForm");
-const ahuOperationRecord = require("../models/ahuOperationRecord");
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
-const UserRole = require("../models/userRoles");
-const { Op, ValidationError } = require("sequelize");
+const { ValidationError } = require("sequelize");
 const bcrypt = require("bcrypt");
 const { getElogDocsUrl } = require("../middlewares/authentication");
-const ahuOperationAuditTrail = require("../models/ahuOperationAuditTrail");
-const Mailer = require("../middlewares/mailer");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
+const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
+const ReturnedFinishedForm = require("../models/returnedFinishedForm");
+const ReturnedFinishedRecord = require("../models/returnedFinishedRecord");
+const ReturnedFinishedAuditTrail = require("../models/returnedFinishedAuditTrail");
 const Process = require("../models/processes");
+const { Op, fn, col, where, literal } = require("sequelize");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -33,7 +33,7 @@ const parseIfString = (value, fallback = null) => {
   if (typeof value === "string") {
     try {
       return JSON.parse(value);
-    } catch {
+    } catch (e) {
       return fallback;
     }
   }
@@ -41,14 +41,15 @@ const parseIfString = (value, fallback = null) => {
   return value;
 };
 
-
-// Fill tempratre record form and insert its records.
-exports.InsertAHU = async (req, res) => {
+// Fill Lab Assay Sample form and insert its records.
+exports.InsertReturnedFinished = async (req, res) => {
   const {
     department_id,
     process_id,
     description,
     departmentName,
+    area_name,
+    room_id,
     reviewer_id,
     reviewerData,
     approver_id,
@@ -57,12 +58,8 @@ exports.InsertAHU = async (req, res) => {
     password,
     FormRecordsArray,
     initiatorDeclaration,
-    additionalAttachment,
-    area_name,
-    room_id,
     additionalInfo,
   } = req.body;
-
 
   if (!description) {
     return res
@@ -87,15 +84,18 @@ exports.InsertAHU = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Please provide an approver." });
   }
+
   if (!reviewerData) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a reviewer data." });
   }
+
   if (!esignInput || !password) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide email or username and password." });
+    return res.status(400).json({
+      error: true,
+      message: "Please provide email or username and password.",
+    });
   }
 
   // Start a transaction
@@ -126,7 +126,7 @@ exports.InsertAHU = async (req, res) => {
     let initiatorAttachment = null;
     let additionalAttachment = null;
     const supportingDocs = {};
-    
+
     // Process files
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
@@ -134,20 +134,10 @@ exports.InsertAHU = async (req, res) => {
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       }
-      //  else if (file.fieldname.startsWith("FormRecordsArray[")) {
-      //   // Extract the index from the fieldname
-      //   const match = file.fieldname.match(
-      //     /FormRecordsArray\[(\d+)\]\[supporting_docs\]/
-      //   );
-      //   if (match) {
-      //     const index = match[1];
-      //     supportingDocs[index] = file;
-      //   }
-      // }
     });
 
-    // Create new temperature record Form
-    const newForm = await ahuOperationForm.create(
+    // Create new Disinfectant Stock Form
+    const newForm = await ReturnedFinishedForm.create(
       {
         department_id: department_id,
         process_id: process_id,
@@ -157,8 +147,6 @@ exports.InsertAHU = async (req, res) => {
         status: "Opened",
         stage: 1,
         departmentName: departmentName,
-        area_name:area_name,
-        room_id:room_id,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -166,14 +154,17 @@ exports.InsertAHU = async (req, res) => {
         additionalAttachment: getElogDocsUrl(additionalAttachment),
         initiatorComment: initiatorComment,
         additionalInfo: additionalInfo,
+        area_name: area_name,
+        room_id: room_id,
       },
 
-      { transaction }
+      { transaction },
     );
 
     const auditTrailEntries = [];
     const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
-    const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
+    const reviewerNames = reviewerUsers.map((u) => u.name).join(", ");
+
     const fields = {
       description,
       departmentName,
@@ -211,6 +202,7 @@ exports.InsertAHU = async (req, res) => {
         action: "Opened",
       });
     }
+
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
@@ -220,22 +212,90 @@ exports.InsertAHU = async (req, res) => {
         changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
+        declaration: initiatorDeclaration,
         action: "Opened",
       });
     }
 
-    await ahuOperationAuditTrail.bulkCreate(auditTrailEntries, {
+    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
+      const formRecords = FormRecordsArray.map((record, index) => ({
+        form_id: newForm?.form_id,
+        unique_id: record?.unique_id,
+        date: record?.date,
+        product_name: record?.product_name,
+        batch_no: record?.batch_no,
+        mfg_date: record?.mfg_date,
+        exp_date: record?.exp_date,
+        no_of_package: record?.no_of_package,
+        returned_quantity: record?.returned_quantity,
+        party_name: record?.party_name,
+        invoice_no: record?.invoice_no,
+        reason_for_return: record?.reason_for_return,
+        received_by: record?.received_by,
+        verified_by: record?.verified_by,
+        done_by: record?.done_by,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
+      }));
+
+      formRecords.forEach((record, index) => {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Unique Id",
+          previous_value: null,
+          new_value: record.unique_id || "",
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          action: "Opened",
+        });
+
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "Remarks",
+          previous_value: null,
+          new_value: record.remarks,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          action: "Opened",
+        });
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+          field_name: "CheckedBy",
+          previous_value: null,
+          new_value: record.checked_by,
+          changed_by: user.user_id,
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+          action: "Opened",
+        });
+        if (supportingDocs[index]) {
+          auditTrailEntries.push({
+            form_id: newForm.form_id,
+            field_name: "SupportingDocs",
+            previous_value: null,
+            new_value: getElogDocsUrl(supportingDocs),
+            changed_by: user.user_id,
+            previous_status: "Not Applicable",
+            new_status: "Opened",
+            action: "Opened",
+          });
+        }
+      });
+    }
+
+    await ReturnedFinishedAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
     await transaction.commit();
-
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
     });
   } catch (error) {
-    // Rollback the transaction in case of error
     await transaction.rollback();
 
     let errorMessage = "Error during creating elog";
@@ -245,39 +305,38 @@ exports.InsertAHU = async (req, res) => {
 
     return res.status(500).json({
       error: true,
-      message: `${errorMessage}: ${error}`,
+      message: `${errorMessage}: ${error.message}`,
     });
   }
 };
 
-// edit tempratre record elog details
-exports.EditAHU = async (req, res) => {
-  const {form_id} = req.params;
+exports.EditReturnedFinished = async (req, res) => {
+
+
+
   const {
-    process_id,
     department_id,
     description,
     departmentName,
-    reviewer_id,
-    reviewerData,
-    approver_id,
-    AhuOperationRecords,
-    esignInput,
-    password,
     area_name,
     room_id,
+    reviewerData,
+    reviewer_id,
+    approver_id,
+    ReturnedFinishedRecords,
+    esignInput,
+    password,
     initiatorComment,
-    initiatorDeclaration,
     additionalInfo,
   } = req.body;
 
-  // Check for required fields and provide specific error messages
+  const { form_id } = req.params;
 
   if (!form_id) {
     return res
       .status(400)
       .json({ error: true, message: "Please provide a form ID." });
-  }  
+  }
 
   if (!description) {
     return res
@@ -290,7 +349,7 @@ exports.EditAHU = async (req, res) => {
       .status(400)
       .json({ error: true, message: "Area name field is mandatory." });
   }
-  
+
   if (!reviewer_id) {
     return res
       .status(400)
@@ -303,11 +362,10 @@ exports.EditAHU = async (req, res) => {
       .json({ error: true, message: "Please provide an approver." });
   }
 
-  
   if (!esignInput || !password) {
     return res
       .status(400)
-      .json({ error: true, message: "Please provide email or username and password." });
+      .json({ error: true, message: "Please provide email and password." });
   }
 
   const transaction = await sequelize.transaction();
@@ -338,28 +396,15 @@ exports.EditAHU = async (req, res) => {
     let additionalAttachment = null;
     const supportingDocs = {};
 
-    // if(!req.files){
     req.files?.forEach((file) => {
       if (file.fieldname === "initiatorAttachment") {
         initiatorAttachment = file;
       } else if (file.fieldname === "additionalAttachment") {
         additionalAttachment = file;
       }
-      //  else if (file.fieldname.startsWith("AhuOperationRecords[")) {
-      //   // Extract the index from the fieldname
-      //   const match = file.fieldname.match(
-      //     /AhuOperationRecords\[(\d+)\]\[supporting_docs\]/
-      //   );
-      //   if (match) {
-      //     const index = match[1];
-      //     supportingDocs[index] = file;
-      //   }
-      // }
     });
-    // }
 
-    // Find the form by ID
-    const form = await ahuOperationForm.findOne({
+    const form = await ReturnedFinishedForm.findOne({
       where: { form_id: form_id },
       transaction,
     });
@@ -380,6 +425,7 @@ exports.EditAHU = async (req, res) => {
     const fields = {
       description,
       departmentName,
+      initiatorComment,
       area_name,
       room_id,
       initiatorComment,
@@ -392,16 +438,13 @@ exports.EditAHU = async (req, res) => {
       additionalInfo,
     };
 
-
     const normalizeValue = (val) => {
       if (val === null || val === undefined) return val;
 
       if (Array.isArray(val)) {
         return val
           .map(normalizeValue)
-          .sort((a, b) =>
-            JSON.stringify(a).localeCompare(JSON.stringify(b))
-          );
+          .sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
       }
 
       if (typeof val === "object") {
@@ -422,35 +465,37 @@ exports.EditAHU = async (req, res) => {
         return !areFloatsEqual(oldVal, newVal);
       }
 
-      return JSON.stringify(normalizeValue(oldVal)) !==
-        JSON.stringify(normalizeValue(newVal));
+      return (
+        JSON.stringify(normalizeValue(oldVal)) !==
+        JSON.stringify(normalizeValue(newVal))
+      );
     };
 
-  const formatAuditValue = (value) => {
-    if (typeof value === "object" && value !== null) {
-      return JSON.stringify(value);
-    }
-    return value;
+    const formatAuditValue = (value) => {
+      if (typeof value === "object" && value !== null) {
+        return JSON.stringify(value);
+      }
+      return value;
     };
 
-    const dbReviewerIds = parseIfString(form?.reviewer_id, []);
+    const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
+
     if (
-      reviewer_id &&
-        JSON.stringify(dbReviewerIds?.sort()) !==
-        JSON.stringify(reqReviewerIds?.sort())   
-     ) {
+      JSON.stringify(dbReviewerIds.sort()) !==
+      JSON.stringify(reqReviewerIds.sort())
+    ) {
       const oldReviewers = await getUsersByIdsReviewer(dbReviewerIds);
       const newReviewers = await getUsersByIdsReviewer(reqReviewerIds);
 
       auditTrailEntries.push({
         form_id: form.form_id,
         field_name: "reviewer",
-        previous_value: oldReviewers.map(u => u.name).join(", "),
-        new_value: newReviewers.map(u => u.name).join(", "),
+        previous_value: oldReviewers?.map((u) => u.name).join(", "),
+        new_value: newReviewers?.map((u) => u.name).join(", "),
         changed_by: user.user_id,
         previous_status: form.status,
-        new_status: "Opened",
+        new_status: form.status,
         action: "Update Elog",
       });
     }
@@ -466,11 +511,10 @@ exports.EditAHU = async (req, res) => {
         new_value: newApprover?.name || "",
         changed_by: user.user_id,
         previous_status: form.status,
-        new_status: "Opened",
+        new_status: form.status,
         action: "Update Elog",
       });
     }
-
 
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
@@ -489,7 +533,6 @@ exports.EditAHU = async (req, res) => {
       }
     }
 
-
     // Update the form details
     await form.update(
       {
@@ -502,73 +545,86 @@ exports.EditAHU = async (req, res) => {
         reviewerData,
         approver_id,
         initiatorAttachment: initiatorAttachment
-        ? getElogDocsUrl(initiatorAttachment)
-        : form.initiatorAttachment,
+          ? getElogDocsUrl(initiatorAttachment)
+          : form.initiatorAttachment,
+
         additionalAttachment: additionalAttachment
-        ? getElogDocsUrl(additionalAttachment)
-        : form.additionalAttachment,
+          ? getElogDocsUrl(additionalAttachment)
+          : form.additionalAttachment,
         initiatorComment,
         additionalInfo,
       },
-      { transaction }
+      { transaction },
     );
 
- // Update / Create Temperature Records (NO DELETE)
+    // Update / Create Temperature Records (NO DELETE)
 
-      if (Array.isArray(AhuOperationRecords) && AhuOperationRecords.length > 0) {
-
-        for (const record of AhuOperationRecords) {
-
-          if (record.record_id) {
-            // UPDATE existing row
-            await ahuOperationRecord.update(
-              {
-                unique_id: record?.unique_id,
-                date: record?.date,
-                equipmentId: record?.equipmentId,
-                time: record?.time,
-                operationStatus: record?.operationStatus,
-                time: record?.time,
-                remarks: record?.remarks,
-                done_by: record?.done_by,
-                reviewed_by: record?.reviewed_by,
-              },
-              {
-                where: {
-                  record_id: record.record_id,
-                  form_id: form_id,
-                },
-                transaction,
-              }
-            );
-
-          } else {
-            // CREATE only new row
-            await ahuOperationRecord.create(
-              {
+    if (
+      Array.isArray(ReturnedFinishedRecords) &&
+      ReturnedFinishedRecords.length > 0
+    ) {
+      for (const record of ReturnedFinishedRecords) {
+        if (record.record_id) {
+          // UPDATE existing row
+          await ReturnedFinishedRecord.update(
+            {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              product_name: record?.product_name,
+              batch_no: record?.batch_no,
+              mfg_date: record?.mfg_date,
+              exp_date: record?.exp_date,
+              no_of_package: record?.no_of_package,
+              returned_quantity: record?.returned_quantity,
+              party_name: record?.party_name,
+              invoice_no: record?.invoice_no,
+              reason_for_return: record?.reason_for_return,
+              received_by: record?.received_by,
+              verified_by: record?.verified_by,
+              done_by: record?.done_by,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
+            },
+            {
+              where: {
+                record_id: record.record_id,
                 form_id: form_id,
-                unique_id: record?.unique_id,
-                date: record?.date,
-                equipmentId: record?.equipmentId,
-                time: record?.time,
-                operationStatus: record?.operationStatus,
-                time: record?.time,
-                // startedBy: record?.startedBy,
-                // stopTime: record?.stopTime,
-                // stoppedBy: record?.stoppedBy,
-                remarks: record?.remarks,
-                done_by: record?.done_by,
-                reviewed_by: record?.reviewed_by,
               },
-              { transaction }
-            );
-          }
+              transaction,
+            },
+          );
+        } else {
+          // CREATE only new row
+          await ReturnedFinishedRecord.create(
+            {
+              form_id: form_id,
+              unique_id: record?.unique_id,
+              date: record?.date,
+              product_name: record?.product_name,
+              batch_no: record?.batch_no,
+              mfg_date: record?.mfg_date,
+              exp_date: record?.exp_date,
+              no_of_package: record?.no_of_package,
+              returned_quantity: record?.returned_quantity,
+              party_name: record?.party_name,
+              invoice_no: record?.invoice_no,
+              reason_for_return: record?.reason_for_return,
+              received_by: record?.received_by,
+              verified_by: record?.verified_by,
+              done_by: record?.done_by,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
+            },
+            { transaction },
+          );
         }
       }
-
-      await ahuOperationAuditTrail.bulkCreate(auditTrailEntries, {
-        transaction,
-      });
+    }
+    await ReturnedFinishedAuditTrail.bulkCreate(auditTrailEntries, {
+      transaction,
+    });
 
     await transaction.commit();
 
@@ -591,11 +647,9 @@ exports.EditAHU = async (req, res) => {
   }
 };
 
-
 exports.generateReport = async (req, res) => {
   try {
     let reportData = req.body.reportData;
-
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -609,130 +663,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("tp_report", { reportData }, (err, html) => {
-        if (err) return reject(err);
-        resolve(html);
-      });
-    });
-
-    const browser = await puppeteer.launch({
-      headless: true,
-      timeout: 120000, // 2 minutes
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
-    const page = await browser.newPage();
-    const logoPath = path.join(__dirname, "../public/vidyalogo.png.png");
-    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
-    const logoDataUri = `data:image/png;base64,${logoBase64}`;
-
-    const user = await getUserById(req.user.userId);
-
-    // Set HTML content
-    await page.setContent(html, { waitUntil: "networkidle0" });
-
-    // Generate PDF
-    const pdf = await page.pdf({
-      format: "A4",
-      printBackground: true,
-      displayHeaderFooter: true,
-      headerTemplate: await new Promise((resolve, reject) => {
-        req.app.render(
-          "header",
-          { reportData: reportData, logoDataUri: logoDataUri },
-          (err, html) => {
-            if (err) return reject(err);
-            resolve(html);
-          }
-        );
-      }),
-
-      footerTemplate: await new Promise((resolve, reject) => {
-        req.app.render(
-          "footer",
-          { userName: user?.name, date: formattedDate },
-          (err, html) => {
-            if (err) return reject(err);
-            resolve(html);
-          }
-        );
-      }),
-
-      margin: {
-        top: "120px",
-        bottom: "60px",
-        right: "30px",
-        left: "30px",
-      },
-    });
-
-    // Close the browser
-    await browser.close();
-
-    // Set response headers and send PDF
-    res.set("Content-Type", "application/pdf");
-    res.send(pdf);
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    return res
-      .status(500)
-      .json({ error: true, message: `Error generating PDF: ${error.message}` });
-  }
-};
-
-const removeHtmlTags = (htmlString) => {
-  return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
-};
-exports.chatByPdf = async (req, res) => {
-  try {
-    const { form_id } = req.params;
-    const formData = await ahuOperationForm.findOne({
-      where: { form_id },
-      include: [
-        {
-          model: Process,
-        },
-        {
-          model: User,
-          as: "approver",
-        }
-      ],
-    });
-
-    if (!formData) {
-      return res.status(404).json({ error: true, message: "Form not found" });
-    }
-
-        // Sequelize → Plain JS object
-    const formJson = formData.toJSON();
-    const reportData = formJson;
-
-    const safeParse = (data) => {
-      try {
-        return typeof data === "string" ? JSON.parse(data) : data;
-      } catch {
-        return null;
-      }
-    };
-
-    reportData.reviewerData = safeParse(reportData.reviewerData);
-
-    reportData.description = removeHtmlTags(reportData.description);
-
-    const date = new Date();
-    const formattedDate = date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false, // Specify using 24-hour format
-    });
-
-    // Render HTML using EJS template
-    const html = await new Promise((resolve, reject) => {
-      req.app.render("ahu_report", { reportData }, (err, html) => {
+      res.render("rf_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -765,7 +696,7 @@ exports.chatByPdf = async (req, res) => {
           (err, html) => {
             if (err) return reject(err);
             resolve(html);
-          }
+          },
         );
       }),
 
@@ -776,7 +707,129 @@ exports.chatByPdf = async (req, res) => {
           (err, html) => {
             if (err) return reject(err);
             resolve(html);
-          }
+          },
+        );
+      }),
+      margin: {
+        top: "120px",
+        bottom: "60px",
+        right: "30px",
+        left: "30px",
+      },
+    });
+
+    // Close the browser
+    await browser.close();
+
+    // Set response headers and send PDF
+    res.set("Content-Type", "application/pdf");
+    res.send(pdf);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+    return res
+      .status(500)
+      .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+const removeHtmlTags = (htmlString) => {
+  return htmlString.replace(/<\/?[^>]+(>|$)/g, ""); // Removes all tags
+};
+exports.chatByPdf = async (req, res) => {
+  try {
+    const { form_id } = req.params;
+    const formData = await ReturnedFinishedForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: Process,
+        },
+        {
+          model: User,
+          as: "approver",
+        },
+      ],
+    });
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
+    const safeParse = (data) => {
+      try {
+        return typeof data === "string" ? JSON.parse(data) : data;
+      } catch {
+        return null;
+      }
+    };
+
+    reportData.reviewerData = safeParse(reportData.reviewerData);
+    reportData.limitData = safeParse(reportData.limitData);
+    reportData.description = removeHtmlTags(reportData.description);
+    reportData.addtionalInfo = reportData?.addtionalInfo
+      ? removeHtmlTags(reportData?.addtionalInfo)
+      : "Not Applicable";
+    const date = new Date();
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // Specify using 24-hour format
+    });
+
+    // Render HTML using EJS template
+    const html = await new Promise((resolve, reject) => {
+      req.app.render("rf_report", { reportData }, (err, html) => {
+        if (err) return reject(err);
+        resolve(html);
+      });
+    });
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+
+    const page = await browser.newPage();
+    const logoPath = path.join(__dirname, "../public/medicef_logo.png.png");
+    const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+    const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+    const user = await getUserById(req.user.userId);
+
+    // Set HTML content
+    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // Generate PDF
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "header",
+          { reportData: reportData, logoDataUri: logoDataUri },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          },
+        );
+      }),
+
+      footerTemplate: await new Promise((resolve, reject) => {
+        req.app.render(
+          "footer",
+          { userName: user?.name, date: formattedDate },
+          (err, html) => {
+            if (err) return reject(err);
+            resolve(html);
+          },
         );
       }),
       margin: {
@@ -789,8 +842,9 @@ exports.chatByPdf = async (req, res) => {
 
     // Close the browser
     await browser.close();
-    const uniqueId = uuidv4();
 
+    // Generate a unique UUID
+    const uniqueId = uuidv4();
     const filePath = path.resolve("public", `Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
@@ -805,7 +859,7 @@ exports.chatByPdf = async (req, res) => {
 exports.viewReport = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await ahuOperationForm.findOne({
+    const formData = await ReturnedFinishedForm.findOne({
       where: { form_id },
       include: [
         {
@@ -814,7 +868,7 @@ exports.viewReport = async (req, res) => {
         {
           model: User,
           as: "approver",
-        }
+        },
       ],
     });
 
@@ -827,7 +881,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("ahu_report", { reportData }, (err, html) => {
+    req.app.render("rf_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -841,47 +895,44 @@ exports.viewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-
 exports.effetiveChatByPdf = async (req, res) => {
   try {
+    const { form_id } = req.params;
+    const { fromDate, toDate } = req.body;
 
-const { form_id } = req.params;
-const { fromDate, toDate } = req.body;
+    if (!form_id) {
+      return res.status(400).json({ error: true, message: "Form Id Required" });
+    }
 
-if (!form_id) {
-  return res.status(400).json({ error: true, message: "Form Id Required" });
-}
+    let recordWhere = {};
 
-      let recordWhere = {};
+    if (fromDate && toDate) {
+      // fromDate, toDate expected in 'YYYY/MM/DD'
+      const [fy, fm, fd] = fromDate.split("/");
+      const [ty, tm, td] = toDate.split("/");
 
-      if (fromDate && toDate) {
-        // fromDate, toDate expected in 'YYYY/MM/DD'
-        const [fy, fm, fd] = fromDate.split("/"); 
-        const [ty, tm, td] = toDate.split("/");
-        
+      // create Date objects
+      const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
+      const to = new Date(ty, tm - 1, td);
 
-        // create Date objects
-        const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
-        const to = new Date(ty, tm - 1, td);
-        recordWhere.date = {
-          [Op.between]: [from, to],
-        };
-      }
+      recordWhere.date = {
+        [Op.between]: [from, to],
+      };
+    }
 
-    const formData = await ahuOperationForm.findOne({
+    const formData = await ReturnedFinishedForm.findOne({
       where: { form_id },
       include: [
         {
-          model: ahuOperationRecord,
+          model: ReturnedFinishedRecord,
           where: recordWhere, // directly use literal or undefined
           required: false,
-          separate: true,
+          separate: true, // important for order to work on hasMany
           // order: [["date", "ASC"], ["time", "ASC"]],
         },
         { model: Process },
       ],
     });
-
 
     if (!formData) {
       return res.status(404).json({ error: true, message: "Form not found" });
@@ -904,7 +955,7 @@ if (!form_id) {
     reportData.addtionalInfo = reportData?.addtionalInfo
       ? removeHtmlTags(reportData?.addtionalInfo)
       : "Not Applicable";
-      
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -918,7 +969,7 @@ if (!form_id) {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveAHUReport", { reportData }, (err, html) => {
+      req.app.render("effectiveMLReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -942,6 +993,7 @@ if (!form_id) {
     // Generate PDF
     const pdf = await page.pdf({
       format: "A4",
+      landscape: true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: await new Promise((resolve, reject) => {
@@ -951,7 +1003,7 @@ if (!form_id) {
           (err, html) => {
             if (err) return reject(err);
             resolve(html);
-          }
+          },
         );
       }),
 
@@ -962,7 +1014,7 @@ if (!form_id) {
           (err, html) => {
             if (err) return reject(err);
             resolve(html);
-          }
+          },
         );
       }),
       margin: {
@@ -977,10 +1029,10 @@ if (!form_id) {
     await browser.close();
     const uniqueId = uuidv4();
 
-    const filePath = path.resolve("public", `AHU_Elog_Report_${uniqueId}.pdf`);
+    const filePath = path.resolve("public", `DSR_Elog_Report_${uniqueId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `AHU_Elog_Report_${uniqueId}.pdf` });
+    res.status(200).json({ filename: `DSR_Elog_Report_${uniqueId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
@@ -990,9 +1042,53 @@ if (!form_id) {
 };
 exports.effetiveViewReport = async (req, res) => {
   try {
-    let reportData = req.body.reportData;
+    const { form_id } = req.params;
+    // const { fromDate, toDate } = req.query;
+
+    if (!form_id) {
+      return res.status(400).json({ error: true, message: "Form Id Required" });
+    }
+
+    // let recordWhere = {};
+
+    // if (fromDate && toDate) {
+    //   // fromDate, toDate expected in 'YYYY/MM/DD'
+    //   const [fy, fm, fd] = fromDate.split("/");
+    //   const [ty, tm, td] = toDate.split("/");
+
+    //   // create Date objects
+    //   const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
+    //   const to = new Date(ty, tm - 1, td);
+
+    //   recordWhere.date = {
+    //     [Op.between]: [from, to],
+    //   };
+    // }
+
+    const formData = await ReturnedFinishedForm.findOne({
+      where: { form_id },
+      include: [
+        {
+          model: ReturnedFinishedRecord,
+          // where: recordWhere, // directly use literal or undefined
+          // required: false,
+          // separate: true,
+          // order: [["date", "ASC"], ["time", "ASC"]],
+        },
+        { model: Process },
+      ],
+    });
+
+    if (!formData) {
+      return res.status(404).json({ error: true, message: "Form not found" });
+    }
+
+    // Sequelize → Plain JS object
+    const formJson = formData.toJSON();
+
+    const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveAHUReport", { reportData }, (err, html) => {
+    req.app.render("effectiveMLReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1006,11 +1102,11 @@ exports.effetiveViewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-
 exports.blankReport = async (req, res) => {
   try {
-    const reportData = req.body.reportData;
+    let reportData = req.body.reportData;
     const formId = req.params.form_id;
+    // reportData.title = "RUSOMA LABORATORIES PRIVATE LIMITED";
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
@@ -1025,24 +1121,17 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.temprature_record?.map((record) => ({
+    const data = reportData?.ReturnedFinishedRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
-      time: record?.time || "",
-      date: record?.date || "",
-      min_temprature_record: record?.min_temprature_record || "",
-      max_temprature_record: record?.max_temprature_record || "",
-      humidity_record: record?.humidity_record || "",
       remarks: record?.remarks || "",
-      done_by: record?.done_by || "",
-      reviewed_by: record?.reviewed_by || "",
-      approved_by: record?.approved_by ||"",
-      supporting_docs: record?.supporting_docs || "",
+      checked_by: record?.checked_by || "",
+      // supporting_docs: record?.supporting_docs || "",
     }));
 
     const arrayData = [...data, ...blankRows];
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("blankTPReport", { arrayData }, (err, html) => {
+      req.app.render("blankDPReport", { arrayData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1075,7 +1164,7 @@ exports.blankReport = async (req, res) => {
           (err, html) => {
             if (err) return reject(err);
             resolve(html);
-          }
+          },
         );
       }),
 
@@ -1086,28 +1175,81 @@ exports.blankReport = async (req, res) => {
           (err, html) => {
             if (err) return reject(err);
             resolve(html);
-          }
+          },
         );
       }),
       margin: {
         top: "145px",
-        // right: "50px",
+        right: "45px",
         bottom: "50px",
-        // left: "50px",
+        left: "45px",
       },
     });
 
     // Close the browser
     await browser.close();
 
-    const filePath = path.resolve("public", `TP_Elog_Report_${formId}.pdf`);
+    const filePath = path.resolve("public", `DSR_Elog_Report_${formId}.pdf`);
     fs.writeFileSync(filePath, pdf);
 
-    res.status(200).json({ filename: `TP_Elog_Report_${formId}.pdf` });
+    res.status(200).json({ filename: `DSR_Elog_Report_${formId}.pdf` });
   } catch (error) {
     console.error("Error generating PDF:", error);
     return res
       .status(500)
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
+  }
+};
+exports.sendReportOnMail = async (req, res) => {
+  const { to, cc, bcc, subject, message } = req.body;
+  const elogId = req.params.id;
+
+  const filePath = path.resolve("public", elogId);
+
+  const fileExists = fs.existsSync(filePath);
+  if (!fileExists) {
+    return res.status(404).json({
+      status: 404,
+      error: true,
+      message: "Attachment file not found",
+    });
+  }
+
+  const attachments = req.files?.map((file) => ({
+    filename: file.originalname,
+    path: file.path,
+  }));
+
+  const additionalAttachments = [
+    {
+      filename: `Elog_Report_${elogId}.pdf`,
+      path: filePath,
+    },
+    ...attachments,
+  ];
+
+  const mailData = {
+    to: to,
+    cc: cc || undefined,
+    bcc: bcc || undefined,
+    subject: subject,
+    message: message,
+    additionalAttachments,
+  };
+
+  try {
+    const result = await sendEmail(mailData);
+    return res.status(200).json({
+      status: 200,
+      error: false,
+      message: "Report email sent successfully",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: 500,
+      error: true,
+      message: `Internal Server Error${error}`,
+    });
   }
 };

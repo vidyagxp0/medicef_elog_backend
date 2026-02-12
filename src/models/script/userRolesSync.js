@@ -18,15 +18,26 @@ const rolesArray1 = [
   { label: "Quality Assurance-Equipment Usage Record-Initiator", },
   { label: "Quality Assurance-Area Cleaning Record-Initiator", },
   {
-    label: "Quality Assurance-DP Monitoring Across Filters-Initiator",
+    label: "Quality Assurance-DP Monitoring Across Filters Record-Initiator",
      },
   {
-    label: "Quality Assurance-Operation of Air Handling Unit-Initiator",
+    label: "Quality Assurance-Operation of Air Handling Unit Record-Initiator",
      },
   { label: "Quality Assurance-Instrument Usage Record-Initiator",},
   { label: "Quality Assurance-Disinfectant Stock Record-Initiator",},
-  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Initiator",},
-  { label: "Quality Assurance-Microbial Limit Test Sample-Initiator",},
+  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample Record-Initiator",},
+  { label: "Quality Assurance-Microbial Limit Test Sample Record-Initiator",},
+  { label: "Quality Assurance-Fogging Solution Preparation Record-Initiator", },
+  { label: "Quality Assurance-Area Fogging Record-Initiator", },
+  { label: "Quality Assurance-Filter Cleaning Record-Initiator", },
+  { label: "Quality Assurance-Media Consumption Record-Initiator", },
+  { label: "Quality Assurance-Dispensing Record-Initiator", },
+{ label: "Quality Assurance-Cold Chamber Cleaning Record-Initiator", },
+{ label: "Quality Assurance-Returned Finished Goods Register Record-Initiator", },
+{ label: "Quality Assurance-Dispensing Booth Activity Record-Initiator", },
+{ label: "Quality Assurance-Autoclave Sterelization Record-Initiator", },
+
+
 
   // Quality Control
   { label: "Quality Control-Differential Pressure Record-Initiator",} ,
@@ -36,15 +47,26 @@ const rolesArray1 = [
   { label: "Quality Control-Equipment Usage Record-Initiator" },
   { label: "Quality Control-Area Cleaning Record-Initiator"},
   {
-    label: "Quality Control-DP Monitoring Across Filters-Initiator",
+    label: "Quality Control-DP Monitoring Across Filters Record-Initiator",
       },
   {
-    label: "Quality Control-Operation of Air Handling Unit-Initiator",
+    label: "Quality Control-Operation of Air Handling Unit Record-Initiator",
       },
   { label: "Quality Control-Instrument Usage Record-Initiator",} ,
   { label: "Quality Control-Disinfectant Stock Record-Initiator",} ,
-  { label: "Quality Control-Lactic Acid Bacillus Assay Sample-Initiator",} ,
-  { label: "Quality Control-Microbial Limit Test Sample-Initiator",} ,
+  { label: "Quality Control-Lactic Acid Bacillus Assay Sample Record-Initiator",} ,
+  { label: "Quality Control-Microbial Limit Test Sample Record-Initiator",} ,
+  { label: "Quality Control-Fogging Solution Preparation Record-Initiator", },
+  { label: "Quality Control-Area Fogging Record-Initiator", },
+  { label: "Quality Control-Filter Cleaning Record-Initiator", },
+  { label: "Quality Control-Media Consumption Record-Initiator", },
+  { label: "Quality Control-Dispensing Record-Initiator" },
+{ label: "Quality Control-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Quality Control-Returned Finished Goods Register Record-Initiator" },
+{ label: "Quality Control-Dispensing Booth Activity Record-Initiator" },
+{ label: "Quality Control-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Production
   { label: "Production-Differential Pressure Record-Initiator", },
@@ -53,12 +75,23 @@ const rolesArray1 = [
       },
   { label: "Production-Equipment Usage Record-Initiator", },
   { label: "Production-Area Cleaning Record-Initiator", },
-  { label: "Production-DP Monitoring Across Filters-Initiator",} ,
-  { label: "Production-Operation of Air Handling Unit-Initiator",} ,
+  { label: "Production-DP Monitoring Across Filters Record-Initiator",} ,
+  { label: "Production-Operation of Air Handling Unit Record-Initiator",} ,
   { label: "Production-Instrument Usage Record-Initiator", },
   { label: "Production-Disinfectant Stock Record-Initiator", },
-  { label: "Production-Lactic Acid Bacillus Assay Sample-Initiator", },
-  { label: "Production-Microbial Limit Test Sample-Initiator", },
+  { label: "Production-Lactic Acid Bacillus Assay Sample Record-Initiator", },
+  { label: "Production-Microbial Limit Test Sample Record-Initiator", },
+  { label: "Production-Fogging Solution Preparation Record-Initiator", },
+  { label: "Production-Area Fogging Record-Initiator", },
+  { label: "Production-Filter Cleaning Record-Initiator", },
+  { label: "Production-Media Consumption Record-Initiator", },
+  { label: "Production-Dispensing Record-Initiator" },
+{ label: "Production-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Production-Returned Finished Goods Register Record-Initiator" },
+{ label: "Production-Dispensing Booth Activity Record-Initiator" },
+{ label: "Production-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Initiator", },
@@ -67,12 +100,23 @@ const rolesArray1 = [
       },
   { label: "Warehouse-Equipment Usage Record-Initiator", },
   { label: "Warehouse-Area Cleaning Record-Initiator", },
-  { label: "Warehouse-DP Monitoring Across Filters-Initiator", },
-  { label: "Warehouse-Operation of Air Handling Unit-Initiator", },
+  { label: "Warehouse-DP Monitoring Across Filters Record-Initiator", },
+  { label: "Warehouse-Operation of Air Handling Unit Record-Initiator", },
   { label: "Warehouse-Instrument Usage Record-Initiator", },
   { label: "Warehouse-Disinfectant Stock Record-Initiator", },
-  { label: "Warehouse-Lactic Acid Bacillus Assay Sample-Initiator", },
-  { label: "Warehouse-Microbial Limit Test Sample-Initiator", },
+  { label: "Warehouse-Lactic Acid Bacillus Assay Sample Record-Initiator", },
+  { label: "Warehouse-Microbial Limit Test Sample Record-Initiator", },
+  { label: "Warehouse-Fogging Solution Preparation Record-Initiator", },
+  { label: "Warehouse-Area Fogging Record-Initiator", },
+  { label: "Warehouse-Filter Cleaning Record-Initiator", },
+  { label: "Warehouse-Media Consumption Record-Initiator", },
+  { label: "Warehouse-Dispensing Record-Initiator" },
+{ label: "Warehouse-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Warehouse-Returned Finished Goods Register Record-Initiator" },
+{ label: "Warehouse-Dispensing Booth Activity Record-Initiator" },
+{ label: "Warehouse-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Initiator", },
@@ -81,12 +125,23 @@ const rolesArray1 = [
       },
   { label: "Engineering-Equipment Usage Record-Initiator", },
   { label: "Engineering-Area Cleaning Record-Initiator", },
-  { label: "Engineering-DP Monitoring Across Filters-Initiator", },
-  { label: "Engineering-Operation of Air Handling Unit-Initiator", },
+  { label: "Engineering-DP Monitoring Across Filters Record-Initiator", },
+  { label: "Engineering-Operation of Air Handling Unit Record-Initiator", },
   { label: "Engineering-Instrument Usage Record-Initiator", },
   { label: "Engineering-Disinfectant Stock Record-Initiator", },
-  { label: "Engineering-Lactic Acid Bacillus Assay Sample-Initiator", },
-  { label: "Engineering-Microbial Limit Test Sample-Initiator", },
+  { label: "Engineering-Lactic Acid Bacillus Assay Sample Record-Initiator", },
+  { label: "Engineering-Microbial Limit Test Sample Record-Initiator", },
+  { label: "Engineering-Fogging Solution Preparation Record-Initiator", },
+  { label: "Engineering-Area Fogging Record-Initiator", },
+  { label: "Engineering-Filter Cleaning Record-Initiator", },
+  { label: "Engineering-Media Consumption Record-Initiator", },
+  { label: "Engineering-Dispensing Record-Initiator" },
+{ label: "Engineering-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Engineering-Returned Finished Goods Register Record-Initiator" },
+{ label: "Engineering-Dispensing Booth Activity Record-Initiator" },
+{ label: "Engineering-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Human Resources
   {
@@ -98,15 +153,26 @@ const rolesArray1 = [
   { label: "Human Resources-Equipment Usage Record-Initiator",} ,
   { label: "Human Resources-Area Cleaning Record-Initiator",} ,
   {
-    label: "Human Resources-DP Monitoring Across Filters-Initiator",
+    label: "Human Resources-DP Monitoring Across Filters Record-Initiator",
       },
   {
-    label: "Human Resources-Operation of Air Handling Unit-Initiator",
+    label: "Human Resources-Operation of Air Handling Unit Record-Initiator",
       },
   { label: "Human Resources-Instrument Usage Record-Initiator", },
   { label: "Human Resources-Disinfectant Stock Record-Initiator", },
-  { label: "Human Resources-Lactic Acid Bacillus Assay Sample-Initiator", },
-  { label: "Human Resources-Microbial Limit Test Sample-Initiator", },
+  { label: "Human Resources-Lactic Acid Bacillus Assay Sample Record-Initiator", },
+  { label: "Human Resources-Microbial Limit Test Sample Record-Initiator", },
+  { label: "Human Resources-Fogging Solution Preparation Record-Initiator", },
+  { label: "Human Resources-Area Fogging Record-Initiator", },
+  { label: "Human Resources-Filter Cleaning Record-Initiator", },
+  { label: "Human Resources-Media Consumption Record-Initiator", },
+  { label: "Human Resources-Dispensing Record-Initiator" },
+{ label: "Human Resources-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Human Resources-Returned Finished Goods Register Record-Initiator" },
+{ label: "Human Resources-Dispensing Booth Activity Record-Initiator" },
+{ label: "Human Resources-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Information Technology
   {
@@ -121,10 +187,10 @@ const rolesArray1 = [
       },
   { label: "Information Technology-Area Cleaning Record-Initiator",} ,
   {
-    label: "Information Technology-DP Monitoring Across Filters-Initiator",
+    label: "Information Technology-DP Monitoring Across Filters Record-Initiator",
       },
   {
-    label: "Information Technology-Operation of Air Handling Unit-Initiator",
+    label: "Information Technology-Operation of Air Handling Unit Record-Initiator",
       },
   {
     label: "Information Technology-Instrument Usage Record-Initiator",
@@ -133,11 +199,22 @@ const rolesArray1 = [
     label: "Information Technology-Disinfectant Stock Record-Initiator",
       },
   {
-    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Initiator",
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample Record-Initiator",
       },
   {
-    label: "Information Technology-Microbial Limit Test Sample-Initiator",
+    label: "Information Technology-Microbial Limit Test Sample Record-Initiator",
       },
+  { label: "Information Technology-Fogging Solution Preparation Record-Initiator", },
+  { label: "Information Technology-Area Fogging Record-Initiator", },
+  { label: "Information Technology-Filter Cleaning Record-Initiator", },
+  { label: "Information Technology-Media Consumption Record-Initiator", },
+  { label: "Information Technology-Dispensing Record-Initiator" },
+{ label: "Information Technology-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Information Technology-Returned Finished Goods Register Record-Initiator" },
+{ label: "Information Technology-Dispensing Booth Activity Record-Initiator" },
+{ label: "Information Technology-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Initiator",  },
@@ -146,12 +223,22 @@ const rolesArray1 = [
       },
   { label: "Accounts-Equipment Usage Record-Initiator", },
   { label: "Accounts-Area Cleaning Record-Initiator", },
-  { label: "Accounts-DP Monitoring Across Filters-Initiator", },
-  { label: "Accounts-Operation of Air Handling Unit-Initiator", },
+  { label: "Accounts-DP Monitoring Across Filters Record-Initiator", },
+  { label: "Accounts-Operation of Air Handling Unit Record-Initiator", },
   { label: "Accounts-Instrument Usage Record-Initiator", },
   { label: "Accounts-Disinfectant Stock Record-Initiator", },
-  { label: "Accounts-Lactic Acid Bacillus Assay Sample-Initiator", },
-  { label: "Accounts-Microbial Limit Test Sample-Initiator", },
+  { label: "Accounts-Lactic Acid Bacillus Assay Sample Record-Initiator", },
+  { label: "Accounts-Microbial Limit Test Sample Record-Initiator", },
+  { label: "Accounts-Fogging Solution Preparation Record-Initiator", },
+  { label: "Accounts-Area Fogging Record-Initiator", },
+  { label: "Accounts-Filter Cleaning Record-Initiator", },
+  { label: "Accounts-Media Consumption Record-Initiator", },
+  { label: "Accounts-Dispensing Record-Initiator" },
+{ label: "Accounts-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Accounts-Returned Finished Goods Register Record-Initiator" },
+{ label: "Accounts-Dispensing Booth Activity Record-Initiator" },
+{ label: "Accounts-Autoclave Sterelization Record-Initiator" },
+
       
   // PPIC
   {
@@ -172,11 +259,11 @@ const rolesArray1 = [
       },
   {
     label:
-      "Production Planning and Inventory Control-DP Monitoring Across Filters-Initiator",
+      "Production Planning and Inventory Control-DP Monitoring Across Filters Record-Initiator",
       },
   {
     label:
-      "Production Planning and Inventory Control-Operation of Air Handling Unit-Initiator",
+      "Production Planning and Inventory Control-Operation of Air Handling Unit Record-Initiator",
       },
   {
     label:
@@ -188,12 +275,23 @@ const rolesArray1 = [
       },
   {
     label:
-      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Initiator",
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample Record-Initiator",
       },
   {
     label:
-      "Production Planning and Inventory Control-Microbial Limit Test Sample-Initiator",
+      "Production Planning and Inventory Control-Microbial Limit Test Sample Record-Initiator",
       },
+  { label: "Production Planning and Inventory Control-Fogging Solution Preparation Record-Initiator", },
+  { label: "Production Planning and Inventory Control-Area Fogging Record-Initiator", },
+  { label: "Production Planning and Inventory Control-Filter Cleaning Record-Initiator", },
+  { label: "Production Planning and Inventory Control-Media Consumption Record-Initiator", },
+  { label: "Production Planning and Inventory Control-Dispensing Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Initiator" },
+
+
 
   // Regulatory Affairs
   {
@@ -206,15 +304,26 @@ const rolesArray1 = [
   { label: "Regulatory Affairs-Equipment Usage Record-Initiator", },
   { label: "Regulatory Affairs-Area Cleaning Record-Initiator", },
   {
-    label: "Regulatory Affairs-DP Monitoring Across Filters-Initiator",
+    label: "Regulatory Affairs-DP Monitoring Across Filters Record-Initiator",
       },
   {
-    label: "Regulatory Affairs-Operation of Air Handling Unit-Initiator",
+    label: "Regulatory Affairs-Operation of Air Handling Unit Record-Initiator",
       },
   { label: "Regulatory Affairs-Instrument Usage Record-Initiator", },
   { label: "Regulatory Affairs-Disinfectant Stock Record-Initiator", },
-  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Initiator", },
-  { label: "Regulatory Affairs-Microbial Limit Test Sample-Initiator", },
+  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample Record-Initiator", },
+  { label: "Regulatory Affairs-Microbial Limit Test Sample Record-Initiator", },
+  { label: "Regulatory Affairs-Fogging Solution Preparation Record-Initiator", },
+  { label: "Regulatory Affairs-Area Fogging Record-Initiator", },
+  { label: "Regulatory Affairs-Filter Cleaning Record-Initiator", },
+  { label: "Regulatory Affairs-Media Consumption Record-Initiator", },
+  { label: "Regulatory Affairs-Dispensing Record-Initiator" },
+{ label: "Regulatory Affairs-Cold Chamber Cleaning Record-Initiator" },
+{ label: "Regulatory Affairs-Returned Finished Goods Register Record-Initiator" },
+{ label: "Regulatory Affairs-Dispensing Booth Activity Record-Initiator" },
+{ label: "Regulatory Affairs-Autoclave Sterelization Record-Initiator" },
+
+
 ];
 
 const rolesArray2 = [
@@ -228,15 +337,26 @@ const rolesArray2 = [
   { label: "Quality Assurance-Equipment Usage Record-Reviewer", },
   { label: "Quality Assurance-Area Cleaning Record-Reviewer", },
   {
-    label: "Quality Assurance-DP Monitoring Across Filters-Reviewer",
+    label: "Quality Assurance-DP Monitoring Across Filters Record-Reviewer",
       },
   {
-    label: "Quality Assurance-Operation of Air Handling Unit-Reviewer",
+    label: "Quality Assurance-Operation of Air Handling Unit Record-Reviewer",
       },
   { label: "Quality Assurance-Instrument Usage Record-Reviewer", },
   { label: "Quality Assurance-Disinfectant Stock Record-Reviewer", },
-  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Quality Assurance-Microbial Limit Test Sample-Reviewer", },
+  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Quality Assurance-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Quality Assurance-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Quality Assurance-Area Fogging Record-Reviewer", },
+  { label: "Quality Assurance-Filter Cleaning Record-Reviewer", },
+  { label: "Quality Assurance-Media Consumption Record-Reviewer", },
+  { label: "Quality Assurance-Dispensing Record-Reviewer" },
+{ label: "Quality Assurance-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Quality Assurance-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Quality Assurance-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Quality Assurance-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Quality Control
   { label: "Quality Control-Differential Pressure Record-Reviewer",} ,
@@ -245,14 +365,25 @@ const rolesArray2 = [
       },
   { label: "Quality Control-Equipment Usage Record-Reviewer", },
   { label: "Quality Control-Area Cleaning Record-Reviewer", },
-  { label: "Quality Control-DP Monitoring Across Filters-Reviewer", },
+  { label: "Quality Control-DP Monitoring Across Filters Record-Reviewer", },
   {
-    label: "Quality Control-Operation of Air Handling Unit-Reviewer",
+    label: "Quality Control-Operation of Air Handling Unit Record-Reviewer",
       },
   { label: "Quality Control-Instrument Usage Record-Reviewer", },
   { label: "Quality Control-Disinfectant Stock Record-Reviewer", },
-  { label: "Quality Control-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Quality Control-Microbial Limit Test Sample-Reviewer", },
+  { label: "Quality Control-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Quality Control-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Quality Control-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Quality Control-Area Fogging Record-Reviewer", },
+  { label: "Quality Control-Filter Cleaning Record-Reviewer", },
+  { label: "Quality Control-Media Consumption Record-Reviewer", },
+  { label: "Quality Control-Dispensing Record-Reviewer" },
+{ label: "Quality Control-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Quality Control-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Quality Control-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Quality Control-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Production
   { label: "Production-Differential Pressure Record-Reviewer", },
@@ -261,12 +392,23 @@ const rolesArray2 = [
       },
   { label: "Production-Equipment Usage Record-Reviewer", },
   { label: "Production-Area Cleaning Record-Reviewer", },
-  { label: "Production-DP Monitoring Across Filters-Reviewer", },
-  { label: "Production-Operation of Air Handling Unit-Reviewer", },
+  { label: "Production-DP Monitoring Across Filters Record-Reviewer", },
+  { label: "Production-Operation of Air Handling Unit Record-Reviewer", },
   { label: "Production-Instrument Usage Record-Reviewer", },
   { label: "Production-Disinfectant Stock Record-Reviewer", },
-  { label: "Production-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Production-Microbial Limit Test Sample-Reviewer", },
+  { label: "Production-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Production-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Production-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Production-Area Fogging Record-Reviewer", },
+  { label: "Production-Filter Cleaning Record-Reviewer", },
+  { label: "Production-Media Consumption Record-Reviewer", },
+  { label: "Production-Dispensing Record-Reviewer" },
+{ label: "Production-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Production-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Production-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Production-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Reviewer", },
@@ -275,12 +417,23 @@ const rolesArray2 = [
       },
   { label: "Warehouse-Equipment Usage Record-Reviewer", },
   { label: "Warehouse-Area Cleaning Record-Reviewer", },
-  { label: "Warehouse-DP Monitoring Across Filters-Reviewer", },
-  { label: "Warehouse-Operation of Air Handling Unit-Reviewer", },
+  { label: "Warehouse-DP Monitoring Across Filters Record-Reviewer", },
+  { label: "Warehouse-Operation of Air Handling Unit Record-Reviewer", },
   { label: "Warehouse-Instrument Usage Record-Reviewer", },
   { label: "Warehouse-Disinfectant Stock Record-Reviewer", },
-  { label: "Warehouse-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Warehouse-Microbial Limit Test Sample-Reviewer", },
+  { label: "Warehouse-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Warehouse-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Warehouse-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Warehouse-Area Fogging Record-Reviewer", },
+  { label: "Warehouse-Filter Cleaning Record-Reviewer", },
+  { label: "Warehouse-Media Consumption Record-Reviewer", },
+  { label: "Warehouse-Dispensing Record-Reviewer" },
+{ label: "Warehouse-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Warehouse-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Warehouse-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Warehouse-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Reviewer", },
@@ -289,12 +442,23 @@ const rolesArray2 = [
       },
   { label: "Engineering-Equipment Usage Record-Reviewer", },
   { label: "Engineering-Area Cleaning Record-Reviewer", },
-  { label: "Engineering-DP Monitoring Across Filters-Reviewer", },
-  { label: "Engineering-Operation of Air Handling Unit-Reviewer", },
+  { label: "Engineering-DP Monitoring Across Filters Record-Reviewer", },
+  { label: "Engineering-Operation of Air Handling Unit Record-Reviewer", },
   { label: "Engineering-Instrument Usage Record-Reviewer", },
   { label: "Engineering-Disinfectant Stock Record-Reviewer", },
-  { label: "Engineering-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Engineering-Microbial Limit Test Sample-Reviewer", },
+  { label: "Engineering-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Engineering-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Engineering-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Engineering-Area Fogging Record-Reviewer", },
+  { label: "Engineering-Filter Cleaning Record-Reviewer", },
+  { label: "Engineering-Media Consumption Record-Reviewer", },
+  { label: "Engineering-Dispensing Record-Reviewer" },
+{ label: "Engineering-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Engineering-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Engineering-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Engineering-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Human Resources
   { label: "Human Resources-Differential Pressure Record-Reviewer", },
@@ -303,14 +467,25 @@ const rolesArray2 = [
       },
   { label: "Human Resources-Equipment Usage Record-Reviewer", },
   { label: "Human Resources-Area Cleaning Record-Reviewer", },
-  { label: "Human Resources-DP Monitoring Across Filters-Reviewer", },
+  { label: "Human Resources-DP Monitoring Across Filters Record-Reviewer", },
   {
-    label: "Human Resources-Operation of Air Handling Unit-Reviewer",
+    label: "Human Resources-Operation of Air Handling Unit Record-Reviewer",
       },
   { label: "Human Resources-Instrument Usage Record-Reviewer", },
   { label: "Human Resources-Disinfectant Stock Record-Reviewer", },
-  { label: "Human Resources-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Human Resources-Microbial Limit Test Sample-Reviewer", },
+  { label: "Human Resources-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Human Resources-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Human Resources-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Human Resources-Area Fogging Record-Reviewer", },
+  { label: "Human Resources-Filter Cleaning Record-Reviewer", },
+  { label: "Human Resources-Media Consumption Record-Reviewer", },
+  { label: "Human Resources-Dispensing Record-Reviewer" },
+{ label: "Human Resources-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Human Resources-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Human Resources-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Human Resources-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Information Technology
   {
@@ -325,11 +500,11 @@ const rolesArray2 = [
       },
   { label: "Information Technology-Area Cleaning Record-Reviewer", },
   {
-    label: "Information Technology-DP Monitoring Across Filters-Reviewer",
+    label: "Information Technology-DP Monitoring Across Filters Record-Reviewer",
     
   },
   {
-    label: "Information Technology-Operation of Air Handling Unit-Reviewer",
+    label: "Information Technology-Operation of Air Handling Unit Record-Reviewer",
     
   },
   {
@@ -341,13 +516,24 @@ const rolesArray2 = [
     
   },
   {
-    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Reviewer",
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample Record-Reviewer",
     
   },
   {
-    label: "Information Technology-Microbial Limit Test Sample-Reviewer",
+    label: "Information Technology-Microbial Limit Test Sample Record-Reviewer",
     
   },
+  { label: "Information Technology-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Information Technology-Area Fogging Record-Reviewer", },
+  { label: "Information Technology-Filter Cleaning Record-Reviewer", },
+  { label: "Information Technology-Media Consumption Record-Reviewer", },
+  { label: "Information Technology-Dispensing Record-Reviewer" },
+{ label: "Information Technology-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Information Technology-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Information Technology-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Information Technology-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Reviewer", },
@@ -357,12 +543,22 @@ const rolesArray2 = [
   },
   { label: "Accounts-Equipment Usage Record-Reviewer", },
   { label: "Accounts-Area Cleaning Record-Reviewer", },
-  { label: "Accounts-DP Monitoring Across Filters-Reviewer", },
-  { label: "Accounts-Operation of Air Handling Unit-Reviewer", },
+  { label: "Accounts-DP Monitoring Across Filters Record-Reviewer", },
+  { label: "Accounts-Operation of Air Handling Unit Record-Reviewer", },
   { label: "Accounts-Instrument Usage Record-Reviewer", },
   { label: "Accounts-Disinfectant Stock Record-Reviewer", },
-  { label: "Accounts-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Accounts-Microbial Limit Test Sample-Reviewer", },
+  { label: "Accounts-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Accounts-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Accounts-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Accounts-Area Fogging Record-Reviewer", },
+  { label: "Accounts-Filter Cleaning Record-Reviewer", },
+  { label: "Accounts-Media Consumption Record-Reviewer", },
+  { label: "Accounts-Dispensing Record-Reviewer" },
+{ label: "Accounts-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Accounts-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Accounts-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Accounts-Autoclave Sterelization Record-Reviewer" },
+
 
   // PPIC
   {
@@ -387,12 +583,12 @@ const rolesArray2 = [
   },
   {
     label:
-      "Production Planning and Inventory Control-DP Monitoring Across Filters-Reviewer",
+      "Production Planning and Inventory Control-DP Monitoring Across Filters Record-Reviewer",
     
   },
   {
     label:
-      "Production Planning and Inventory Control-Operation of Air Handling Unit-Reviewer",
+      "Production Planning and Inventory Control-Operation of Air Handling Unit Record-Reviewer",
     
   },
   {
@@ -407,15 +603,26 @@ const rolesArray2 = [
   },
   {
     label:
-      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Reviewer",
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample Record-Reviewer",
     
   },
   {
     label:
-      "Production Planning and Inventory Control-Microbial Limit Test Sample-Reviewer",
+      "Production Planning and Inventory Control-Microbial Limit Test Sample Record-Reviewer",
     
     
   },
+  { label: "Production Planning and Inventory Control-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Production Planning and Inventory Control-Area Fogging Record-Reviewer", },
+  { label: "Production Planning and Inventory Control-Filter Cleaning Record-Reviewer", },
+  { label: "Production Planning and Inventory Control-Media Consumption Record-Reviewer", },
+  { label: "Production Planning and Inventory Control-Dispensing Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Reviewer" },
+
+
 
   // Regulatory Affairs
   {
@@ -429,17 +636,27 @@ const rolesArray2 = [
   { label: "Regulatory Affairs-Equipment Usage Record-Reviewer", },
   { label: "Regulatory Affairs-Area Cleaning Record-Reviewer", },
   {
-    label: "Regulatory Affairs-DP Monitoring Across Filters-Reviewer",
+    label: "Regulatory Affairs-DP Monitoring Across Filters Record-Reviewer",
     
   },
   {
-    label: "Regulatory Affairs-Operation of Air Handling Unit-Reviewer",
+    label: "Regulatory Affairs-Operation of Air Handling Unit Record-Reviewer",
     
   },
   { label: "Regulatory Affairs-Instrument Usage Record-Reviewer", },
   { label: "Regulatory Affairs-Disinfectant Stock Record-Reviewer", },
-  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Reviewer", },
-  { label: "Regulatory Affairs-Microbial Limit Test Sample-Reviewer", },
+  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample Record-Reviewer", },
+  { label: "Regulatory Affairs-Microbial Limit Test Sample Record-Reviewer", },
+  { label: "Regulatory Affairs-Fogging Solution Preparation Record-Reviewer", },
+  { label: "Regulatory Affairs-Area Fogging Record-Reviewer", },
+  { label: "Regulatory Affairs-Filter Cleaning Record-Reviewer", },
+  { label: "Regulatory Affairs-Media Consumption Record-Reviewer", },
+  { label: "Regulatory Affairs-Dispensing Record-Reviewer" },
+{ label: "Regulatory Affairs-Cold Chamber Cleaning Record-Reviewer" },
+{ label: "Regulatory Affairs-Returned Finished Goods Register Record-Reviewer" },
+{ label: "Regulatory Affairs-Dispensing Booth Activity Record-Reviewer" },
+{ label: "Regulatory Affairs-Autoclave Sterelization Record-Reviewer" },
+
 ];
 
 const rolesArray3 = [
@@ -455,17 +672,28 @@ const rolesArray3 = [
   { label: "Quality Assurance-Equipment Usage Record-Approver", },
   { label: "Quality Assurance-Area Cleaning Record-Approver", },
   {
-    label: "Quality Assurance-DP Monitoring Across Filters-Approver",
+    label: "Quality Assurance-DP Monitoring Across Filters Record-Approver",
     
   },
   {
-    label: "Quality Assurance-Operation of Air Handling Unit-Approver",
+    label: "Quality Assurance-Operation of Air Handling Unit Record-Approver",
     
   },
   { label: "Quality Assurance-Instrument Usage Record-Approver", },
   { label: "Quality Assurance-Disinfectant Stock Record-Approver", },
-  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Quality Assurance-Microbial Limit Test Sample-Approver", },
+  { label: "Quality Assurance-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Quality Assurance-Microbial Limit Test Sample Record-Approver", },
+    { label: "Quality Assurance-Fogging Solution Preparation Record-Approver", },
+  { label: "Quality Assurance-Area Fogging Record-Approver", },
+  { label: "Quality Assurance-Filter Cleaning Record-Approver", },
+  { label: "Quality Assurance-Media Consumption Record-Approver", },
+  { label: "Quality Assurance-Dispensing Record-Approver" },
+{ label: "Quality Assurance-Cold Chamber Cleaning Record-Approver" },
+{ label: "Quality Assurance-Returned Finished Goods Register Record-Approver" },
+{ label: "Quality Assurance-Dispensing Booth Activity Record-Approver" },
+{ label: "Quality Assurance-Autoclave Sterelization Record-Approver" },
+
+
 
   // Quality Control
   {
@@ -479,17 +707,28 @@ const rolesArray3 = [
   { label: "Quality Control-Equipment Usage Record-Approver", },
   { label: "Quality Control-Area Cleaning Record-Approver", },
   {
-    label: "Quality Control-DP Monitoring Across Filters-Approver",
+    label: "Quality Control-DP Monitoring Across Filters Record-Approver",
     
   },
   {
-    label: "Quality Control-Operation of Air Handling Unit-Approver",
+    label: "Quality Control-Operation of Air Handling Unit Record-Approver",
     
   },
   { label: "Quality Control-Instrument Usage Record-Approver", },
   { label: "Quality Control-Disinfectant Stock Record-Approver", },
-  { label: "Quality Control-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Quality Control-Microbial Limit Test Sample-Approver", },
+  { label: "Quality Control-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Quality Control-Microbial Limit Test Sample Record-Approver", },
+    { label: "Quality Control-Fogging Solution Preparation Record-Approver", },
+  { label: "Quality Control-Area Fogging Record-Approver", },
+  { label: "Quality Control-Filter Cleaning Record-Approver", },
+  { label: "Quality Control-Media Consumption Record-Approver", },
+  { label: "Quality Control-Dispensing Record-Approver" },
+{ label: "Quality Control-Cold Chamber Cleaning Record-Approver" },
+{ label: "Quality Control-Returned Finished Goods Register Record-Approver" },
+{ label: "Quality Control-Dispensing Booth Activity Record-Approver" },
+{ label: "Quality Control-Autoclave Sterelization Record-Approver" },
+
+
 
   // Production
   { label: "Production-Differential Pressure Record-Approver", },
@@ -499,12 +738,22 @@ const rolesArray3 = [
   },
   { label: "Production-Equipment Usage Record-Approver", },
   { label: "Production-Area Cleaning Record-Approver", },
-  { label: "Production-DP Monitoring Across Filters-Approver", },
-  { label: "Production-Operation of Air Handling Unit-Approver", },
+  { label: "Production-DP Monitoring Across Filters Record-Approver", },
+  { label: "Production-Operation of Air Handling Unit Record-Approver", },
   { label: "Production-Instrument Usage Record-Approver", },
   { label: "Production-Disinfectant Stock Record-Approver", },
-  { label: "Production-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Production-Microbial Limit Test Sample-Approver", },
+  { label: "Production-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Production-Microbial Limit Test Sample Record-Approver", },
+    { label: "Production-Fogging Solution Preparation Record-Approver", },
+  { label: "Production-Area Fogging Record-Approver", },
+  { label: "Production-Filter Cleaning Record-Approver", },
+  { label: "Production-Media Consumption Record-Approver", },
+  { label: "Production-Dispensing Record-Approver" },
+{ label: "Production-Cold Chamber Cleaning Record-Approver" },
+{ label: "Production-Returned Finished Goods Register Record-Approver" },
+{ label: "Production-Dispensing Booth Activity Record-Approver" },
+{ label: "Production-Autoclave Sterelization Record-Approver" },
+
 
   // Warehouse
   { label: "Warehouse-Differential Pressure Record-Approver", },
@@ -514,12 +763,23 @@ const rolesArray3 = [
   },
   { label: "Warehouse-Equipment Usage Record-Approver", },
   { label: "Warehouse-Area Cleaning Record-Approver", },
-  { label: "Warehouse-DP Monitoring Across Filters-Approver", },
-  { label: "Warehouse-Operation of Air Handling Unit-Approver", },
+  { label: "Warehouse-DP Monitoring Across Filters Record-Approver", },
+  { label: "Warehouse-Operation of Air Handling Unit Record-Approver", },
   { label: "Warehouse-Instrument Usage Record-Approver", },
   { label: "Warehouse-Disinfectant Stock Record-Approver", },
-  { label: "Warehouse-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Warehouse-Microbial Limit Test Sample-Approver", },
+  { label: "Warehouse-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Warehouse-Microbial Limit Test Sample Record-Approver", },
+    { label: "Warehouse-Fogging Solution Preparation Record-Approver", },
+  { label: "Warehouse-Area Fogging Record-Approver", },
+  { label: "Warehouse-Filter Cleaning Record-Approver", },
+  { label: "Warehouse-Media Consumption Record-Approver", },
+  { label: "Warehouse-Dispensing Record-Approver" },
+{ label: "Warehouse-Cold Chamber Cleaning Record-Approver" },
+{ label: "Warehouse-Returned Finished Goods Register Record-Approver" },
+{ label: "Warehouse-Dispensing Booth Activity Record-Approver" },
+{ label: "Warehouse-Autoclave Sterelization Record-Approver" },
+
+
 
   // Engineering
   { label: "Engineering-Differential Pressure Record-Approver", },
@@ -529,12 +789,23 @@ const rolesArray3 = [
   },
   { label: "Engineering-Equipment Usage Record-Approver", },
   { label: "Engineering-Area Cleaning Record-Approver", },
-  { label: "Engineering-DP Monitoring Across Filters-Approver", },
-  { label: "Engineering-Operation of Air Handling Unit-Approver", },
+  { label: "Engineering-DP Monitoring Across Filters Record-Approver", },
+  { label: "Engineering-Operation of Air Handling Unit Record-Approver", },
   { label: "Engineering-Instrument Usage Record-Approver", },
   { label: "Engineering-Disinfectant Stock Record-Approver", },
-  { label: "Engineering-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Engineering-Microbial Limit Test Sample-Approver", },
+  { label: "Engineering-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Engineering-Microbial Limit Test Sample Record-Approver", },
+    { label: "Engineering-Fogging Solution Preparation Record-Approver", },
+  { label: "Engineering-Area Fogging Record-Approver", },
+  { label: "Engineering-Filter Cleaning Record-Approver", },
+  { label: "Engineering-Media Consumption Record-Approver", },
+  { label: "Engineering-Dispensing Record-Approver" },
+{ label: "Engineering-Cold Chamber Cleaning Record-Approver" },
+{ label: "Engineering-Returned Finished Goods Register Record-Approver" },
+{ label: "Engineering-Dispensing Booth Activity Record-Approver" },
+{ label: "Engineering-Autoclave Sterelization Record-Approver" },
+
+
 
   // Human Resources
   {
@@ -548,17 +819,28 @@ const rolesArray3 = [
   { label: "Human Resources-Equipment Usage Record-Approver", },
   { label: "Human Resources-Area Cleaning Record-Approver", },
   {
-    label: "Human Resources-DP Monitoring Across Filters-Approver",
+    label: "Human Resources-DP Monitoring Across Filters Record-Approver",
     
   },
   {
-    label: "Human Resources-Operation of Air Handling Unit-Approver",
+    label: "Human Resources-Operation of Air Handling Unit Record-Approver",
     
   },
   { label: "Human Resources-Instrument Usage Record-Approver", },
   { label: "Human Resources-Disinfectant Stock Record-Approver", },
-  { label: "Human Resources-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Human Resources-Microbial Limit Test Sample-Approver", },
+  { label: "Human Resources-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Human Resources-Microbial Limit Test Sample Record-Approver", },
+    { label: "Human Resources-Fogging Solution Preparation Record-Approver", },
+  { label: "Human Resources-Area Fogging Record-Approver", },
+  { label: "Human Resources-Filter Cleaning Record-Approver", },
+  { label: "Human Resources-Media Consumption Record-Approver", },
+  { label: "Human Resources-Dispensing Record-Approver" },
+{ label: "Human Resources-Cold Chamber Cleaning Record-Approver" },
+{ label: "Human Resources-Returned Finished Goods Register Record-Approver" },
+{ label: "Human Resources-Dispensing Booth Activity Record-Approver" },
+{ label: "Human Resources-Autoclave Sterelization Record-Approver" },
+
+
 
   // Information Technology
   {
@@ -576,11 +858,11 @@ const rolesArray3 = [
   },
   { label: "Information Technology-Area Cleaning Record-Approver", },
   {
-    label: "Information Technology-DP Monitoring Across Filters-Approver",
+    label: "Information Technology-DP Monitoring Across Filters Record-Approver",
     
   },
   {
-    label: "Information Technology-Operation of Air Handling Unit-Approver",
+    label: "Information Technology-Operation of Air Handling Unit Record-Approver",
     
   },
   {
@@ -592,13 +874,24 @@ const rolesArray3 = [
     
   },
   {
-    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Approver",
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample Record-Approver",
     
   },
   {
-    label: "Information Technology-Microbial Limit Test Sample-Approver",
+    label: "Information Technology-Microbial Limit Test Sample Record-Approver",
     
   },
+    { label: "Information Technology-Fogging Solution Preparation Record-Approver", },
+  { label: "Information Technology-Area Fogging Record-Approver", },
+  { label: "Information Technology-Filter Cleaning Record-Approver", },
+  { label: "Information Technology-Media Consumption Record-Approver", },
+  { label: "Information Technology-Dispensing Record-Approver" },
+{ label: "Information Technology-Cold Chamber Cleaning Record-Approver" },
+{ label: "Information Technology-Returned Finished Goods Register Record-Approver" },
+{ label: "Information Technology-Dispensing Booth Activity Record-Approver" },
+{ label: "Information Technology-Autoclave Sterelization Record-Approver" },
+
+
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Approver", },
@@ -608,12 +901,22 @@ const rolesArray3 = [
   },
   { label: "Accounts-Equipment Usage Record-Approver", },
   { label: "Accounts-Area Cleaning Record-Approver", },
-  { label: "Accounts-DP Monitoring Across Filters-Approver", },
-  { label: "Accounts-Operation of Air Handling Unit-Approver", },
+  { label: "Accounts-DP Monitoring Across Filters Record-Approver", },
+  { label: "Accounts-Operation of Air Handling Unit Record-Approver", },
   { label: "Accounts-Instrument Usage Record-Approver", },
   { label: "Accounts-Disinfectant Stock Record-Approver", },
-  { label: "Accounts-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Accounts-Microbial Limit Test Sample-Approver", },
+  { label: "Accounts-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Accounts-Microbial Limit Test Sample Record-Approver", },
+    { label: "Accounts-Fogging Solution Preparation Record-Approver", },
+  { label: "Accounts-Area Fogging Record-Approver", },
+  { label: "Accounts-Filter Cleaning Record-Approver", },
+  { label: "Accounts-Media Consumption Record-Approver", },
+  { label: "Accounts-Dispensing Record-Approver" },
+{ label: "Accounts-Cold Chamber Cleaning Record-Approver" },
+{ label: "Accounts-Returned Finished Goods Register Record-Approver" },
+{ label: "Accounts-Dispensing Booth Activity Record-Approver" },
+{ label: "Accounts-Autoclave Sterelization Record-Approver" },
+
 
   // PPIC
   {
@@ -638,12 +941,12 @@ const rolesArray3 = [
   },
   {
     label:
-      "Production Planning and Inventory Control-DP Monitoring Across Filters-Approver",
+      "Production Planning and Inventory Control-DP Monitoring Across Filters Record-Approver",
     
   },
   {
     label:
-      "Production Planning and Inventory Control-Operation of Air Handling Unit-Approver",
+      "Production Planning and Inventory Control-Operation of Air Handling Unit Record-Approver",
     
   },
   {
@@ -658,14 +961,25 @@ const rolesArray3 = [
   },
   {
     label:
-      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Approver",
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample Record-Approver",
     
   },
   {
     label:
-      "Production Planning and Inventory Control-Microbial Limit Test Sample-Approver",
+      "Production Planning and Inventory Control-Microbial Limit Test Sample Record-Approver",
     
   },
+    { label: "Production Planning and Inventory Control-Fogging Solution Preparation Record-Approver", },
+  { label: "Production Planning and Inventory Control-Area Fogging Record-Approver", },
+  { label: "Production Planning and Inventory Control-Filter Cleaning Record-Approver", },
+  { label: "Production Planning and Inventory Control-Media Consumption Record-Approver", },
+  { label: "Production Planning and Inventory Control-Dispensing Record-Approver" },
+{ label: "Production Planning and Inventory Control-Cold Chamber Cleaning Record-Approver" },
+{ label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Approver" },
+{ label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Approver" },
+{ label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Approver" },
+
+
 
   // Regulatory Affairs
   {
@@ -679,17 +993,28 @@ const rolesArray3 = [
   { label: "Regulatory Affairs-Equipment Usage Record-Approver", },
   { label: "Regulatory Affairs-Area Cleaning Record-Approver", },
   {
-    label: "Regulatory Affairs-DP Monitoring Across Filters-Approver",
+    label: "Regulatory Affairs-DP Monitoring Across Filters Record-Approver",
     
   },
   {
-    label: "Regulatory Affairs-Operation of Air Handling Unit-Approver",
+    label: "Regulatory Affairs-Operation of Air Handling Unit Record-Approver",
     
   },
   { label: "Regulatory Affairs-Instrument Usage Record-Approver", },
   { label: "Regulatory Affairs-Disinfectant Stock Record-Approver", },
-  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Approver", },
-  { label: "Regulatory Affairs-Microbial Limit Test Sample-Approver", },
+  { label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample Record-Approver", },
+  { label: "Regulatory Affairs-Microbial Limit Test Sample Record-Approver", },
+    { label: "Regulatory Affairs-Fogging Solution Preparation Record-Approver", },
+  { label: "Regulatory Affairs-Area Fogging Record-Approver", },
+  { label: "Regulatory Affairs-Filter Cleaning Record-Approver", },
+  { label: "Regulatory Affairs-Media Consumption Record-Approver", },
+  { label: "Regulatory Affairs-Dispensing Record-Approver" },
+{ label: "Regulatory Affairs-Cold Chamber Cleaning Record-Approver" },
+{ label: "Regulatory Affairs-Returned Finished Goods Register Record-Approver" },
+{ label: "Regulatory Affairs-Dispensing Booth Activity Record-Approver" },
+{ label: "Regulatory Affairs-Autoclave Sterelization Record-Approver" },
+
+
 ];
 
 const rolesArray4 = [
@@ -712,11 +1037,11 @@ const rolesArray4 = [
     
   },
   {
-    label: "Quality Assurance-DP Monitoring Across Filters-Fullpermission",
+    label: "Quality Assurance-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Quality Assurance-Operation of Air Handling Unit-Fullpermission",
+    label: "Quality Assurance-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   {
@@ -728,13 +1053,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Quality Assurance-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Quality Assurance-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Quality Assurance-Microbial Limit Test Sample-Fullpermission",
+    label: "Quality Assurance-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Quality Assurance-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Quality Assurance-Area Fogging Record-Fullpermission", },
+  { label: "Quality Assurance-Filter Cleaning Record-Fullpermission", },
+  { label: "Quality Assurance-Media Consumption Record-Fullpermission", },
+  { label: "Quality Assurance-Dispensing Record-Fullpermission" },
+{ label: "Quality Assurance-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Quality Assurance-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Quality Assurance-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Quality Assurance-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Quality Control
   {
@@ -752,11 +1088,11 @@ const rolesArray4 = [
   },
   { label: "Quality Control-Area Cleaning Record-Fullpermission", },
   {
-    label: "Quality Control-DP Monitoring Across Filters-Fullpermission",
+    label: "Quality Control-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Quality Control-Operation of Air Handling Unit-Fullpermission",
+    label: "Quality Control-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   {
@@ -768,13 +1104,23 @@ const rolesArray4 = [
     
   },
   {
-    label: "Quality Control-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Quality Control-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Quality Control-Microbial Limit Test Sample-Fullpermission",
+    label: "Quality Control-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+  { label: "Quality Control-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Quality Control-Area Fogging Record-Fullpermission", },
+  { label: "Quality Control-Filter Cleaning Record-Fullpermission", },
+  { label: "Quality Control-Media Consumption Record-Fullpermission", },
+  { label: "Quality Control-Dispensing Record-Fullpermission" },
+{ label: "Quality Control-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Quality Control-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Quality Control-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Quality Control-Autoclave Sterelization Record-Fullpermission" },
+
 
 
   // Production
@@ -789,11 +1135,11 @@ const rolesArray4 = [
   { label: "Production-Equipment Usage Record-Fullpermission", },
   { label: "Production-Area Cleaning Record-Fullpermission", },
   {
-    label: "Production-DP Monitoring Across Filters-Fullpermission",
+    label: "Production-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Production-Operation of Air Handling Unit-Fullpermission",
+    label: "Production-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   { label: "Production-Instrument Usage Record-Fullpermission", },
@@ -802,13 +1148,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Production-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Production-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Production-Microbial Limit Test Sample-Fullpermission",
+    label: "Production-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Production-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Production-Area Fogging Record-Fullpermission", },
+  { label: "Production-Filter Cleaning Record-Fullpermission", },
+  { label: "Production-Media Consumption Record-Fullpermission", },
+  { label: "Production-Dispensing Record-Fullpermission" },
+{ label: "Production-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Production-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Production-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Production-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Warehouse
   {
@@ -822,11 +1179,11 @@ const rolesArray4 = [
   { label: "Warehouse-Equipment Usage Record-Fullpermission", },
   { label: "Warehouse-Area Cleaning Record-Fullpermission", },
   {
-    label: "Warehouse-DP Monitoring Across Filters-Fullpermission",
+    label: "Warehouse-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Warehouse-Operation of Air Handling Unit-Fullpermission",
+    label: "Warehouse-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   { label: "Warehouse-Instrument Usage Record-Fullpermission", },
@@ -835,13 +1192,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Warehouse-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Warehouse-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Warehouse-Microbial Limit Test Sample-Fullpermission",
+    label: "Warehouse-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Warehouse-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Warehouse-Area Fogging Record-Fullpermission", },
+  { label: "Warehouse-Filter Cleaning Record-Fullpermission", },
+  { label: "Warehouse-Media Consumption Record-Fullpermission", },
+  { label: "Warehouse-Dispensing Record-Fullpermission" },
+{ label: "Warehouse-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Warehouse-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Warehouse-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Warehouse-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Engineering
   {
@@ -855,11 +1223,11 @@ const rolesArray4 = [
   { label: "Engineering-Equipment Usage Record-Fullpermission", },
   { label: "Engineering-Area Cleaning Record-Fullpermission", },
   {
-    label: "Engineering-DP Monitoring Across Filters-Fullpermission",
+    label: "Engineering-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Engineering-Operation of Air Handling Unit-Fullpermission",
+    label: "Engineering-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   { label: "Engineering-Instrument Usage Record-Fullpermission", },
@@ -868,13 +1236,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Engineering-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Engineering-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Engineering-Microbial Limit Test Sample-Fullpermission",
+    label: "Engineering-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Engineering-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Engineering-Area Fogging Record-Fullpermission", },
+  { label: "Engineering-Filter Cleaning Record-Fullpermission", },
+  { label: "Engineering-Media Consumption Record-Fullpermission", },
+  { label: "Engineering-Dispensing Record-Fullpermission" },
+{ label: "Engineering-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Engineering-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Engineering-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Engineering-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Human Resources
   {
@@ -892,11 +1271,11 @@ const rolesArray4 = [
   },
   { label: "Human Resources-Area Cleaning Record-Fullpermission", },
   {
-    label: "Human Resources-DP Monitoring Across Filters-Fullpermission",
+    label: "Human Resources-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Human Resources-Operation of Air Handling Unit-Fullpermission",
+    label: "Human Resources-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   {
@@ -908,13 +1287,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Human Resources-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Human Resources-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Human Resources-Microbial Limit Test Sample-Fullpermission",
+    label: "Human Resources-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Human Resources-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Human Resources-Area Fogging Record-Fullpermission", },
+  { label: "Human Resources-Filter Cleaning Record-Fullpermission", },
+  { label: "Human Resources-Media Consumption Record-Fullpermission", },
+  { label: "Human Resources-Dispensing Record-Fullpermission" },
+{ label: "Human Resources-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Human Resources-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Human Resources-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Human Resources-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Information Technology
   {
@@ -935,12 +1325,12 @@ const rolesArray4 = [
     
   },
   {
-    label: "Information Technology-DP Monitoring Across Filters-Fullpermission",
+    label: "Information Technology-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
     label:
-      "Information Technology-Operation of Air Handling Unit-Fullpermission",
+      "Information Technology-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   {
@@ -952,13 +1342,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Information Technology-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Information Technology-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Information Technology-Microbial Limit Test Sample-Fullpermission",
+    label: "Information Technology-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Information Technology-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Information Technology-Area Fogging Record-Fullpermission", },
+  { label: "Information Technology-Filter Cleaning Record-Fullpermission", },
+  { label: "Information Technology-Media Consumption Record-Fullpermission", },
+  { label: "Information Technology-Dispensing Record-Fullpermission" },
+{ label: "Information Technology-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Information Technology-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Information Technology-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Information Technology-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Accounts
   { label: "Accounts-Differential Pressure Record-Fullpermission", },
@@ -968,9 +1369,9 @@ const rolesArray4 = [
   },
   { label: "Accounts-Equipment Usage Record-Fullpermission", },
   { label: "Accounts-Area Cleaning Record-Fullpermission", },
-  { label: "Accounts-DP Monitoring Across Filters-Fullpermission", },
+  { label: "Accounts-DP Monitoring Across Filters Record-Fullpermission", },
   {
-    label: "Accounts-Operation of Air Handling Unit-Fullpermission",
+    label: "Accounts-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   { label: "Accounts-Instrument Usage Record-Fullpermission", },
@@ -979,13 +1380,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Accounts-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Accounts-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Accounts-Microbial Limit Test Sample-Fullpermission",
+    label: "Accounts-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Accounts-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Accounts-Area Fogging Record-Fullpermission", },
+  { label: "Accounts-Filter Cleaning Record-Fullpermission", },
+  { label: "Accounts-Media Consumption Record-Fullpermission", },
+  { label: "Accounts-Dispensing Record-Fullpermission" },
+{ label: "Accounts-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Accounts-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Accounts-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Accounts-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // PPIC
   {
@@ -1010,12 +1422,12 @@ const rolesArray4 = [
   },
   {
     label:
-      "Production Planning and Inventory Control-DP Monitoring Across Filters-Fullpermission",
+      "Production Planning and Inventory Control-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
     label:
-      "Production Planning and Inventory Control-Operation of Air Handling Unit-Fullpermission",
+      "Production Planning and Inventory Control-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   {
@@ -1030,14 +1442,25 @@ const rolesArray4 = [
   },
   {
     label:
-      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample-Fullpermission",
+      "Production Planning and Inventory Control-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
     label:
-      "Production Planning and Inventory Control-Microbial Limit Test Sample-Fullpermission",
+      "Production Planning and Inventory Control-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Production Planning and Inventory Control-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Production Planning and Inventory Control-Area Fogging Record-Fullpermission", },
+  { label: "Production Planning and Inventory Control-Filter Cleaning Record-Fullpermission", },
+  { label: "Production Planning and Inventory Control-Media Consumption Record-Fullpermission", },
+  { label: "Production Planning and Inventory Control-Dispensing Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Fullpermission" },
+
+
 
   // Regulatory Affairs
   {
@@ -1058,11 +1481,11 @@ const rolesArray4 = [
     
   },
   {
-    label: "Regulatory Affairs-DP Monitoring Across Filters-Fullpermission",
+    label: "Regulatory Affairs-DP Monitoring Across Filters Record-Fullpermission",
     
   },
   {
-    label: "Regulatory Affairs-Operation of Air Handling Unit-Fullpermission",
+    label: "Regulatory Affairs-Operation of Air Handling Unit Record-Fullpermission",
     
   },
   {
@@ -1074,13 +1497,24 @@ const rolesArray4 = [
     
   },
   {
-    label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample-Fullpermission",
+    label: "Regulatory Affairs-Lactic Acid Bacillus Assay Sample Record-Fullpermission",
     
   },
   {
-    label: "Regulatory Affairs-Microbial Limit Test Sample-Fullpermission",
+    label: "Regulatory Affairs-Microbial Limit Test Sample Record-Fullpermission",
     
   },
+    { label: "Regulatory Affairs-Fogging Solution Preparation Record-Fullpermission", },
+  { label: "Regulatory Affairs-Area Fogging Record-Fullpermission", },
+  { label: "Regulatory Affairs-Filter Cleaning Record-Fullpermission", },
+  { label: "Regulatory Affairs-Media Consumption Record-Fullpermission", },
+  { label: "Regulatory Affairs-Dispensing Record-Fullpermission" },
+{ label: "Regulatory Affairs-Cold Chamber Cleaning Record-Fullpermission" },
+{ label: "Regulatory Affairs-Returned Finished Goods Register Record-Fullpermission" },
+{ label: "Regulatory Affairs-Dispensing Booth Activity Record-Fullpermission" },
+{ label: "Regulatory Affairs-Autoclave Sterelization Record-Fullpermission" },
+
+
 
 ];
 

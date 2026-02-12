@@ -22,20 +22,25 @@ Process.addHook('afterSync', async () => {
         const processesCount = await Process.count();
         if (processesCount === 0) {
             await Process.bulkCreate([
-                {  process: 'Differential Pressure Record' },
+                { process: 'Differential Pressure Record' },
                 { process: 'Temperature & Relative Humidity Record' },
                 { process: 'Equipment Usage Record' },
                 { process: 'Area Cleaning Record' },
-                { process: `DP Monitoring Across Filters`},
-                { process: `Operation of Air Handling Unit`},
+                { process: `DP Monitoring Across Filters Record`},
+                { process: `Operation of Air Handling Unit Record`},
                 { process: `Instrument Usage Record`},
                 { process: `Fogging Solution Preparation Record`},
                 { process: `Area Fogging Record`},
                 { process: `Filter Cleaning Record`},
                 { process: `Media Consumption Record`},
                 { process: `Disinfectant Stock Record`},
-                { process: `Lactic Acid Bacillus Assay Sample`},
-                { process: `Microbial Limit Test Sample`},
+                { process: `Lactic Acid Bacillus Assay Sample Record`},
+                { process: `Microbial Limit Test Sample Record`},
+                { process: `Dispensing Record`},
+                { process: `Cold Chamber Cleaning Record`},
+                { process: `Returned Finished Goods Register Record`},
+                { process: `Dispensing Booth Activity Record`},
+                { process: `Autoclave Sterelization Record`},
 
             ]);
             console.log('Processes created');

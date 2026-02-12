@@ -55,6 +55,26 @@ const MicrobialLimitRecord = require("../models/microbialLimitRecord");
 const MicrobialAuditTrail = require("../models/microbialAuditTrail");
 const MicrobialLimitForm = require("../models/microbialLimitForm");
 
+const DispensingForm = require("../models/dispensingForm");
+const DispensingRecord = require("../models/dispensingRecord");
+const DispensingAuditTrail = require("../models/dispensingAuditTrail");
+
+const ColdChamberForm = require("../models/coldChamberForm");
+const ColdChamberRecord = require("../models/coldChamberRecord");
+const ColdChamberAuditTrail = require("../models/coldChamberAuditTrail");
+
+const ReturnedFinishedForm = require("../models/returnedFinishedForm");
+const ReturnedFinishedRecord = require("../models/returnedFinishedRecord");
+const ReturnedFinishedAuditTrail = require("../models/returnedFinishedAuditTrail");
+
+const DispensingBoothForm = require("../models/dispensingBoothForm");
+const DispensingBoothRecord = require("../models/dispensingBoothRecord");
+const DispensingBoothAuditTrail = require("../models/dispensingBoothAuditTrail");
+
+const AutoclaveSterelizationForm = require("../models/autoclaveSterelizationForm");
+const AutoclaveSterelizationRecord = require("../models/autoclaveSterelizationRecord");
+const AutoclaveSterelizationAuditTrail = require("../models/autoclaveSterelizationAuditTrail");
+
 module.exports = {
   1: {
     form: DifferentialPressureForm,
@@ -138,6 +158,36 @@ module.exports = {
     form: MicrobialLimitForm,
     record: MicrobialLimitRecord,
     audit: MicrobialAuditTrail,
+    approverAlias: "approver",
+  },
+  15: {
+    form: DispensingForm,
+    record: DispensingRecord,
+    audit: DispensingAuditTrail,
+    approverAlias: "approver",
+  },
+  16: {
+    form: ColdChamberForm,
+    record: ColdChamberRecord,
+    audit: ColdChamberAuditTrail,
+    approverAlias: "approver",
+  },
+  17: {
+    form: ReturnedFinishedForm,
+    record: ReturnedFinishedRecord,
+    audit: ReturnedFinishedAuditTrail,
+    approverAlias: "approver",
+  },
+  18: {
+    form: DispensingBoothForm,
+    record: DispensingBoothRecord,
+    audit: DispensingBoothAuditTrail,
+    approverAlias: "approver",
+  },
+  19: {
+    form: AutoclaveSterelizationForm,
+    record: AutoclaveSterelizationRecord,
+    audit: AutoclaveSterelizationAuditTrail,
     approverAlias: "approver",
   },
 };

@@ -27,7 +27,14 @@ const mediaConsumptionRoutes = require("./routes/mediaConsumption");
 const disinfectantStockRoutes = require("./routes/disinfectantStock");
 const labAssaySampleRoutes = require("./routes/LabAssaySample");
 const microbialLimitTestRoutes = require("./routes/microbialLimitTest");
+const dispensingRecordRoutes = require("./routes/dispensing");
+const coldChamberRoutes = require("./routes/coldChamber");
+const returnedFinishedRoutes = require("./routes/returnedFinished");
+const dispensingBoothRoutes = require("./routes/dispensingBooth");
+const autoclaveSterelizationRoutes = require("./routes/autoclaveSterelization");
+
 const workFLow = require("./routes/workflow");
+const DispensingRecord = require("./models/dispensingRecord");
 
 const app = express();
 const server = http.createServer(app);
@@ -93,6 +100,11 @@ app.use("/media-consumption", mediaConsumptionRoutes);
 app.use("/disinfectant-stock", disinfectantStockRoutes);
 app.use("/lab-assay-sample", labAssaySampleRoutes);
 app.use("/microbial-limit", microbialLimitTestRoutes);
+app.use("/dispensing-record", dispensingRecordRoutes);
+app.use("/cold-chamber", coldChamberRoutes);
+app.use("/returned-finished", returnedFinishedRoutes);
+app.use("/dispensing-booth", dispensingBoothRoutes);
+app.use("/autoclave-sterelization", autoclaveSterelizationRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");

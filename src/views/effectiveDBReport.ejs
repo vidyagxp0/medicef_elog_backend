@@ -123,7 +123,7 @@
         <tr>
           <td class="label">Record Id</td>
           <td class="value">
-            MED/MLR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+            MED/DBR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
           </td>
         </tr>
         <tr>
@@ -139,6 +139,18 @@
           </td>
         </tr>
         <tr>
+          <td class="label">Dispensing Booth Area</td>
+          <td class="value">
+            <%= reportData?.dispensingBoothArea || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Dispensing Booth ID</td>
+          <td class="value">
+            <%= reportData?.dispensingBoothID || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
           <td class="label">Department</td>
           <td class="value">
             <%= reportData?.departmentName || "Not Applicable" %>
@@ -148,31 +160,40 @@
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Microbial Limit Test Sample Records</h2>
-    <h3 class="subheading">Part-I</h3>
-    <% if (reportData.MicrobialLimitRecords && reportData.MicrobialLimitRecords.length> 0) { %>
+    <h2 class="heading">Dispensing Booth Activity Records</h2>
+    <% if (reportData.DispensingBoothRecords && reportData.DispensingBoothRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
-            <th>S. No.</th>
-            <th>Unique ID</th>
-            <th>Date</th>
-            <th>Product Name</th>
-            <th>Batch No.</th>
-            <th>Mfg. Date</th>
-            <th>Exp. Date</th>
-            <th>A.R. No.</th>
-            <th>Analysis Date</th>
-            <th>Analyzed By</th>
-            <th>Results of TBC CFU/g or ml</th>
-            <th>Observed By</th>
-            <th>Results of TFC CFU/g or ml</th>
-            <th>Observed By</th>
+            <th rowspan="2">S. No.</th>
+            <th rowspan="2">Unique ID</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">RLAF start time</th>
+            <th colspan="3">Filter Reading</th>
+            <th rowspan="2">Product</th>
+            <th rowspan="2">Batch No.</th>
+            <th rowspan="2">Batch Size</th>
+            <th rowspan="2">Dispensing Start time</th>
+            <th rowspan="2">Dispensing End time</th>
+            <th rowspan="2">RLAF end time</th>
+            <th rowspan="2">Dispensing done by</th>
+            <th rowspan="2">Dispensing verified by</th>
+            <th rowspan="2">Type of cleaning A/B</th>
+            <th colspan="4">Dispensing Booth cleaning</th>
+          </tr>
+          <tr>  
+            <th>Pre Filter</th>
+            <th>Intermediate Filter</th>
+            <th>HEPA Filter</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Done By</th>
+            <th>Verified By</th>
           </tr>
         </thead>
         <tbody>
 
-          <% reportData.MicrobialLimitRecords.forEach((record, index)=> { %>
+          <% reportData.DispensingBoothRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -184,109 +205,59 @@
                 <%= formatDateOnly(record?.date) || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.product_name || "Not Applicable" %>
+                <%= record?.rlaf_start_time || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.pre_filter || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.intermediate_filter || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.hepa_filter || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.product || "Not Applicable" %>
               </td>
               <td>
                 <%= record?.batch_no || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.mfg_date || "Not Applicable" %>
+                <%= record?.batch_size || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.exp_date || "Not Applicable" %>
+                <%= record?.dispensing_start_time || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.ar_no || "Not Applicable" %>
+                <%= record?.dispensing_end_time || "Not Applicable" %>
               </td>
               <td>
-                <%= formatDateOnly(record?.analysis_date) || "Not Applicable" %>
+                <%= record?.rlaf_end_time || "Not Applicable" %>
+              </td>
+                 <td>
+                <%= record?.dispensing_doneby || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.analyzed_by || "Not Applicable" %>
+                <%= record?.dispensing_verifiedby || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.results_of_tbc || "Not Applicable" %>
+                <%= record?.type_of_cleaning || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.observed1_by || "Not Applicable" %>
+                <%= record?.dbc_start_time || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.results_of_tfc || "Not Applicable" %>
+                <%= record?.dbc_end_time || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.observed2_by || "Not Applicable" %>
-              </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-        <h3 class="subheading">Part-II</h3>
-    <% if (reportData.MicrobialLimitRecords && reportData.MicrobialLimitRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>E. coli</th>
-            <th>Salmonella</th>
-            <th>P. Aeruginosa</th>
-            <th>S. aureus</th>
-            <th>Shigella boydii</th>
-            <th>C. albicans</th>
-            <th>Clostridia</th>
-            <th>Bile Tolerant Gram –ve bacteria</th>
-            <th>Date Of Release	</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.MicrobialLimitRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
+                <%= record?.dbc_doneby || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.e_coli || "Not Applicable" %>
+                  <%= record?.dbc_verifiedby || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.salmonella || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.p_aeruginosa || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.s_aureus || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.shigellaboydii || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.c_albicans || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.clostridia || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.bile_tolerant || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.date_of_release || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
                   <%= record?.remarks || "Not Applicable" %>
-                </td>
+              </td>
             </tr>
             <% }) %>
         </tbody>
