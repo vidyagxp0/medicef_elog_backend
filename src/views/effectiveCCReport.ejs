@@ -61,7 +61,8 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
     }
 
     thead {
@@ -136,6 +137,18 @@
           <td class="label">Room ID</td>
           <td class="value">
             <%= reportData?.room_id || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Equipment Name</td>
+          <td class="value">
+            <%= reportData?.equipmentName || "Not Applicable" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Equipment ID</td>
+          <td class="value">
+            <%= reportData?.equipmentID || "Not Applicable" %>
           </td>
         </tr>
         <tr>

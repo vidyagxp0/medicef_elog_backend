@@ -61,7 +61,9 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
+
     }
 
     thead {
@@ -149,6 +151,8 @@
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Returned Finished Goods Register Records</h2>
+        <h3 class="subheading">Part-I</h3>
+
     <% if (reportData.ReturnedFinishedRecords && reportData.ReturnedFinishedRecords.length> 0) { %>
       <table>
         <thead>
@@ -161,15 +165,7 @@
             <th>Mfg. Date</th>
             <th>Exp. Date</th>
             <th>No of package</th>
-            <th>Returned Quantity(no’s/strip/Bottle/Sachet)</th>
-            <th>Party Name</th>
-            <th>Invoice no</th>
-            <th>Reason for return</th>
-            <th>Received by(WH)</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Verified By</th>
-            <th>Remark</th>
+        
           </tr>
         </thead>
         <tbody>
@@ -200,9 +196,40 @@
               <td>
                 <%= record?.no_of_package || "Not Applicable" %>
               </td>
+            
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+    <h3 class="subheading">Part-II</h3>
+  <% if (reportData.ReturnedFinishedRecords && reportData.ReturnedFinishedRecords.length> 0) { %>
+      <table>
+        <thead>
+    c      <tr>
+            <th>S. No.</th>         
+            <th>Returned Quantity <br>(no’s/strip/Bottle/Sachet)</th>
+            <th>Party Name</th>
+            <th>Invoice no</th>
+            <th>Reason for return</th>
+            <th>Received by(WH)</th>
+            <th>Verified By</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.ReturnedFinishedRecords.forEach((record, index)=> { %>
+            <tr>
               <td>
+                <%= index + 1 %>
+              </td>
+               <td>
                 <%= record?.returned_quantity || "Not Applicable" %>
               </td>
+          
               <td>
                 <%= record?.party_name || "Not Applicable" %>
               </td>
@@ -215,15 +242,10 @@
               <td>
                 <%= record?.received_by || "Not Applicable" %>
               </td>
-               <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
+  
                 <td>
                   <%= record?.reviewed_by || "Not Applicable" %>
                 </td>
-                 <td>
-                <%= record?.verified_by || "Not Applicable" %>
-              </td>
                 <td>
                   <%= record?.remarks || "Not Applicable" %>
                 </td>
@@ -235,7 +257,6 @@
       <% } else { %>
         <p>No Records Found.</p>
         <% } %>
-
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
 
