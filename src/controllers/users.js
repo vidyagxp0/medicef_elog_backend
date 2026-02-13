@@ -11,13 +11,23 @@ const EffectiveRoleGroup = require("../models/effectiveRoleGroup");
 const { sequelize } = require("../config/db");
 const { getFileUrl } = require("../middlewares/authentication");
 const { Op } = require("sequelize");
+const UserSession = require("../models/UserSession");
 
 //register user
 exports.signup = async (req, res) => {
-  const { password, email, name, rolesArray, age, gender,employeeID,userName } = req.body;
+  const {
+    password,
+    email,
+    name,
+    rolesArray,
+    age,
+    gender,
+    employeeID,
+    userName,
+  } = req.body;
 
   // Check if required fields are provided
-  if (!password || !employeeID || !name || !rolesArray || !userName ) {
+  if (!password || !employeeID || !name || !rolesArray || !userName) {
     return res.status(400).json({
       error: true,
       message: "Please provide proper user details!",
@@ -33,14 +43,14 @@ exports.signup = async (req, res) => {
       const existingUser = await User.findOne({
         where: {
           email,
-          isActive: true
+          isActive: true,
         },
       });
 
       if (existingUser) {
         return res.status(400).json({
           error: true,
-          message: "User already registered!"
+          message: "User already registered!",
         });
       }
     }
@@ -83,7 +93,7 @@ exports.signup = async (req, res) => {
         gender: gender,
         profile_pic: getFileUrl(req?.file),
       },
-      { transaction }
+      { transaction },
     );
 
     // Process roles array
@@ -96,7 +106,9 @@ exports.signup = async (req, res) => {
       const processId = await Process.findOne({
         where: { process: singleRole[1] },
       });
-      const departmentId = await Department.findOne({ where: { departmentName: singleRole[0] } });
+      const departmentId = await Department.findOne({
+        where: { departmentName: singleRole[0] },
+      });
 
       await UserRole.create(
         {
@@ -106,7 +118,7 @@ exports.signup = async (req, res) => {
           role_id: roleId.role_id,
           roleGroup_id: roleGroup.roleGroup_id,
         },
-        { transaction }
+        { transaction },
       );
     }
 
@@ -131,7 +143,8 @@ exports.signup = async (req, res) => {
 //Update user
 exports.editUser = async (req, res) => {
   // Check if request body is empty
-  const {  email, name, rolesArray, age, gender,employeeID,userName } = req.body;
+  const { email, name, rolesArray, age, gender, employeeID, userName } =
+    req.body;
 
   // Check if required fields are provided
   if (!employeeID || !name || !rolesArray || !userName) {
@@ -161,20 +174,19 @@ exports.editUser = async (req, res) => {
     //   }
     // }
 
-
     const existingEmpID = await User.findOne({
       where: {
         employeeID: employeeID,
         isActive: true,
-        user_id: { [Op.ne]: req.params.id }
+        user_id: { [Op.ne]: req.params.id },
       },
-      transaction
+      transaction,
     });
 
     if (existingEmpID) {
       return res.status(400).json({
         error: true,
-        message: "Employee ID already used by another user!"
+        message: "Employee ID already used by another user!",
       });
     }
 
@@ -182,15 +194,15 @@ exports.editUser = async (req, res) => {
       where: {
         userName: userName,
         isActive: true,
-        user_id: { [Op.ne]: req.params.id }
+        user_id: { [Op.ne]: req.params.id },
       },
-      transaction
+      transaction,
     });
 
     if (existingUserName) {
       return res.status(400).json({
         error: true,
-        message: "Username already used by another user!"
+        message: "Username already used by another user!",
       });
     }
 
@@ -199,7 +211,7 @@ exports.editUser = async (req, res) => {
       name: name,
       email: email,
       employeeID: employeeID,
-      userName: userName, 
+      userName: userName,
       age: age,
       gender: gender,
       profile_pic: getFileUrl(req?.file),
@@ -245,7 +257,7 @@ exports.editUser = async (req, res) => {
           role_id: roleId.role_id,
           roleGroup_id: roleGroup.roleGroup_id,
         },
-        { transaction }
+        { transaction },
       );
     }
 
@@ -274,7 +286,7 @@ exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findOne(
       { where: { user_id: req.params.id, isActive: true } },
-      { transaction }
+      { transaction },
     );
     if (!user) {
       return res.status(404).json({
@@ -289,7 +301,7 @@ exports.deleteUser = async (req, res) => {
         where: {
           user_id: req.params.id,
         },
-      }
+      },
     );
 
     await transaction.commit();
@@ -315,7 +327,7 @@ exports.getAllUsers = async (req, res) => {
       },
       attributes: { exclude: ["password"] },
     });
-    
+
     if (!users || users.length === 0) {
       return res.status(404).json({
         error: true,
@@ -329,7 +341,6 @@ exports.getAllUsers = async (req, res) => {
       message: "Users fetched successfully",
       data: users,
     });
-
   } catch (error) {
     console.error("Get Users Error:", error);
 
@@ -340,7 +351,6 @@ exports.getAllUsers = async (req, res) => {
     });
   }
 };
-
 
 // get a single user
 exports.getAUser = async (req, res) => {
@@ -405,7 +415,7 @@ exports.getUserPermissions = async (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      
+
       res.status(400).json({
         error: true,
         message: error,
@@ -462,10 +472,10 @@ exports.Userlogin = async (req, res) => {
 
     const user = await User.findOne({
       where: {
-        isActive: true, 
+        isActive: true,
         [Op.or]: [
-          { email: loginInput.toLowerCase()},
-          { username: loginInput } 
+          { email: loginInput.toLowerCase() },
+          { username: loginInput },
         ],
       },
       raw: true,
@@ -487,10 +497,16 @@ exports.Userlogin = async (req, res) => {
       });
     }
 
+    // Create session entry
+    const session = await UserSession.create({
+      user_id: user.user_id,
+      login_time: new Date(),
+    });
+
     const token = jwt.sign(
       { userId: user.user_id },
       config.development.JWT_SECRET,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     // password remove
@@ -501,8 +517,8 @@ exports.Userlogin = async (req, res) => {
       message: "Login successful",
       token,
       user: userWithoutPassword,
+      session_id: session.id,
     });
-
   } catch (error) {
     console.error("Login Error:", error);
 
@@ -510,6 +526,139 @@ exports.Userlogin = async (req, res) => {
       error: true,
       message: "Internal server error",
     });
+  }
+};
+
+exports.Userlogout = async (req, res) => {
+  try {
+    const { session_id } = req.body;
+
+    const session = await UserSession.findByPk(session_id);
+
+    if (!session || session.logout_time) {
+      return res.status(400).json({ message: "Invalid session" });
+    }
+
+    function formatDuration(seconds) {
+      if (seconds < 60) {
+        return `${seconds.toFixed(0)} sec`;
+      } else {
+        const minutes = seconds / 60;
+
+        if (minutes < 60) {
+          return `${minutes.toFixed(2)} min`;
+        } else {
+          const hours = minutes / 60;
+          return `${hours.toFixed(2)} hr`;
+        }
+      }
+    }
+
+    const logoutTime = new Date();
+    const loginTime = new Date(session.login_time);
+
+    const duration = Math.floor((logoutTime - loginTime) / 1000);
+    const formatedDuration = formatDuration(duration);
+    console.log(formatedDuration, "formatedDuration");
+    await session.update({
+      logout_time: logoutTime,
+      duration: formatedDuration,
+      isActive: false,
+    });
+
+    res.json({
+      message: "Logout successful",
+      total_duration_seconds: duration,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getLoginActivity = async (req, res) => {
+  try {
+    let { page = 1, limit = 10, search = "", login_date, logout_date, status} = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const offset = (page - 1) * limit;
+
+/* -------------------------SEARCH CONDITION FOR USER TABLE--------------------------*/
+    const userSearchCondition = search
+      ? {
+          [Op.or]: [
+            { name: { [Op.like]: `%${search}%` } },
+            { employeeID: { [Op.like]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+
+/* -------------------------USER SESSION SEARCH--------------------------*/
+    const sessionWhere = {};
+
+    // Filter by login date
+    // if (login_date) {
+    //   const start = new Date(login_date);
+    //   start.setHours(0, 0, 0, 0);
+
+    //   const end = new Date(login_date);
+    //   end.setHours(23, 59, 59, 999);
+
+    //   sessionWhere.login_time = {
+    //     [Op.between]: [start, end],
+    //   };
+    // }
+
+    // Filter by logout date
+    // if (logout_date) {
+    //   const start = new Date(logout_date);
+    //   start.setHours(0, 0, 0, 0);
+
+    //   const end = new Date(logout_date);
+    //   end.setHours(23, 59, 59, 999);
+
+    //   sessionWhere.logout_time = {
+    //     [Op.between]: [start, end],
+    //   };
+    // }
+
+    // Filter by status
+    // if (status === "active") {
+    //   sessionWhere.logout_time = null;
+    // }
+
+    // if (status === "inactive") {
+    //   sessionWhere.logout_time = {
+    //     [Op.ne]: null,
+    //   };
+    // }
+    const { count, rows } = await UserSession.findAndCountAll({
+      // where: sessionWhere,
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["user_id", "name", "email", "employeeID"],
+          where: userSearchCondition,
+        },
+      ],
+      order: [["login_time", "DESC"]],
+      limit,
+      offset,
+    });
+
+    res.json({
+      total_records: count,
+      current_page: page,
+      total_pages: Math.ceil(count / limit),
+      per_page: limit,
+      data: rows,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -532,7 +681,7 @@ exports.Adminlogin = async (req, res) => {
         config.development.JWT_ADMIN_SECRET,
         {
           expiresIn: "24h",
-        }
+        },
       );
       if (token) {
         res.status(200).json({
@@ -587,7 +736,7 @@ exports.resetPassword = async (req, res) => {
     // Update the user's password
     await User.update(
       { password: hashedPassword },
-      { where: { user_id: user_id } }
+      { where: { user_id: user_id } },
     );
 
     return res.status(200).json({ message: "Password updated successfully" });
