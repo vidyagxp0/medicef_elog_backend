@@ -149,6 +149,8 @@
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Autoclave Sterelization Records</h2>
+        <h3 class="subheading">Part-I</h3>
+
     <% if (reportData.AutoclaveSterelizationRecords && reportData.AutoclaveSterelizationRecords.length> 0) { %>
       <table>
         <thead>
@@ -162,14 +164,6 @@
             <th>Cycle No.</th>
             <th>Cycle Hold time</th>
             <th>Autoclave Start time</th>
-            <th>Autoclave End time</th>
-            <th>Sterelization Hold Start time</th>
-            <th>Sterelization Hold End time</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
           </tr>
         </thead>
         <tbody>
@@ -202,6 +196,39 @@
               </td>
               <td>
                 <%= record?.autoclave_start_time || "Not Applicable" %>
+              </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+
+      <h3 class="subheading">Part-II</h3>
+
+  <% if (reportData.AutoclaveSterelizationRecords && reportData.AutoclaveSterelizationRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>S. No.</th>
+            <th>Autoclave End time</th>
+            <th>Sterelization Hold Start time</th>
+            <th>Sterelization Hold End time</th>
+            <th>Temperature</th>
+            <th>Pressure</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.AutoclaveSterelizationRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
               </td>
               <td>
                 <%= record?.autoclave_end_time || "Not Applicable" %>

@@ -27,7 +27,6 @@
       font-size: 15px;
       background-color: #e9ecef;
       margin-bottom: 8px;
-      page-break-after: avoid;
     }
     h3.subheading {
       display: flex;
@@ -38,15 +37,12 @@
       font-size: 14px;
       background-color: #e9ecef;
       margin-bottom: 8px;
-      page-break-after: avoid;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      /* border: 1px solid #000; */
-      page-break-inside: auto;
     }
 
     th,
@@ -61,7 +57,8 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
     }
 
     thead {
@@ -161,6 +158,7 @@
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Dispensing Booth Activity Records</h2>
+        <h3 class="subheading">Part-I</h3>
     <% if (reportData.DispensingBoothRecords && reportData.DispensingBoothRecords.length> 0) { %>
       <table>
         <thead>
@@ -174,21 +172,13 @@
             <th rowspan="2">Batch No.</th>
             <th rowspan="2">Batch Size</th>
             <th rowspan="2">Dispensing Start time</th>
-            <th rowspan="2">Dispensing End time</th>
-            <th rowspan="2">RLAF end time</th>
-            <th rowspan="2">Dispensing done by</th>
-            <th rowspan="2">Dispensing verified by</th>
-            <th rowspan="2">Type of cleaning A/B</th>
-            <th colspan="4">Dispensing Booth cleaning</th>
+            
+
           </tr>
           <tr>  
             <th>Pre Filter</th>
             <th>Intermediate Filter</th>
             <th>HEPA Filter</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Done By</th>
-            <th>Verified By</th>
           </tr>
         </thead>
         <tbody>
@@ -201,7 +191,7 @@
               <td>
                 <%= record?.unique_id || "Not Applicable" %>
               </td>
-              <td>
+              <td style="word-break: keep-all;">
                 <%= formatDateOnly(record?.date) || "Not Applicable" %>
               </td>
               <td>
@@ -225,9 +215,46 @@
               <td>
                 <%= record?.batch_size || "Not Applicable" %>
               </td>
-              <td>
+               <td>
                 <%= record?.dispensing_start_time || "Not Applicable" %>
               </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+        <h3 class="subheading">Part-II</h3>
+    <% if (reportData.DispensingBoothRecords && reportData.DispensingBoothRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">S. No.</th>
+            <th rowspan="2">Dispensing End time</th>
+            <th rowspan="2">RLAF end time</th>
+            <th rowspan="2">Dispensing done by</th>
+            <th rowspan="2">Dispensing verified by</th>
+            <th rowspan="2">Type of cleaning A/B</th>
+            <th colspan="4">Dispensing Booth cleaning</th>
+            <th rowspan="2">Remark</th>
+
+          </tr>
+          <tr>  
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Done By</th>
+            <th>Verified By</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.DispensingBoothRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+           
               <td>
                 <%= record?.dispensing_end_time || "Not Applicable" %>
               </td>
@@ -265,6 +292,7 @@
       <% } else { %>
         <p>No Records Found.</p>
         <% } %>
+
 
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>

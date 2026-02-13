@@ -972,7 +972,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveMLReport", { reportData }, (err, html) => {
+      req.app.render("effectiveCCReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1091,7 +1091,7 @@ exports.effetiveViewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveMLReport", { reportData }, (err, html) => {
+    req.app.render("effectiveCCReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
