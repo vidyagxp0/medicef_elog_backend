@@ -539,14 +539,30 @@ exports.Userlogout = async (req, res) => {
       return res.status(400).json({ message: "Invalid session" });
     }
 
+    function formatDuration(seconds) {
+      if (seconds < 60) {
+        return `${seconds.toFixed(0)} sec`;
+      } else {
+        const minutes = seconds / 60;
+
+        if (minutes < 60) {
+          return `${minutes.toFixed(2)} min`;
+        } else {
+          const hours = minutes / 60;
+          return `${hours.toFixed(2)} hr`;
+        }
+      }
+    }
+
     const logoutTime = new Date();
     const loginTime = new Date(session.login_time);
 
-    const duration = Math.floor((logoutTime - loginTime) / 1000); // seconds
-
+    const duration = Math.floor((logoutTime - loginTime) / 1000);
+    const formatedDuration = formatDuration(duration);
+    console.log(formatedDuration, "formatedDuration");
     await session.update({
       logout_time: logoutTime,
-      duration: duration,
+      duration: formatedDuration,
       isActive: false,
     });
 
@@ -561,22 +577,87 @@ exports.Userlogout = async (req, res) => {
 
 exports.getLoginActivity = async (req, res) => {
   try {
-    const sessions = await UserSession.findAll({
+    let { page = 1, limit = 10, search = "", login_date, logout_date, status} = req.query;
+
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const offset = (page - 1) * limit;
+
+/* -------------------------SEARCH CONDITION FOR USER TABLE--------------------------*/
+    const userSearchCondition = search
+      ? {
+          [Op.or]: [
+            { name: { [Op.like]: `%${search}%` } },
+            { employeeID: { [Op.like]: `%${search}%` } },
+          ],
+        }
+      : {};
+
+
+/* -------------------------USER SESSION SEARCH--------------------------*/
+    const sessionWhere = {};
+
+    // Filter by login date
+    // if (login_date) {
+    //   const start = new Date(login_date);
+    //   start.setHours(0, 0, 0, 0);
+
+    //   const end = new Date(login_date);
+    //   end.setHours(23, 59, 59, 999);
+
+    //   sessionWhere.login_time = {
+    //     [Op.between]: [start, end],
+    //   };
+    // }
+
+    // Filter by logout date
+    // if (logout_date) {
+    //   const start = new Date(logout_date);
+    //   start.setHours(0, 0, 0, 0);
+
+    //   const end = new Date(logout_date);
+    //   end.setHours(23, 59, 59, 999);
+
+    //   sessionWhere.logout_time = {
+    //     [Op.between]: [start, end],
+    //   };
+    // }
+
+    // Filter by status
+    // if (status === "active") {
+    //   sessionWhere.logout_time = null;
+    // }
+
+    // if (status === "inactive") {
+    //   sessionWhere.logout_time = {
+    //     [Op.ne]: null,
+    //   };
+    // }
+    const { count, rows } = await UserSession.findAndCountAll({
+      // where: sessionWhere,
       include: [
         {
           model: User,
           as: "user",
-          attributes: ["user_id", "name", "email"],
+          attributes: ["user_id", "name", "email", "employeeID"],
+          where: userSearchCondition,
         },
       ],
       order: [["login_time", "DESC"]],
+      limit,
+      offset,
     });
 
     res.json({
-      total_records: sessions.length,
-      data: sessions,
+      total_records: count,
+      current_page: page,
+      total_pages: Math.ceil(count / limit),
+      per_page: limit,
+      data: rows,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: error.message });
   }
 };

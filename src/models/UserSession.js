@@ -15,7 +15,7 @@ const UserSession = sequelize.define("UserSession", {
     type: DataTypes.DATE,
   },
   duration: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
   },
   isActive: {
     type: DataTypes.BOOLEAN,
