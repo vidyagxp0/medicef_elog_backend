@@ -50,7 +50,8 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
     }
 
     thead {
@@ -138,7 +139,7 @@
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Lactic Acid Bacillus Assay Sample Records</h2>
-
+        <h3 class="subheading">Part-I</h3>
     <% if (reportData.LabAssaySampleRecords && reportData.LabAssaySampleRecords.length> 0) { %>
       <table>
         <thead>
@@ -152,13 +153,6 @@
             <th>Exp. Date</th>
             <th>A.R. No.</th>
             <th>Analyzed By</th>
-            <th>Average CFU</th>
-            <th>No of spores</th>
-            <th>Percentage of spores</th>
-            <th>Date Of Observation</th>
-            <th>Observed By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
           </tr>
         </thead>
         <tbody>
@@ -192,6 +186,39 @@
                 <td>
                   <%= record?.analyzed_by || "Not Applicable" %>
                 </td>
+               
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
+
+      <h3 class="subheading">Part-II</h3>
+
+       <% if (reportData.LabAssaySampleRecords && reportData.LabAssaySampleRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>S. No.</th>
+            <th>Average CFU</th>
+            <th>No of spores</th>
+            <th>Percentage of spores</th>
+            <th>Date Of Observation</th>
+            <th>Observed By</th>
+            <th>Checked By</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.LabAssaySampleRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+             
                 <td>
                   <%= record?.average_cfu || "Not Applicable" %>
                 </td>
@@ -202,7 +229,7 @@
                   <%= record?.percentage_of_spores || "Not Applicable" %>
                 </td>
                 <td>
-                  <%= record?.date_of_observation || "Not Applicable" %>
+                  <%= formatDateOnly(record?.date_of_observation) || "Not Applicable" %>
                 </td>
                 <td>
                   <%= record?.observed_by || "Not Applicable" %>

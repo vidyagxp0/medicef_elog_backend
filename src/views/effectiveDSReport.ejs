@@ -50,7 +50,8 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
     }
 
     thead {
@@ -184,7 +185,7 @@
                 <%= record?.exp_date || "Not Applicable" %>
               </td>
                 <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
+                  <%= record?.received_by || "Not Applicable" %>
                 </td>
                 <td>
                   <%= record?.issue_quantity || "Not Applicable" %>
