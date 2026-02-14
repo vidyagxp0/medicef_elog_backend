@@ -32,6 +32,9 @@ const coldChamberRoutes = require("./routes/coldChamber");
 const returnedFinishedRoutes = require("./routes/returnedFinished");
 const dispensingBoothRoutes = require("./routes/dispensingBooth");
 const autoclaveSterelizationRoutes = require("./routes/autoclaveSterelization");
+const drainCleaningFormRoutes = require("./routes/drainCleaning");
+const breakdownMaintenanceRoutes = require("./routes/breakdownMaintenance");
+const cleaningAndDisinfectantRoutes = require("./routes/cleaningAndDisinfectant");
 
 const workFLow = require("./routes/workflow");
 const DispensingRecord = require("./models/dispensingRecord");
@@ -105,6 +108,9 @@ app.use("/cold-chamber", coldChamberRoutes);
 app.use("/returned-finished", returnedFinishedRoutes);
 app.use("/dispensing-booth", dispensingBoothRoutes);
 app.use("/autoclave-sterelization", autoclaveSterelizationRoutes);
+app.use("/drain-cleaning", drainCleaningFormRoutes);
+app.use("/breakdown-maintenance", breakdownMaintenanceRoutes);
+app.use("/cleaning-disinfectant", cleaningAndDisinfectantRoutes);
 app.use("/workflow", workFLow);
 
 app.set("view engine", "ejs");
