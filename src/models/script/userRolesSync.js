@@ -36,6 +36,9 @@ const rolesArray1 = [
 { label: "Quality Assurance-Returned Finished Goods Register Record-Initiator", },
 { label: "Quality Assurance-Dispensing Booth Activity Record-Initiator", },
 { label: "Quality Assurance-Autoclave Sterelization Record-Initiator", },
+{ label: "Quality Assurance-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -65,6 +68,9 @@ const rolesArray1 = [
 { label: "Quality Control-Returned Finished Goods Register Record-Initiator" },
 { label: "Quality Control-Dispensing Booth Activity Record-Initiator" },
 { label: "Quality Control-Autoclave Sterelization Record-Initiator" },
+{ label: "Quality Control-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Quality Control-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -90,6 +96,9 @@ const rolesArray1 = [
 { label: "Production-Returned Finished Goods Register Record-Initiator" },
 { label: "Production-Dispensing Booth Activity Record-Initiator" },
 { label: "Production-Autoclave Sterelization Record-Initiator" },
+{ label: "Production-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Production-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -115,6 +124,9 @@ const rolesArray1 = [
 { label: "Warehouse-Returned Finished Goods Register Record-Initiator" },
 { label: "Warehouse-Dispensing Booth Activity Record-Initiator" },
 { label: "Warehouse-Autoclave Sterelization Record-Initiator" },
+{ label: "Warehouse-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Warehouse-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -140,6 +152,9 @@ const rolesArray1 = [
 { label: "Engineering-Returned Finished Goods Register Record-Initiator" },
 { label: "Engineering-Dispensing Booth Activity Record-Initiator" },
 { label: "Engineering-Autoclave Sterelization Record-Initiator" },
+{ label: "Engineering-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Engineering-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -171,6 +186,9 @@ const rolesArray1 = [
 { label: "Human Resources-Returned Finished Goods Register Record-Initiator" },
 { label: "Human Resources-Dispensing Booth Activity Record-Initiator" },
 { label: "Human Resources-Autoclave Sterelization Record-Initiator" },
+{ label: "Human Resources-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Human Resources-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -213,6 +231,9 @@ const rolesArray1 = [
 { label: "Information Technology-Returned Finished Goods Register Record-Initiator" },
 { label: "Information Technology-Dispensing Booth Activity Record-Initiator" },
 { label: "Information Technology-Autoclave Sterelization Record-Initiator" },
+{ label: "Information Technology-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Information Technology-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -238,6 +259,9 @@ const rolesArray1 = [
 { label: "Accounts-Returned Finished Goods Register Record-Initiator" },
 { label: "Accounts-Dispensing Booth Activity Record-Initiator" },
 { label: "Accounts-Autoclave Sterelization Record-Initiator" },
+{ label: "Accounts-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Accounts-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
       
   // PPIC
@@ -290,6 +314,9 @@ const rolesArray1 = [
 { label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Initiator" },
 { label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Initiator" },
 { label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 
@@ -322,6 +349,9 @@ const rolesArray1 = [
 { label: "Regulatory Affairs-Returned Finished Goods Register Record-Initiator" },
 { label: "Regulatory Affairs-Dispensing Booth Activity Record-Initiator" },
 { label: "Regulatory Affairs-Autoclave Sterelization Record-Initiator" },
+{ label: "Regulatory Affairs-Drain cleaning and sanitization Record-Initiator" },
+{ label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Initiator" },
+{ label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
 
 
 ];
@@ -355,6 +385,9 @@ const rolesArray2 = [
 { label: "Quality Assurance-Returned Finished Goods Register Record-Reviewer" },
 { label: "Quality Assurance-Dispensing Booth Activity Record-Reviewer" },
 { label: "Quality Assurance-Autoclave Sterelization Record-Reviewer" },
+{ label: "Quality Assurance-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -382,6 +415,9 @@ const rolesArray2 = [
 { label: "Quality Control-Returned Finished Goods Register Record-Reviewer" },
 { label: "Quality Control-Dispensing Booth Activity Record-Reviewer" },
 { label: "Quality Control-Autoclave Sterelization Record-Reviewer" },
+{ label: "Quality Control-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Quality Control-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -407,6 +443,9 @@ const rolesArray2 = [
 { label: "Production-Returned Finished Goods Register Record-Reviewer" },
 { label: "Production-Dispensing Booth Activity Record-Reviewer" },
 { label: "Production-Autoclave Sterelization Record-Reviewer" },
+{ label: "Production-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Production-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -432,6 +471,9 @@ const rolesArray2 = [
 { label: "Warehouse-Returned Finished Goods Register Record-Reviewer" },
 { label: "Warehouse-Dispensing Booth Activity Record-Reviewer" },
 { label: "Warehouse-Autoclave Sterelization Record-Reviewer" },
+{ label: "Warehouse-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Warehouse-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -457,6 +499,9 @@ const rolesArray2 = [
 { label: "Engineering-Returned Finished Goods Register Record-Reviewer" },
 { label: "Engineering-Dispensing Booth Activity Record-Reviewer" },
 { label: "Engineering-Autoclave Sterelization Record-Reviewer" },
+{ label: "Engineering-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Engineering-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -484,6 +529,9 @@ const rolesArray2 = [
 { label: "Human Resources-Returned Finished Goods Register Record-Reviewer" },
 { label: "Human Resources-Dispensing Booth Activity Record-Reviewer" },
 { label: "Human Resources-Autoclave Sterelization Record-Reviewer" },
+{ label: "Human Resources-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Human Resources-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -532,6 +580,9 @@ const rolesArray2 = [
 { label: "Information Technology-Returned Finished Goods Register Record-Reviewer" },
 { label: "Information Technology-Dispensing Booth Activity Record-Reviewer" },
 { label: "Information Technology-Autoclave Sterelization Record-Reviewer" },
+{ label: "Information Technology-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Information Technology-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -558,6 +609,9 @@ const rolesArray2 = [
 { label: "Accounts-Returned Finished Goods Register Record-Reviewer" },
 { label: "Accounts-Dispensing Booth Activity Record-Reviewer" },
 { label: "Accounts-Autoclave Sterelization Record-Reviewer" },
+{ label: "Accounts-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Accounts-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
   // PPIC
@@ -621,6 +675,9 @@ const rolesArray2 = [
 { label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Reviewer" },
 { label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Reviewer" },
 { label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 
 
@@ -656,6 +713,9 @@ const rolesArray2 = [
 { label: "Regulatory Affairs-Returned Finished Goods Register Record-Reviewer" },
 { label: "Regulatory Affairs-Dispensing Booth Activity Record-Reviewer" },
 { label: "Regulatory Affairs-Autoclave Sterelization Record-Reviewer" },
+{ label: "Regulatory Affairs-Drain cleaning and sanitization Record-Reviewer" },
+{ label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Reviewer" },
+{ label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
 
 ];
 
@@ -692,6 +752,9 @@ const rolesArray3 = [
 { label: "Quality Assurance-Returned Finished Goods Register Record-Approver" },
 { label: "Quality Assurance-Dispensing Booth Activity Record-Approver" },
 { label: "Quality Assurance-Autoclave Sterelization Record-Approver" },
+{ label: "Quality Assurance-Drain cleaning and sanitization Record-Approver" },
+{ label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -727,6 +790,9 @@ const rolesArray3 = [
 { label: "Quality Control-Returned Finished Goods Register Record-Approver" },
 { label: "Quality Control-Dispensing Booth Activity Record-Approver" },
 { label: "Quality Control-Autoclave Sterelization Record-Approver" },
+{ label: "Quality Control-Drain cleaning and sanitization Record-Approver" },
+{ label: "Quality Control-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -753,6 +819,9 @@ const rolesArray3 = [
 { label: "Production-Returned Finished Goods Register Record-Approver" },
 { label: "Production-Dispensing Booth Activity Record-Approver" },
 { label: "Production-Autoclave Sterelization Record-Approver" },
+{ label: "Production-Drain cleaning and sanitization Record-Approver" },
+{ label: "Production-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
   // Warehouse
@@ -778,6 +847,9 @@ const rolesArray3 = [
 { label: "Warehouse-Returned Finished Goods Register Record-Approver" },
 { label: "Warehouse-Dispensing Booth Activity Record-Approver" },
 { label: "Warehouse-Autoclave Sterelization Record-Approver" },
+{ label: "Warehouse-Drain cleaning and sanitization Record-Approver" },
+{ label: "Warehouse-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -804,6 +876,9 @@ const rolesArray3 = [
 { label: "Engineering-Returned Finished Goods Register Record-Approver" },
 { label: "Engineering-Dispensing Booth Activity Record-Approver" },
 { label: "Engineering-Autoclave Sterelization Record-Approver" },
+{ label: "Engineering-Drain cleaning and sanitization Record-Approver" },
+{ label: "Engineering-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -839,6 +914,9 @@ const rolesArray3 = [
 { label: "Human Resources-Returned Finished Goods Register Record-Approver" },
 { label: "Human Resources-Dispensing Booth Activity Record-Approver" },
 { label: "Human Resources-Autoclave Sterelization Record-Approver" },
+{ label: "Human Resources-Drain cleaning and sanitization Record-Approver" },
+{ label: "Human Resources-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -890,6 +968,9 @@ const rolesArray3 = [
 { label: "Information Technology-Returned Finished Goods Register Record-Approver" },
 { label: "Information Technology-Dispensing Booth Activity Record-Approver" },
 { label: "Information Technology-Autoclave Sterelization Record-Approver" },
+{ label: "Information Technology-Drain cleaning and sanitization Record-Approver" },
+{ label: "Information Technology-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -916,6 +997,9 @@ const rolesArray3 = [
 { label: "Accounts-Returned Finished Goods Register Record-Approver" },
 { label: "Accounts-Dispensing Booth Activity Record-Approver" },
 { label: "Accounts-Autoclave Sterelization Record-Approver" },
+{ label: "Accounts-Drain cleaning and sanitization Record-Approver" },
+{ label: "Accounts-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
   // PPIC
@@ -978,6 +1062,9 @@ const rolesArray3 = [
 { label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Approver" },
 { label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Approver" },
 { label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Approver" },
+{ label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Approver" },
+{ label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 
@@ -1013,6 +1100,9 @@ const rolesArray3 = [
 { label: "Regulatory Affairs-Returned Finished Goods Register Record-Approver" },
 { label: "Regulatory Affairs-Dispensing Booth Activity Record-Approver" },
 { label: "Regulatory Affairs-Autoclave Sterelization Record-Approver" },
+{ label: "Regulatory Affairs-Drain cleaning and sanitization Record-Approver" },
+{ label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Approver" },
+{ label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
 
 
 ];
@@ -1069,6 +1159,9 @@ const rolesArray4 = [
 { label: "Quality Assurance-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Quality Assurance-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Quality Assurance-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Quality Assurance-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1120,7 +1213,9 @@ const rolesArray4 = [
 { label: "Quality Control-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Quality Control-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Quality Control-Autoclave Sterelization Record-Fullpermission" },
-
+{ label: "Quality Control-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Quality Control-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
   // Production
@@ -1164,6 +1259,9 @@ const rolesArray4 = [
 { label: "Production-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Production-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Production-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Production-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Production-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1208,6 +1306,9 @@ const rolesArray4 = [
 { label: "Warehouse-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Warehouse-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Warehouse-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Warehouse-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Warehouse-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1252,6 +1353,9 @@ const rolesArray4 = [
 { label: "Engineering-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Engineering-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Engineering-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Engineering-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Engineering-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1303,6 +1407,9 @@ const rolesArray4 = [
 { label: "Human Resources-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Human Resources-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Human Resources-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Human Resources-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Human Resources-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1358,6 +1465,9 @@ const rolesArray4 = [
 { label: "Information Technology-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Information Technology-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Information Technology-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Information Technology-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Information Technology-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1396,6 +1506,9 @@ const rolesArray4 = [
 { label: "Accounts-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Accounts-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Accounts-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Accounts-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Accounts-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1459,6 +1572,9 @@ const rolesArray4 = [
 { label: "Production Planning and Inventory Control-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Production Planning and Inventory Control-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Production Planning and Inventory Control-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 
@@ -1513,6 +1629,9 @@ const rolesArray4 = [
 { label: "Regulatory Affairs-Returned Finished Goods Register Record-Fullpermission" },
 { label: "Regulatory Affairs-Dispensing Booth Activity Record-Fullpermission" },
 { label: "Regulatory Affairs-Autoclave Sterelization Record-Fullpermission" },
+{ label: "Regulatory Affairs-Drain cleaning and sanitization Record-Fullpermission" },
+{ label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Fullpermission" },
+{ label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
 
 
 

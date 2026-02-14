@@ -41,6 +41,9 @@ Process.addHook('afterSync', async () => {
                 { process: `Returned Finished Goods Register Record`},
                 { process: `Dispensing Booth Activity Record`},
                 { process: `Autoclave Sterelization Record`},
+                { process: `Drain cleaning and sanitization Record`},
+                { process: `Breakdown / Maintenance Work Order Record`},
+                { process: `Cleaning and Disinfectant solution preparation distribution and destruction Record`},
 
             ]);
             console.log('Processes created');

@@ -29,6 +29,17 @@
       margin-bottom: 8px;
       page-break-after: avoid;
     }
+    h3.subheading {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      border-left: 4px solid #495057;
+      padding: 6px 10px;
+      font-size: 14px;
+      background-color: #e9ecef;
+      margin-bottom: 8px;
+      page-break-after: avoid;
+    }
 
     table {
       width: 100%;
@@ -50,7 +61,8 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
     }
 
     thead {
@@ -61,7 +73,7 @@
       page-break-inside: avoid;
     }
 
-    /* 🔥 DETAILS TABLE */
+    /*  DETAILS TABLE */
     .details-table td.label {
       width: 35%;
       font-weight: 600;
@@ -95,15 +107,26 @@
 
 <body>
 
-  <% const formatDateOnly=(date)=> {
-    if (!date) return "Not Applicable";
-    return new Date(date).toLocaleDateString("en-IN", {
+    <% 
+const formatDateTime = (date) => {
+  if (!date) return "Not Applicable";
+
+  const d = new Date(date);
+
+  const formatted = d.toLocaleString("en-IN", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
-    }).replace(/\//g, "-");
-    };
-    %>
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true   
+  });
+
+  return formatted.replace(/\//g, "-");
+};
+%>
+
 
     <!-- ================= DETAILS ================= -->
     <h2 class="heading">Details</h2>
@@ -113,7 +136,7 @@
         <tr>
           <td class="label">Record Id</td>
           <td class="value">
-            MED/AHR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+            MED/DCR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
           </td>
         </tr>
         <tr>
@@ -138,26 +161,27 @@
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Air Handling Unit Records</h2>
+    <h2 class="heading">Drain cleaning and sanitization Records</h2>
+        <h3 class="subheading">Part-I</h3>
 
-    <% if (reportData.AhuOperationRecords && reportData.AhuOperationRecords.length> 0) { %>
+    <% if (reportData.DrainCleaningRecords && reportData.DrainCleaningRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
-            <th>S.No</th>
+            <th>S. No.</th>
             <th>Unique ID</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Equipment ID</th>
-            <th>Operation Status</th>
-            <th>Done by</th>
-            <th>Checked by</th>
-            <th>Remarks</th>
+            <th>Date /Time</th>
+            <th>Material Name</th>
+            <th>Quantity</th>
+            <th>Autoclave Load No.</th>
+            <th>Cycle No.</th>
+            <th>Cycle Hold time</th>
+            <th>Autoclave Start time</th>
           </tr>
         </thead>
         <tbody>
 
-          <% reportData?.AhuOperationRecords?.forEach((record, index)=> { %>
+          <% reportData.DrainCleaningRecords.forEach((record, index)=> { %>
             <tr>
               <td>
                 <%= index + 1 %>
@@ -166,35 +190,91 @@
                 <%= record?.unique_id || "Not Applicable" %>
               </td>
               <td>
-                <%= formatDateOnly(record?.date) || "Not Applicable" %>
+                <%= formatDateTime(record?.date) || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.time || "Not Applicable" %>
+                <%= record?.material_name || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.equipmentId || "Not Applicable" %>
+                <%= record?.quantity || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.operationStatus || "Not Applicable" %>
+                <%= record?.autoclave_load_no || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.done_by || "Not Applicable" %>
+                <%= record?.cycle_no || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.reviewed_by || "Not Applicable" %>
+                <%= record?.cycle_hold_time || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.remarks || "Not Applicable" %>
+                <%= record?.autoclave_start_time || "Not Applicable" %>
               </td>
             </tr>
             <% }) %>
         </tbody>
       </table>
+      
       <% } else { %>
         <p>No Records Found.</p>
         <% } %>
 
+      <h3 class="subheading">Part-II</h3>
 
+  <% if (reportData.DrainCleaningRecords && reportData.DrainCleaningRecords.length> 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>S. No.</th>
+            <th>Autoclave End time</th>
+            <th>Sterelization Hold Start time</th>
+            <th>Sterelization Hold End time</th>
+            <th>Temperature</th>
+            <th>Pressure</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Remark</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <% reportData.DrainCleaningRecords.forEach((record, index)=> { %>
+            <tr>
+              <td>
+                <%= index + 1 %>
+              </td>
+              <td>
+                <%= record?.autoclave_end_time || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.sterilization_hold_start_time || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.sterilization_hold_end_time || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.temperature || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.pressure || "Not Applicable" %>
+              </td>
+                <td>
+                  <%= record?.done_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.reviewed_by || "Not Applicable" %>
+                </td>
+                <td>
+                  <%= record?.remarks || "Not Applicable" %>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+      </table>
+      
+      <% } else { %>
+        <p>No Records Found.</p>
+        <% } %>
 
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
