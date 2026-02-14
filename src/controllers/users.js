@@ -577,14 +577,22 @@ exports.Userlogout = async (req, res) => {
 
 exports.getLoginActivity = async (req, res) => {
   try {
-    let { page = 1, limit = 10, search = "", login_date, logout_date, status} = req.query;
+    let {
+      page = 1,
+      limit = 10,
+      search = "",
+      login_from,
+      login_to,
+      logout_date,
+      status,
+    } = req.query;
 
     page = parseInt(page);
     limit = parseInt(limit);
 
     const offset = (page - 1) * limit;
 
-/* -------------------------SEARCH CONDITION FOR USER TABLE--------------------------*/
+    /* -------------------------SEARCH CONDITION FOR USER TABLE--------------------------*/
     const userSearchCondition = search
       ? {
           [Op.or]: [
@@ -594,48 +602,36 @@ exports.getLoginActivity = async (req, res) => {
         }
       : {};
 
-
-/* -------------------------USER SESSION SEARCH--------------------------*/
+    /* -------------------------USER SESSION SEARCH--------------------------*/
     const sessionWhere = {};
 
     // Filter by login date
-    // if (login_date) {
-    //   const start = new Date(login_date);
-    //   start.setHours(0, 0, 0, 0);
-
-    //   const end = new Date(login_date);
-    //   end.setHours(23, 59, 59, 999);
-
-    //   sessionWhere.login_time = {
-    //     [Op.between]: [start, end],
-    //   };
-    // }
-
-    // Filter by logout date
-    // if (logout_date) {
-    //   const start = new Date(logout_date);
-    //   start.setHours(0, 0, 0, 0);
-
-    //   const end = new Date(logout_date);
-    //   end.setHours(23, 59, 59, 999);
-
-    //   sessionWhere.logout_time = {
-    //     [Op.between]: [start, end],
-    //   };
-    // }
+    if (login_from && login_to) {
+      sessionWhere.login_time = {
+        [Op.between]: [new Date(login_from), new Date(login_to)],
+      };
+    } else if (login_from) {
+      sessionWhere.login_time = {
+        [Op.gte]: new Date(login_from),
+      };
+    } else if (login_to) {
+      sessionWhere.login_time = {
+        [Op.lte]: new Date(login_to),
+      };
+    }
 
     // Filter by status
-    // if (status === "active") {
-    //   sessionWhere.logout_time = null;
-    // }
+    if (status === "active") {
+      sessionWhere.logout_time = null;
+    }
 
-    // if (status === "inactive") {
-    //   sessionWhere.logout_time = {
-    //     [Op.ne]: null,
-    //   };
-    // }
+    if (status === "inactive") {
+      sessionWhere.logout_time = {
+        [Op.ne]: null,
+      };
+    }
     const { count, rows } = await UserSession.findAndCountAll({
-      // where: sessionWhere,
+      where: sessionWhere,
       include: [
         {
           model: User,
