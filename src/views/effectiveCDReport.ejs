@@ -107,25 +107,29 @@
 
 <body>
 
-    <% 
-const formatDateTime = (date) => {
-  if (!date) return "Not Applicable";
+  <% const formatDateTime=(date)=> {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        }).replace(/\//g, "-");
+        };
 
-  const d = new Date(date);
+        const formatDateOnly = (date) => {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        }).replace(/\//g, "-");
+        };
+        %>
 
-  const formatted = d.toLocaleString("en-IN", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true   
-  });
-
-  return formatted.replace(/\//g, "-");
-};
-%>
 
 
     <!-- ================= DETAILS ================= -->
@@ -173,11 +177,15 @@ const formatDateTime = (date) => {
             <th rowspan="3">Date</th>
             <th rowspan="3">Name of Solution</th>
             <th rowspan="3">Concentration Of Solution</th>
-            <th rowspan="1"></th>
-            <th rowspan="1"></th>
-            <th colspan="6">Quantity of Cleaning/Disinfectant solution Prepared </th>
-            <th row>After the Hold Time Quantity of solution destroyed</th>
-            <th>Autoclave Start time</th>
+            <th colspan="1"></th>
+            <th colspan="1"></th>
+            <th colspan="2">Quantity of Cleaning/Disinfectant solution Prepared </th>
+          </tr>
+          <tr>
+            <th rowspan="2">Volume of Disinfectant /Cleaning Solution</th>
+            <th rowspan="2">Volume of Purified Water</th>
+            <th rowspan="2">Prepared By</th>
+            <th rowspan="2">Checked By</th>
           </tr>
         </thead>
         <tbody>
@@ -191,25 +199,25 @@ const formatDateTime = (date) => {
                 <%= record?.unique_id || "Not Applicable" %>
               </td>
               <td>
-                <%= formatDateTime(record?.date) || "Not Applicable" %>
+                <%= formatDateOnly(record?.date) || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.material_name || "Not Applicable" %>
+                <%= record?.name_of_solution || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.quantity || "Not Applicable" %>
+                <%= record?.concentration_of_solution || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.autoclave_load_no || "Not Applicable" %>
+                <%= record?.volume_of_disinfectant || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.cycle_no || "Not Applicable" %>
+                <%= record?.volume_of_purified || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.cycle_hold_time || "Not Applicable" %>
+                <%= record?.prepared_by || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.autoclave_start_time || "Not Applicable" %>
+                <%= record?.reviewed_by || "Not Applicable" %>
               </td>
             </tr>
             <% }) %>
@@ -225,16 +233,23 @@ const formatDateTime = (date) => {
   <% if (reportData.CleaningAndDisinfectantRecords && reportData.CleaningAndDisinfectantRecords.length> 0) { %>
       <table>
         <thead>
+           <tr>
+            <th rowspan="3">S. No.</th>
+            <th colspan="5">Quantity of Cleaning/Disinfectant solution Prepared</th>
+            <th colspan="1">After the Hold Time Quantity of solution destroyed</th>
+            <th rowspan="3">Remarks </th>
+          </tr>
           <tr>
-            <th>S. No.</th>
-            <th>Autoclave End time</th>
-            <th>Sterelization Hold Start time</th>
-            <th>Sterelization Hold End time</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
+            <th rowspan="2">Total Volume of Solution</th>
+            <th colspan="2">Distribution Record</th>
+            <th rowspan="2">Date</th>
+            <th rowspan="2">Remaining Quantity destroyed</th>
+            <th rowspan="2">Destroyed by</th>
+          </tr>
+          <tr>
+            <th rowspan="2">Quantity</th>
+            <th rowspan="2">Department/Area</th>
+ 
           </tr>
         </thead>
         <tbody>
@@ -245,26 +260,25 @@ const formatDateTime = (date) => {
                 <%= index + 1 %>
               </td>
               <td>
-                <%= record?.autoclave_end_time || "Not Applicable" %>
+                <%= record?.total_volume_of_solution || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.sterilization_hold_start_time || "Not Applicable" %>
+                <%= record?.quantity || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.sterilization_hold_end_time || "Not Applicable" %>
+                <%= record?.department_area || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.temperature || "Not Applicable" %>
+                  <%= formatDateOnly(record?.prepared_date) || "Not Applicable" %>
+
               </td>
               <td>
-                <%= record?.pressure || "Not Applicable" %>
+                <%= record?.remaining_qty_destroyed || "Not Applicable" %>
               </td>
                 <td>
-                  <%= record?.done_by || "Not Applicable" %>
+                  <%= record?.destroyed_by || "Not Applicable" %>
                 </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
+               
                 <td>
                   <%= record?.remarks || "Not Applicable" %>
                 </td>
