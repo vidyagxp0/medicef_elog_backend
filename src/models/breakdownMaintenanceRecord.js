@@ -44,16 +44,19 @@ const BreakdownMaintenanceRecord = sequelize.define(
     },
     type_of_work_mechanical: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     type_of_work_civil: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     type_of_work_other: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
 
     description_of_job: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
 
     user_dept_sign_date: {
@@ -80,7 +83,7 @@ const BreakdownMaintenanceRecord = sequelize.define(
     },
 
     summary_of_work_done: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
 
     work_completed_by: {
@@ -97,7 +100,7 @@ const BreakdownMaintenanceRecord = sequelize.define(
     },
 
     qa_comments: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     affects_critical_process: {
       type: DataTypes.BOOLEAN,
