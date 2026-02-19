@@ -19,7 +19,7 @@ const BreakdownMaintenanceRecord = sequelize.define(
       },
     },
 
-    from_department: {
+    departmentName: {
       type: DataTypes.STRING,
     },
     requested_by: {

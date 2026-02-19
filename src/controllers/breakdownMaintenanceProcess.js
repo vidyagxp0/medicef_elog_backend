@@ -220,7 +220,7 @@ exports.InsertBreakdownMaintenance = async (req, res) => {
     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
-        from_department: record?.from_department,
+        departmentName: record?.departmentName,
         requested_by: record?.requested_by,
         request_date: record?.request_date,
         request_time: record?.request_time,
@@ -580,7 +580,7 @@ exports.EditBreakdownMaintenance = async (req, res) => {
           // UPDATE existing row
           await BreakdownMaintenanceRecord.update(
             {
-              from_department: record?.from_department,
+              departmentName: record?.departmentName,
               requested_by: record?.requested_by,
               request_date: record?.request_date,
               request_time: record?.request_time,
@@ -626,7 +626,7 @@ exports.EditBreakdownMaintenance = async (req, res) => {
           await BreakdownMaintenanceRecord.create(
             {
               form_id: form_id,
-              from_department: record?.from_department,
+              departmentName: record?.departmentName,
               requested_by: record?.requested_by,
               request_date: record?.request_date,
               request_time: record?.request_time,

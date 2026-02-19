@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <style>
+   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       font-size: 13.5px;
@@ -119,14 +118,40 @@ const formatDateTime = (date) => {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
-    hour12: true   
   });
 
   return formatted.replace(/\//g, "-");
 };
-%>
+ const formatDateOnly = (date) => {
+        if (!date) return "Not Applicable";
+        return new Date(date).toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        }).replace(/\//g, "-");
+        };
+      
 
+
+const record = reportData?.BreakdownMaintenanceRecords?.[0] || {};
+  const parseSign = (val) => {
+    try {
+      return val ? JSON.parse(val) : null;
+    } catch {
+      return null;
+    }
+  };
+  const userDeptSign = parseSign(record?.user_dept_sign_date);
+  const receivedSign = parseSign(record?.request_received_sign);
+  const completedSign = parseSign(record?.work_completed_sign);
+  const qaSign = parseSign(record?.qa_sign_date);
+  const acceptanceuserSign = parseSign(record?.acceptance_user_sign_date);
+  const engCheckSign = parseSign(record?.checked_by_engineering_sign_date);
+  const headEngSign = parseSign(record?.verified_by_head_engineering_sign_date);
+
+  console.log("===== FIRST RECORD =====");
+  console.log(record);
+%>
 
     <!-- ================= DETAILS ================= -->
     <h2 class="heading">Details</h2>
@@ -160,151 +185,253 @@ const formatDateTime = (date) => {
       </tbody>
     </table>
 
-    <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Breakdown / Maintenance Work Order Records</h2>
-        <h3 class="subheading">Part-I</h3>
+<!-- ================= RECORDS ================= -->
+<h2 class="heading">Breakdown / Maintenance Work Order Records</h2>
+<h3 class="subheading">Maintenance Work Request Details</h3>
 
-    <% if (reportData.BreakdownMaintenanceRecords && reportData.BreakdownMaintenanceRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>Unique ID</th>
-            <th>Date /Time</th>
-            <th>Material Name</th>
-            <th>Quantity</th>
-            <th>Autoclave Load No.</th>
-            <th>Cycle No.</th>
-            <th>Cycle Hold time</th>
-            <th>Autoclave Start time</th>
-          </tr>
-        </thead>
-        <tbody>
+<table class="details-table">
+  <tbody>
+    <tr>
+      <td class="label">To</td>
+      <td class="value">Engineering Department</td>
+    </tr>
+    <tr>
+      <td class="label">From Department</td>
+      <td class="value"><%= reportData?.departmentName || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Requested By</td>
+      <td class="value"><%= record?.requested_by || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Date</td>
+      <td class="value"><%= formatDateOnly(record?.request_date) || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Time</td>
+      <td class="value"><%= record?.request_time || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Equipment / System / Area Name</td>
+      <td class="value"><%= record?.equipment_system_area_name || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Equipment / System / Area ID</td>
+      <td class="value"><%= record?.area_id_no || "Not Applicable" %></td>
+    </tr>
+    <tr>
+  <td class="label">Type of Work</td>
+  <td class="value">
+    Electrical: <%= record?.type_of_work_electrical ? "Yes" : "No" %><br>
+    Mechanical: <%= record?.type_of_work_mechanical ? "Yes" : "No" %><br>
+    Civil: <%= record?.type_of_work_civil ? "Yes" : "No" %><br>
+    Other: <%= record?.type_of_work_other ? "Yes" : "No" %>
+  </td>
+</tr>
 
-          <% reportData.BreakdownMaintenanceRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.unique_id || "Not Applicable" %>
-              </td>
-              <td>
-                <%= formatDateTime(record?.date) || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.material_name || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.quantity || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.autoclave_load_no || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.cycle_no || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.cycle_hold_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.autoclave_start_time || "Not Applicable" %>
-              </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      
-      <% } else { %>
-        <p>No Records Found.</p>
+    <tr>
+      <td class="label">Description of Job / Problem</td>
+<td class="value"><%- record?.description_of_job || "Not Applicable" %></td>
+</tr>
+
+  <tr>
+  <td class="label">User Department (Sign & Date)</td>
+    <td class="value">
+    <%= userDeptSign?.signed_by || "Not Signed" %>
+    <% if (userDeptSign?.signed_at) { %>
+      (<%= formatDateTime(userDeptSign.signed_at) %>)
+    <% } %>
+  </td>
+</tr>
+  </tbody>
+</table>
+
+<h3 class="subheading">Engineering Response</h3>
+
+<table class="details-table">
+  <tbody>
+    <tr>
+      <td class="label">Request Received By</td>
+      <td class="value"><%= record?.request_received_by || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Date</td>
+      <td class="value"><%= formatDateOnly(record?.request_received_date) || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Time</td>
+      <td class="value"><%= record?.request_received_time || "Not Applicable" %></td>
+    </tr>
+     <tr>
+  <td class="label">Sign</td>
+<td class="value">
+  <%= receivedSign?.signed_by || "Not Signed" %>
+</td>
+</tr>
+<tr>
+  <td class="label">
+    Whether Change Control required for this work order?
+  </td>
+  <td class="value">
+    <% if (record?.change_control_required === true) { %>
+      Yes
+    <% } else if (record?.change_control_required === false) { %>
+      No
+    <% } else { %>
+      Not Applicable
+    <% } %>
+  </td>
+</tr>
+
+<% if (record?.change_control_required === true) { %>
+<tr>
+  <td class="label">Change Control No.</td>
+  <td class="value">
+    <%= record?.change_control_no || "Not Provided" %>
+  </td>
+</tr>
+<% } %>
+
+    <tr>
+      <td class="label">Summary of Work Done</td>
+<td class="value"><%- record?.summary_of_work_done || "Not Applicable" %></td>
+    </tr>
+   <tr>
+      <td class="label">Work Completed by</td>
+      <td class="value"><%= record?.work_completed_by || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Date</td>
+      <td class="value"><%= formatDateOnly(record?.work_completed_date) || "Not Applicable" %></td>
+    </tr>
+    <tr>
+      <td class="label">Time</td>
+      <td class="value"><%= record?.work_completed_time || "Not Applicable" %></td>
+    </tr>
+ <tr>
+  <td class="label">Sign</td>
+<td class="value">
+  <%= completedSign?.signed_by || "Not Signed" %>
+</td>
+</tr>
+  </tbody>
+</table>
+
+<h3 class="subheading">Quality Assurance Response</h3>
+
+<table class="details-table">
+  <tbody>
+    <tr>
+      <td class="label">Comment by QA Department</td>
+<td class="value"><%- record?.qa_comments || "Not Applicable" %></td>
+    </tr>
+  <tr>
+  <td class="label">
+    Will this work affect the critical process?
+  </td>
+  <td class="value">
+    <% if (record?.affects_critical_process === true) { %>
+      Yes
+    <% } else if (record?.affects_critical_process === false) { %>
+      No
+    <% } else { %>
+      Not Applicable
+    <% } %>
+  </td>
+</tr>
+
+ <tr>
+  <td class="label">QA Department (Sign & Date)</td>
+  <td class="value">
+    <%= qaSign?.signed_by || "Not Signed" %>
+    <% if (qaSign?.signed_at) { %>
+      (<%= formatDateTime(qaSign.signed_at) %>)
+    <% } %>
+  </td>
+
+</tr>
+  </tbody>
+</table>
+<h3 class="subheading">Acceptance Note</h3>
+
+<table class="details-table">
+  <tbody>
+   <tr>
+  <td class="label">
+    Checked and verified that the Equipment / System / Area is available for routine use
+  </td>
+  <td class="value">
+    <% if (record?.equipment_available_for_use === true) { %>
+      Yes
+    <% } else if (record?.equipment_available_for_use === false) { %>
+      No
+    <% } else { %>
+      Not Applicable
+    <% } %>
+  </td>
+</tr>
+
+ <tr>
+  <td class="label">User Department (Sign & Date)</td>
+ <td class="value">
+    <%= acceptanceuserSign?.signed_by || "Not Signed" %>
+    <% if (acceptanceuserSign?.signed_at) { %>
+      (<%= formatDateTime(acceptanceuserSign.signed_at) %>)
+    <% } %>
+  </td>
+
+</tr>
+  </tbody>
+</table>
+
+<h3 class="subheading">Checked & Verified By Engineering</h3>
+
+<table class="details-table">
+  <tbody>
+  
+ <tr>
+  <td class="label">Checked By Engineering (Sign & Date)</td>
+ <td class="value">
+    <%= engCheckSign?.signed_by || "Not Signed" %>
+    <% if (engCheckSign?.signed_at) { %>
+      (<%= formatDateTime(engCheckSign.signed_at) %>)
+    <% } %>
+  </td>
+</tr>
+<tr>
+  <td class="label">Verified By Head Engineering / Designee (Sign & Date)</td>
+ <td class="value">
+    <%= headEngSign?.signed_by || "Not Signed" %>
+    <% if (headEngSign?.signed_at) { %>
+      (<%= formatDateTime(headEngSign.signed_at) %>)
+    <% } %>
+  </td>
+</tr>
+  </tbody>
+</table>
+
+
+
+<!-- ================= ADDITIONAL ================= -->
+<% if (reportData?.additionalAttachment || reportData?.additionalInfo) { %>
+  <h2 class="heading">Additional</h2>
+  <table>
+    <tr>
+      <th>Additional Attachment</th>
+      <td>
+        <% if (reportData?.additionalAttachment) { %>
+          <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
+        <% } else { %>
+          Not Applicable
         <% } %>
-
-      <h3 class="subheading">Part-II</h3>
-
-  <% if (reportData.BreakdownMaintenanceRecords && reportData.BreakdownMaintenanceRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>Autoclave End time</th>
-            <th>Sterelization Hold Start time</th>
-            <th>Sterelization Hold End time</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.BreakdownMaintenanceRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.autoclave_end_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.sterilization_hold_start_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.sterilization_hold_end_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.temperature || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.pressure || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.remarks || "Not Applicable" %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-          <!-- ================= ADDITIONAL ================= -->
-          <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
-
-            <h2 class="heading">Additional</h2>
-            <table>
-              <tr>
-                <th>Additional Attachment</th>
-                <td>
-                  <% if (reportData?.additionalAttachment) { %>
-                    <a href="<%= reportData.additionalAttachment %>" target="_blank">
-                      View File
-                    </a>
-                    <% } else { %>
-                      Not Applicable
-                      <% } %>
-                </td>
-              </tr>
-
-              <tr>
-                <th>Additional Info</th>
-                <td>
-                  <%= reportData?.additionalInfo || "Not Applicable" %>
-                </td>
-              </tr>
-            </table>
-
-            <% } %>
-
+      </td>
+    </tr>
+    <tr>
+      <th>Additional Info</th>
+      <td><%= reportData?.additionalInfo || "Not Applicable" %></td>
+    </tr>
+  </table>
+<% } %>
 
 </body>
-
 </html>
