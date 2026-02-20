@@ -153,16 +153,6 @@ const formatDateTime = (date) => {
   return formatted.replace(/\//g, "-");
 };
 
-reportData.DrainCleaningRecords.forEach(r => {
-  if (r.role === "reviewer" || r.role === "approver") {
-    console.log("CHECK ROW DATA:", {
-      row_id: r.row_id,
-      role: r.role,
-      day: r.day,
-      by: r.by
-    });
-  }
-});
 %>
 
 
