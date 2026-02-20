@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
-      font-size: 13.5px;
+      font-size: 12px;
       color: #000;
       margin: 25px;
-      line-height: 1.6;
+      line-height: 1.35;
     }
 
     h1 {
@@ -29,82 +28,110 @@
       margin-bottom: 8px;
       page-break-after: avoid;
     }
-    h3.subheading {
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-      border-left: 4px solid #495057;
-      padding: 6px 10px;
-      font-size: 14px;
-      background-color: #e9ecef;
-      margin-bottom: 8px;
-      page-break-after: avoid;
-    }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
-      /* border: 1px solid #000; */
-      page-break-inside: auto;
+      font-size: 12px;
     }
 
-    th,
-    td {
-      border: 1px solid #000;
-      padding: 8px;
-      /* text-align: left; */
-      font-size: 13px;
-      vertical-align: top;
-    }
-
-    th {
-      background: #f8f8f8;
-      font-weight: 600;
+    th, td {
+      border: 1px solid #ccc;
+      min-width: 20px;
+      padding: 5px;
       text-align: center;
       vertical-align: middle;
     }
 
-    thead {
-      display: table-header-group;
-    }
-
-    tr {
-      page-break-inside: avoid;
-    }
-
-    /*  DETAILS TABLE */
-    .details-table td.label {
-      width: 35%;
+    th {
+      background: #f3f4f6;
       font-weight: 600;
-      background-color: #f8f9fa;
     }
 
-    .details-table td.value {
-      width: 65%;
+    .status-yes {
+      color: #16a34a;
+      font-weight: bold;
+      font-size: 16px;
+      display: block;
     }
 
-    .green {
-      color: green;
+    .status-no {
+      color: #dc2626;
+      font-weight: bold;
+      font-size: 16px;
+      display: block;
+    }
+
+    .cell-meta {
+      font-size: 9.5px;
+      color: #374151;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .sub-row {
+      padding-left: 16px;
+      font-style: italic;
+      background: #fafafa;
+      text-align: left;
+    }
+
+    .heading {
+      margin: 16px 0 8px;
+      font-size: 14px;
       font-weight: bold;
     }
 
-    .yellow {
-      color: orange;
-      font-weight: bold;
+    .details-table td {
+      padding: 6px 8px;
+      text-align: left;
     }
 
-    .red {
-      color: red;
-      font-weight: bold;
+    .label {
+      font-weight: 600;
+      width: 180px;
+      background: #f9fafb;
     }
-
-    .black {
+      .black {
       color: black;
     }
+
+    h1 {
+      font-size: 18px;
+    }
+
+    h2.heading {
+      font-size: 13.5px;
+      padding: 5px 8px;
+    }  
+    .row-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+}
+ 
+.icon {
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+
+}
+
+.icon-yes {
+  color: #16a34a; /* green */
+}
+
+.icon-no {
+  color: #dc2626; /* red */
+}
+
+.icon-muted {
+  color: #9ca3af; /* grey */
+}
   </style>
 </head>
-
 <body>
 
     <% 
@@ -125,6 +152,17 @@ const formatDateTime = (date) => {
 
   return formatted.replace(/\//g, "-");
 };
+
+reportData.DrainCleaningRecords.forEach(r => {
+  if (r.role === "reviewer" || r.role === "approver") {
+    console.log("CHECK ROW DATA:", {
+      row_id: r.row_id,
+      role: r.role,
+      day: r.day,
+      by: r.by
+    });
+  }
+});
 %>
 
 
@@ -162,120 +200,66 @@ const formatDateTime = (date) => {
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Drain cleaning and sanitization Records</h2>
-        <h3 class="subheading">Part-I</h3>
 
     <% if (reportData.DrainCleaningRecords && reportData.DrainCleaningRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>Unique ID</th>
-            <th>Date /Time</th>
-            <th>Material Name</th>
-            <th>Quantity</th>
-            <th>Autoclave Load No.</th>
-            <th>Cycle No.</th>
-            <th>Cycle Hold time</th>
-            <th>Autoclave Start time</th>
-          </tr>
-        </thead>
-        <tbody>
 
-          <% reportData.DrainCleaningRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.unique_id || "Not Applicable" %>
-              </td>
-              <td>
-                <%= formatDateTime(record?.date) || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.material_name || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.quantity || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.autoclave_load_no || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.cycle_no || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.cycle_hold_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.autoclave_start_time || "Not Applicable" %>
-              </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      
+<table>
+  <thead>
+    <tr>
+      <th style="min-width:16px;">Date</th>
+      <% DAYS.forEach(day => { %>
+        <th><%= day %></th>
+      <% }) %>
+    </tr>
+  </thead>
+
+<tbody>
+  <% rows.forEach(row => { %>
+    <tr>
+
+      <!-- ROW LABEL -->
+      <td class="row-label">
+      <%= row.sub ? '' : row.label %></td>
+
+      <% DAYS.forEach(day => { 
+           const cell = grid[row.id]?.[day];
+           const isReviewerRow = row.id === 16;
+           const isApproverRow = row.id === 17;
+      %>
+
+      <td>
+      <% if (cell) { %>
+
+    <% if (row.id === 16 || row.id === 17) { %>
+      <!-- Reviewer / Approver → ONLY NAME -->
+      <% if (cell.by) { %>
+        <div class="cell-meta"><%= cell.by %></div>
+      <% } %>
+
+    <% } else { %>
+      <!-- Other rows → ONLY ACTIVE ICON -->
+
+      <% if (cell.status === 'checked') { %>
+        <span class="icon icon-yes">✔</span>
+      <% } else if (cell.status === 'cross') { %>
+        <span class="icon icon-no">✖</span>
+      <% } %>
+
+    <% } %>
+
+  <% } %>
+</td>
+
+      <% }) %>
+    </tr>
+  <% }) %>
+</tbody>
+</table>
       <% } else { %>
         <p>No Records Found.</p>
         <% } %>
 
-      <h3 class="subheading">Part-II</h3>
-
-  <% if (reportData.DrainCleaningRecords && reportData.DrainCleaningRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>Autoclave End time</th>
-            <th>Sterelization Hold Start time</th>
-            <th>Sterelization Hold End time</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.DrainCleaningRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.autoclave_end_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.sterilization_hold_start_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.sterilization_hold_end_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.temperature || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.pressure || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.remarks || "Not Applicable" %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
+  
           <!-- ================= ADDITIONAL ================= -->
           <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
 

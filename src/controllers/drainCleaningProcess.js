@@ -885,6 +885,56 @@ exports.viewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
+const buildDrainGridForReport = (records = []) => {
+  const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  const rows = [
+    { id: 1, label: "Time" },
+    { id: 2, label: "Cleaning Agent" },
+    { id: 3, label: "Disinfectant Used" },
+    { id: 4, label: "Sanitizer Used" },
+    { id: 5, label: "Drain ID" },
+
+    // 10 extra Drain ID rows
+    { id: 6, label: "Drain ID", sub: true },
+    { id: 7, label: "Drain ID", sub: true },
+    { id: 8, label: "Drain ID", sub: true },
+    { id: 9, label: "Drain ID", sub: true },
+    { id: 10, label: "Drain ID", sub: true },
+    { id: 11, label: "Drain ID", sub: true },
+    { id: 12, label: "Drain ID", sub: true },
+    { id: 13, label: "Drain ID", sub: true },
+    { id: 14, label: "Drain ID", sub: true },
+    { id: 15, label: "Drain ID", sub: true },
+
+    { id: 16, label: "Checked By" },
+    { id: 17, label: "Verified By" },
+  ];
+
+  // 1️⃣ empty grid
+  const grid = {};
+  rows.forEach((row) => {
+    grid[row.id] = {};
+    DAYS.forEach((day) => {
+      grid[row.id][day] = null;
+    });
+  });
+
+  // 2️⃣ fill grid from DB
+  records.forEach((rec) => {
+    if (!grid[rec.row_id]) return;
+
+    grid[rec.row_id][rec.day] = {
+      status: rec.status,
+      checked: rec.checked,
+      by: rec.by,
+      role: rec.role,
+      time: rec.time,
+    };
+  });
+
+  return { grid, rows, DAYS };
+};
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const { form_id } = req.params;
@@ -956,10 +1006,12 @@ exports.effetiveChatByPdf = async (req, res) => {
       second: "2-digit",
       hour12: false, // Specify using 24-hour format
     });
-
+const { grid, rows, DAYS } = buildDrainGridForReport(
+  reportData.DrainCleaningRecords || []
+);
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveDCReport", { reportData }, (err, html) => {
+      req.app.render("effectiveDCReport", { reportData, grid, rows, DAYS  }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1077,8 +1129,11 @@ exports.effetiveViewReport = async (req, res) => {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
+    const { grid, rows, DAYS } = buildDrainGridForReport(
+  reportData.DrainCleaningRecords || []
+);
     // Render HTML using EJS template
-    req.app.render("effectiveDCReport", { reportData }, (err, html) => {
+    req.app.render("effectiveDCReport", { reportData , grid, rows, DAYS }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
