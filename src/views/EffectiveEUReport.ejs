@@ -29,6 +29,17 @@
       margin-bottom: 8px;
       page-break-after: avoid;
     }
+    h3.subheading {
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+      border-left: 4px solid #495057;
+      padding: 6px 10px;
+      font-size: 14px;
+      background-color: #e9ecef;
+      margin-bottom: 8px;
+      page-break-after: avoid;
+    }
 
     table {
       width: 100%;
@@ -50,7 +61,8 @@
     th {
       background: #f8f8f8;
       font-weight: 600;
-      text-align: left;
+      text-align: center;
+      vertical-align: middle;
     }
 
     thead {
@@ -61,7 +73,7 @@
       page-break-inside: avoid;
     }
 
-    /* 🔥 DETAILS TABLE */
+    /*  DETAILS TABLE */
     .details-table td.label {
       width: 35%;
       font-weight: 600;
@@ -176,7 +188,7 @@
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Equipment Usage Records</h2>
-
+     <h3 class="subheading">Part-I</h3>
     <% if (reportData.EquipmentUsageRecords && reportData.EquipmentUsageRecords.length> 0) { %>
       <table>
         <thead>
@@ -218,6 +230,8 @@
       <% } else { %>
         <p>No Records Found.</p>
         <% } %>
+
+      <h3 class="subheading">Part-II</h3>
     <% if (reportData.EquipmentUsageRecords && reportData.EquipmentUsageRecords.length> 0) { %>
       <table>
         <thead>
