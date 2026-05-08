@@ -111,6 +111,26 @@ const CleaningAndDisinfectantRecord = require("../models/cleaningAndDisinfectant
 const CleaningAndDisinfectantAuditTrail = require("../models/cleaningAndDisinfectantAuditTrail");
 
 
+// Daily Calibration
+const DailyCalibrationForm = require("../models/dailyVerificationForm");
+const DailyCalibrationRecord = require("../models/dailyVerificationRecord");
+const DailyCalibrationAuditTrail = require("../models/dailyVerificationAuditTrail");
+
+// Balance Uses Log Book
+// const BalanceUsesLogForm = require("../models/balanceUsesLogForm");
+// const BalanceUsesLogRecord = require("../models/balanceUsesLogRecord");
+// const BalanceUsesLogAuditTrail = require("../models/balanceUsesLogAuditTrail");
+
+// Daily Verification
+const DailyVerificationForm = require("../models/dailyVerificationForm");
+const DailyVerificationRecord = require("../models/dailyVerificationRecord");
+const DailyVerificationAuditTrail = require("../models/dailyVerificationAuditTrail");
+
+// Monthly Calibration
+// const MonthlyCalibrationForm = require("../models/monthlyCalibrationForm");
+// const MonthlyCalibrationRecord = require("../models/monthlyCalibrationRecord");
+// const MonthlyCalibrationAuditTrail = require("../models/monthlyCalibrationAuditTrail");
+
 module.exports = {
   1: {
     form: DifferentialPressureForm,
@@ -246,5 +266,33 @@ module.exports = {
   audit: CleaningAndDisinfectantAuditTrail,
   approverAlias: "approver",
 },
+
+// 23: {
+//   form: DailyCalibrationForm,
+//   record: DailyCalibrationRecord,
+//   audit: DailyCalibrationAuditTrail,
+//   approverAlias: "approver",
+// },
+
+// 24: {
+//   form: BalanceUsesLogForm,
+//   record: BalanceUsesLogRecord,
+//   audit: BalanceUsesLogAuditTrail,
+//   approverAlias: "approver",
+// },
+
+23: {
+  form: DailyVerificationForm,
+  record: DailyVerificationRecord,  
+  audit: DailyVerificationAuditTrail,
+  approverAlias: "approver",
+},
+
+// 26: {
+//   form: MonthlyCalibrationForm,
+//   record: MonthlyCalibrationRecord,
+//   audit: MonthlyCalibrationAuditTrail,
+//   approverAlias: "approver",
+// },
 
 };

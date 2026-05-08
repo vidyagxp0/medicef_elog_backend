@@ -39,6 +39,10 @@ const rolesArray1 = [
 { label: "Quality Assurance-Drain cleaning and sanitization Record-Initiator" },
 { label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Quality Assurance-Daily Calibration Record-Initiator", },
+{ label: "Quality Assurance-Balance Uses Log Book Record-Initiator", },
+{ label: "Quality Assurance-Daily verification Record-Initiator", },
+{ label: "Quality Assurance-Monthly Calibration Record-Initiator", },
 
 
 
@@ -71,6 +75,11 @@ const rolesArray1 = [
 { label: "Quality Control-Drain cleaning and sanitization Record-Initiator" },
 { label: "Quality Control-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Quality Control-Daily Calibration Record-Initiator", },
+{ label: "Quality Control-Balance Uses Log Book Record-Initiator", },
+{ label: "Quality Control-Daily verification Record-Initiator", },
+{ label: "Quality Control-Monthly Calibration Record-Initiator", },
+
 
 
 
@@ -99,6 +108,10 @@ const rolesArray1 = [
 { label: "Production-Drain cleaning and sanitization Record-Initiator" },
 { label: "Production-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Production-Daily Calibration Record-Initiator" },
+{ label: "Production-Balance Uses Log Book Record-Initiator" },
+{ label: "Production-Daily verification Record-Initiator" },
+{ label: "Production-Monthly Calibration Record-Initiator" },
 
 
 
@@ -127,6 +140,11 @@ const rolesArray1 = [
 { label: "Warehouse-Drain cleaning and sanitization Record-Initiator" },
 { label: "Warehouse-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Warehouse-Daily Calibration Record-Initiator" },
+{ label: "Warehouse-Balance Uses Log Book Record-Initiator" },
+{ label: "Warehouse-Daily verification Record-Initiator" },
+{ label: "Warehouse-Monthly Calibration Record-Initiator" },
+
 
 
 
@@ -155,6 +173,10 @@ const rolesArray1 = [
 { label: "Engineering-Drain cleaning and sanitization Record-Initiator" },
 { label: "Engineering-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Engineering-Daily Calibration Record-Initiator" },
+{ label: "Engineering-Balance Uses Log Book Record-Initiator" },
+{ label: "Engineering-Daily verification Record-Initiator" },
+{ label: "Engineering-Monthly Calibration Record-Initiator" },
 
 
 
@@ -189,6 +211,10 @@ const rolesArray1 = [
 { label: "Human Resources-Drain cleaning and sanitization Record-Initiator" },
 { label: "Human Resources-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Human Resources-Daily Calibration Record-Initiator" },
+{ label: "Human Resources-Balance Uses Log Book Record-Initiator" },
+{ label: "Human Resources-Daily verification Record-Initiator" },
+{ label: "Human Resources-Monthly Calibration Record-Initiator" },
 
 
 
@@ -234,6 +260,11 @@ const rolesArray1 = [
 { label: "Information Technology-Drain cleaning and sanitization Record-Initiator" },
 { label: "Information Technology-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Information Technology-Daily Calibration Record-Initiator" },
+{ label: "Information Technology-Balance Uses Log Book Record-Initiator" },
+{ label: "Information Technology-Daily verification Record-Initiator" },
+{ label: "Information Technology-Monthly Calibration Record-Initiator" },
+
 
 
 
@@ -262,6 +293,11 @@ const rolesArray1 = [
 { label: "Accounts-Drain cleaning and sanitization Record-Initiator" },
 { label: "Accounts-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Accounts-Daily Calibration Record-Initiator" },
+{ label: "Accounts-Balance Uses Log Book Record-Initiator" },
+{ label: "Accounts-Daily verification Record-Initiator" },
+{ label: "Accounts-Monthly Calibration Record-Initiator" },
+
 
       
   // PPIC
@@ -317,6 +353,10 @@ const rolesArray1 = [
 { label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Initiator" },
 { label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Daily Calibration Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Balance Uses Log Book Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Daily verification Record-Initiator" },
+{ label: "Production Planning and Inventory Control-Monthly Calibration Record-Initiator" },
 
 
 
@@ -352,6 +392,10 @@ const rolesArray1 = [
 { label: "Regulatory Affairs-Drain cleaning and sanitization Record-Initiator" },
 { label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Initiator" },
 { label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Initiator" },
+{ label: "Regulatory Affairs-Daily Calibration Record-Initiator" },
+{ label: "Regulatory Affairs-Balance Uses Log Book Record-Initiator" },
+{ label: "Regulatory Affairs-Daily verification Record-Initiator" },
+{ label: "Regulatory Affairs-Monthly Calibration Record-Initiator" },
 
 
 ];
@@ -388,6 +432,11 @@ const rolesArray2 = [
 { label: "Quality Assurance-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Quality Assurance-Daily Calibration Record-Reviewer", },
+{ label: "Quality Assurance-Balance Uses Log Book Record-Reviewer", },
+{ label: "Quality Assurance-Daily verification Record-Reviewer", },
+{ label: "Quality Assurance-Monthly Calibration Record-Reviewer", },
+
 
 
 
@@ -418,6 +467,11 @@ const rolesArray2 = [
 { label: "Quality Control-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Quality Control-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Quality Control-Daily Calibration Record-Reviewer", },
+{ label: "Quality Control-Balance Uses Log Book Record-Reviewer", },
+{ label: "Quality Control-Daily verification Record-Reviewer", },
+{ label: "Quality Control-Monthly Calibration Record-Reviewer", },
+
 
 
 
@@ -446,6 +500,10 @@ const rolesArray2 = [
 { label: "Production-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Production-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Production-Daily Calibration Record-Reviewer" },
+{ label: "Production-Balance Uses Log Book Record-Reviewer" },
+{ label: "Production-Daily verification Record-Reviewer" },
+{ label: "Production-Monthly Calibration Record-Reviewer" },
 
 
 
@@ -474,6 +532,10 @@ const rolesArray2 = [
 { label: "Warehouse-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Warehouse-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Warehouse-Daily Calibration Record-Reviewer" },
+{ label: "Warehouse-Balance Uses Log Book Record-Reviewer" },
+{ label: "Warehouse-Daily verification Record-Reviewer" },
+{ label: "Warehouse-Monthly Calibration Record-Reviewer" },
 
 
 
@@ -502,6 +564,10 @@ const rolesArray2 = [
 { label: "Engineering-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Engineering-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Engineering-Daily Calibration Record-Reviewer" },
+{ label: "Engineering-Balance Uses Log Book Record-Reviewer" },
+{ label: "Engineering-Daily verification Record-Reviewer" },
+{ label: "Engineering-Monthly Calibration Record-Reviewer" },
 
 
 
@@ -532,6 +598,10 @@ const rolesArray2 = [
 { label: "Human Resources-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Human Resources-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Human Resources-Daily Calibration Record-Reviewer" },
+{ label: "Human Resources-Balance Uses Log Book Record-Reviewer" },
+{ label: "Human Resources-Daily verification Record-Reviewer" },
+{ label: "Human Resources-Monthly Calibration Record-Reviewer" },
 
 
 
@@ -583,6 +653,10 @@ const rolesArray2 = [
 { label: "Information Technology-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Information Technology-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Information Technology-Daily Calibration Record-Reviewer" },
+{ label: "Information Technology-Balance Uses Log Book Record-Reviewer" },
+{ label: "Information Technology-Daily verification Record-Reviewer" },
+{ label: "Information Technology-Monthly Calibration Record-Reviewer" },
 
 
 
@@ -612,6 +686,11 @@ const rolesArray2 = [
 { label: "Accounts-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Accounts-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Accounts-Daily Calibration Record-Reviewer" },
+{ label: "Accounts-Balance Uses Log Book Record-Reviewer" },
+{ label: "Accounts-Daily verification Record-Reviewer" },
+{ label: "Accounts-Monthly Calibration Record-Reviewer" },
+
 
 
   // PPIC
@@ -678,6 +757,11 @@ const rolesArray2 = [
 { label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Daily Calibration Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Balance Uses Log Book Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Daily verification Record-Reviewer" },
+{ label: "Production Planning and Inventory Control-Monthly Calibration Record-Reviewer" },
+
 
 
 
@@ -716,6 +800,10 @@ const rolesArray2 = [
 { label: "Regulatory Affairs-Drain cleaning and sanitization Record-Reviewer" },
 { label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Reviewer" },
 { label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Reviewer" },
+{ label: "Regulatory Affairs-Daily Calibration Record-Reviewer" },
+{ label: "Regulatory Affairs-Balance Uses Log Book Record-Reviewer" },
+{ label: "Regulatory Affairs-Daily verification Record-Reviewer" },
+{ label: "Regulatory Affairs-Monthly Calibration Record-Reviewer" },
 
 ];
 
@@ -755,6 +843,10 @@ const rolesArray3 = [
 { label: "Quality Assurance-Drain cleaning and sanitization Record-Approver" },
 { label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Quality Assurance-Daily Calibration Record-Approver", },
+{ label: "Quality Assurance-Balance Uses Log Book Record-Approver", },
+{ label: "Quality Assurance-Daily verification Record-Approver", },
+{ label: "Quality Assurance-Monthly Calibration Record-Approver", },
 
 
 
@@ -793,6 +885,10 @@ const rolesArray3 = [
 { label: "Quality Control-Drain cleaning and sanitization Record-Approver" },
 { label: "Quality Control-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Quality Control-Daily Calibration Record-Approver", },
+{ label: "Quality Control-Balance Uses Log Book Record-Approver", },
+{ label: "Quality Control-Daily verification Record-Approver", },
+{ label: "Quality Control-Monthly Calibration Record-Approver", },
 
 
 
@@ -822,6 +918,10 @@ const rolesArray3 = [
 { label: "Production-Drain cleaning and sanitization Record-Approver" },
 { label: "Production-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Production-Daily Calibration Record-Approver" },
+{ label: "Production-Balance Uses Log Book Record-Approver" },
+{ label: "Production-Daily verification Record-Approver" },
+{ label: "Production-Monthly Calibration Record-Approver" },
 
 
   // Warehouse
@@ -850,6 +950,10 @@ const rolesArray3 = [
 { label: "Warehouse-Drain cleaning and sanitization Record-Approver" },
 { label: "Warehouse-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Warehouse-Daily Calibration Record-Approver" },
+{ label: "Warehouse-Balance Uses Log Book Record-Approver" },
+{ label: "Warehouse-Daily verification Record-Approver" },
+{ label: "Warehouse-Monthly Calibration Record-Approver" },
 
 
 
@@ -879,6 +983,10 @@ const rolesArray3 = [
 { label: "Engineering-Drain cleaning and sanitization Record-Approver" },
 { label: "Engineering-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Engineering-Daily Calibration Record-Approver" },
+{ label: "Engineering-Balance Uses Log Book Record-Approver" },
+{ label: "Engineering-Daily verification Record-Approver" },
+{ label: "Engineering-Monthly Calibration Record-Approver" },
 
 
 
@@ -917,6 +1025,10 @@ const rolesArray3 = [
 { label: "Human Resources-Drain cleaning and sanitization Record-Approver" },
 { label: "Human Resources-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Human Resources-Daily Calibration Record-Approver" },
+{ label: "Human Resources-Balance Uses Log Book Record-Approver" },
+{ label: "Human Resources-Daily verification Record-Approver" },
+{ label: "Human Resources-Monthly Calibration Record-Approver" },
 
 
 
@@ -971,6 +1083,10 @@ const rolesArray3 = [
 { label: "Information Technology-Drain cleaning and sanitization Record-Approver" },
 { label: "Information Technology-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Information Technology-Daily Calibration Record-Approver" },
+{ label: "Information Technology-Balance Uses Log Book Record-Approver" },
+{ label: "Information Technology-Daily verification Record-Approver" },
+{ label: "Information Technology-Monthly Calibration Record-Approver" },
 
 
 
@@ -1000,6 +1116,10 @@ const rolesArray3 = [
 { label: "Accounts-Drain cleaning and sanitization Record-Approver" },
 { label: "Accounts-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Accounts-Daily Calibration Record-Approver" },
+{ label: "Accounts-Balance Uses Log Book Record-Approver" },
+{ label: "Accounts-Daily verification Record-Approver" },
+{ label: "Accounts-Monthly Calibration Record-Approver" },
 
 
   // PPIC
@@ -1065,7 +1185,10 @@ const rolesArray3 = [
 { label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Approver" },
 { label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
-
+{ label: "Production Planning and Inventory Control-Daily Calibration Record-Approver" },
+{ label: "Production Planning and Inventory Control-Balance Uses Log Book Record-Approver" },
+{ label: "Production Planning and Inventory Control-Daily verification Record-Approver" },
+{ label: "Production Planning and Inventory Control-Monthly Calibration Record-Approver" },
 
 
   // Regulatory Affairs
@@ -1103,6 +1226,10 @@ const rolesArray3 = [
 { label: "Regulatory Affairs-Drain cleaning and sanitization Record-Approver" },
 { label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Approver" },
 { label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Approver" },
+{ label: "Regulatory Affairs-Daily Calibration Record-Approver" },
+{ label: "Regulatory Affairs-Balance Uses Log Book Record-Approver" },
+{ label: "Regulatory Affairs-Daily verification Record-Approver" },
+{ label: "Regulatory Affairs-Monthly Calibration Record-Approver" },
 
 
 ];
@@ -1162,6 +1289,10 @@ const rolesArray4 = [
 { label: "Quality Assurance-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Quality Assurance-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Quality Assurance-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Quality Assurance-Daily Calibration Record-Fullpermission", },
+{ label: "Quality Assurance-Balance Uses Log Book Record-Fullpermission", },
+{ label: "Quality Assurance-Daily verification Record-Fullpermission", },
+{ label: "Quality Assurance-Monthly Calibration Record-Fullpermission", },
 
 
 
@@ -1216,6 +1347,10 @@ const rolesArray4 = [
 { label: "Quality Control-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Quality Control-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Quality Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Quality Control-Daily Calibration Record-Fullpermission", },
+{ label: "Quality Control-Balance Uses Log Book Record-Fullpermission", },
+{ label: "Quality Control-Daily verification Record-Fullpermission", },
+{ label: "Quality Control-Monthly Calibration Record-Fullpermission", },
 
 
   // Production
@@ -1262,6 +1397,10 @@ const rolesArray4 = [
 { label: "Production-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Production-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Production-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Production-Daily Calibration Record-Fullpermission" },
+{ label: "Production-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Production-Daily verification Record-Fullpermission" },
+{ label: "Production-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1309,6 +1448,10 @@ const rolesArray4 = [
 { label: "Warehouse-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Warehouse-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Warehouse-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Warehouse-Daily Calibration Record-Fullpermission" },
+{ label: "Warehouse-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Warehouse-Daily verification Record-Fullpermission" },
+{ label: "Warehouse-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1356,6 +1499,10 @@ const rolesArray4 = [
 { label: "Engineering-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Engineering-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Engineering-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Engineering-Daily Calibration Record-Fullpermission" },
+{ label: "Engineering-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Engineering-Daily verification Record-Fullpermission" },
+{ label: "Engineering-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1410,6 +1557,10 @@ const rolesArray4 = [
 { label: "Human Resources-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Human Resources-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Human Resources-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Human Resources-Daily Calibration Record-Fullpermission" },
+{ label: "Human Resources-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Human Resources-Daily verification Record-Fullpermission" },
+{ label: "Human Resources-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1468,6 +1619,10 @@ const rolesArray4 = [
 { label: "Information Technology-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Information Technology-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Information Technology-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Information Technology-Daily Calibration Record-Fullpermission" },
+{ label: "Information Technology-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Information Technology-Daily verification Record-Fullpermission" },
+{ label: "Information Technology-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1509,6 +1664,10 @@ const rolesArray4 = [
 { label: "Accounts-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Accounts-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Accounts-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Accounts-Daily Calibration Record-Fullpermission" },
+{ label: "Accounts-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Accounts-Daily verification Record-Fullpermission" },
+{ label: "Accounts-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1575,6 +1734,10 @@ const rolesArray4 = [
 { label: "Production Planning and Inventory Control-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Production Planning and Inventory Control-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Production Planning and Inventory Control-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Daily Calibration Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Daily verification Record-Fullpermission" },
+{ label: "Production Planning and Inventory Control-Monthly Calibration Record-Fullpermission" },
 
 
 
@@ -1632,6 +1795,10 @@ const rolesArray4 = [
 { label: "Regulatory Affairs-Drain cleaning and sanitization Record-Fullpermission" },
 { label: "Regulatory Affairs-Breakdown / Maintenance Work Order Record-Fullpermission" },
 { label: "Regulatory Affairs-Cleaning and Disinfectant solution preparation distribution and destruction Record-Fullpermission" },
+{ label: "Regulatory Affairs-Daily Calibration Record-Fullpermission" },
+{ label: "Regulatory Affairs-Balance Uses Log Book Record-Fullpermission" },
+{ label: "Regulatory Affairs-Daily verification Record-Fullpermission" },
+{ label: "Regulatory Affairs-Monthly Calibration Record-Fullpermission" },
 
 
 

@@ -44,6 +44,11 @@ Process.addHook('afterSync', async () => {
                 { process: `Drain cleaning and sanitization Record`},
                 { process: `Breakdown / Maintenance Work Order Record`},
                 { process: `Cleaning and Disinfectant solution preparation distribution and destruction Record`},
+                { process: `Daily Verification Record`},
+                { process: `Daily Calibration Record`},
+                { process: `Balance Uses Log Book Record`},
+                { process: `Monthly Calibration Record`},
+
 
             ]);
             console.log('Processes created');
