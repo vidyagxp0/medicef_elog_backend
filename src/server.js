@@ -37,7 +37,7 @@ const breakdownMaintenanceRoutes = require("./routes/breakdownMaintenance");
 const cleaningAndDisinfectantRoutes = require("./routes/cleaningAndDisinfectant");
 const dailyVerificationRoutes = require("./routes/dailyVerification");
 // const dailyCalibrationRoutes = require("./routes/dailyCalibration");
-// const balanceUsesLogRoutes = require("./routes/balanceUsesLog");
+const balanceUsesRoutes = require("./routes/balanceUses");
 // const monthlyCalibrationRoutes = require("./routes/monthlyCalibration");
 
 const workFLow = require("./routes/workflow");
@@ -116,7 +116,7 @@ app.use("/drain-cleaning", drainCleaningFormRoutes);
 app.use("/breakdown-maintenance", breakdownMaintenanceRoutes);
 app.use("/cleaning-disinfectant", cleaningAndDisinfectantRoutes);
 // app.use("/daily-calibration", dailyCalibrationRoutes);
-// app.use("/balance-uses-log", balanceUsesLogRoutes);
+ app.use("/balance-uses", balanceUsesRoutes);
 app.use("/daily-verification", dailyVerificationRoutes);
 // app.use("/monthly-calibration", monthlyCalibrationRoutes);
 app.use("/workflow", workFLow);

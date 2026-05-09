@@ -6,7 +6,7 @@ const Process = require("./processes");
 const WorkflowState = require("./workflowState");
 const { room_id } = require("../utils/auditFieldMap");
 
-const DailyVerificationForm = sequelize.define("DailyVerificationForm", {
+const BalanceUsesForm = sequelize.define("BalanceUsesForm", {
   form_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -57,18 +57,6 @@ const DailyVerificationForm = sequelize.define("DailyVerificationForm", {
   description: {
     type: DataTypes.TEXT,
   },
-  balanceIdNo: {
-    type: DataTypes.STRING,
-  },
-  makeModel: {
-    type: DataTypes.STRING,
-  },
-  balanceCapacity: {
-    type: DataTypes.STRING,
-  },
-  leastCount: {
-    type: DataTypes.STRING,
-  },
   status: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -77,25 +65,13 @@ const DailyVerificationForm = sequelize.define("DailyVerificationForm", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  balanceOperatingRangeMin: {
+  instrumentID: {
     type: DataTypes.STRING,
   },
-  balanceOperatingRangeMax: {
+  month: {
     type: DataTypes.STRING,
   },
-  acceptanceCriteriaMin: {
-    type: DataTypes.STRING,
-  },
-  acceptanceCriteriaMax: {
-    type: DataTypes.STRING,
-  },
-  standardWeightW1: {
-    type: DataTypes.STRING,
-  },
-  standardWeightW2: {
-    type: DataTypes.STRING,
-  },
-  standardWeightW3: {
+  year: {
     type: DataTypes.STRING,
   },
   departmentName: {
@@ -167,32 +143,32 @@ const DailyVerificationForm = sequelize.define("DailyVerificationForm", {
   },
 });
 
-DailyVerificationForm.belongsTo(Department, { foreignKey: "department_id" });
-Department.hasMany(DailyVerificationForm, { foreignKey: "department_id" });
+BalanceUsesForm.belongsTo(Department, { foreignKey: "department_id" });
+Department.hasMany(BalanceUsesForm, { foreignKey: "department_id" });
 
-DailyVerificationForm.belongsTo(Process, { foreignKey: "process_id" });
-Process.hasMany(DailyVerificationForm, { foreignKey: "process_id" });
+BalanceUsesForm.belongsTo(Process, { foreignKey: "process_id" });
+Process.hasMany(BalanceUsesForm, { foreignKey: "process_id" });
 
-DailyVerificationForm.belongsTo(User, { foreignKey: "initiator_id" });
-User.hasMany(DailyVerificationForm, { foreignKey: "initiator_id" });
+BalanceUsesForm.belongsTo(User, { foreignKey: "initiator_id" });
+User.hasMany(BalanceUsesForm, { foreignKey: "initiator_id" });
 
-DailyVerificationForm.belongsTo(User, {
+BalanceUsesForm.belongsTo(User, {
   foreignKey: "approver_id",
   as: "approver",
 });
 
-User.hasMany(DailyVerificationForm, {
+User.hasMany(BalanceUsesForm, {
   foreignKey: "approver_id",
-  as: "DVApprovals",
+  as: "BUApprovals",
 });
 
-DailyVerificationForm.belongsTo(WorkflowState, {
+BalanceUsesForm.belongsTo(WorkflowState, {
   foreignKey: "workflow_state_id",
   as: "workflow_state",
 });
 
-WorkflowState.hasMany(DailyVerificationForm, {
+WorkflowState.hasMany(BalanceUsesForm, {
   foreignKey: "workflow_state_id",
 });
 
-module.exports = DailyVerificationForm;
+module.exports = BalanceUsesForm;

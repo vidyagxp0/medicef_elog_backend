@@ -117,9 +117,9 @@ const DailyCalibrationRecord = require("../models/dailyVerificationRecord");
 const DailyCalibrationAuditTrail = require("../models/dailyVerificationAuditTrail");
 
 // Balance Uses Log Book
-// const BalanceUsesLogForm = require("../models/balanceUsesLogForm");
-// const BalanceUsesLogRecord = require("../models/balanceUsesLogRecord");
-// const BalanceUsesLogAuditTrail = require("../models/balanceUsesLogAuditTrail");
+const BalanceUsesForm = require("../models/balanceUsesForm");
+const BalanceUsesRecord = require("../models/balanceUsesRecord");
+const BalanceUsesAuditTrail = require("../models/balanceUsesAuditTrail");
 
 // Daily Verification
 const DailyVerificationForm = require("../models/dailyVerificationForm");
@@ -267,24 +267,24 @@ module.exports = {
   approverAlias: "approver",
 },
 
-// 23: {
+
+23: {
+  form: DailyVerificationForm,
+  record: DailyVerificationRecord,  
+  audit: DailyVerificationAuditTrail,
+  approverAlias: "approver",
+},
+// 24: {
 //   form: DailyCalibrationForm,
 //   record: DailyCalibrationRecord,
 //   audit: DailyCalibrationAuditTrail,
 //   approverAlias: "approver",
 // },
 
-// 24: {
-//   form: BalanceUsesLogForm,
-//   record: BalanceUsesLogRecord,
-//   audit: BalanceUsesLogAuditTrail,
-//   approverAlias: "approver",
-// },
-
-23: {
-  form: DailyVerificationForm,
-  record: DailyVerificationRecord,  
-  audit: DailyVerificationAuditTrail,
+25: {
+  form: BalanceUsesForm,
+  record: BalanceUsesRecord,
+  audit: BalanceUsesAuditTrail,
   approverAlias: "approver",
 },
 

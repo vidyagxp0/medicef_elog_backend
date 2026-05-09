@@ -9,9 +9,9 @@ const fs = require("fs");
 const path = require("path");
 const { sendEmail } = require("../utils/mailer");
 const { v4: uuidv4 } = require("uuid");
-const DailyVerificationForm = require("../models/dailyVerificationForm");
-const DailyVerificationRecord = require("../models/dailyVerificationRecord");
-const DailyVerificationAuditTrail = require("../models/dailyVerificationAuditTrail");
+const BalanceUsesForm = require("../models/balanceUsesForm");
+const BalanceUsesRecord = require("../models/balanceUsesRecord");
+const BalanceUsesAuditTrail = require("../models/balanceUsesAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
 
@@ -43,16 +43,12 @@ const parseIfString = (value, fallback = null) => {
 };
 
 // Fill Lab Assay Sample form and insert its records.
-exports.InsertDailyVerification = async (req, res) => {
+exports.InsertBalanceUses = async (req, res) => {
   const {
     department_id,
     process_id,
     description,
     departmentName,
-    balanceIdNo,
-    makeModel,
-    balanceCapacity,
-    leastCount,
     area_name,
     room_id,
     reviewer_id,
@@ -64,13 +60,9 @@ exports.InsertDailyVerification = async (req, res) => {
     FormRecordsArray,
     initiatorDeclaration,
     additionalInfo,
-    balanceOperatingRangeMin,
-    balanceOperatingRangeMax,
-    acceptanceCriteriaMin,
-    acceptanceCriteriaMax,
-    standardWeightW1,
-    standardWeightW2,
-    standardWeightW3
+    instrumentID,
+    month,
+    year,
   } = req.body;
 
   if (!description) {
@@ -149,7 +141,7 @@ exports.InsertDailyVerification = async (req, res) => {
     });
 
     // Create new Disinfectant Stock Form
-    const newForm = await DailyVerificationForm.create(
+    const newForm = await BalanceUsesForm.create(
       {
         department_id: department_id,
         process_id: process_id,
@@ -159,10 +151,6 @@ exports.InsertDailyVerification = async (req, res) => {
         status: "Opened",
         stage: 1,
         departmentName: departmentName,
-        balanceIdNo: balanceIdNo,
-        makeModel: makeModel,
-        balanceCapacity: balanceCapacity,
-        leastCount: leastCount,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -172,13 +160,9 @@ exports.InsertDailyVerification = async (req, res) => {
         additionalInfo: additionalInfo,
         area_name: area_name,
         room_id: room_id,
-        balanceOperatingRangeMin: balanceOperatingRangeMin,
-        balanceOperatingRangeMax: balanceOperatingRangeMax,
-        acceptanceCriteriaMin: acceptanceCriteriaMin,
-        acceptanceCriteriaMax: acceptanceCriteriaMax,
-        standardWeightW1: standardWeightW1,
-        standardWeightW2: standardWeightW2,
-        standardWeightW3: standardWeightW3
+        instrumentID: instrumentID,
+        month: month,
+        year: year,
       },
 
       { transaction },
@@ -191,24 +175,15 @@ exports.InsertDailyVerification = async (req, res) => {
     const fields = {
       description,
       departmentName,
-      balanceIdNo,
-      makeModel,
-      balanceCapacity,
-      leastCount,
       area_name,
       room_id,
       reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
       additionalInfo,
-      balanceOperatingRangeMin,
-      balanceOperatingRangeMax,
-      acceptanceCriteriaMin,
-      acceptanceCriteriaMax,
-      standardWeightW1,
-      standardWeightW2,
-      standardWeightW3
-    
+      instrumentID,
+      month,
+      year,
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -257,17 +232,13 @@ exports.InsertDailyVerification = async (req, res) => {
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
         date: record?.date,
-        time: record?.time,
-        zeroBalance: record?.zeroBalance,
-        spiritLevelStatus: record?.spiritLevelStatus,
-        observedWeightsW1: record?.observedWeightsW1,
-        observedWeightsW2: record?.observedWeightsW2,
-        observedWeightsW3: record?.observedWeightsW3,
-        floor: record?.floor,
+        productName: record?.productName,
+        batchNo: record?.batchNo,
+        weightTaken: record?.weightTaken,
+        testActivity: record?.testActivity,
         done_by: record?.done_by,
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
-        verified_by: record?.verified_by,
         remarks: record?.remarks,
       }));
 
@@ -318,7 +289,7 @@ exports.InsertDailyVerification = async (req, res) => {
       });
     }
 
-    await DailyVerificationAuditTrail.bulkCreate(auditTrailEntries, {
+    await BalanceUsesAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -342,7 +313,7 @@ exports.InsertDailyVerification = async (req, res) => {
   }
 };
 
-exports.EditDailyVerification = async (req, res) => {
+exports.EditBalanceUses = async (req, res) => {
 
 
 
@@ -350,27 +321,19 @@ exports.EditDailyVerification = async (req, res) => {
     department_id,
     description,
     departmentName,
-    balanceIdNo,
-    makeModel,
-    balanceCapacity,
-    leastCount,
     area_name,
     room_id,
     reviewerData,
     reviewer_id,
     approver_id,
-    DailyVerificationRecords,
+    BalanceUsesRecords,
     esignInput,
     password,
     initiatorComment,
     additionalInfo,
-    balanceOperatingRangeMin,
-    balanceOperatingRangeMax,
-    acceptanceCriteriaMin,
-    acceptanceCriteriaMax,
-    standardWeightW1,
-    standardWeightW2,
-    standardWeightW3
+    instrumentID,
+    month,
+    year
   } = req.body;
 
   const { form_id } = req.params;
@@ -447,7 +410,7 @@ exports.EditDailyVerification = async (req, res) => {
       }
     });
 
-    const form = await DailyVerificationForm.findOne({
+    const form = await BalanceUsesForm.findOne({
       where: { form_id: form_id },
       transaction,
     });
@@ -468,20 +431,12 @@ exports.EditDailyVerification = async (req, res) => {
     const fields = {
       description,
       departmentName,
-      balanceIdNo,
-      makeModel,
-      balanceCapacity,
-      leastCount,
       initiatorComment,
       area_name,
       room_id,
-      balanceOperatingRangeMin,
-      balanceOperatingRangeMax,
-      acceptanceCriteriaMin,
-      acceptanceCriteriaMax,
-      standardWeightW1,
-      standardWeightW2,
-      standardWeightW3,
+      instrumentID,
+      month,
+      year,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -593,22 +548,14 @@ exports.EditDailyVerification = async (req, res) => {
         department_id,
         description,
         departmentName,
-        balanceIdNo,
-        makeModel,
-        balanceCapacity,
-        leastCount,
         area_name,
         room_id,
         reviewer_id,
         reviewerData,
         approver_id,
-        balanceOperatingRangeMin,
-        balanceOperatingRangeMax,
-        acceptanceCriteriaMin,
-        acceptanceCriteriaMax,
-        standardWeightW1,
-        standardWeightW2,
-        standardWeightW3,
+        instrumentID,
+        month,
+        year,
         initiatorAttachment: initiatorAttachment
           ? getElogDocsUrl(initiatorAttachment)
           : form.initiatorAttachment,
@@ -625,26 +572,23 @@ exports.EditDailyVerification = async (req, res) => {
     // Update / Create Temperature Records (NO DELETE)
 
     if (
-      Array.isArray(DailyVerificationRecords) &&
-      DailyVerificationRecords.length > 0
+      Array.isArray(BalanceUsesRecords) &&
+      BalanceUsesRecords.length > 0
     ) {
-      for (const record of DailyVerificationRecords) {
+      for (const record of BalanceUsesRecords) {
         if (record.record_id) {
           // UPDATE existing row
-          await DailyVerificationRecord.update(
+          await BalanceUsesRecord.update(
             {
               unique_id: record?.unique_id,
               date: record?.date,
-              time: record?.time,
-              zeroBalance: record?.zeroBalance,
-              spiritLevelStatus: record?.spiritLevelStatus,
-              observedWeightsW1: record?.observedWeightsW1,
-              observedWeightsW2: record?.observedWeightsW2,
-              observedWeightsW3: record?.observedWeightsW3,
+              productName: record?.productName,
+              batchNo: record?.batchNo,
+              weightTaken: record?.weightTaken,
+              testActivity: record?.testActivity,
               done_by: record?.done_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
-              verified_by: record?.verified_by,
               remarks: record?.remarks,
             },
             {
@@ -657,21 +601,18 @@ exports.EditDailyVerification = async (req, res) => {
           );
         } else {
           // CREATE only new row
-          await DailyVerificationRecord.create(
+          await BalanceUsesRecord.create(
             {
               form_id: form_id,
               unique_id: record?.unique_id,
               date: record?.date,
-              time: record?.time,
-              zeroBalance: record?.zeroBalance,
-              spiritLevelStatus: record?.spiritLevelStatus,
-              observedWeightsW1: record?.observedWeightsW1,
-              observedWeightsW2: record?.observedWeightsW2,
-              observedWeightsW3: record?.observedWeightsW3,
+              productName: record?.productName,
+              batchNo: record?.batchNo,
+              weightTaken: record?.weightTaken,
+              testActivity: record?.testActivity,
               done_by: record?.done_by,
               checked_by: record?.checked_by,
               reviewed_by: record?.reviewed_by,
-              verified_by: record?.verified_by, 
               remarks: record?.remarks,
             },
             { transaction },
@@ -679,7 +620,7 @@ exports.EditDailyVerification = async (req, res) => {
         }
       }
     }
-    await DailyVerificationAuditTrail.bulkCreate(auditTrailEntries, {
+    await BalanceUsesAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
 
@@ -720,7 +661,7 @@ exports.generateReport = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      res.render("dv_report", { reportData }, (err, html) => {
+      res.render("bu_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -794,7 +735,7 @@ const removeHtmlTags = (htmlString) => {
 exports.chatByPdf = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await DailyVerificationForm.findOne({
+    const formData = await BalanceUsesForm.findOne({
       where: { form_id },
       include: [
         {
@@ -842,7 +783,7 @@ exports.chatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("dv_report", { reportData }, (err, html) => {
+      req.app.render("bu_report", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -916,7 +857,7 @@ exports.chatByPdf = async (req, res) => {
 exports.viewReport = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const formData = await DailyVerificationForm.findOne({
+    const formData = await BalanceUsesForm.findOne({
       where: { form_id },
       include: [
         {
@@ -938,7 +879,7 @@ exports.viewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("dv_report", { reportData }, (err, html) => {
+    req.app.render("bu_report", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -977,11 +918,11 @@ exports.effetiveChatByPdf = async (req, res) => {
       };
     }
 
-    const formData = await DailyVerificationForm.findOne({
+    const formData = await BalanceUsesForm.findOne({
       where: { form_id },
       include: [
         {
-          model: DailyVerificationRecord,
+          model: BalanceUsesRecord,
           where: recordWhere, // directly use literal or undefined
           required: false,
           separate: true, // important for order to work on hasMany
@@ -1026,7 +967,7 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
-      req.app.render("effectiveDVReport", { reportData }, (err, html) => {
+      req.app.render("effectiveBUReport", { reportData }, (err, html) => {
         if (err) return reject(err);
         resolve(html);
       });
@@ -1122,11 +1063,11 @@ exports.effetiveViewReport = async (req, res) => {
     //   };
     // }
 
-    const formData = await DailyVerificationForm.findOne({
+    const formData = await BalanceUsesForm.findOne({
       where: { form_id },
       include: [
         {
-          model: DailyVerificationRecord,
+          model: BalanceUsesRecord,
           // where: recordWhere, // directly use literal or undefined
           // required: false,
           // separate: true,
@@ -1145,7 +1086,7 @@ exports.effetiveViewReport = async (req, res) => {
 
     const reportData = formJson;
     // Render HTML using EJS template
-    req.app.render("effectiveDVReport", { reportData }, (err, html) => {
+    req.app.render("effectiveBUReport", { reportData }, (err, html) => {
       if (err) {
         console.error("Error rendering HTML:", err);
         return res.status(500).send("Error rendering HTML", err);
@@ -1178,7 +1119,7 @@ exports.blankReport = async (req, res) => {
 
     const blankRows = Array(reportData?.blankRows);
 
-    const data = reportData?.DailyVerificationRecords?.map((record) => ({
+    const data = reportData?.BalanceUsesRecords?.map((record) => ({
       unique_id: record?.unique_id || "",
       remarks: record?.remarks || "",
       checked_by: record?.checked_by || "",
