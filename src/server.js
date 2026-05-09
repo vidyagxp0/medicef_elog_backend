@@ -36,7 +36,7 @@ const drainCleaningFormRoutes = require("./routes/drainCleaning");
 const breakdownMaintenanceRoutes = require("./routes/breakdownMaintenance");
 const cleaningAndDisinfectantRoutes = require("./routes/cleaningAndDisinfectant");
 const dailyVerificationRoutes = require("./routes/dailyVerification");
-// const dailyCalibrationRoutes = require("./routes/dailyCalibration");
+const dailyCalibrationRoutes = require("./routes/dailyCalibration");
 const balanceUsesRoutes = require("./routes/balanceUses");
 // const monthlyCalibrationRoutes = require("./routes/monthlyCalibration");
 
@@ -115,7 +115,7 @@ app.use("/autoclave-sterelization", autoclaveSterelizationRoutes);
 app.use("/drain-cleaning", drainCleaningFormRoutes);
 app.use("/breakdown-maintenance", breakdownMaintenanceRoutes);
 app.use("/cleaning-disinfectant", cleaningAndDisinfectantRoutes);
-// app.use("/daily-calibration", dailyCalibrationRoutes);
+app.use("/daily-calibration", dailyCalibrationRoutes);
  app.use("/balance-uses", balanceUsesRoutes);
 app.use("/daily-verification", dailyVerificationRoutes);
 // app.use("/monthly-calibration", monthlyCalibrationRoutes);

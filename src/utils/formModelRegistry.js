@@ -112,9 +112,9 @@ const CleaningAndDisinfectantAuditTrail = require("../models/cleaningAndDisinfec
 
 
 // Daily Calibration
-const DailyCalibrationForm = require("../models/dailyVerificationForm");
-const DailyCalibrationRecord = require("../models/dailyVerificationRecord");
-const DailyCalibrationAuditTrail = require("../models/dailyVerificationAuditTrail");
+const DailyCalibrationForm = require("../models/dailyCalibrationForm");
+const DailyCalibrationRecord = require("../models/dailyCalibrationRecord");
+const DailyCalibrationAuditTrail = require("../models/dailyCalibrationAuditTrail");
 
 // Balance Uses Log Book
 const BalanceUsesForm = require("../models/balanceUsesForm");
@@ -274,12 +274,12 @@ module.exports = {
   audit: DailyVerificationAuditTrail,
   approverAlias: "approver",
 },
-// 24: {
-//   form: DailyCalibrationForm,
-//   record: DailyCalibrationRecord,
-//   audit: DailyCalibrationAuditTrail,
-//   approverAlias: "approver",
-// },
+24: {
+  form: DailyCalibrationForm,
+  record: DailyCalibrationRecord,
+  audit: DailyCalibrationAuditTrail,
+  approverAlias: "approver",
+},
 
 25: {
   form: BalanceUsesForm,

@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Auth = require("../middlewares/authentication");
-const DailyCalibrationProcess = require("../controllers/DailyCalibrationProcess");
+const DailyCalibrationProcess = require("../controllers/dailyCalibrationProcess");
 const multer = require("multer");
 const path = require("path");
-
+// console.log(DailyCalibrationProcess);
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.resolve(__dirname, "../documents/elog_docs/"));
