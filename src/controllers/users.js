@@ -39,21 +39,21 @@ exports.signup = async (req, res) => {
 
   try {
     // Check if user already exists
-    if (email) {
-      const existingUser = await User.findOne({
-        where: {
-          email,
-          isActive: true,
-        },
-      });
+    // if (email) {
+    //   const existingUser = await User.findOne({
+    //     where: {
+    //       email,
+    //       isActive: true,
+    //     },
+    //   });
 
-      if (existingUser) {
-        return res.status(400).json({
-          error: true,
-          message: "User already registered!",
-        });
-      }
-    }
+    //   if (existingUser) {
+    //     return res.status(400).json({
+    //       error: true,
+    //       message: "User already registered!",
+    //     });
+    //   }
+    // }
 
     // Check if user already exists
     const existingEmpID = await User.findOne({
@@ -422,6 +422,7 @@ exports.getUserPermissions = async (req, res) => {
       });
     });
 };
+
 exports.getUserRoles = async (req, res) => {
   UserRole.findAll({
     where: {
@@ -442,6 +443,7 @@ exports.getUserRoles = async (req, res) => {
       });
     });
 };
+
 exports.getAllRoleGroups = async (req, res) => {
   RoleGroup.findAll()
     .then((result) => {
