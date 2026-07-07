@@ -285,7 +285,7 @@ exports.deleteUser = async (req, res) => {
 
   try {
     const user = await User.findOne(
-      { where: { user_id: req.params.id, isActive: true } },
+      { where: { user_id: req.params.id } },
       { transaction },
     );
     if (!user) {
@@ -296,7 +296,7 @@ exports.deleteUser = async (req, res) => {
     }
 
     await User.update(
-      { isActive: false },
+      { isActive: "0" },
       {
         where: {
           user_id: req.params.id,
@@ -318,13 +318,82 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+// change user status
+exports.changeUserStatus = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const { isActive } = req.body;
+
+    if (isActive === undefined) {
+      return res.status(400).json({
+        error: true,
+        message: "isActive status is required",
+      });
+    }
+
+    const user = await User.findOne({
+      where: { user_id: req.params.id }
+    }, { transaction });
+
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: "User not found",
+      });
+    }
+
+    const isActiveStr = (isActive === "1" || isActive === 1 || isActive === true || isActive === "true") ? "1" : "0";
+
+    await User.update(
+      { isActive: isActiveStr },
+      {
+        where: {
+          user_id: req.params.id,
+        },
+        transaction,
+      }
+    );
+
+    await transaction.commit();
+    res.json({
+      error: false,
+      message: `User status updated successfully`,
+    });
+  } catch (err) {
+    await transaction.rollback();
+    res.status(500).json({
+      error: true,
+      message: err.message,
+    });
+  }
+};
+
 //get all users
 exports.getAllUsers = async (req, res) => {
   try {
+    const { search, field } = req.query;
+    let whereClause = {};
+
+    if (search) {
+      const searchVal = `%${search}%`;
+      if (field === "all" || !field) {
+        whereClause = {
+          [Op.or]: [
+            { name: { [Op.like]: searchVal } },
+            { userName: { [Op.like]: searchVal } },
+            { email: { [Op.like]: searchVal } },
+          ],
+        };
+      } else {
+        whereClause = {
+          [field]: { [Op.like]: searchVal },
+        };
+      }
+    }
+
     const users = await User.findAll({
-      where: {
-        isActive: true,
-      },
+      where: whereClause,
       attributes: { exclude: ["password"] },
     });
 
@@ -445,19 +514,39 @@ exports.getUserRoles = async (req, res) => {
 };
 
 exports.getAllRoleGroups = async (req, res) => {
-  RoleGroup.findAll()
-    .then((result) => {
-      res.status(200).json({
-        error: false,
-        response: result,
-      });
-    })
-    .catch((e) => {
-      res.status(400).json({
-        error: true,
-        response: e.message,
-      });
+  try {
+    const { page, limit, search } = req.query;
+    let options = {};
+
+    if (search) {
+      options.where = {
+        roleGroup: {
+          [Op.like]: `%${search}%`,
+        },
+      };
+    }
+
+    if (page && limit) {
+      const limitVal = parseInt(limit, 10);
+      const offsetVal = (parseInt(page, 10) - 1) * limitVal;
+      options.limit = limitVal;
+      options.offset = offsetVal;
+    }
+
+    // Maintain a stable alphabetical order
+    // options.order = [["roleGroup", "ASC"]];
+
+    const result = await RoleGroup.findAll(options);
+    res.status(200).json({
+      error: false,
+      response: result,
     });
+  } catch (e) {
+    res.status(400).json({
+      error: true,
+      response: e.message,
+    });
+  }
 };
 
 // user login

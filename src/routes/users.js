@@ -38,6 +38,11 @@ router.put(
   User.editUser
 );
 router.delete("/delete-user/:id", Auth.checkAdminJwtToken, User.deleteUser);
+router.put(
+  "/change-user-status/:id",
+  Auth.checkAdminJwtToken,
+  User.changeUserStatus
+);
 router.get("/get-all-users", User.getAllUsers);
 router.get("/get-a-user/:id", User.getAUser);
 router.get(

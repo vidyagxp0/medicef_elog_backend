@@ -18,8 +18,39 @@ const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
   return user;
 };
+
+const SEARCHABLE_FIELDS = {
+  1: { type: "form", field: "instrument_id_no", targetKey: "instrumentID" },
+  2: { type: "form", field: "instrument_id_no", targetKey: "instrumentID" },
+  3: { type: "form", field: "equipmentID", targetKey: "equipmentID" },
+  5: {
+    type: "record",
+    association: "DPMonitoringRecords",
+    field: "equipmentId",
+    targetKey: "equipmentID",
+  },
+  6: {
+    type: "record",
+    association: "AhuOperationRecords",
+    field: "equipmentId",
+    targetKey: "equipmentID",
+  },
+  7: { type: "form", field: "instrumentID", targetKey: "instrumentID" },
+  10: {
+    type: "record",
+    association: "filterCleaningRecords",
+    field: "equipmentID",
+    targetKey: "equipmentID",
+  },
+  16: { type: "form", field: "equipmentID", targetKey: "equipmentID" },
+  18: { type: "form", field: "dispensingBoothID", targetKey: "equipmentID" },
+  23: { type: "form", field: "balanceIdNo", targetKey: "instrumentID" },
+  24: { type: "form", field: "identificationNo", targetKey: "instrumentID" },
+  25: { type: "form", field: "instrumentID", targetKey: "instrumentID" },
+};
+
 // ----------------- Build dynamic filters -----------------
-const buildFilters = (query) => {
+const buildFilters = (query, config) => {
   const where = {};
 
   //  Parse filters JSON
@@ -52,12 +83,28 @@ const buildFilters = (query) => {
     };
   }
 
-  //  Search (area_name + description)
+  //  Search (area_name + description + equipment/instrument ID)
   if (filters.search) {
-    where[Op.or] = [
+    const orConditions = [
       { area_name: { [Op.like]: `%${filters.search}%` } },
       { description: { [Op.like]: `%${filters.search}%` } },
     ];
+
+    if (config) {
+      if (config.type === "form") {
+        orConditions.push({
+          [config.field]: { [Op.like]: `%${filters.search}%` },
+        });
+      } else if (config.type === "record") {
+        orConditions.push({
+          [`$${config.association}.${config.field}$`]: {
+            [Op.like]: `%${filters.search}%`,
+          },
+        });
+      }
+    }
+
+    where[Op.or] = orConditions;
   }
 
   return where;
@@ -76,31 +123,101 @@ exports.GetAllElogs = async (req, res) => {
 
       const FormModel = registry.form;
       const approverAlias = registry.approverAlias || "approver";
+      const config = SEARCHABLE_FIELDS[process.process_id];
+
+      // Define include models
+      const includeModels = [
+        {
+          model: WorkflowState,
+          as: "workflow_state",
+          attributes: ["id", "code", "name"],
+        },
+        {
+          model: User,
+          as: approverAlias,
+          attributes: ["user_id", "name"],
+          required: false,
+        },
+      ];
+
+      if (config && config.type === "record") {
+        includeModels.push({
+          model: registry.record,
+          as: config.association,
+          attributes: [config.field],
+          required: false,
+        });
+      }
 
       // Apply filters
-      const filters = buildFilters(req.query);
+      const filters = buildFilters(req.query, config);
+
+      // Define form attributes to select (only required dashboard columns)
+      const formAttributes = [
+        "form_id",
+        "process_id",
+        "initiator_name",
+        "date_of_initiation",
+        "description",
+        "status",
+        "departmentName",
+        "area_name",
+        "workflow_state_id",
+      ];
+      if (config && config.type === "form") {
+        formAttributes.push(config.field);
+      }
 
       const records = await FormModel.findAll({
+        attributes: formAttributes,
         where: filters,
-        include: [
-          {
-            model: WorkflowState,
-            as: "workflow_state"
-          },
-          {
-            model: User,
-            as: approverAlias,
-            attributes: ["user_id", "name"],
-            required: false,
-          },
-        ],
+        include: includeModels,
         order: [["form_id", "DESC"]],
+      });
+
+      const mappedRecords = records.map((record) => {
+        let equipmentVal = null;
+        let instrumentVal = null;
+
+        if (config) {
+          if (config.type === "form") {
+            const val = record[config.field];
+            if (config.targetKey === "equipmentID") equipmentVal = val;
+            else instrumentVal = val;
+          } else if (config.type === "record") {
+            const associatedRecords = record[config.association] || [];
+            if (associatedRecords.length > 0) {
+              const val = associatedRecords[0][config.field];
+              if (config.targetKey === "equipmentID") equipmentVal = val;
+              else instrumentVal = val;
+            }
+          }
+        }
+
+        return {
+          form_id: record.form_id,
+          process_id: record.process_id,
+          initiator_name: record.initiator_name,
+          date_of_initiation: record.date_of_initiation,
+          description: record.description,
+          status: record.status,
+          departmentName: record.departmentName,
+          area_name: record.area_name,
+          equipmentID: equipmentVal,
+          instrumentID: instrumentVal,
+          workflow_state: record.workflow_state
+            ? {
+                code: record.workflow_state.code,
+                name: record.workflow_state.name,
+              }
+            : null,
+        };
       });
 
       response.push({
         process_id: process.process_id,
         process: process.process,
-        data: records,
+        data: mappedRecords,
       });
     }
 
@@ -152,8 +269,8 @@ exports.GetElogById = async (req, res) => {
     if (!elogData) {
       return res.json({
         error: true,
-        message: "No data Found"
-      })
+        message: "No data Found",
+      });
     }
 
     return res.json({
@@ -161,7 +278,6 @@ exports.GetElogById = async (req, res) => {
       message: "Data fetch Successfully",
       data: elogData,
     });
-
   } catch (error) {
     return res.status(500).json({
       error: true,
@@ -182,34 +298,104 @@ exports.GetAllEffectiveElogs = async (req, res) => {
 
       const FormModel = registry.form;
       const approverAlias = registry.approverAlias || "approver";
+      const config = SEARCHABLE_FIELDS[process.process_id];
+
+      // Define include models
+      const includeModels = [
+        {
+          model: WorkflowState,
+          as: "workflow_state",
+          attributes: ["id", "code", "name"],
+        },
+        {
+          model: User,
+          as: approverAlias,
+          attributes: ["user_id", "name"],
+          required: false,
+        },
+      ];
+
+      if (config && config.type === "record") {
+        includeModels.push({
+          model: registry.record,
+          as: config.association,
+          attributes: [config.field],
+          required: false,
+        });
+      }
+
       // Apply filters
-      const filters = buildFilters(req.query);
+      const filters = buildFilters(req.query, config);
+
+      // Define form attributes to select (only required dashboard columns)
+      const formAttributes = [
+        "form_id",
+        "process_id",
+        "initiator_name",
+        "date_of_initiation",
+        "description",
+        "status",
+        "departmentName",
+        "area_name",
+        "workflow_state_id",
+      ];
+      if (config && config.type === "form") {
+        formAttributes.push(config.field);
+      }
 
       const records = await FormModel.findAll({
-        where: filters,
+        attributes: formAttributes,
         where: {
-          ...filters,              // dynamic filters
-          workflow_state_id: 4     // fixed condition
+          ...filters,
+          workflow_state_id: 4, // fixed condition for effective elogs
         },
-        include: [
-          {
-            model: WorkflowState,
-            as: "workflow_state"
-          },
-          {
-            model: User,
-            as: approverAlias,
-            attributes: ["user_id", "name"],
-            required: false,
-          },
-        ],
+        include: includeModels,
         order: [["form_id", "DESC"]],
+      });
+
+      const mappedRecords = records.map((record) => {
+        let equipmentVal = null;
+        let instrumentVal = null;
+
+        if (config) {
+          if (config.type === "form") {
+            const val = record[config.field];
+            if (config.targetKey === "equipmentID") equipmentVal = val;
+            else instrumentVal = val;
+          } else if (config.type === "record") {
+            const associatedRecords = record[config.association] || [];
+            if (associatedRecords.length > 0) {
+              const val = associatedRecords[0][config.field];
+              if (config.targetKey === "equipmentID") equipmentVal = val;
+              else instrumentVal = val;
+            }
+          }
+        }
+
+        return {
+          form_id: record.form_id,
+          process_id: record.process_id,
+          initiator_name: record.initiator_name,
+          date_of_initiation: record.date_of_initiation,
+          description: record.description,
+          status: record.status,
+          departmentName: record.departmentName,
+          area_name: record.area_name,
+          equipmentID: equipmentVal,
+          instrumentID: instrumentVal,
+          workflow_state: record.workflow_state
+            ? {
+                code: record.workflow_state.code,
+                name: record.workflow_state.name,
+              }
+            : null,
+        };
       });
 
       response.push({
         process_id: process.process_id,
         process: process.process,
-        data: records,
+        data: mappedRecords,
       });
     }
 
@@ -264,7 +450,6 @@ exports.GetEffectiveElogsById = async (req, res) => {
       error: false,
       data: elogData,
     });
-
   } catch (error) {
     return res.status(500).json({
       error: true,
@@ -294,7 +479,6 @@ exports.getAllProcesses = async (req, res) => {
       message: "Processes fetched successfully",
       data: result,
     });
-
   } catch (error) {
     res.status(500).json({
       error: true,
@@ -326,7 +510,6 @@ exports.getAllDepartments = async (req, res) => {
       message: "Departments fetched successfully",
       data: result,
     });
-
   } catch (error) {
     res.status(500).json({
       error: true,
@@ -367,7 +550,7 @@ exports.getServerTime = async (req, res) => {
     // week number calculation
     const startOfYear = new Date(now.getFullYear(), 0, 1);
     const weekNumber = Math.ceil(
-      ((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7
+      ((now - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7,
     );
 
     res.status(200).json({
@@ -405,11 +588,11 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, department_id, process_id } = req.body;
 
   try {
-    if (!role_id, !department_id, !process_id) {
+    if ((!role_id, !department_id, !process_id)) {
       return res.status(400).json({
         error: true,
-        message: "please provide all details"
-      })
+        message: "please provide all details",
+      });
     }
     const selectedUsers = await UserRole.findAll({
       where: {
@@ -439,7 +622,6 @@ exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
       message: "Users fetched successfully",
       data: selectedUsers,
     });
-
   } catch (error) {
     console.error("Error fetching users:", error);
 
@@ -552,7 +734,7 @@ function formatAuditValue(value) {
 
 exports.generateAuditPdfbyId = async (req, res) => {
   const { form_id, process_id, type } = req.params;
-  const userId = req.user.userId
+  const userId = req.user.userId;
   const date = new Date();
   const formattedDate = date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -567,7 +749,6 @@ exports.generateAuditPdfbyId = async (req, res) => {
   const user = await getUserById(userId);
 
   try {
-
     const registry = formModelRegistry[process_id];
     if (!registry || !registry.audit) {
       return res.status(400).json({
@@ -580,8 +761,8 @@ exports.generateAuditPdfbyId = async (req, res) => {
     const Form = registry.form;
     const FormData = await Form.findOne({
       where: { form_id },
-    })
-    const departmentName = FormData.departmentName
+    });
+    const departmentName = FormData.departmentName;
 
     const auditTrail = await AuditModel.findAll({
       where: { form_id },
@@ -595,17 +776,16 @@ exports.generateAuditPdfbyId = async (req, res) => {
       order: [["auditTrail_id", "ASC"]],
     });
 
-const stripHtml = (value) => {
-  if (value === null || value === undefined) return "";
+    const stripHtml = (value) => {
+      if (value === null || value === undefined) return "";
 
-  // If not string, convert safely
-  if (typeof value !== "string") {
-    return JSON.stringify(value);
-  }
+      // If not string, convert safely
+      if (typeof value !== "string") {
+        return JSON.stringify(value);
+      }
 
-  return value.replace(/<[^>]*>/g, "");
-};
-
+      return value.replace(/<[^>]*>/g, "");
+    };
 
     const response = auditTrail.map((row) => {
       const data = row.toJSON();
@@ -633,7 +813,7 @@ const stripHtml = (value) => {
       form_id: form_id,
       status: "status",
       auditTrail: response,
-      departmentName: departmentName
+      departmentName: departmentName,
     };
 
     // Render audit report content using EJS
@@ -651,7 +831,7 @@ const stripHtml = (value) => {
         (err, html) => {
           if (err) return reject(err);
           resolve(html);
-        }
+        },
       );
     });
 
@@ -662,7 +842,7 @@ const stripHtml = (value) => {
         (err, html) => {
           if (err) return reject(err);
           resolve(html);
-        }
+        },
       );
     });
 
@@ -676,7 +856,7 @@ const stripHtml = (value) => {
 
     const pdfBuffer = await page.pdf({
       format: "A4",
-      landscape:true,
+      landscape: true,
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: headerHtml,
@@ -685,13 +865,13 @@ const stripHtml = (value) => {
         top: "180px",
         bottom: "60px",
         left: "40px",
-        right: "40px"
+        right: "40px",
       },
     });
 
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename=${type}_Audit_Report.pdf`
+      `attachment; filename=${type}_Audit_Report.pdf`,
     );
     res.setHeader("Content-Type", "application/pdf");
     res.end(pdfBuffer);
@@ -756,7 +936,7 @@ exports.deleteAttachment = async (req, res) => {
 
     await FormModel.update(
       { [fieldName]: null },
-      { where: { form_id: form_id }, transaction }
+      { where: { form_id: form_id }, transaction },
     );
 
     await AuditModel.create(
@@ -771,7 +951,7 @@ exports.deleteAttachment = async (req, res) => {
         declaration: null,
         action: "Delete Attachment",
       },
-      { transaction }
+      { transaction },
     );
 
     await transaction.commit();
@@ -780,7 +960,6 @@ exports.deleteAttachment = async (req, res) => {
       error: false,
       message: "Attachment deleted successfully",
     });
-
   } catch (error) {
     await transaction.rollback();
     console.error("Error:", error);
@@ -843,7 +1022,7 @@ exports.addAttachment = async (req, res) => {
 
     await FormModel.update(
       { [fieldName]: attachmentPath },
-      { where: { form_id: form_id }, transaction }
+      { where: { form_id: form_id }, transaction },
     );
 
     await AuditModel.create(
@@ -858,7 +1037,7 @@ exports.addAttachment = async (req, res) => {
         declaration: "Attachment",
         action: "Add Attachment",
       },
-      { transaction }
+      { transaction },
     );
 
     await transaction.commit();
@@ -870,7 +1049,6 @@ exports.addAttachment = async (req, res) => {
         attachmentPath,
       },
     });
-
   } catch (error) {
     await transaction.rollback();
     console.error("Error:", error);
@@ -912,8 +1090,8 @@ exports.deleteRecordById = async (req, res) => {
     // Find record using ALL conditions
     const record = await RecordModel.findOne({
       where: {
-         record_id,      
-         form_id,
+        record_id,
+        form_id,
       },
       transaction,
     });
@@ -942,7 +1120,6 @@ exports.deleteRecordById = async (req, res) => {
       error: false,
       message: "Record deleted successfully",
     });
-
   } catch (error) {
     await transaction.rollback();
     console.error("Error deleting record:", error);
@@ -953,6 +1130,3 @@ exports.deleteRecordById = async (req, res) => {
     });
   }
 };
-
-
-
