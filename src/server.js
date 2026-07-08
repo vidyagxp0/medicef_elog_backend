@@ -58,16 +58,15 @@ app.use(
 
 app.use(
   helmet({
-    // contentSecurityPolicy: {
-    //   directives: {
-    //     defaultSrc: ["*"],
-    //     frameAncestors: ["self"],
-    //   },
-    // },
-        contentSecurityPolicy: false,
-    // crossOriginResourcePolicy: true,
-        crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginEmbedderPolicy: false,
+    frameguard: false,
+    contentSecurityPolicy: {
+      directives: {
+        frameAncestors: [
+          "'self'",
+          "https://elogmedicef-dev.vidyagxp.com"
+        ]
+      }
+    }
   })
 );
 
