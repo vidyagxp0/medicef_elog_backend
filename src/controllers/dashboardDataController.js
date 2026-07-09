@@ -19,6 +19,52 @@ const getUserById = async (user_id) => {
   return user;
 };
 
+const getDepartmentsForUser = async (userId) => {
+  const departmentIds = new Set();
+
+  // 1. Add departments where user has Reviewer (2), Approver (3), or Fullpermission (4) role
+  const userRoles = await UserRole.findAll({
+    where: {
+      user_id: userId,
+      role_id: [2, 3, 4]
+    },
+    raw: true
+  });
+  userRoles.forEach(ur => {
+    if (ur.department_id) {
+      departmentIds.add(ur.department_id);
+    }
+  });
+
+  // 2. Add departments where user has initiated at least one record
+  const promises = Object.keys(formModelRegistry).map(async (processId) => {
+    const registry = formModelRegistry[processId];
+    if (registry && registry.form) {
+      try {
+        const records = await registry.form.findAll({
+          attributes: [[sequelize.fn('DISTINCT', sequelize.col('department_id')), 'department_id']],
+          where: { initiator_id: userId },
+          raw: true
+        });
+        return records.map(r => r.department_id).filter(Boolean);
+      } catch (err) {
+        console.error(`Error querying form model for process ${processId}:`, err);
+        return [];
+      }
+    }
+    return [];
+  });
+  
+  const results = await Promise.all(promises);
+  for (const depts of results) {
+    for (const deptId of depts) {
+      departmentIds.add(deptId);
+    }
+  }
+
+  return Array.from(departmentIds);
+};
+
 const SEARCHABLE_FIELDS = {
   1: { type: "form", field: "instrument_id_no", targetKey: "instrumentID" },
   2: { type: "form", field: "instrument_id_no", targetKey: "instrumentID" },
@@ -112,6 +158,9 @@ const buildFilters = (query, config) => {
 
 exports.GetAllElogs = async (req, res) => {
   try {
+    const userId = req.user.userId;
+    const allowedDeptIds = await getDepartmentsForUser(userId);
+
     // Fetch all processes
     const processes = await Process.findAll();
     let response = [];
@@ -170,7 +219,12 @@ exports.GetAllElogs = async (req, res) => {
 
       const records = await FormModel.findAll({
         attributes: formAttributes,
-        where: filters,
+        where: {
+          ...filters,
+          department_id: {
+            [Op.in]: allowedDeptIds,
+          },
+        },
         include: includeModels,
         order: [["form_id", "DESC"]],
       });
@@ -214,12 +268,21 @@ exports.GetAllElogs = async (req, res) => {
         };
       });
 
-      response.push({
-        process_id: process.process_id,
-        process: process.process,
-        data: mappedRecords,
-      });
+      for (const record of mappedRecords) {
+        response.push({
+          process_id: process.process_id,
+          process: process.process,
+          data: [record],
+          date_of_initiation: record.date_of_initiation,
+        });
+      }
     }
+
+    response.sort((a, b) => {
+      const dateA = a.date_of_initiation ? new Date(a.date_of_initiation).getTime() : 0;
+      const dateB = b.date_of_initiation ? new Date(b.date_of_initiation).getTime() : 0;
+      return dateB - dateA;
+    });
 
     res.json({
       error: false,
@@ -287,6 +350,9 @@ exports.GetElogById = async (req, res) => {
 };
 exports.GetAllEffectiveElogs = async (req, res) => {
   try {
+    const userId = req.user.userId;
+    const allowedDeptIds = await getDepartmentsForUser(userId);
+
     // Fetch all processes
     const processes = await Process.findAll();
     let response = [];
@@ -348,6 +414,9 @@ exports.GetAllEffectiveElogs = async (req, res) => {
         where: {
           ...filters,
           workflow_state_id: 4, // fixed condition for effective elogs
+          department_id: {
+            [Op.in]: allowedDeptIds,
+          },
         },
         include: includeModels,
         order: [["form_id", "DESC"]],
@@ -392,12 +461,21 @@ exports.GetAllEffectiveElogs = async (req, res) => {
         };
       });
 
-      response.push({
-        process_id: process.process_id,
-        process: process.process,
-        data: mappedRecords,
-      });
+      for (const record of mappedRecords) {
+        response.push({
+          process_id: process.process_id,
+          process: process.process,
+          data: [record],
+          date_of_initiation: record.date_of_initiation,
+        });
+      }
     }
+
+    response.sort((a, b) => {
+      const dateA = a.date_of_initiation ? new Date(a.date_of_initiation).getTime() : 0;
+      const dateB = b.date_of_initiation ? new Date(b.date_of_initiation).getTime() : 0;
+      return dateB - dateA;
+    });
 
     res.json({
       error: false,
