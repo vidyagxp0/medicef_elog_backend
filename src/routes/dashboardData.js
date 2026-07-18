@@ -34,6 +34,7 @@ router.get("/get-processes", dashboardDataController.getAllProcesses);
 router.get('/get-departments', dashboardDataController.getAllDepartments);
 router.get('/get-server-time', dashboardDataController.getServerTime);
 router.post("/get-user-roleGroups", Auth.checkUserJwtToken, dashboardDataController.GetUserOnBasisOfRoleGroup);
+router.get("/get-equipment-instruments", Auth.checkUserJwtToken, dashboardDataController.GetEquipmentAndInstruments);
 
 // common Audit-Trail
 router.get("/get-all-audittrail/:form_id/:process_id", Auth.checkUserJwtToken, dashboardDataController.GetElogAuditTrail);

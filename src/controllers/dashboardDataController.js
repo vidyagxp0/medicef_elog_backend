@@ -22,11 +22,9 @@ const getUserById = async (user_id) => {
 const getDepartmentsForUser = async (userId) => {
   const departmentIds = new Set();
 
-  // 1. Add departments where user has Reviewer (2), Approver (3), or Fullpermission (4) role
   const userRoles = await UserRole.findAll({
     where: {
-      user_id: userId,
-      role_id: [2, 3, 4]
+      user_id: userId
     },
     raw: true
   });
@@ -35,32 +33,6 @@ const getDepartmentsForUser = async (userId) => {
       departmentIds.add(ur.department_id);
     }
   });
-
-  // 2. Add departments where user has initiated at least one record
-  const promises = Object.keys(formModelRegistry).map(async (processId) => {
-    const registry = formModelRegistry[processId];
-    if (registry && registry.form) {
-      try {
-        const records = await registry.form.findAll({
-          attributes: [[sequelize.fn('DISTINCT', sequelize.col('department_id')), 'department_id']],
-          where: { initiator_id: userId },
-          raw: true
-        });
-        return records.map(r => r.department_id).filter(Boolean);
-      } catch (err) {
-        console.error(`Error querying form model for process ${processId}:`, err);
-        return [];
-      }
-    }
-    return [];
-  });
-  
-  const results = await Promise.all(promises);
-  for (const depts of results) {
-    for (const deptId of depts) {
-      departmentIds.add(deptId);
-    }
-  }
 
   return Array.from(departmentIds);
 };
@@ -1208,3 +1180,77 @@ exports.deleteRecordById = async (req, res) => {
     });
   }
 };
+
+exports.GetEquipmentAndInstruments = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const allowedDeptIds = await getDepartmentsForUser(userId);
+    const equipments = new Set();
+    const instruments = new Set();
+
+    const promises = Object.keys(SEARCHABLE_FIELDS).map(async (processId) => {
+      const config = SEARCHABLE_FIELDS[processId];
+      const registry = formModelRegistry[processId];
+      if (!registry) return;
+
+      if (config.type === "form") {
+        if (!registry.form) return;
+        const records = await registry.form.findAll({
+          attributes: [[sequelize.fn('DISTINCT', sequelize.col(config.field)), 'value']],
+          where: {
+            department_id: { [Op.in]: allowedDeptIds }
+          },
+          raw: true
+        });
+        records.forEach(r => {
+          const val = r.value;
+          const valStr = val ? String(val).trim() : "";
+          if (valStr !== "") {
+            if (config.targetKey === "equipmentID") equipments.add(valStr);
+            else instruments.add(valStr);
+          }
+        });
+      } else if (config.type === "record") {
+        if (!registry.form || !registry.record) return;
+        const forms = await registry.form.findAll({
+          where: {
+            department_id: { [Op.in]: allowedDeptIds }
+          },
+          include: [{
+            model: registry.record,
+            as: config.association,
+            attributes: [config.field],
+            required: true
+          }],
+          raw: true
+        });
+        forms.forEach(f => {
+          const key = Object.keys(f).find(k => k.toLowerCase().endsWith(config.field.toLowerCase()));
+          const val = key ? f[key] : null;
+          const valStr = val ? String(val).trim() : "";
+          if (valStr !== "") {
+            if (config.targetKey === "equipmentID") equipments.add(valStr);
+            else instruments.add(valStr);
+          }
+        });
+      }
+    });
+
+    await Promise.all(promises);
+
+    return res.json({
+      error: false,
+      data: {
+        equipments: Array.from(equipments).sort(),
+        instruments: Array.from(instruments).sort()
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching equipment and instruments:", error);
+    return res.status(500).json({
+      error: true,
+      message: error.message
+    });
+  }
+};
+

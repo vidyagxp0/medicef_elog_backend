@@ -22,6 +22,10 @@ const DailyCalibrationRecord = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    dateTime: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     theoreticalWeight: {
       type: DataTypes.STRING,
       allowNull: false,

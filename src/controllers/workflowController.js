@@ -265,7 +265,7 @@ exports.GetTransitions = async (req, res) => {
     const currentState = form.workflow_state.name; 
 
 const resolveActiveRole = (userId, form, currentState) => {
-  if (currentState === "Opened" && userId === form.initiator_id)
+  if (currentState === "Opened" && Number(userId) === Number(form.initiator_id))
     return "initiator";
 
   if (currentState === "Under Review") {
@@ -278,11 +278,11 @@ const resolveActiveRole = (userId, form, currentState) => {
         reviewers = [];
       }
     }
-    if (Array.isArray(reviewers) && reviewers.includes(userId))
+    if (Array.isArray(reviewers) && reviewers.map(Number).includes(Number(userId)))
       return "reviewer";
   }
 
-  if (currentState === "Under Approval" && userId === form.approver_id)
+  if (currentState === "Under Approval" && Number(userId) === Number(form.approver_id))
     return "approver";
 
   return null;

@@ -258,6 +258,7 @@ exports.InsertDailyCalibration = async (req, res) => {
       const formRecords = FormRecordsArray.map((record, index) => ({
         form_id: newForm?.form_id,
         unique_id: record?.unique_id,
+        dateTime: record?.dateTime,
         theoreticalWeight: record?.theoreticalWeight,
         standardWt: record?.standardWt,
         observedWt: record?.observedWt,
@@ -634,6 +635,7 @@ exports.EditDailyCalibration = async (req, res) => {
           await DailyCalibrationRecord.update(
             {
               unique_id: record?.unique_id,
+              dateTime: record?.dateTime,
               theoreticalWeight: record?.theoreticalWeight,
               standardWt: record?.standardWt,
               observedWt: record?.observedWt,
@@ -658,6 +660,7 @@ exports.EditDailyCalibration = async (req, res) => {
             {
               form_id: form_id,
               unique_id: record?.unique_id,
+              dateTime: record?.dateTime,
               theoreticalWeight: record?.theoreticalWeight,
               standardWt: record?.standardWt,
               observedWt: record?.observedWt,
@@ -966,8 +969,10 @@ exports.effetiveChatByPdf = async (req, res) => {
       const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
       const to = new Date(ty, tm - 1, td);
 
-      recordWhere.date = {
-        [Op.between]: [from, to],
+      const fromStr = `${fy}-${fm.padStart(2, '0')}-${fd.padStart(2, '0')} 00:00:00`;
+      const toStr = `${ty}-${tm.padStart(2, '0')}-${td.padStart(2, '0')} 23:59:59`;
+      recordWhere.dateTime = {
+        [Op.between]: [fromStr, toStr],
       };
     }
 

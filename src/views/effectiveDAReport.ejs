@@ -228,6 +228,7 @@
           <tr>
             <th rowspan="2">S. No.</th>
             <th rowspan="2">Unique ID</th>
+            <th rowspan="2">Date & Time</th>
             <th rowspan="2">Theoretical Weight</th>
             <th rowspan="2">Standard Wt.(Certified Value)g</th>
             <th rowspan="2">Observed Wt.</th>
@@ -248,6 +249,19 @@
               </td>
               <td>
                 <%= record?.unique_id || "Not Applicable" %>
+              </td>
+
+              <td>
+                <% if (record?.dateTime) { %>
+                  <% const parts = record.dateTime.split(" "); %>
+                  <% if (parts.length === 2) { %>
+                    <%= new Date(parts[0]).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric" }).replace(/\//g, "-") %> <%= parts[1] %>
+                  <% } else { %>
+                    <%= record.dateTime %>
+                  <% } %>
+                <% } else { %>
+                  Not Applicable
+                <% } %>
               </td>
           
               <td>

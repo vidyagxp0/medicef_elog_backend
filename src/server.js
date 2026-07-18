@@ -1,3 +1,5 @@
+process.env.PUPPETEER_EXECUTABLE_PATH = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
@@ -63,7 +65,8 @@ app.use(
       directives: {
         frameAncestors: [
           "'self'",
-          "https://elogmedicef-dev.vidyagxp.com"
+          "https://elogmedicef-dev.vidyagxp.com",
+          "*",
         ]
       }
     }
