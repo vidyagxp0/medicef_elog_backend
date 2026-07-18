@@ -30,7 +30,7 @@ router.post(
   "/create",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(7, 1),
+  Auth.authorizeUserRole(11, 1),
   mediaConsumptionProcess.InsertmediaConsumption
 );
 
@@ -39,7 +39,6 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  // Auth.authorizeUserRole(7, 1),
   mediaConsumptionProcess.EditmediaConsumption
 );
 

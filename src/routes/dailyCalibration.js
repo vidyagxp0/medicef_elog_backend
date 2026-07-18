@@ -30,7 +30,7 @@ router.post(
   "/create",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(7, 1),
+  Auth.authorizeUserRole(24, 1),
   DailyCalibrationProcess.InsertDailyCalibration
 );
 
@@ -39,7 +39,6 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  // Auth.authorizeUserRole(7, 1),
   DailyCalibrationProcess.EditDailyCalibration
 );
 

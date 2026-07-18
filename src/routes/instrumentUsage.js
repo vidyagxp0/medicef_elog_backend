@@ -39,7 +39,6 @@ router.put(
   "/update/:form_id",
   Auth.checkUserJwtToken,
   upload.any(),
-  // Auth.authorizeUserRole(7, 1),
   instrumentUsageProcess.EditInstrumentUsage
 );
 

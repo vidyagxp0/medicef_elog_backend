@@ -30,7 +30,7 @@ router.post(
   "/create",
   Auth.checkUserJwtToken,
   upload.any(),
-  Auth.authorizeUserRole(1, 1),
+  Auth.authorizeUserRole(12, 1),
   DisinfectantStockProcess.InsertDisinfectantStock
 );
 
