@@ -68,7 +68,7 @@ const createEmailTemplate = (data) => {
           </style>
         </head>
         <body>
-         <h2>${data.message}</h2>
+          <div style="font-family: Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #333; white-space: pre-wrap; padding: 20px;">${data.message}</div>
         </body>
       </html>
     `,

@@ -149,4 +149,13 @@ const startServer = async () => {
   }
 };
 
+// ------------------ GLOBAL ERROR HANDLERS ------------------
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Promise Rejection at:", promise, "reason:", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught Exception caught:", error);
+});
+
 startServer();

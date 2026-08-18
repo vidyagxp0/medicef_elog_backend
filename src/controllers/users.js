@@ -650,7 +650,6 @@ exports.Userlogout = async (req, res) => {
 
     const duration = Math.floor((logoutTime - loginTime) / 1000);
     const formatedDuration = formatDuration(duration);
-    console.log(formatedDuration, "formatedDuration");
     await session.update({
       logout_time: logoutTime,
       duration: formatedDuration,

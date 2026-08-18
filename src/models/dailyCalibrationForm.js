@@ -69,13 +69,6 @@ const DailyCalibrationForm = sequelize.define("DailyCalibrationForm", {
   modelNo: {
     type: DataTypes.STRING,
   },
-  calibrationDoneOn: {
-    type: DataTypes.DATE,
-  },
-
-  calibrationDueOn: {
-    type: DataTypes.DATE,
-  },
   capacity: {
     type: DataTypes.STRING,
   },
@@ -86,9 +79,7 @@ const DailyCalibrationForm = sequelize.define("DailyCalibrationForm", {
     type: DataTypes.STRING,
   },
 
-  validUpTo: {
-    type: DataTypes.DATE,
-  },
+
   certificateNo: {
     type: DataTypes.STRING,
   },

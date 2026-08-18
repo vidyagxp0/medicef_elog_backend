@@ -9,7 +9,13 @@ const sequelize = new Sequelize(
   {
     dialect: config.development.dialect,
     host: config.development.host,
-    logging: false
+    logging: false,
+    pool: {
+      max: 30,
+      min: 5,
+      acquire: 30000,
+      idle: 10000,
+    },
   }
 );
 

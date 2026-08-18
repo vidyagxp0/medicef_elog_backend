@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Audit Report Header</title>
 
     <style>
       body {
-    margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-  }
+        margin: 0;
+        font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+      }
 
       .header-container {
         width: 100%;
-        padding: 0 50px;
+        padding: 0 40px;
         box-sizing: border-box;
       }
 
@@ -27,48 +27,49 @@
 
       .header-table th,
       .header-table td {
-        border: 1px solid #000;
-        padding: 8px;
+        border: 1px solid #42454a;
+        padding: 6px 10px;
         vertical-align: middle;
       }
 
-      /* .header-table th {
-        background-color: #f8f8f8;
-        font-weight: bold;
-      } */
-
-       .company-name {
-    font-size: 18px;
-    font-weight: 700;
-    text-align: center;
-  }
+      .company-name {
+        font-size: 18px;
+        font-weight: 700;
+        text-align: center;
+        color: #0f172a;
+      }
 
       .company-address {
-    font-size: 13px;
-    font-weight: normal;
-    margin-top: 4px;
-    display: block;
-  }
+        font-size: 12.5px;
+        font-weight: 400;
+        color: #2c333e;
+        margin-top: 3px;
+        display: block;
+      }
 
-       .header-logo {
-    width: 110px;
-    text-align: center;
-  }
+      .header-logo {
+        width: 110px;
+        text-align: center;
+        background-color: #f8fafc;
+      }
 
-  .header-logo img {
-    max-width: 95px;
-    height: auto;
-    object-fit: contain;
-  }
+      .header-logo img {
+        max-width: 90px;
+        max-height: 45px;
+        object-fit: contain;
+      }
 
-  .header-info {
-    font-size: 12.5px;
-    text-align: center;
-  }
+      .header-info {
+        font-size: 12px;
+        text-align: center;
+        color: #293442;
+        background-color: #f8fafc;
+      }
 
-  .label {
-    font-weight: 600;
-  }
+      .label {
+        font-weight: 600;
+        color: #0f172a;
+      }
     </style>
   </head>
 
@@ -78,35 +79,33 @@
         <tr>
           <th colspan="2">
             <div class="company-name">
-          Medicef Pharma
-          <span class="company-address">
-            Plot No. 28, 29, 48, EPIP Phase-I, Jharmajri, Baddi,
-            Dist. Solan (H.P.)
-          </span>
-        </div>
+              Medicef Pharma
+              <span class="company-address">
+                Plot No. 28, 29, 48, EPIP Phase-I, Jharmajri, Baddi, Dist. Solan (H.P.)
+              </span>
+            </div>
           </th>
 
           <th rowspan="2" class="header-logo">
-             <% if (logoDataUri) { %>
-          <img src="<%= logoDataUri %>" alt="Company Logo" />
-        <% } else { %>
-          Logo
-        <% } %>
+            <% if (logoDataUri) { %>
+              <img src="<%= logoDataUri %>" alt="Company Logo" />
+            <% } else { %>
+              <span style="font-weight: bold; color: #0284c7;">MEDICEF</span>
+            <% } %>
           </th>
         </tr>
 
         <tr>
           <td class="header-info">
             <span class="label">Department Name:</span>
-        <%= reportData?.departmentName || "Not Applicable" %>
+            <%= reportData?.departmentName || "Not Applicable" %>
           </td>
 
           <td class="header-info">
-            <!-- <span class="label">Process:</span> -->
-        <%= reportData?.title || "Not Applicable" %>
+            <span class="label">Report Title:</span>
+            <%= reportData?.title || reportData?.Process?.process || "Not Applicable" %>
           </td>
         </tr>
-
       </table>
     </div>
   </body>

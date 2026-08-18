@@ -71,52 +71,59 @@ const SEARCHABLE_FIELDS = {
 const buildFilters = (query, config) => {
   const where = {};
 
-  //  Parse filters JSON
   let filters = {};
   if (query.filters) {
     try {
-      filters = JSON.parse(query.filters);
+      filters = typeof query.filters === "string" ? JSON.parse(query.filters) : query.filters;
     } catch (err) {
       console.error("Invalid filters JSON");
     }
   }
 
-  // Status
-  if (filters.status) {
-    where.status = filters.status;
+  const statusVal = query.status || filters.status;
+  const deptVal = query.departmentName || filters.departmentName;
+  const fromDateVal = query.fromDate || filters.fromDate || filters.date?.from;
+  const toDateVal = query.toDate || filters.toDate || filters.date?.to;
+  const searchVal = query.search || filters.search;
+  const equipInstVal = query.equipInstId || filters.equipInstId;
+
+  if (statusVal) {
+    where.status = statusVal;
   }
 
-  // Department
-  if (filters.departmentName) {
-    where.departmentName = filters.departmentName;
+  if (deptVal) {
+    where.departmentName = deptVal;
   }
 
-  //  Date range
-  if (filters.date?.from && filters.date?.to) {
+  if (fromDateVal && toDateVal) {
     where.date_of_initiation = {
       [Op.between]: [
-        new Date(filters.date.from + "T00:00:00"),
-        new Date(filters.date.to + "T23:59:59"),
+        new Date(fromDateVal + "T00:00:00"),
+        new Date(toDateVal + "T23:59:59"),
       ],
     };
   }
 
-  //  Search (area_name + description + equipment/instrument ID)
-  if (filters.search) {
+  if (equipInstVal && config && config.type === "form") {
+    where[config.field] = equipInstVal;
+  }
+
+  if (searchVal) {
+    const searchPattern = `%${searchVal}%`;
     const orConditions = [
-      { area_name: { [Op.like]: `%${filters.search}%` } },
-      { description: { [Op.like]: `%${filters.search}%` } },
+      { area_name: { [Op.like]: searchPattern } },
+      { description: { [Op.like]: searchPattern } },
     ];
 
     if (config) {
       if (config.type === "form") {
         orConditions.push({
-          [config.field]: { [Op.like]: `%${filters.search}%` },
+          [config.field]: { [Op.like]: searchPattern },
         });
       } else if (config.type === "record") {
         orConditions.push({
           [`$${config.association}.${config.field}$`]: {
-            [Op.like]: `%${filters.search}%`,
+            [Op.like]: searchPattern,
           },
         });
       }
@@ -134,13 +141,29 @@ exports.GetAllElogs = async (req, res) => {
     const allowedDeptIds = await getDepartmentsForUser(userId);
 
     // Fetch all processes
-    const processes = await Process.findAll();
+    
+    let filtersObj = {};
+    if (req.query.filters) {
+      try {
+        filtersObj = typeof req.query.filters === "string" ? JSON.parse(req.query.filters) : req.query.filters;
+      } catch (err) {}
+    }
+
+    const targetProcessId = req.query.process_id || filtersObj.process_id || filtersObj.recordType;
+    const page = parseInt(req.query.page || filtersObj.page || 1, 10);
+    const limit = parseInt(req.query.limit || filtersObj.limit || 10, 10);
+    const targetEquipInstId = req.query.equipInstId || filtersObj.equipInstId;
+
+    const allProcesses = await Process.findAll();
+    const processes = targetProcessId
+      ? allProcesses.filter((p) => Number(p.process_id) === Number(targetProcessId))
+      : allProcesses;
     let response = [];
 
     for (const process of processes) {
       const registry = formModelRegistry[process.process_id];
 
-      if (!registry || !registry.form) continue; // registry ya form na ho toh skip
+      if (!registry || !registry.form) continue;
 
       const FormModel = registry.form;
       const approverAlias = registry.approverAlias || "approver";
@@ -201,7 +224,7 @@ exports.GetAllElogs = async (req, res) => {
         order: [["form_id", "DESC"]],
       });
 
-      const mappedRecords = records.map((record) => {
+      let mappedRecords = records.map((record) => {
         let equipmentVal = null;
         let instrumentVal = null;
 
@@ -240,6 +263,16 @@ exports.GetAllElogs = async (req, res) => {
         };
       });
 
+      
+      if (targetEquipInstId) {
+        const targetLower = String(targetEquipInstId).trim().toLowerCase();
+        mappedRecords = mappedRecords.filter((r) => {
+          const eqStr = r.equipmentID ? String(r.equipmentID).trim().toLowerCase() : "";
+          const instStr = r.instrumentID ? String(r.instrumentID).trim().toLowerCase() : "";
+          return eqStr === targetLower || instStr === targetLower || eqStr.includes(targetLower) || instStr.includes(targetLower);
+        });
+      }
+
       for (const record of mappedRecords) {
         response.push({
           process_id: process.process_id,
@@ -256,9 +289,17 @@ exports.GetAllElogs = async (req, res) => {
       return dateB - dateA;
     });
 
+    const totalRecords = response.length;
+    const startIndex = (page - 1) * limit;
+    const paginatedData = response.slice(startIndex, startIndex + limit);
+
     res.json({
       error: false,
-      data: response,
+      data: paginatedData,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit),
+      page,
+      limit,
     });
   } catch (error) {
     console.error(error);
@@ -326,7 +367,23 @@ exports.GetAllEffectiveElogs = async (req, res) => {
     const allowedDeptIds = await getDepartmentsForUser(userId);
 
     // Fetch all processes
-    const processes = await Process.findAll();
+    
+    let filtersObj = {};
+    if (req.query.filters) {
+      try {
+        filtersObj = typeof req.query.filters === "string" ? JSON.parse(req.query.filters) : req.query.filters;
+      } catch (err) {}
+    }
+
+    const targetProcessId = req.query.process_id || filtersObj.process_id || filtersObj.recordType;
+    const page = parseInt(req.query.page || filtersObj.page || 1, 10);
+    const limit = parseInt(req.query.limit || filtersObj.limit || 10, 10);
+    const targetEquipInstId = req.query.equipInstId || filtersObj.equipInstId;
+
+    const allProcesses = await Process.findAll();
+    const processes = targetProcessId
+      ? allProcesses.filter((p) => Number(p.process_id) === Number(targetProcessId))
+      : allProcesses;
     let response = [];
 
     for (const process of processes) {
@@ -394,7 +451,7 @@ exports.GetAllEffectiveElogs = async (req, res) => {
         order: [["form_id", "DESC"]],
       });
 
-      const mappedRecords = records.map((record) => {
+      let mappedRecords = records.map((record) => {
         let equipmentVal = null;
         let instrumentVal = null;
 
@@ -433,6 +490,16 @@ exports.GetAllEffectiveElogs = async (req, res) => {
         };
       });
 
+      
+      if (targetEquipInstId) {
+        const targetLower = String(targetEquipInstId).trim().toLowerCase();
+        mappedRecords = mappedRecords.filter((r) => {
+          const eqStr = r.equipmentID ? String(r.equipmentID).trim().toLowerCase() : "";
+          const instStr = r.instrumentID ? String(r.instrumentID).trim().toLowerCase() : "";
+          return eqStr === targetLower || instStr === targetLower || eqStr.includes(targetLower) || instStr.includes(targetLower);
+        });
+      }
+
       for (const record of mappedRecords) {
         response.push({
           process_id: process.process_id,
@@ -449,9 +516,17 @@ exports.GetAllEffectiveElogs = async (req, res) => {
       return dateB - dateA;
     });
 
+    const totalRecords = response.length;
+    const startIndex = (page - 1) * limit;
+    const paginatedData = response.slice(startIndex, startIndex + limit);
+
     res.json({
       error: false,
-      data: response,
+      data: paginatedData,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / limit),
+      page,
+      limit,
     });
   } catch (error) {
     console.error(error);
@@ -1247,6 +1322,187 @@ exports.GetEquipmentAndInstruments = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching equipment and instruments:", error);
+    return res.status(500).json({
+      error: true,
+      message: error.message
+    });
+  }
+};
+
+exports.getProcessAnalytics = async (req, res) => {
+  try {
+    const { process_id } = req.params;
+    const { month, year } = req.query;
+
+    if (!process_id) {
+      return res.status(400).json({ error: true, message: "Process ID is required" });
+    }
+
+    const registry = formModelRegistry[process_id];
+    if (!registry) {
+      return res.status(400).json({ error: true, message: "Invalid or unregistered process ID" });
+    }
+
+    const formWhere = {};
+    if (year && month) {
+      const fromDate = new Date(year, month - 1, 1);
+      const toDate = new Date(year, month, 0, 23, 59, 59);
+      formWhere.date_of_initiation = {
+        [Op.between]: [fromDate, toDate]
+      };
+    }
+
+    const forms = await registry.form.findAll({
+      where: formWhere,
+      include: registry.record ? [{ model: registry.record, required: false }] : [],
+    });
+
+    const statusCounts = {
+      "Initiated": 0,
+      "Under Review": 0,
+      "Under Approval": 0,
+      "Approved": 0
+    };
+    let totalForms = 0;
+    
+    forms.forEach(f => {
+      totalForms++;
+      const s = f.status || "Initiated";
+      if (statusCounts[s] !== undefined) {
+        statusCounts[s]++;
+      } else {
+        statusCounts[s] = (statusCounts[s] || 0) + 1;
+      }
+    });
+
+    let totalRecords = 0;
+    let filledRecordsCount = 0;
+    let complianceRate = 0;
+    const specificData = {};
+
+    if (registry.record) {
+      const allRecords = [];
+      forms.forEach(f => {
+        const plainForm = f.toJSON();
+        const recordsKey = Object.keys(plainForm).find(key => Array.isArray(plainForm[key]));
+        if (recordsKey && plainForm[recordsKey]) {
+          allRecords.push(...plainForm[recordsKey]);
+        }
+      });
+
+      totalRecords = allRecords.length;
+      const processIdNum = parseInt(process_id, 10);
+
+      if (processIdNum === 20) {
+        const cleaningAgentCounts = { T: 0, NA: 0 };
+        const disinfectantCounts = { D: 0, S: 0, NA: 0 };
+        const sanitizerCounts = { SHC: 0, NA: 0 };
+        const drainCleanedCounts = { "√": 0, NA: 0 };
+
+        allRecords.forEach(r => {
+          if (r.status) {
+            filledRecordsCount++;
+            const status = String(r.status).trim();
+            const rowId = parseInt(r.row_id, 10);
+            if (rowId === 2) {
+              if (cleaningAgentCounts[status] !== undefined) cleaningAgentCounts[status]++;
+            } else if (rowId === 3) {
+              if (disinfectantCounts[status] !== undefined) disinfectantCounts[status]++;
+            } else if (rowId === 4) {
+              if (sanitizerCounts[status] !== undefined) sanitizerCounts[status]++;
+            } else if (rowId >= 6 && rowId <= 15) {
+              if (drainCleanedCounts[status] !== undefined) drainCleanedCounts[status]++;
+            }
+          }
+        });
+
+        specificData.type = "drain-cleaning";
+        specificData.cleaningAgentCounts = cleaningAgentCounts;
+        specificData.disinfectantCounts = disinfectantCounts;
+        specificData.sanitizerCounts = sanitizerCounts;
+        specificData.drainCleanedCounts = drainCleanedCounts;
+
+      } else if (processIdNum === 1 || processIdNum === 2 || processIdNum === 5) {
+        const readings = [];
+        let limitViolations = 0;
+
+        allRecords.forEach(r => {
+          const keys = Object.keys(r);
+          const valKey = keys.find(k => k.toLowerCase().includes("reading") || k.toLowerCase().includes("pressure") || k.toLowerCase().includes("value"));
+          const val = valKey ? parseFloat(r[valKey]) : null;
+
+          if (val !== null && !isNaN(val)) {
+            filledRecordsCount++;
+            readings.push(val);
+
+            const parentForm = forms.find(form => form.form_id === r.form_id);
+            if (parentForm) {
+              const uLimit = parseFloat(parentForm.upperActionLimit || parentForm.upperAcceptanceCriteria);
+              const lLimit = parseFloat(parentForm.lowerActionLimit || parentForm.lowerAcceptanceCriteria);
+              if (!isNaN(uLimit) && val > uLimit) limitViolations++;
+              if (!isNaN(lLimit) && val < lLimit) limitViolations++;
+            }
+          }
+        });
+
+        const numReadings = readings.length;
+        const minVal = numReadings > 0 ? Math.min(...readings) : 0;
+        const maxVal = numReadings > 0 ? Math.max(...readings) : 0;
+        const avgVal = numReadings > 0 ? (readings.reduce((a, b) => a + b, 0) / numReadings) : 0;
+
+        specificData.type = "numerical";
+        specificData.stats = {
+          min: parseFloat(minVal.toFixed(2)),
+          max: parseFloat(maxVal.toFixed(2)),
+          avg: parseFloat(avgVal.toFixed(2)),
+          limitViolations
+        };
+        
+        const dailyTrends = Array.from({ length: 31 }, (_, i) => ({ day: i + 1, sum: 0, count: 0 }));
+        allRecords.forEach(r => {
+          const keys = Object.keys(r);
+          const valKey = keys.find(k => k.toLowerCase().includes("reading") || k.toLowerCase().includes("pressure") || k.toLowerCase().includes("value"));
+          const val = valKey ? parseFloat(r[valKey]) : null;
+          const day = parseInt(r.day || r.date_day, 10);
+          
+          if (val !== null && !isNaN(val) && day >= 1 && day <= 31) {
+            dailyTrends[day - 1].sum += val;
+            dailyTrends[day - 1].count += 1;
+          }
+        });
+
+        specificData.trends = dailyTrends.map(t => ({
+          day: t.day,
+          value: t.count > 0 ? parseFloat((t.sum / t.count).toFixed(2)) : null
+        }));
+
+      } else {
+        allRecords.forEach(r => {
+          if (r.status) {
+            filledRecordsCount++;
+          }
+        });
+        specificData.type = "generic";
+      }
+
+      complianceRate = totalRecords > 0 ? Math.round((filledRecordsCount / totalRecords) * 100) : 0;
+    }
+
+    return res.status(200).json({
+      error: false,
+      data: {
+        process_id: parseInt(process_id, 10),
+        totalForms,
+        statusCounts,
+        complianceRate,
+        totalRecords,
+        filledRecordsCount,
+        specificData
+      }
+    });
+
+  } catch (error) {
+    console.error("Error generating process analytics:", error);
     return res.status(500).json({
       error: true,
       message: error.message

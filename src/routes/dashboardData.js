@@ -46,4 +46,7 @@ router.post("/add-attachment/:form_id/:process_id",upload.any(), Auth.checkUserJ
 
 // delete record by id
 router.post("/delete-record/:form_id/:process_id/:record_id", Auth.checkUserJwtToken,dashboardDataController.deleteRecordById);
+
+router.get("/process-analytics/:process_id", Auth.checkUserJwtToken, dashboardDataController.getProcessAnalytics);
+
 module.exports = router;

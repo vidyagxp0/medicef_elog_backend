@@ -188,17 +188,23 @@
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Equipment Usage Records</h2>
-     <h3 class="subheading">Part-I</h3>
+     <!-- <h3 class="subheading">Part-I</h3> -->
     <% if (reportData.EquipmentUsageRecords && reportData.EquipmentUsageRecords.length> 0) { %>
       <table>
         <thead>
           <tr>
-            <th>S.No</th>
+            <th>Sr. No.</th>
             <th>Unique ID</th>
             <th>Date</th>
             <th>Product Name</th>
-            <th>Batch No</th>
+            <th>Batch No.</th>
             <th>Activity Type</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Done By</th>
+            <th>Checked By</th>
+            <th>Verified By</th>
+            <th>Remark</th>
           </tr>
         </thead>
         <tbody>
@@ -223,36 +229,7 @@
                 <td>
                   <%= record?.activityType || "Not Applicable" %>
                 </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-      <h3 class="subheading">Part-II</h3>
-    <% if (reportData.EquipmentUsageRecords && reportData.EquipmentUsageRecords.length> 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>S.No</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Verified By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.EquipmentUsageRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-                <td>
+                 <td>
                   <%= record?.startTime || "Not Applicable" %>
                 </td>
                 <td>

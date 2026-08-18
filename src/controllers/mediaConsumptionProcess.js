@@ -130,6 +130,15 @@ exports.InsertmediaConsumption = async (req, res) => {
         .status(401)
         .json({ error: true, message: "Invalid e-signature." });
     }
+    if (
+      user.email.toLowerCase() !== esignInput.toLowerCase() &&
+      user.userName !== esignInput
+    ) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature credentials." });
+    }
 
     let initiatorAttachment = null;
     let additionalAttachment = null;
@@ -349,6 +358,15 @@ exports.InsertmediaConsumption = async (req, res) => {
         return res
           .status(401)
           .json({ error: true, message: "Invalid e-signature." });
+      }
+      if (
+        user.email.toLowerCase() !== esignInput.toLowerCase() &&
+        user.userName !== esignInput
+      ) {
+        await transaction.rollback();
+        return res
+          .status(401)
+          .json({ error: true, message: "Invalid e-signature credentials." });
       }
 
       let initiatorAttachment = null;

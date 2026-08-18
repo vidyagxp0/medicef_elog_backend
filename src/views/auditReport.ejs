@@ -5,29 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Audit Report</title>
     <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 12px;
+        color: #000;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
       }
+
       th,
       td {
-        border: 1px solid black;
-        padding: 8px;
+        border: 1px solid #42454a;
+        padding: 6px 8px;
         text-align: left;
+        font-size: 12px;
+        vertical-align: top;
       }
+
       th {
         background-color: #f2f2f2;
+        font-weight: bold;
       }
 
       .report-content {
-        page-break-inside: avoid;
+        width: 100%;
       }
 
-      table,
-      tr,
-      td,
-      th {
-        page-break-inside: avoid !important;
+      tr {
+        page-break-inside: avoid;
         page-break-after: auto;
       }
 
@@ -46,14 +55,14 @@
       <table>
         <thead>
           <tr>
-            <th>S.No</th>
-            <th>Field Name</th>
-            <th>Previous Value</th>
-            <th>New Value</th>
-            <th>Previous State</th>
-            <th>New State</th>
-            <th>Perform</th>
-            <th>Action</th>
+            <th style="width: 5%;">S.No</th>
+            <th style="width: 15%;">Field Name</th>
+            <th style="width: 15%;">Previous Value</th>
+            <th style="width: 15%;">New Value</th>
+            <th style="width: 12%;">Previous State</th>
+            <th style="width: 12%;">New State</th>
+            <th style="width: 16%;">Performed By / On</th>
+            <th style="width: 10%;">Action</th>
           </tr>
         </thead>
 
@@ -67,65 +76,54 @@
                 <td><%= audit?.field_name || 'N/A' %></td>
 
                 <!-- Previous Value -->
-                <td style="word-wrap: break-word;">
-                  <%= audit?.previous_value || 'N/A' %>
-                </td>
+                <td style="word-wrap: break-word; white-space: pre-wrap;"><%
+                    let prevVal = audit?.previous_value;
+                    if (typeof prevVal === 'string' && (prevVal.match(/:/g) || []).length >= 2) {
+                      if (prevVal.startsWith('{') || prevVal.startsWith('[')) {
+                        try {
+                          const obj = JSON.parse(prevVal);
+                          prevVal = Object.entries(obj).map(([k, v]) => `${k}: ${v}`).join('\n');
+                        } catch (e) {}
+                      } else {
+                        prevVal = prevVal.replace(/([,\s]+)(?=[A-Za-z0-9_]+:)/g, '\n');
+                      }
+                    }
+                  %><%= prevVal || 'N/A' %></td>
 
-                <td style="word-wrap: break-word;">
-                  <%
-                    const newVal = audit?.new_value;
+                <!-- New Value -->
+                <td style="word-wrap: break-word; white-space: pre-wrap;"><%
+                    let newVal = audit?.new_value;
 
                     const isAttachment =
                       typeof newVal === 'string' &&
                       newVal.startsWith('http') &&
                       /\.(jpg|jpeg|png|pdf|docx)$/i.test(newVal);
 
-                    const colonCount =
-                      typeof newVal === 'string'
-                        ? (newVal.match(/:/g) || []).length
-                        : 0;
-
-                    const isStructuredKeyValueList =
-                      typeof newVal === 'string' && colonCount >= 2;
-
-                    const formattedValue = isStructuredKeyValueList
-                      ? newVal.replace(/,\s*(?=[^,]+?:)/g, '\n')
-                      : newVal;
-                  %>
-
-                  <% if (isAttachment) { %>
-                    <a href="<%= newVal %>" target="_blank">View Attachment</a>
-                  <% } else { %>
-                    <%= formattedValue || 'N/A' %>
-                  <% } %>
-                </td>
+                    if (typeof newVal === 'string' && (newVal.match(/:/g) || []).length >= 2) {
+                      if (newVal.startsWith('{') || newVal.startsWith('[')) {
+                        try {
+                          const obj = JSON.parse(newVal);
+                          newVal = Object.entries(obj).map(([k, v]) => `${k}: ${v}`).join('\n');
+                        } catch (e) {}
+                      } else {
+                        newVal = newVal.replace(/([,\s]+)(?=[A-Za-z0-9_]+:)/g, '\n');
+                      }
+                    }
+                  %><% if (isAttachment) { %><a href="<%= audit?.new_value %>" target="_blank">View Attachment</a><% } else { %><%= newVal || 'N/A' %><% } %></td>
 
                 <td><%= audit?.previous_status || 'N/A' %></td>
 
                 <td><%= audit?.new_status || 'N/A' %></td>
 
                 <td>
-                  <b>Performed By:</b>
-                  <%= audit?.changedByUser?.name || 'N/A' %>
+                  <b>Performed By:</b> <%= audit?.changedByUser?.name || 'N/A' %>
                   <br />
-
-                  <b>Performed On:</b>
-                  <%= new Date(audit?.createdAt).toLocaleDateString(
-                        'en-GB',
-                        {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric',
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          second: 'numeric'
-                        }
-                      ) %>
-                  <br />
-
-                  <!-- <b>Declaration:</b>
-                  <%= audit?.declaration || 'N/A' %>
-                </td> -->
+                  <b>Performed On:</b> <%= audit?.createdAt ? new Date(audit.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'N/A' %>
+                  <% if (audit?.declaration) { %>
+                    <br />
+                    <b>Declaration:</b> <%= audit.declaration %>
+                  <% } %>
+                </td>
 
                 <td><%= audit?.action || 'N/A' %></td>
               </tr>

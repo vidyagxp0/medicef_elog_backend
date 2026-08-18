@@ -122,6 +122,15 @@ exports.InsertDrainCleaning = async (req, res) => {
         .status(401)
         .json({ error: true, message: "Invalid e-signature." });
     }
+    if (
+      user.email.toLowerCase() !== esignInput.toLowerCase() &&
+      user.userName !== esignInput
+    ) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature credentials." });
+    }
 
     let initiatorAttachment = null;
     let additionalAttachment = null;
@@ -384,6 +393,15 @@ exports.EditDrainCleaning = async (req, res) => {
       return res
         .status(401)
         .json({ error: true, message: "Invalid e-signature." });
+    }
+    if (
+      user.email.toLowerCase() !== esignInput.toLowerCase() &&
+      user.userName !== esignInput
+    ) {
+      await transaction.rollback();
+      return res
+        .status(401)
+        .json({ error: true, message: "Invalid e-signature credentials." });
     }
 
     let initiatorAttachment = null;
@@ -889,11 +907,11 @@ const buildDrainGridForReport = (records = []) => {
   const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
 
   const rows = [
-    { id: 1, label: "Time" },
-    { id: 2, label: "Cleaning Agent" },
-    { id: 3, label: "Disinfectant Used" },
-    { id: 4, label: "Sanitizer Used" },
-    { id: 5, label: "Drain ID" },
+    { id: 1, label: "Time →" },
+    { id: 2, label: "Cleaning agent →" },
+    { id: 3, label: "Disinfectant used →" },
+    { id: 4, label: "Sanitizer used →" },
+    { id: 5, label: "Drain ID ↓" },
 
     // 10 extra Drain ID rows
     { id: 6, label: "Drain ID", sub: true },
@@ -907,8 +925,8 @@ const buildDrainGridForReport = (records = []) => {
     { id: 14, label: "Drain ID", sub: true },
     { id: 15, label: "Drain ID", sub: true },
 
-    { id: 16, label: "Checked By" },
-    { id: 17, label: "Verified By" },
+    { id: 16, label: "Checked By(Sign/Date)" },
+    { id: 17, label: "Verified By(Sign/Date)" },
   ];
 
   // 1️⃣ empty grid
@@ -931,6 +949,14 @@ const buildDrainGridForReport = (records = []) => {
       role: rec.role,
       time: rec.time,
     };
+
+    if (rec.row_id >= 6 && rec.row_id <= 15 && rec.row_label && rec.row_label !== "Drain ID") {
+      const targetRow = rows.find((r) => r.id === rec.row_id);
+      if (targetRow) {
+        targetRow.label = rec.row_label;
+        targetRow.showLabel = true;
+      }
+    }
   });
 
   return { grid, rows, DAYS };
