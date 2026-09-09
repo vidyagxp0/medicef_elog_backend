@@ -4,17 +4,11 @@
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
-      font-size: 12px;
+      font-size: 11.5px;
       color: #000;
-      margin: 25px;
+      margin: 0;
+      padding: 0;
       line-height: 1.35;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 20px;
-      margin-bottom: 25px;
-      letter-spacing: 0.5px;
     }
 
     h2.heading {
@@ -22,10 +16,10 @@
       align-items: center;
       font-weight: 600;
       border-left: 4px solid #495057;
-      padding: 6px 10px;
-      font-size: 15px;
+      padding: 4px 10px;
+      font-size: 12.5px;
       background-color: #e9ecef;
-      margin-bottom: 8px;
+      margin: 8px 0 5px 0;
       page-break-after: avoid;
     }
 
@@ -33,12 +27,12 @@
       width: 100%;
       table-layout: fixed;
       border-collapse: collapse;
-      font-size: 10px;
+      font-size: 9.5px;
     }
 
     th, td {
       border: 1px solid #ccc;
-      padding: 3px 1px;
+      padding: 4px 1px;
       text-align: center;
       vertical-align: middle;
       box-sizing: border-box;
@@ -50,98 +44,67 @@
       font-weight: 600;
     }
 
-    .status-yes {
-      color: #16a34a;
-      font-weight: bold;
-      font-size: 16px;
-      display: block;
-    }
-
-    .status-no {
-      color: #dc2626;
-      font-weight: bold;
-      font-size: 16px;
-      display: block;
-    }
-
-    .cell-meta {
-      font-size: 9.5px;
-      color: #374151;
-      margin-top: 2px;
-      word-break: break-word;
-    }
-
-    .sub-row {
-      padding-left: 16px;
-      font-style: italic;
-      background: #fafafa;
-      text-align: left;
-    }
-
-    .heading {
-      margin: 16px 0 8px;
-      font-size: 14px;
-      font-weight: bold;
+    .details-table {
+      margin-bottom: 8px;
     }
 
     .details-table td {
-      padding: 6px 8px;
-      text-align: left;
-    }
-
-    .label {
-      font-weight: 600;
-      width: 180px;
-      background: #f9fafb;
-    }
-      .black {
-      color: black;
-    }
-
-    h1 {
-      font-size: 18px;
-    }
-
-    h2.heading {
-      font-size: 13.5px;
       padding: 5px 8px;
-    }  
+      text-align: left;
+      font-size: 10.5px;
+    }
+
+    .details-table td.label {
+      font-weight: 600;
+      background: #f9fafb;
+      width: 12%;
+    }
+
+    .details-table td.value {
+      width: 21.33%;
+    }
+
     .row-label {
-      font-size: 10px;
+      font-size: 9.5px;
       font-weight: 500;
       text-align: left;
-      padding-left: 8px;
+      padding-left: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
- 
-.icon {
-  font-size: 10px;
-  font-weight: bold;
-  line-height: 1;
-  text-align: center;
-  vertical-align: middle;
-}
 
-.icon-yes {
-  color: #16a34a; /* green */
-}
+    .row-label.indented {
+      padding-left: 12px;
+    }
 
-.icon-no {
-  color: #dc2626; /* red */
-}
+    .icon {
+      font-size: 10px;
+      font-weight: bold;
+      line-height: 1;
+      text-align: center;
+      vertical-align: middle;
+    }
 
-.icon-muted {
-  color: #9ca3af; /* grey */
-}
+    .icon-yes {
+      color: #16a34a;
+    }
+
+    .icon-no {
+      color: #dc2626;
+    }
+
+    .icon-muted {
+      color: #9ca3af;
+    }
   </style>
 </head>
 <body>
 
-    <% 
+<% 
 const formatDateTime = (date) => {
   if (!date) return "Not Applicable";
-
   const d = new Date(date);
-
   const formatted = d.toLocaleString("en-IN", {
     day: "2-digit",
     month: "2-digit",
@@ -151,12 +114,18 @@ const formatDateTime = (date) => {
     second: "2-digit",
     hour12: true   
   });
-
   return formatted.replace(/\//g, "-");
 };
 
 const formatTime24 = (dateStr) => {
   if (!dateStr) return "";
+  if (typeof dateStr === "string") {
+    const trimmed = dateStr.trim();
+    const parts = trimmed.split(":");
+    if (parts.length >= 2) {
+      return `${parts[0].padStart(2, "0")}:${parts[1].padStart(2, "0")}`;
+    }
+  }
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return dateStr;
   const hh = String(d.getHours()).padStart(2, "0");
@@ -173,25 +142,20 @@ const formatMonthYear = (dateStr) => {
 };
 %>
 
-
     <!-- ================= DETAILS ================= -->
     <h2 class="heading">Details</h2>
 
     <table class="details-table">
       <tbody>
         <tr>
-          <td class="label">Record Id</td>
+          <td class="label">Record ID</td>
           <td class="value">
             MED/DCR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
           </td>
-        </tr>
-        <tr>
           <td class="label">Area Name</td>
           <td class="value">
             <%= reportData?.area_name || "Not Applicable" %>
           </td>
-        </tr>
-        <tr>
           <td class="label">Room ID</td>
           <td class="value">
             <%= reportData?.room_id || "Not Applicable" %>
@@ -202,38 +166,56 @@ const formatMonthYear = (dateStr) => {
           <td class="value">
             <%= reportData?.departmentName || "Not Applicable" %>
           </td>
+          <td class="label">Fiscal Year</td>
+          <td class="value">
+            <%= reportData?.fiscal_year || "Not Applicable" %>
+          </td>
+          <td class="label">Month</td>
+          <td class="value">
+            <%= reportData?.month_display || (reportData?.date_of_initiation ? formatMonthYear(reportData.date_of_initiation) : "Not Applicable") %>
+          </td>
         </tr>
       </tbody>
     </table>
 
     <!-- ================= RECORDS ================= -->
-    <h2 class="heading">Drain cleaning and sanitization Records</h2>
+    <h2 class="heading" style="margin-top: 18px;">Drain cleaning and sanitization Records</h2>
 
-    <% if (reportData.DrainCleaningRecords && reportData.DrainCleaningRecords.length> 0) { %>
+    <% if (reportData.DrainCleaningRecords && reportData.DrainCleaningRecords.length > 0) { %>
 
 <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">
   <colgroup>
-    <col style="width: 90px;" />
+    <col style="width: 110px;" />
     <% DAYS.forEach(() => { %>
-      <col style="width: 25px;" />
+      <col />
     <% }) %>
   </colgroup>
   <thead>
+    <% 
+      const totalCols = 1 + DAYS.length;
+      const col1 = Math.floor(totalCols / 4);
+      const col2 = Math.floor(totalCols / 4);
+      const col3 = Math.floor(totalCols / 4);
+      const col4 = totalCols - (col1 + col2 + col3);
+    %>
     <tr>
-      <td colspan="11" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 6px; font-size: 10px;">
+      <td colspan="<%= col1 %>" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 4px 6px; font-size: 9.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
         DEPARTMENT: <%= reportData?.departmentName || "Not Applicable" %>
       </td>
-      <td colspan="10" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 6px; font-size: 10px;">
+      <td colspan="<%= col2 %>" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 4px 6px; font-size: 9.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
         AREA: <%= reportData?.area_name || "Not Applicable" %>
       </td>
-      <td colspan="11" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 6px; font-size: 10px;">
-        MONTH & YEAR: <%= reportData?.date_of_initiation ? formatMonthYear(reportData.date_of_initiation) : "Not Applicable" %>
+      <td colspan="<%= col3 %>" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 4px 6px; font-size: 9.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        FISCAL YEAR: <%= reportData?.fiscal_year || "Not Applicable" %>
+      </td>
+      <td colspan="<%= col4 %>" style="text-align: left; font-weight: bold; background: #fff; border: 1px solid #ccc; padding: 4px 6px; font-size: 9.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        MONTH: <%= reportData?.month_display || (reportData?.date_of_initiation ? formatMonthYear(reportData.date_of_initiation) : "Not Applicable") %>
       </td>
     </tr>
     <tr>
-      <th style="text-align: left; padding: 4px 6px; font-size: 9px; box-sizing: border-box;">Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; →</th>
+      <th style="text-align: left; padding: 4px 6px; font-size: 9px; box-sizing: border-box;">Date &nbsp;→</th>
       <% DAYS.forEach(day => { %>
-        <th><%= day %></th>
+        <th style="font-size: 8.5px; padding: 4px 1px;"><%= day %></th>
       <% }) %>
     </tr>
   </thead>
@@ -243,85 +225,89 @@ const formatMonthYear = (dateStr) => {
     <tr>
 
       <!-- ROW LABEL -->
-      <td class="row-label">
-      <%= (row.sub && !row.showLabel) ? '' : row.label %></td>
+      <td class="row-label <%= (row.id >= 6 && row.id <= 15) ? 'indented' : '' %>">
+        <%= row.label %>
+      </td>
 
       <% if (row.id === 5) { %>
-        <!-- Drain ID header row → Merge 31 columns into one empty cell -->
-        <td colspan="31" style="background: #f9fafb;"></td>
+        <!-- Drain ID header row → Merge all day columns into one empty cell -->
+        <td colspan="<%= DAYS.length %>" style="background: #f9fafb;"></td>
       <% } else { %>
         <% DAYS.forEach(day => { 
              const cell = grid[row.id]?.[day];
-             const isReviewerRow = row.id === 16;
-             const isApproverRow = row.id === 17;
         %>
 
         <td>
         <% if (cell) { %>
 
-      <% if (row.id === 16 || row.id === 17) { %>
-        <!-- Reviewer / Approver → ONLY NAME -->
-        <% if (cell.by) { %>
-          <div class="cell-meta"><%= cell.by %></div>
+          <% if (row.id === 16 || row.id === 17) { %>
+            <!-- Checked By / Verified By → Sign + Date -->
+            <% if (cell.by) { %>
+              <div style="font-size: 7px; line-height: 1.15; word-break: break-word; text-align: center; color: #000;">
+                <span style="font-weight: 600;"><%= cell.by %></span>
+                <% if (cell.time) { 
+                     const dt = new Date(cell.time);
+                     if (!isNaN(dt.getTime())) {
+                       const dStr = `${String(dt.getDate()).padStart(2, '0')}/${String(dt.getMonth()+1).padStart(2, '0')}`;
+                %>
+                  <div style="font-size: 6px; color: #555; margin-top: 1px;"><%= dStr %></div>
+                <%   } 
+                   } %>
+              </div>
+            <% } %>
+
+          <% } else if (row.id === 1) { %>
+            <!-- Time row -->
+            <% const formattedT = formatTime24(cell.time); %>
+            <% if (formattedT) { %>
+              <span class="icon icon-yes" style="font-size: 8px; font-weight: 600; white-space: nowrap;"><%= formattedT %></span>
+            <% } %>
+
+          <% } else if (row.id === 2) { %>
+            <!-- Cleaning Agent -->
+            <% if (cell.status === 'T') { %>
+              <span class="icon icon-yes" style="font-weight: bold; font-size: 10px;">T</span>
+            <% } else if (cell.status === 'NA') { %>
+              <span class="icon icon-muted" style="font-weight: bold; font-size: 8.5px;">NA</span>
+            <% } %>
+
+          <% } else if (row.id === 3) { %>
+            <!-- Disinfectant Used -->
+            <% if (cell.status === 'D') { %>
+              <span class="icon icon-yes" style="font-weight: bold; font-size: 10px;">D</span>
+            <% } else if (cell.status === 'S') { %>
+              <span class="icon icon-yes" style="font-weight: bold; font-size: 10px;">S</span>
+            <% } else if (cell.status === 'NA') { %>
+              <span class="icon icon-muted" style="font-weight: bold; font-size: 8.5px;">NA</span>
+            <% } %>
+
+          <% } else if (row.id === 4) { %>
+            <!-- Sanitizer Used -->
+            <% if (cell.status === 'SHC') { %>
+              <span class="icon icon-yes" style="font-size: 8.5px; font-weight: bold;">SHC</span>
+            <% } else if (cell.status === 'NA') { %>
+              <span class="icon icon-muted" style="font-weight: bold; font-size: 8.5px;">NA</span>
+            <% } %>
+
+          <% } else if (row.id !== 1 && row.id !== 2 && row.id !== 3 && row.id !== 4 && row.id !== 5 && row.id !== 16 && row.id !== 17) { %>
+            <!-- Drain ID rows -->
+            <% if (cell.status === '√' || cell.status === 'check' || cell.checked === true) { %>
+              <span class="icon icon-yes" style="font-size: 11.5px;">✓</span>
+            <% } else if (cell.status === 'NA') { %>
+              <span class="icon icon-muted" style="font-weight: bold; font-size: 8.5px;">NA</span>
+            <% } %>
+
+          <% } else { %>
+            <!-- Standard check/cross fallback -->
+            <% if (cell.status === 'checked' || cell.status === 'true' || cell.status === true) { %>
+              <span class="icon icon-yes">✔</span>
+            <% } else if (cell.status === 'cross' || cell.status === 'false' || cell.status === false) { %>
+              <span class="icon icon-no">✖</span>
+            <% } %>
+          <% } %>
+
         <% } %>
-
-      <% } else { %>
-        <!-- Other rows → Custom layout per row type -->
-        <% if (row.id === 1) { %>
-          <!-- Time row -->
-          <% if (cell.status === 'checked') { %>
-            <span class="icon icon-yes" style="font-size: 10px;"><%= formatTime24(cell.time) %></span>
-          <% } else if (cell.status === 'cross') { %>
-            <span class="icon icon-no" style="font-size: 10px;"><%= formatTime24(cell.time) %></span>
-          <% } %>
-
-        <% } else if (row.id === 2) { %>
-          <!-- Cleaning Agent -->
-          <% if (cell.status === 'T') { %>
-            <span class="icon icon-yes">T</span>
-          <% } else if (cell.status === 'NA') { %>
-            <span class="icon icon-muted">NA</span>
-          <% } %>
-
-        <% } else if (row.id === 3) { %>
-          <!-- Disinfectant Used -->
-          <% if (cell.status === 'D') { %>
-            <span class="icon icon-yes">D</span>
-          <% } else if (cell.status === 'S') { %>
-            <span class="icon icon-yes">S</span>
-          <% } else if (cell.status === 'NA') { %>
-            <span class="icon icon-muted">NA</span>
-          <% } %>
-
-        <% } else if (row.id === 4) { %>
-          <!-- Sanitizer Used -->
-          <% if (cell.status === 'SHC') { %>
-            <span class="icon icon-yes">SHC</span>
-          <% } else if (cell.status === 'NA') { %>
-            <span class="icon icon-muted">NA</span>
-          <% } %>
-
-        <% } else if (row.id >= 6 && row.id <= 15) { %>
-          <!-- Drain ID rows -->
-          <% if (cell.status === '√') { %>
-            <span class="icon icon-yes">√</span>
-          <% } else if (cell.status === 'NA') { %>
-            <span class="icon icon-muted">NA</span>
-          <% } %>
-
-        <% } else { %>
-          <!-- Standard check/cross fallback -->
-          <% if (cell.status === 'checked' || cell.status === 'true' || cell.status === true) { %>
-            <span class="icon icon-yes">✔</span>
-          <% } else if (cell.status === 'cross' || cell.status === 'false' || cell.status === false) { %>
-            <span class="icon icon-no">✖</span>
-          <% } %>
-        <% } %>
-
-      <% } %>
-
-    <% } %>
-  </td>
+        </td>
 
         <% }) %>
       <% } %>
@@ -330,7 +316,7 @@ const formatMonthYear = (dateStr) => {
 </tbody>
 </table>
       <% } else { %>
-        <p>No Records Found.</p>
+        <p style="padding: 10px; color: #555;">No Records Found.</p>
         <% } %>
 
   
@@ -340,33 +326,33 @@ const formatMonthYear = (dateStr) => {
             <h2 class="heading">Additional</h2>
             <table>
               <tr>
-                <th>Additional Attachment</th>
-                <td>
+                <th style="width: 20%; text-align: left; padding: 5px 6px;">Additional Attachment</th>
+                <td style="text-align: left; padding: 5px 6px;">
                   <% if (reportData?.additionalAttachment) { %>
                     <a href="<%= reportData.additionalAttachment %>" target="_blank">
                       View File
                     </a>
-                    <% } else { %>
-                      Not Applicable
-                      <% } %>
+                  <% } else { %>
+                    Not Applicable
+                  <% } %>
                 </td>
               </tr>
 
               <tr>
-                <th>Additional Info</th>
-                <td>
+                <th style="text-align: left; padding: 5px 6px;">Additional Info</th>
+                <td style="text-align: left; padding: 5px 6px;">
                   <%= reportData?.additionalInfo || "Not Applicable" %>
                 </td>
               </tr>
             </table>
 
-            <% } %>
+          <% } %>
 
-    <!-- ================= INSTRUCTIONS ================= -->
-    <h2 class="heading">Instructions & Frequencies</h2>
-    <div style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; background-color: #f8fafc; font-size: 11px; line-height: 1.5; color: #334155; margin-bottom: 20px; page-break-inside: avoid;">
-      <p style="margin: 0 0 6px 0;">
-        <strong>Note:</strong> 0.1% V/V Teepol solution used as cleaning agent denoted by <strong>"T"</strong>, 2.5% V/V Dettol/Savlon solution used as disinfectant denoted by <strong>"D"</strong> or <strong>"S"</strong> respectively, 4% Sod. Hypochloride V/V solution used as sanitizer denoted as <strong>"SHC"</strong>. Drain cleaned should be marked by <strong>"√"</strong> and <strong>"NA"</strong> for not applicable.
+    <!-- ================= INSTRUCTIONS & FREQUENCIES ================= -->
+    <h2 class="heading" style="margin-top: 18px;">Instructions & Frequencies</h2>
+    <div style="padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 4px; background-color: #f8fafc; font-size: 9.5px; line-height: 1.5; color: #334155; margin-bottom: 6px; page-break-inside: avoid;">
+      <p style="margin: 0 0 5px 0;">
+        <strong>Note:</strong> 0.1% V/V Teepol solution used as cleaning agent denoted by <strong>"T"</strong>, 2.5% V/V Dettol/Savlon solution used as disinfectant denoted by <strong>"D"</strong> or <strong>"S"</strong> respectively, 4% Sod. Hypochloride V/V solution used as sanitizer denoted as <strong>"SHC"</strong>. Drain cleaned should be marked by <strong>"✓"</strong> and <strong>"NA"</strong> for not applicable.
       </p>
       <p style="margin: 0;">
         <strong>Frequency:</strong> Drains should be cleaned at the end of last working shift of the day, disinfectant solution used alternately every week and sanitization of drains should be done at the end of the last working shift of the week.
@@ -374,5 +360,4 @@ const formatMonthYear = (dateStr) => {
     </div>
 
 </body>
-
 </html>

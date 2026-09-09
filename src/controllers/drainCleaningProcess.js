@@ -50,6 +50,7 @@ exports.InsertDrainCleaning = async (req, res) => {
     departmentName,
     area_name,
     room_id,
+    fiscal_year,
     reviewer_id,
     reviewerData,
     approver_id,
@@ -145,6 +146,22 @@ exports.InsertDrainCleaning = async (req, res) => {
       }
     });
 
+    const getCurrentFiscalYear = () => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+      if (currentMonth >= 4) {
+        return `${currentYear}-${currentYear + 1}`;
+      } else {
+        return `${currentYear - 1}-${currentYear}`;
+      }
+    };
+
+    const effectiveFiscalYear =
+      fiscal_year && fiscal_year.trim() !== ""
+        ? fiscal_year
+        : getCurrentFiscalYear();
+
     // Create new Disinfectant Stock Form
     const newForm = await DrainCleaningForm.create(
       {
@@ -165,6 +182,7 @@ exports.InsertDrainCleaning = async (req, res) => {
         additionalInfo: additionalInfo,
         area_name: area_name,
         room_id: room_id,
+        fiscal_year: effectiveFiscalYear,
       },
 
       { transaction },
@@ -179,6 +197,7 @@ exports.InsertDrainCleaning = async (req, res) => {
       departmentName,
       area_name,
       room_id,
+      fiscal_year: effectiveFiscalYear,
       reviewer: reviewerNames,
       approver: (await getUserById(approver_id))?.name,
       initiatorComment,
@@ -323,6 +342,7 @@ exports.EditDrainCleaning = async (req, res) => {
     departmentName,
     area_name,
     room_id,
+    fiscal_year,
     reviewerData,
     reviewer_id,
     approver_id,
@@ -440,7 +460,7 @@ exports.EditDrainCleaning = async (req, res) => {
       initiatorComment,
       area_name,
       room_id,
-      initiatorComment,
+      fiscal_year: fiscal_year !== undefined ? fiscal_year : form.fiscal_year,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
         : form.initiatorAttachment,
@@ -553,6 +573,7 @@ exports.EditDrainCleaning = async (req, res) => {
         departmentName,
         area_name,
         room_id,
+        fiscal_year: fiscal_year !== undefined ? fiscal_year : form.fiscal_year,
         reviewer_id,
         reviewerData,
         approver_id,
@@ -569,22 +590,51 @@ exports.EditDrainCleaning = async (req, res) => {
       { transaction },
     );
 
-    // Update / Create Temperature Records (NO DELETE)
-
+    // Update / Create Drain Cleaning Records (NO DELETE)
     if (
       Array.isArray(DrainCleaningRecords) &&
       DrainCleaningRecords.length > 0
     ) {
       for (const record of DrainCleaningRecords) {
+        let existingRecord = null;
         if (record.record_id) {
+          existingRecord = await DrainCleaningRecord.findOne({
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          });
+        } else if (record.row_id && record.day) {
+          const matchWhere = {
+            form_id: form_id,
+            row_id: record.row_id,
+            day: record.day,
+          };
+          if (record.month !== undefined && record.month !== null) {
+            matchWhere.month = record.month;
+          }
+          if (record.year !== undefined && record.year !== null) {
+            matchWhere.year = record.year;
+          }
+          existingRecord = await DrainCleaningRecord.findOne({
+            where: matchWhere,
+            transaction,
+          });
+        }
+
+        if (existingRecord) {
           // UPDATE existing row
-          await DrainCleaningRecord.update(
+          await existingRecord.update(
             {
               unique_id: record?.unique_id,
               date: record?.date,
               by: record?.by,
               checked: record?.checked,
               day: record?.day,
+              month: record?.month !== undefined ? record.month : existingRecord.month,
+              year: record?.year !== undefined ? record.year : existingRecord.year,
+              month_name: record?.month_name || existingRecord.month_name,
               role: record?.role,
               row_id: record?.row_id,
               row_label: record?.row_label,
@@ -596,13 +646,7 @@ exports.EditDrainCleaning = async (req, res) => {
               verified_by: record?.verified_by,
               remarks: record?.remarks,
             },
-            {
-              where: {
-                record_id: record.record_id,
-                form_id: form_id,
-              },
-              transaction,
-            },
+            { transaction },
           );
         } else {
           // CREATE only new row
@@ -614,6 +658,9 @@ exports.EditDrainCleaning = async (req, res) => {
               by: record?.by,
               checked: record?.checked,
               day: record?.day,
+              month: record?.month,
+              year: record?.year,
+              month_name: record?.month_name,
               role: record?.role,
               row_id: record?.row_id,
               row_label: record?.row_label,
@@ -903,8 +950,64 @@ exports.viewReport = async (req, res) => {
       .json({ error: true, message: `Error generating PDF: ${error.message}` });
   }
 };
-const buildDrainGridForReport = (records = []) => {
-  const DAYS = Array.from({ length: 31 }, (_, i) => i + 1);
+const buildDrainGridForReport = (
+  records = [],
+  selectedMonth = null,
+  selectedYear = null,
+  allDrainRowsFromDb = []
+) => {
+  let filteredRecords = records;
+  if (selectedMonth !== null && selectedMonth !== undefined && selectedMonth !== "") {
+    filteredRecords = records.filter(
+      (r) => !r.month || Number(r.month) === Number(selectedMonth)
+    );
+  }
+
+  let totalDays = 31;
+  if (selectedMonth && selectedYear) {
+    totalDays = new Date(Number(selectedYear), Number(selectedMonth), 0).getDate();
+  } else if (selectedMonth) {
+    const m = Number(selectedMonth);
+    totalDays = [4, 6, 9, 11].includes(m) ? 30 : m === 2 ? 28 : 31;
+  }
+
+  const DAYS = Array.from({ length: totalDays }, (_, i) => i + 1);
+
+  // Extract only actual Drain ID rows configured for this form
+  const drainRowMap = new Map();
+  const rowsWithData = new Set();
+  (records || []).forEach((r) => {
+    const isStatic = (r.row_id >= 1 && r.row_id <= 5) || r.row_id === 16 || r.row_id === 17;
+    if (!isStatic && r.row_id && ((r.status && String(r.status).trim() !== "") || r.checked || r.by || r.time)) {
+      rowsWithData.add(r.row_id);
+    }
+  });
+
+  const scanRow = (r) => {
+    const isStatic = (r.row_id >= 1 && r.row_id <= 5) || r.row_id === 16 || r.row_id === 17;
+    if (!isStatic && r.row_id) {
+      const trimmedLabel = r.row_label ? String(r.row_label).trim() : "";
+      const hasValidCustomLabel = trimmedLabel !== "" && trimmedLabel !== "Drain ID";
+      if (hasValidCustomLabel) {
+        drainRowMap.set(r.row_id, trimmedLabel);
+      } else if (rowsWithData.has(r.row_id) && !drainRowMap.has(r.row_id)) {
+        drainRowMap.set(r.row_id, trimmedLabel || `Drain ${r.row_id}`);
+      }
+    }
+  };
+
+  (allDrainRowsFromDb || []).forEach(scanRow);
+  (records || []).forEach(scanRow);
+
+  const drainRowIds = Array.from(drainRowMap.keys()).sort((a, b) => a - b);
+  const finalDrainRowIds = drainRowIds.length > 0 ? drainRowIds : [6];
+
+  const dynamicDrainRows = finalDrainRowIds.map((rId) => ({
+    id: rId,
+    label: drainRowMap.get(rId) || `Drain ${rId}`,
+    sub: true,
+    showLabel: true,
+  }));
 
   const rows = [
     { id: 1, label: "Time →" },
@@ -912,19 +1015,7 @@ const buildDrainGridForReport = (records = []) => {
     { id: 3, label: "Disinfectant used →" },
     { id: 4, label: "Sanitizer used →" },
     { id: 5, label: "Drain ID ↓" },
-
-    // 10 extra Drain ID rows
-    { id: 6, label: "Drain ID", sub: true },
-    { id: 7, label: "Drain ID", sub: true },
-    { id: 8, label: "Drain ID", sub: true },
-    { id: 9, label: "Drain ID", sub: true },
-    { id: 10, label: "Drain ID", sub: true },
-    { id: 11, label: "Drain ID", sub: true },
-    { id: 12, label: "Drain ID", sub: true },
-    { id: 13, label: "Drain ID", sub: true },
-    { id: 14, label: "Drain ID", sub: true },
-    { id: 15, label: "Drain ID", sub: true },
-
+    ...dynamicDrainRows,
     { id: 16, label: "Checked By(Sign/Date)" },
     { id: 17, label: "Verified By(Sign/Date)" },
   ];
@@ -939,7 +1030,7 @@ const buildDrainGridForReport = (records = []) => {
   });
 
   // 2️⃣ fill grid from DB
-  records.forEach((rec) => {
+  filteredRecords.forEach((rec) => {
     if (!grid[rec.row_id]) return;
 
     grid[rec.row_id][rec.day] = {
@@ -949,14 +1040,6 @@ const buildDrainGridForReport = (records = []) => {
       role: rec.role,
       time: rec.time,
     };
-
-    if (rec.row_id >= 6 && rec.row_id <= 15 && rec.row_label && rec.row_label !== "Drain ID") {
-      const targetRow = rows.find((r) => r.id === rec.row_id);
-      if (targetRow) {
-        targetRow.label = rec.row_label;
-        targetRow.showLabel = true;
-      }
-    }
   });
 
   return { grid, rows, DAYS };
@@ -964,7 +1047,7 @@ const buildDrainGridForReport = (records = []) => {
 exports.effetiveChatByPdf = async (req, res) => {
   try {
     const { form_id } = req.params;
-    const { fromDate, toDate } = req.body;
+    const { fromDate, toDate, month, year } = req.body;
 
     if (!form_id) {
       return res.status(400).json({ error: true, message: "Form Id Required" });
@@ -972,7 +1055,12 @@ exports.effetiveChatByPdf = async (req, res) => {
 
     let recordWhere = {};
 
-    if (fromDate && toDate) {
+    if (month) {
+      recordWhere.month = Number(month);
+      if (year) {
+        recordWhere.year = Number(year);
+      }
+    } else if (fromDate && toDate) {
       // fromDate, toDate expected in 'YYYY/MM/DD'
       const [fy, fm, fd] = fromDate.split("/");
       const [ty, tm, td] = toDate.split("/");
@@ -991,10 +1079,9 @@ exports.effetiveChatByPdf = async (req, res) => {
       include: [
         {
           model: DrainCleaningRecord,
-          where: recordWhere, // directly use literal or undefined
+          where: Object.keys(recordWhere).length ? recordWhere : undefined,
           required: false,
           separate: true, // important for order to work on hasMany
-          // order: [["date", "ASC"], ["time", "ASC"]],
         },
         { model: Process },
       ],
@@ -1022,6 +1109,11 @@ exports.effetiveChatByPdf = async (req, res) => {
       ? removeHtmlTags(reportData?.addtionalInfo)
       : "Not Applicable";
 
+    const monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    if (month) {
+      reportData.month_display = `${monthNames[Number(month)] || ""} ${year || ""}`.trim();
+    }
+
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
       year: "numeric",
@@ -1032,9 +1124,19 @@ exports.effetiveChatByPdf = async (req, res) => {
       second: "2-digit",
       hour12: false, // Specify using 24-hour format
     });
-const { grid, rows, DAYS } = buildDrainGridForReport(
-  reportData.DrainCleaningRecords || []
-);
+
+    const allFormDrainRows = await DrainCleaningRecord.findAll({
+      where: { form_id },
+      attributes: ["row_id", "row_label"],
+      raw: true,
+    });
+
+    const { grid, rows, DAYS } = buildDrainGridForReport(
+      reportData.DrainCleaningRecords || [],
+      month,
+      year,
+      allFormDrainRows
+    );
     // Render HTML using EJS template
     const html = await new Promise((resolve, reject) => {
       req.app.render("effectiveDCReport", { reportData, grid, rows, DAYS  }, (err, html) => {
@@ -1087,9 +1189,9 @@ const { grid, rows, DAYS } = buildDrainGridForReport(
       }),
       margin: {
         top: "130px",
-        right: "15px",
-        bottom: "50px",
-        left: "15px",
+        right: "40px",
+        bottom: "40px",
+        left: "40px",
       },
     });
 
@@ -1110,38 +1212,29 @@ const { grid, rows, DAYS } = buildDrainGridForReport(
 };
 exports.effetiveViewReport = async (req, res) => {
   try {
-    const { form_id } = req.params;
-    // const { fromDate, toDate } = req.query;
+    const { form_id } = req.query;
+    const { month, year } = req.query;
 
     if (!form_id) {
       return res.status(400).json({ error: true, message: "Form Id Required" });
     }
 
-    // let recordWhere = {};
-
-    // if (fromDate && toDate) {
-    //   // fromDate, toDate expected in 'YYYY/MM/DD'
-    //   const [fy, fm, fd] = fromDate.split("/");
-    //   const [ty, tm, td] = toDate.split("/");
-
-    //   // create Date objects
-    //   const from = new Date(fy, fm - 1, fd); // monthIndex = month - 1
-    //   const to = new Date(ty, tm - 1, td);
-
-    //   recordWhere.date = {
-    //     [Op.between]: [from, to],
-    //   };
-    // }
+    let recordWhere = {};
+    if (month) {
+      recordWhere.month = Number(month);
+      if (year) {
+        recordWhere.year = Number(year);
+      }
+    }
 
     const formData = await DrainCleaningForm.findOne({
       where: { form_id },
       include: [
         {
           model: DrainCleaningRecord,
-          // where: recordWhere, // directly use literal or undefined
-          // required: false,
-          // separate: true,
-          // order: [["date", "ASC"], ["time", "ASC"]],
+          where: Object.keys(recordWhere).length ? recordWhere : undefined,
+          required: false,
+          separate: true,
         },
         { model: Process },
       ],
@@ -1155,9 +1248,23 @@ exports.effetiveViewReport = async (req, res) => {
     const formJson = formData.toJSON();
 
     const reportData = formJson;
+    const monthNames = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    if (month) {
+      reportData.month_display = `${monthNames[Number(month)] || ""} ${year || ""}`.trim();
+    }
+
+    const allFormDrainRows = await DrainCleaningRecord.findAll({
+      where: { form_id },
+      attributes: ["row_id", "row_label"],
+      raw: true,
+    });
+
     const { grid, rows, DAYS } = buildDrainGridForReport(
-  reportData.DrainCleaningRecords || []
-);
+      reportData.DrainCleaningRecords || [],
+      month,
+      year,
+      allFormDrainRows
+    );
     // Render HTML using EJS template
     req.app.render("effectiveDCReport", { reportData , grid, rows, DAYS }, (err, html) => {
       if (err) {

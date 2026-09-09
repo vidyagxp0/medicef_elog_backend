@@ -175,7 +175,6 @@ const formatDateTime = (date) => {
             <th>Quantity</th>
             <th>Autoclave Load No.</th>
             <th>Cycle No.</th>
-            <th>Cycle Hold time</th>
             <th>Autoclave Start time</th>
           </tr>
         </thead>
@@ -205,9 +204,6 @@ const formatDateTime = (date) => {
                 <%= record?.cycle_no || "Not Applicable" %>
               </td>
               <td>
-                <%= record?.cycle_hold_time || "Not Applicable" %>
-              </td>
-              <td>
                 <%= record?.autoclave_start_time || "Not Applicable" %>
               </td>
             </tr>
@@ -228,6 +224,7 @@ const formatDateTime = (date) => {
             <th>S. No.</th>
             <th>Autoclave End time</th>
             <th>Sterelization Hold Start time</th>
+            <th>Cycle Hold time</th>
             <th>Sterelization Hold End time</th>
             <th>Temperature</th>
             <th>Pressure</th>
@@ -248,6 +245,9 @@ const formatDateTime = (date) => {
               </td>
               <td>
                 <%= record?.sterilization_hold_start_time || "Not Applicable" %>
+              </td>
+              <td>
+                <%= record?.cycle_hold_time || "Not Applicable" %>
               </td>
               <td>
                 <%= record?.sterilization_hold_end_time || "Not Applicable" %>

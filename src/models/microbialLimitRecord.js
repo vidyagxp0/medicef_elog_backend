@@ -64,15 +64,15 @@ const MicrobialLimitRecord = sequelize.define(
     },
     date_of_observation: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     observed1_by: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     observed2_by: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     e_coli: {
       type: DataTypes.STRING,

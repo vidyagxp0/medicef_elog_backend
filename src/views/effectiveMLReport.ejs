@@ -240,7 +240,6 @@
             <th>Clostridia</th>
             <th>Bile Tolerant Gram –ve bacteria</th>
             <th>Date Of Release	</th>
-            <th>Done By</th>
             <th>Checked By</th>
             <th>Remark</th>
           </tr>
@@ -279,11 +278,19 @@
                 <td>
                   <%= record?.date_of_release || "Not Applicable" %>
                 </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
+                <td style="text-align: center;">
+                  <% if (record?.reviewed_by) { 
+                       const parts = record.reviewed_by.split(" | ");
+                       const reviewerName = parts[0];
+                       const reviewerDateTime = parts[1] || (record.updatedAt ? new Date(record.updatedAt).toLocaleString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }).replace(/\//g, "-").replace(",", "") : "");
+                  %>
+                    <div style="font-weight: 600;"><%= reviewerName %></div>
+                    <% if (reviewerDateTime) { %>
+                      <div style="font-size: 10px; color: #555; margin-top: 2px;"><%= reviewerDateTime %></div>
+                    <% } %>
+                  <% } else { %>
+                    Not Applicable
+                  <% } %>
                 </td>
                 <td>
                   <%= record?.remarks || "Not Applicable" %>

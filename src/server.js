@@ -126,6 +126,50 @@ app.use("/workflow", workFLow);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+const ensureDrainCleaningColumns = async () => {
+  try {
+    const queryInterface = sequelize.getQueryInterface();
+    const { DataTypes } = require("sequelize");
+    try {
+      const formDesc = await queryInterface.describeTable("DrainCleaningForms");
+      if (formDesc && !formDesc.fiscal_year) {
+        await queryInterface.addColumn("DrainCleaningForms", "fiscal_year", {
+          type: DataTypes.STRING,
+          allowNull: true,
+        });
+        console.log("Added fiscal_year column to DrainCleaningForms");
+      }
+    } catch (e) {}
+
+    try {
+      const recordDesc = await queryInterface.describeTable("DrainCleaningRecords");
+      if (recordDesc && !recordDesc.month) {
+        await queryInterface.addColumn("DrainCleaningRecords", "month", {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        });
+        console.log("Added month column to DrainCleaningRecords");
+      }
+      if (recordDesc && !recordDesc.year) {
+        await queryInterface.addColumn("DrainCleaningRecords", "year", {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        });
+        console.log("Added year column to DrainCleaningRecords");
+      }
+      if (recordDesc && !recordDesc.month_name) {
+        await queryInterface.addColumn("DrainCleaningRecords", "month_name", {
+          type: DataTypes.STRING,
+          allowNull: true,
+        });
+        console.log("Added month_name column to DrainCleaningRecords");
+      }
+    } catch (e) {}
+  } catch (err) {
+    console.error("Migration check error for DrainCleaning:", err.message);
+  }
+};
+
 // ------------------ SERVER START ------------------
 const startServer = async () => {
   try {
@@ -135,6 +179,7 @@ const startServer = async () => {
     await sequelize.sync({ alter: false });
     console.log("Tables synchronized");
 
+    await ensureDrainCleaningColumns();
     await initWorkflowTransitions();
     await inituserRolesSync()
 

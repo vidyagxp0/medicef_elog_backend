@@ -44,7 +44,7 @@
       padding: 6px;
       /* text-align: left; */
       font-size: 11.5px;
-      vertical-align: top;
+      vertical-align: middle;
     }
 
     th {
@@ -96,7 +96,7 @@
 <body>
 
   <% const formatDateOnly=(date)=> {
-    if (!date) return "Not Applicable";
+    if (!date) return "NA";
     return new Date(date).toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "2-digit",
@@ -119,19 +119,19 @@
         <tr>
           <td class="label">Area Name</td>
           <td class="value">
-            <%= reportData?.area_name || "Not Applicable" %>
+            <%= reportData?.area_name || "NA" %>
           </td>
         </tr>
         <tr>
           <td class="label">Room ID</td>
           <td class="value">
-            <%= reportData?.room_id || "Not Applicable" %>
+            <%= reportData?.room_id || "NA" %>
           </td>
         </tr>
         <tr>
           <td class="label">Department</td>
           <td class="value">
-            <%= reportData?.departmentName || "Not Applicable" %>
+            <%= reportData?.departmentName || "NA" %>
           </td>
         </tr>
       </tbody>
@@ -144,7 +144,7 @@
     <table>
       <thead>
         <tr>
-          <th rowspan="2">S.No</th>
+          <th rowspan="2">S. No.</th>
           <th rowspan="2">Unique ID</th>
           <th rowspan="2">Date</th>
           <th rowspan="2">Time</th>
@@ -166,17 +166,17 @@
         <% reportData.DPMonitoringRecords.forEach((record, index) => { %>
         <tr>
           <td><%= index + 1 %></td>
-          <td><%= record?.unique_id || "Not Applicable" %></td>
+          <td><%= record?.unique_id || "NA" %></td>
           <td><%= formatDateOnly(record?.date) %></td>
-          <td><%= record?.time || "Not Applicable" %></td>
-          <td><%= record?.equipmentId || "Not Applicable" %></td>
-          <td><%= record?.operationStatus || "Not Applicable" %></td>
-          <td><%= record?.preFilter5to10 || "Not Applicable" %></td>
-          <td><%= record?.fineFilter7to10 || "Not Applicable" %></td>
-          <td><%= record?.fineFilter8to20 || "Not Applicable" %></td>
-          <td><%= record?.done_by || "Not Applicable" %></td>
-          <td><%= record?.reviewed_by || "Not Applicable" %></td>
-          <td><%= record?.remarks || "Not Applicable" %></td>
+          <td><%= record?.time || "NA" %></td>
+          <td><%= record?.equipmentId || "NA" %></td>
+          <td><%= record?.operationStatus || "NA" %></td>
+          <td><%= record?.preFilter5to10 || "NA" %></td>
+          <td><%= record?.fineFilter7to10 || "NA" %></td>
+          <td><%= record?.fineFilter8to20 || "NA" %></td>
+          <td><%= record?.done_by || "NA" %></td>
+          <td><%= record?.reviewed_by || "NA" %></td>
+          <td><%= record?.remarks || "NA" %></td>
         </tr>
         <% }) %>
       </tbody>
@@ -206,19 +206,19 @@
                 <%= index + 1 %>
               </td>
               <td>
-                <%= record?.unique_id || "Not Applicable" %>
+                <%= record?.unique_id || "NA" %>
               </td>
               <td>
-                <%= formatDateOnly(record?.date) || "Not Applicable" %>
+                <%= formatDateOnly(record?.date) || "NA" %>
               </td>
               <td>
-                <%= record?.time || "Not Applicable" %>
+                <%= record?.time || "NA" %>
               </td>
               <td>
-                <%= record?.equipmentId || "Not Applicable" %>
+                <%= record?.equipmentId || "NA" %>
               </td>
               <td>
-                <%= record?.operationStatus || "Not Applicable" %>
+                <%= record?.operationStatus || "NA" %>
               </td>
             </tr>
             <% }) %>
@@ -252,22 +252,22 @@
                 <%= index + 1 %>
               </td>
               <td>
-                <%= record?.preFilter5to10 || "Not Applicable" %>
+                <%= record?.preFilter5to10 || "NA" %>
               </td>
               <td>
-                <%= record?.fineFilter7to10 || "Not Applicable" %>
+                <%= record?.fineFilter7to10 || "NA" %>
               </td>
               <td>
-                <%= record?.fineFilter8to20 || "Not Applicable" %>
+                <%= record?.fineFilter8to20 || "NA" %>
               </td>
               <td>
-                <%= record?.done_by || "Not Applicable" %>
+                <%= record?.done_by || "NA" %>
               </td>
               <td>
-                <%= record?.reviewed_by || "Not Applicable" %>
+                <%= record?.reviewed_by || "NA" %>
               </td>
               <td>
-                <%= record?.remarks || "Not Applicable" %>
+                <%= record?.remarks || "NA" %>
               </td>
             </tr>
             <% }) %>
@@ -291,7 +291,7 @@
                       View File
                     </a>
                     <% } else { %>
-                      Not Applicable
+                      NA
                       <% } %>
                 </td>
               </tr>
@@ -299,7 +299,7 @@
               <tr>
                 <th>Additional Info</th>
                 <td>
-                  <%= reportData?.additionalInfo || "Not Applicable" %>
+                  <%= reportData?.additionalInfo || "NA" %>
                 </td>
               </tr>
             </table>

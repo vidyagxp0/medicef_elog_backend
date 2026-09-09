@@ -124,6 +124,10 @@ const DrainCleaningForm = sequelize.define("DrainCleaningForm", {
   room_id: {
     type: DataTypes.STRING,
   },
+  fiscal_year: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 workflow_state_id: {
   type: DataTypes.INTEGER,
   defaultValue: 1,

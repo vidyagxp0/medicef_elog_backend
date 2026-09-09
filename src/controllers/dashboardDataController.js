@@ -437,6 +437,9 @@ exports.GetAllEffectiveElogs = async (req, res) => {
       if (config && config.type === "form") {
         formAttributes.push(config.field);
       }
+      if (FormModel.rawAttributes && FormModel.rawAttributes.fiscal_year) {
+        formAttributes.push("fiscal_year");
+      }
 
       const records = await FormModel.findAll({
         attributes: formAttributes,
@@ -479,6 +482,7 @@ exports.GetAllEffectiveElogs = async (req, res) => {
           status: record.status,
           departmentName: record.departmentName,
           area_name: record.area_name,
+          fiscal_year: record.fiscal_year || null,
           equipmentID: equipmentVal,
           instrumentID: instrumentVal,
           workflow_state: record.workflow_state

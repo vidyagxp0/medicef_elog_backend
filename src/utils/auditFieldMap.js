@@ -4,6 +4,7 @@ module.exports = {
   departmentName: "Department",
   compression_area: "Compression Area",
   area_name: "Area Name",
+  fiscal_year: "Fiscal Year",
   instrument_id_no: "Instrument ID No",
 
   initiatorComment: "Initiator Comment",

@@ -44,7 +44,7 @@
             padding: 8px;
             /* text-align: left; */
             font-size: 13px;
-            vertical-align: top;
+            vertical-align: middle;
         }
 
         th {
@@ -96,7 +96,7 @@
 <body>
 
     <% const formatDateTime=(date)=> {
-        if (!date) return "Not Applicable";
+        if (!date) return "NA";
         return new Date(date).toLocaleString("en-IN", {
         day: "2-digit",
         month: "2-digit",
@@ -108,7 +108,7 @@
 }).replace(/\//g, "-");        };
 
         const formatDateOnly = (date) => {
-        if (!date) return "Not Applicable";
+        if (!date) return "NA";
         return new Date(date).toLocaleDateString("en-IN", {
         day: "2-digit",
         month: "2-digit",
@@ -130,7 +130,7 @@
                 <tr>
                     <td class="label">Initiator name</td>
                     <td class="value">
-                        <%= reportData?.initiator_name || "Not Applicable" %>
+                        <%= reportData?.initiator_name || "NA" %>
                     </td>
                 </tr>
                 <tr>
@@ -142,31 +142,31 @@
                 <tr>
                     <td class="label">Area Name</td>
                     <td class="value">
-                        <%= reportData?.area_name || "Not Applicable" %>
+                        <%= reportData?.area_name || "NA" %>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Room Id</td>
                     <td class="value">
-                        <%= reportData?.room_id || "Not Applicable" %>
+                        <%= reportData?.room_id || "NA" %>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Instrument ID No</td>
                     <td class="value">
-                        <%= reportData?.instrument_id_no || "Not Applicable" %>
+                        <%= reportData?.instrument_id_no || "NA" %>
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Department</td>
                     <td class="value">
-                        <%= reportData?.departmentName || "Not Applicable" %>
+                        <%= reportData?.departmentName || "NA" %>
                     </td>
                 </tr>
                 <!-- <tr>
                     <td class="label">Approver</td>
                     <td class="value">
-                        <%= reportData?.approver?.name || "Not Applicable" %>
+                        <%= reportData?.approver?.name || "NA" %>
                     </td>
                 </tr>
                 <tr>
@@ -175,14 +175,14 @@
                         <% if (Array.isArray(reportData?.reviewerData) && reportData.reviewerData.length) { %>
                             <%= reportData.reviewerData.map(r=> r.name).join(', ') %>
                                 <% } else { %>
-                                    Not Applicable
+                                    NA
                                     <% } %>
                     </td>
                 </tr> -->
                 <tr>
                     <td class="label">Description</td>
                     <td class="value">
-                        <%= reportData?.description || "Not Applicable" %>
+                        <%= reportData?.description || "NA" %>
                     </td>
                 </tr>
             </tbody>
@@ -280,12 +280,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th rowspan="2">S.No</th>
+                        <th rowspan="2">S.No.</th>
                         <th rowspan="2">Unique ID</th>
-                        <th rowspan="2">Date</th>
-                        <th rowspan="2">Time</th>
-                        <th colspan="2">Temperature Record</th>
-                        <th rowspan="2">Humidity Record</th>
+                        <th rowspan="2" style="width: 12%;">Date</th>
+                        <th rowspan="2" style="width: 10%;">Time</th>
+                        <th colspan="2" style="text-align: center; width: 10%;">Temperature Record</th>
+                        <th rowspan="2" style="width: 10%;">Humidity Record</th>
                         <th rowspan="2">Done By</th>
                         <th rowspan="2">Checked By</th>
                         <!-- <th>Supporting Docs</th> -->
@@ -304,13 +304,13 @@
                                 <%= index + 1 %>
                             </td>
                             <td >
-                                <%= record?.unique_id || "Not Applicable" %>
+                                <%= record?.unique_id || "NA" %>
                             </td>
                             <td style="word-break: break-word;">
-                                <%= formatDateOnly(record?.date) || "Not Applicable" %>
+                                <%= formatDateOnly(record?.date) || "NA" %>
                             </td>
                             <td style="word-break: break-word;">
-                                <%= record?.time || "Not Applicable" %>
+                                <%= record?.time || "NA" %>
                             </td>
                             <% const minValue=parseFloat(record?.min_temprature_record); 
                             const minLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceCriteria); 
@@ -328,7 +328,7 @@
                                 %>
 
                                 <td style="word-break: break-word;" class="<%= colorClass %>">
-                                    <%= record?.min_temprature_record || "Not Applicable" %>
+                                    <%= record?.min_temprature_record || "NA" %>
                                 </td>
                             <% const maxValue=parseFloat(record?.max_temprature_record); 
                             const maxLower=parseFloat(reportData?.acceptanceTempData?.lowerAcceptanceCriteria); 
@@ -345,7 +345,7 @@
                                  }
                                 %>                                
                                 <td style="word-break: break-word;" class="<%= maxColorClass %>">
-                                    <%= record?.max_temprature_record || "Not Applicable" %>
+                                    <%= record?.max_temprature_record || "NA" %>
                                 </td>
 
                             <% const humidityValue = parseFloat(record?.humidity_record); 
@@ -363,23 +363,23 @@
                                  }
                                 %>                                    
                                 <td style="word-break: break-word;" class="<%= humidityColorClass %>">
-                                    <%= record?.humidity_record || "Not Applicable" %>
+                                    <%= record?.humidity_record || "NA" %>
                                 </td>
                                 <td style="word-break: break-word;">
-                                    <%= record?.done_by || "Not Applicable" %>
+                                    <%= record?.done_by || "NA" %>
                                 </td>
                                 <td style="word-break: break-word;">
-                                    <%= record?.reviewed_by || "Not Applicable" %>
+                                    <%= record?.reviewed_by || "NA" %>
                                 </td>
                                 <!-- <td>
                                     <% if (record?.supporting_docs) { %>
                                         <a href="<%= record.supporting_docs %>" target="_blank">View File</a>
                                     <% } else { %>
-                                        Not Applicable
+                                        NA
                                     <% } %>
                                     </td> -->
                                 <td style="word-break: break-word;">
-                                    <%= record?.remarks || "Not Applicable" %>
+                                    <%= record?.remarks || "NA" %>
                                 </td>
                         </tr>
                         <% }) %>
@@ -399,14 +399,14 @@
                                     <% if (reportData?.additionalAttachment) { %>
                                         <a href="<%= reportData.additionalAttachment %>" target="_blank">View File</a>
                                         <% } else { %>
-                                            Not Applicable
+                                            NA
                                             <% } %>
                                 </td>
                             </tr>
                             <tr>
                                 <th>Additional Info</th>
                                 <td>
-                                    <%= reportData?.additionalInfo || "Not Applicable" %>
+                                    <%= reportData?.additionalInfo || "NA" %>
                                 </td>
                             </tr>
                         </table>

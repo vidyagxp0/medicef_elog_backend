@@ -84,6 +84,18 @@ const DrainCleaningRecord = sequelize.define("DrainCleaningRecord", {
   day: {
     type: DataTypes.INTEGER,
   },
+  month: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  year: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  month_name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   role: {
     type: DataTypes.STRING,
   },
