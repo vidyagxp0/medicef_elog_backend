@@ -5,16 +5,16 @@
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
-      font-size: 13.5px;
+      font-size: 13px;
       color: #000;
-      margin: 25px;
-      line-height: 1.6;
+      margin: 15px;
+      line-height: 1.5;
     }
 
     h1 {
       text-align: center;
       font-size: 20px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       letter-spacing: 0.5px;
     }
 
@@ -29,6 +29,7 @@
       margin-bottom: 8px;
       page-break-after: avoid;
     }
+
     h3.subheading {
       display: flex;
       align-items: center;
@@ -41,20 +42,19 @@
       page-break-after: avoid;
     }
 
+    /* GENERIC / DETAILS TABLE */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      /* border: 1px solid #000; */
       page-break-inside: auto;
     }
 
     th,
     td {
       border: 1px solid #000;
-      padding: 8px;
-      /* text-align: left; */
-      font-size: 13px;
+      padding: 6px;
+      font-size: 12px;
       vertical-align: top;
     }
 
@@ -73,7 +73,7 @@
       page-break-inside: avoid;
     }
 
-    /*  DETAILS TABLE */
+    /* DETAILS TABLE */
     .details-table td.label {
       width: 35%;
       font-weight: 600;
@@ -82,6 +82,122 @@
 
     .details-table td.value {
       width: 65%;
+    }
+
+    /* RECORDS TABLE */
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      page-break-inside: auto;
+      table-layout: fixed;
+    }
+
+    .records-table th,
+    .records-table td {
+      border: 1px solid #000;
+      padding: 4px 3px;
+      font-size: 9.5px;
+      line-height: 1.3;
+      vertical-align: middle;
+      box-sizing: border-box;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      font-weight: normal;
+    }
+
+    .records-table th {
+      background: #f8f8f8;
+      font-weight: 600;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 9.5px;
+    }
+
+    .col-sno {
+      width: 3%;
+      text-align: center;
+    }
+
+    .col-uid {
+      width: 5.2%;
+      text-align: center;
+    }
+
+    .col-datetime {
+      width: 6.8%;
+      text-align: center;
+    }
+
+    .col-material {
+      width: 11%;
+      text-align: left;
+    }
+
+    .col-qty {
+      width: 15%;
+      text-align: left;
+    }
+
+    .col-loadno {
+      width: 7%;
+      text-align: center;
+    }
+
+    .col-cycleno {
+      width: 4%;
+      text-align: center;
+    }
+
+    .col-astart {
+      width: 5.5%;
+      text-align: center;
+    }
+
+    .col-aend {
+      width: 5.5%;
+      text-align: center;
+    }
+
+    .col-hstart {
+      width: 6.2%;
+      text-align: center;
+    }
+
+    .col-holdtime {
+      width: 4%;
+      text-align: center;
+    }
+
+    .col-hend {
+      width: 6.2%;
+      text-align: center;
+    }
+
+    .col-temp {
+      width: 5.2%;
+      text-align: center;
+    }
+
+    .col-pressure {
+      width: 4.6%;
+      text-align: center;
+    }
+
+    .col-doneby {
+      width: 5%;
+      text-align: center;
+    }
+
+    .col-checkedby {
+      width: 5.7%;
+      text-align: center;
+    }
+
+    .col-remark {
+      width: 10.1%;
+      text-align: left;
     }
 
     .green {
@@ -107,11 +223,16 @@
 
 <body>
 
-    <% 
+<% 
 const formatDateTime = (date) => {
-  if (!date) return "Not Applicable";
+  if (!date) return "NA";
+
+  if (typeof date === "string" && /^\d{2}-\d{2}-\d{4}/.test(date)) {
+    return date;
+  }
 
   const d = new Date(date);
+  if (isNaN(d.getTime())) return date;
 
   const formatted = d.toLocaleString("en-IN", {
     day: "2-digit",
@@ -120,13 +241,12 @@ const formatDateTime = (date) => {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
-    hour12: true   
+    hour12: false,   
   });
 
   return formatted.replace(/\//g, "-");
 };
 %>
-
 
     <!-- ================= DETAILS ================= -->
     <h2 class="heading">Details</h2>
@@ -142,19 +262,19 @@ const formatDateTime = (date) => {
         <tr>
           <td class="label">Area Name</td>
           <td class="value">
-            <%= reportData?.area_name || "Not Applicable" %>
+            <%= reportData?.area_name || "NA" %>
           </td>
         </tr>
         <tr>
           <td class="label">Room ID</td>
           <td class="value">
-            <%= reportData?.room_id || "Not Applicable" %>
+            <%= reportData?.room_id || "NA" %>
           </td>
         </tr>
         <tr>
           <td class="label">Department</td>
           <td class="value">
-            <%= reportData?.departmentName || "Not Applicable" %>
+            <%= reportData?.departmentName || "NA" %>
           </td>
         </tr>
       </tbody>
@@ -162,148 +282,146 @@ const formatDateTime = (date) => {
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Autoclave Sterelization Records</h2>
-        <h3 class="subheading">Part-I</h3>
 
-    <% if (reportData.AutoclaveSterelizationRecords && reportData.AutoclaveSterelizationRecords.length> 0) { %>
-      <table>
+    <% if (reportData.AutoclaveSterelizationRecords && reportData.AutoclaveSterelizationRecords.length > 0) { %>
+
+      <table class="records-table">
         <thead>
           <tr>
-            <th>S. No.</th>
-            <th>Unique ID</th>
-            <th>Date /Time</th>
-            <th>Material Name</th>
-            <th>Quantity</th>
-            <th>Autoclave Load No.</th>
-            <th>Cycle No.</th>
-            <th>Autoclave Start time</th>
+            <th class="col-sno">S. No.</th>
+            <th class="col-uid">Unique ID</th>
+            <th class="col-datetime">Date /Time</th>
+            <th class="col-material">Material Name</th>
+            <th class="col-qty">Quantity</th>
+            <th class="col-loadno">Autoclave Load No.</th>
+            <th class="col-cycleno">Cycle No.</th>
+            <th class="col-astart">Autoclave Start time</th>
+            <th class="col-aend">Autoclave End time</th>
+            <th class="col-hstart">Sterelization Hold Start time</th>
+            <th class="col-holdtime">Cycle Hold time</th>
+            <th class="col-hend">Sterelization Hold End time</th>
+            <th class="col-temp">Temperature</th>
+            <th class="col-pressure">Pressure</th>
+            <th class="col-doneby">Done By</th>
+            <th class="col-checkedby">Checked By</th>
+            <th class="col-remark">Remark</th>
           </tr>
         </thead>
-        <tbody>
 
-          <% reportData.AutoclaveSterelizationRecords.forEach((record, index)=> { %>
+        <tbody>
+          <% reportData.AutoclaveSterelizationRecords.forEach((record, index) => { %>
             <tr>
-              <td>
+              <td class="col-sno">
                 <%= index + 1 %>
               </td>
-              <td>
-                <%= record?.unique_id || "Not Applicable" %>
+
+              <td class="col-uid">
+                <%= record?.unique_id || "NA" %>
               </td>
-              <td>
-                <%= formatDateTime(record?.date) || "Not Applicable" %>
+
+              <td class="col-datetime">
+                <%= formatDateTime(record?.date) || "NA" %>
               </td>
-              <td>
-                <%= record?.material_name || "Not Applicable" %>
+
+              <td class="col-material">
+                <%= record?.material_name || "NA" %>
               </td>
-              <td>
-                <%= record?.quantity || "Not Applicable" %>
+
+              <td class="col-qty">
+                <%= record?.quantity || "NA" %>
               </td>
-              <td>
-                <%= record?.autoclave_load_no || "Not Applicable" %>
+
+              <td class="col-loadno">
+                <%= record?.autoclave_load_no || "NA" %>
               </td>
-              <td>
-                <%= record?.cycle_no || "Not Applicable" %>
+
+              <td class="col-cycleno">
+                <%= record?.cycle_no || "NA" %>
               </td>
-              <td>
-                <%= record?.autoclave_start_time || "Not Applicable" %>
+
+              <td class="col-astart">
+                <%= record?.autoclave_start_time || "NA" %>
+              </td>
+
+              <td class="col-aend">
+                <%= record?.autoclave_end_time || "NA" %>
+              </td>
+
+              <td class="col-hstart">
+                <%= record?.sterilization_hold_start_time || "NA" %>
+              </td>
+
+              <td class="col-holdtime">
+                <%= record?.cycle_hold_time || "NA" %>
+              </td>
+
+              <td class="col-hend">
+                <%= record?.sterilization_hold_end_time || "NA" %>
+              </td>
+
+              <td class="col-temp">
+                <%= record?.temperature || "NA" %>
+              </td>
+
+              <td class="col-pressure">
+                <%= record?.pressure || "NA" %>
+              </td>
+
+              <td class="col-doneby">
+                <%= record?.done_by || "NA" %>
+              </td>
+
+              <td class="col-checkedby">
+                <% 
+                  const reviewerText = record?.reviewed_by || record?.checked_by || "NA";
+                  const reviewerParts = reviewerText !== "NA" && reviewerText.includes(" | ") ? reviewerText.split(" | ") : [reviewerText];
+                %>
+                <% reviewerParts.forEach((part) => { %>
+                  <div><%= part %></div>
+                <% }) %>
+              </td>
+
+              <td class="col-remark">
+                <%= record?.remarks || "NA" %>
               </td>
             </tr>
-            <% }) %>
+          <% }) %>
         </tbody>
       </table>
-      
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
 
-      <h3 class="subheading">Part-II</h3>
+    <% } else { %>
 
-  <% if (reportData.AutoclaveSterelizationRecords && reportData.AutoclaveSterelizationRecords.length> 0) { %>
+      <p>No Records Found.</p>
+
+    <% } %>
+
+    <!-- ================= ADDITIONAL ================= -->
+    <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
+
+      <h2 class="heading">Additional</h2>
       <table>
-        <thead>
-          <tr>
-            <th>S. No.</th>
-            <th>Autoclave End time</th>
-            <th>Sterelization Hold Start time</th>
-            <th>Cycle Hold time</th>
-            <th>Sterelization Hold End time</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Remark</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <% reportData.AutoclaveSterelizationRecords.forEach((record, index)=> { %>
-            <tr>
-              <td>
-                <%= index + 1 %>
-              </td>
-              <td>
-                <%= record?.autoclave_end_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.sterilization_hold_start_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.cycle_hold_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.sterilization_hold_end_time || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.temperature || "Not Applicable" %>
-              </td>
-              <td>
-                <%= record?.pressure || "Not Applicable" %>
-              </td>
-                <td>
-                  <%= record?.done_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "Not Applicable" %>
-                </td>
-                <td>
-                  <%= record?.remarks || "Not Applicable" %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-      </table>
-      
-      <% } else { %>
-        <p>No Records Found.</p>
-        <% } %>
-
-          <!-- ================= ADDITIONAL ================= -->
-          <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
-
-            <h2 class="heading">Additional</h2>
-            <table>
-              <tr>
-                <th>Additional Attachment</th>
-                <td>
-                  <% if (reportData?.additionalAttachment) { %>
-                    <a href="<%= reportData.additionalAttachment %>" target="_blank">
-                      View File
-                    </a>
-                    <% } else { %>
-                      Not Applicable
-                      <% } %>
-                </td>
-              </tr>
-
-              <tr>
-                <th>Additional Info</th>
-                <td>
-                  <%= reportData?.additionalInfo || "Not Applicable" %>
-                </td>
-              </tr>
-            </table>
-
+        <tr>
+          <th>Additional Attachment</th>
+          <td>
+            <% if (reportData?.additionalAttachment) { %>
+              <a href="<%= reportData.additionalAttachment %>" target="_blank">
+                View File
+              </a>
+            <% } else { %>
+              NA
             <% } %>
+          </td>
+        </tr>
 
+        <tr>
+          <th>Additional Info</th>
+          <td>
+            <%= reportData?.additionalInfo || "NA" %>
+          </td>
+        </tr>
+      </table>
+
+    <% } %>
 
 </body>
 

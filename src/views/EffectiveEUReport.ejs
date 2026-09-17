@@ -7,14 +7,14 @@
       font-family: "Segoe UI", Arial, sans-serif;
       font-size: 13.5px;
       color: #000;
-      margin: 25px;
-      line-height: 1.6;
+      margin: 20px;
+      line-height: 1.5;
     }
 
     h1 {
       text-align: center;
       font-size: 20px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       letter-spacing: 0.5px;
     }
 
@@ -29,6 +29,7 @@
       margin-bottom: 8px;
       page-break-after: avoid;
     }
+
     h3.subheading {
       display: flex;
       align-items: center;
@@ -45,16 +46,14 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      /* border: 1px solid #000; */
       page-break-inside: auto;
     }
 
     th,
     td {
       border: 1px solid #000;
-      padding: 8px;
-      /* text-align: left; */
-      font-size: 13px;
+      padding: 6px;
+      font-size: 12px;
       vertical-align: top;
     }
 
@@ -73,7 +72,7 @@
       page-break-inside: avoid;
     }
 
-    /*  DETAILS TABLE */
+    /* DETAILS TABLE */
     .details-table td.label {
       width: 35%;
       font-weight: 600;
@@ -82,6 +81,92 @@
 
     .details-table td.value {
       width: 65%;
+    }
+
+    /* RECORDS TABLE */
+    .records-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      page-break-inside: auto;
+    }
+
+    .records-table th,
+    .records-table td {
+      border: 1px solid #000;
+      padding: 6px 4px;
+      font-size: 11px;
+      vertical-align: middle;
+      box-sizing: border-box;
+    }
+
+    .records-table th {
+      background: #f8f8f8;
+      font-weight: 600;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .col-sno {
+      width: 35px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .col-uid {
+      width: 70px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .col-date {
+      width: 75px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .col-product {
+      min-width: 135px;
+      white-space: nowrap;
+      text-align: left;
+    }
+
+    .col-batch {
+      min-width: 85px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .col-activity {
+      min-width: 80px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .col-time {
+      width: 60px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .col-done {
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .col-checked {
+      min-width: 90px;
+      text-align: center;
+    }
+
+    .col-verified {
+      min-width: 90px;
+      text-align: center;
+    }
+
+    .col-remark {
+      min-width: 90px;
+      text-align: left;
     }
 
     .green {
@@ -134,155 +219,169 @@
     <table class="details-table">
       <tbody>
         <tr>
-            <tr>
-                <td class="label">Record Id</td>
-                <td class="value">
-                    MED/EUR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Initiator name</td>
-                <td class="value">
-                    <%= reportData?.initiator_name || "NA" %>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Initiation Date</td>
-                <td class="value">
-                    <%= formatDateTime(reportData?.date_of_initiation) %>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Area Name</td>
-                <td class="value">
-                    <%= reportData?.area_name || "NA" %>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Room Id</td>
-                <td class="value">
-                    <%= reportData?.room_id || "NA" %>
-                </td>
-            </tr>
-               <tr>
-                <td class="label">Equipment Name</td>
-                <td class="value">
-                    <%= reportData?.equipmentName || "NA" %>
-                </td>
-            </tr>
-            <tr>
-                <td class="label">Equipment Id</td>
-                <td class="value">
-                    <%= reportData?.equipmentID || "NA" %>
-                </td>
-            </tr>
-         
-            <tr>
-                <td class="label">Department</td>
-                <td class="value">
-                    <%= reportData?.departmentName || "NA" %>
-                </td>
-            </tr>
+          <td class="label">Record Id</td>
+          <td class="value">
+            MED/EUR/<%= String(reportData?.form_id || 0).padStart(4, '0' ) %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Initiator name</td>
+          <td class="value">
+            <%= reportData?.initiator_name || "NA" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Initiation Date</td>
+          <td class="value">
+            <%= formatDateTime(reportData?.date_of_initiation) %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Area Name</td>
+          <td class="value">
+            <%= reportData?.area_name || "NA" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Room Id</td>
+          <td class="value">
+            <%= reportData?.room_id || "NA" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Equipment Name</td>
+          <td class="value">
+            <%= reportData?.equipmentName || "NA" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Equipment Id</td>
+          <td class="value">
+            <%= reportData?.equipmentID || "NA" %>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Department</td>
+          <td class="value">
+            <%= reportData?.departmentName || "NA" %>
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Equipment Usage Records</h2>
-     <!-- <h3 class="subheading">Part-I</h3> -->
     <% if (reportData.EquipmentUsageRecords && reportData.EquipmentUsageRecords.length> 0) { %>
-      <table>
+      <table class="records-table">
         <thead>
           <tr>
-            <th>Sr. No.</th>
-            <th>Unique ID</th>
-            <th style="width: 10%;">Date</th>
-            <th>Product Name</th>
-            <th>Batch No.</th>
-            <th>Activity Type</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Done By</th>
-            <th>Checked By</th>
-            <th>Verified By</th>
-            <th>Remark</th>
+            <th class="col-sno">Sr. No.</th>
+            <th class="col-uid">Unique ID</th>
+            <th class="col-date">Date</th>
+            <th class="col-product">Product Name</th>
+            <th class="col-batch">Batch No.</th>
+            <th class="col-activity">Activity Type</th>
+            <th class="col-time">Start Time</th>
+            <th class="col-time">End Time</th>
+            <th class="col-done">Done By</th>
+            <th class="col-checked">Checked By</th>
+            <th class="col-verified">Verified By</th>
+            <th class="col-remark">Remark</th>
           </tr>
         </thead>
         <tbody>
 
           <% reportData.EquipmentUsageRecords.forEach((record, index)=> { %>
             <tr>
-              <td>
+              <td class="col-sno">
                 <%= index + 1 %>
               </td>
-              <td>
+              <td class="col-uid">
                 <%= record?.unique_id || "NA" %>
               </td>
-              <td>
+              <td class="col-date">
                 <%= formatDateOnly(record?.date) || "NA" %>
               </td>
-                <td>
-                  <%= record?.productName || "NA" %>
-                </td>
-                <td>
-                  <%= record?.batchNo || "NA" %>
-                </td>
-                <td>
-                  <%= record?.activityType || "NA" %>
-                </td>
-                 <td>
-                  <%= record?.startTime || "NA" %>
-                </td>
-                <td>
-                  <%= record?.endTime || "NA" %>
-                </td>
-                <td>
-                  <%= record?.done_by || "NA" %>
-                </td>
-                <td>
-                  <%= record?.reviewed_by || "NA" %>
-                </td>
-                <td>
-                  <%= record?.verified_by || "NA" %>
-                </td>
-                <td>
-                  <%= record?.remarks || "NA" %>
-                </td>
+              <td class="col-product">
+                <%= record?.productName || "NA" %>
+              </td>
+              <td class="col-batch">
+                <%= record?.batchNo || "NA" %>
+              </td>
+              <td class="col-activity">
+                <%= record?.activityType || "NA" %>
+              </td>
+              <td class="col-time">
+                <%= record?.startTime || "NA" %>
+              </td>
+              <td class="col-time">
+                <%= record?.endTime || "NA" %>
+              </td>
+              <td class="col-done">
+                <%= record?.done_by || "NA" %>
+              </td>
+              <td class="col-checked">
+                <% if (record?.reviewed_by) { 
+                     const parts = record.reviewed_by.split(" | ");
+                %>
+                  <div><%= parts[0] %></div>
+                  <% if (parts[1]) { %>
+                    <div><%= parts[1] %></div>
+                  <% } %>
+                <% } else { %>
+                  NA
+                <% } %>
+              </td>
+              <td class="col-verified">
+                <% if (record?.verified_by) { 
+                     const parts = record.verified_by.split(" | ");
+                %>
+                  <div><%= parts[0] %></div>
+                  <% if (parts[1]) { %>
+                    <div><%= parts[1] %></div>
+                  <% } %>
+                <% } else { %>
+                  NA
+                <% } %>
+              </td>
+              <td class="col-remark">
+                <%= record?.remarks || "NA" %>
+              </td>
             </tr>
             <% }) %>
         </tbody>
       </table>
       <% } else { %>
         <p>No Records Found.</p>
-        <% } %>
+      <% } %>
 
-          <!-- ================= ADDITIONAL ================= -->
-          <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
+      <!-- ================= ADDITIONAL ================= -->
+      <% if ( reportData?.additionalAttachment || reportData?.additionalInfo ) { %>
 
-            <h2 class="heading">Additional</h2>
-            <table>
-              <tr>
-                <th>Additional Attachment</th>
-                <td>
-                  <% if (reportData?.additionalAttachment) { %>
-                    <a href="<%= reportData.additionalAttachment %>" target="_blank">
-                      View File
-                    </a>
-                    <% } else { %>
-                      NA
-                      <% } %>
-                </td>
-              </tr>
+        <h2 class="heading">Additional</h2>
+        <table>
+          <tr>
+            <th>Additional Attachment</th>
+            <td>
+              <% if (reportData?.additionalAttachment) { %>
+                <a href="<%= reportData.additionalAttachment %>" target="_blank">
+                  View File
+                </a>
+              <% } else { %>
+                NA
+              <% } %>
+            </td>
+          </tr>
 
-              <tr>
-                <th>Additional Info</th>
-                <td>
-                  <%= reportData?.additionalInfo || "NA" %>
-                </td>
-              </tr>
-            </table>
+          <tr>
+            <th>Additional Info</th>
+            <td>
+              <%= reportData?.additionalInfo || "NA" %>
+            </td>
+          </tr>
+        </table>
 
-            <% } %>
-
+      <% } %>
 
 </body>
 
