@@ -74,6 +74,10 @@ const DispensingBoothForm = sequelize.define("DispensingBoothForm", {
   dispensingBoothID: {
     type: DataTypes.STRING,
   },
+  limitData: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
   reviewer_id: {
     type: DataTypes.JSON,
     allowNull: false,

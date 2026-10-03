@@ -98,6 +98,24 @@ const DailyVerificationForm = sequelize.define("DailyVerificationForm", {
   standardWeightW3: {
     type: DataTypes.STRING,
   },
+  standardWeightW1Min: {
+    type: DataTypes.STRING,
+  },
+  standardWeightW1Max: {
+    type: DataTypes.STRING,
+  },
+  standardWeightW2Min: {
+    type: DataTypes.STRING,
+  },
+  standardWeightW2Max: {
+    type: DataTypes.STRING,
+  },
+  standardWeightW3Min: {
+    type: DataTypes.STRING,
+  },
+  standardWeightW3Max: {
+    type: DataTypes.STRING,
+  },
   departmentName: {
     type: DataTypes.STRING,
   },

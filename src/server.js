@@ -7,6 +7,7 @@ const path = require("path");
 const helmet = require("helmet");
 
 const { sequelize, connectToDB } = require("./config/db");
+const { DataTypes } = require("sequelize");
 const initWorkflowTransitions = require("./models/script/initWorkflowTransitions");
 const inituserRolesSync  = require("./models/script/userRolesSync");
 
@@ -170,6 +171,46 @@ const ensureDrainCleaningColumns = async () => {
   }
 };
 
+const ensureDispensingBoothLimitDataColumn = async () => {
+  const queryInterface = sequelize.getQueryInterface();
+  const formDescription = await queryInterface.describeTable(
+    "DispensingBoothForms",
+  );
+
+  if (!formDescription.limitData) {
+    await queryInterface.addColumn("DispensingBoothForms", "limitData", {
+      type: DataTypes.JSON,
+      allowNull: true,
+    });
+    console.log("Added limitData column to DispensingBoothForms");
+  }
+};
+
+const ensureDailyVerificationStandardWeightLimitColumns = async () => {
+  const queryInterface = sequelize.getQueryInterface();
+  const formDescription = await queryInterface.describeTable(
+    "DailyVerificationForms",
+  );
+  const columns = [
+    "standardWeightW1Min",
+    "standardWeightW1Max",
+    "standardWeightW2Min",
+    "standardWeightW2Max",
+    "standardWeightW3Min",
+    "standardWeightW3Max",
+  ];
+
+  for (const column of columns) {
+    if (!formDescription[column]) {
+      await queryInterface.addColumn("DailyVerificationForms", column, {
+        type: DataTypes.STRING,
+        allowNull: true,
+      });
+      console.log(`Added ${column} column to DailyVerificationForms`);
+    }
+  }
+};
+
 // ------------------ SERVER START ------------------
 const startServer = async () => {
   try {
@@ -179,6 +220,8 @@ const startServer = async () => {
     await sequelize.sync({ alter: false });
     console.log("Tables synchronized");
 
+    await ensureDispensingBoothLimitDataColumn();
+    await ensureDailyVerificationStandardWeightLimitColumns();
     await ensureDrainCleaningColumns();
     await initWorkflowTransitions();
     await inituserRolesSync()

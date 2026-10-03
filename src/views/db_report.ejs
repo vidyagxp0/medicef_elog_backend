@@ -192,6 +192,35 @@
                 </tbody>
             </table>
 
+            <% if (reportData?.limitData) { %>
+                <h2 class="heading">Dispensing Booth Filter Limits</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Filter</th>
+                            <th>Lower Limit</th>
+                            <th>Upper Limit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Pre Filter</td>
+                            <td><%= reportData?.limitData?.preFilterLowerLimit || "NA" %></td>
+                            <td><%= reportData?.limitData?.preFilterUpperLimit || "NA" %></td>
+                        </tr>
+                        <tr>
+                            <td>Intermediate Filter</td>
+                            <td><%= reportData?.limitData?.intermediateFilterLowerLimit || "NA" %></td>
+                            <td><%= reportData?.limitData?.intermediateFilterUpperLimit || "NA" %></td>
+                        </tr>
+                        <tr>
+                            <td>HEPA Filter</td>
+                            <td><%= reportData?.limitData?.hepaFilterLowerLimit || "NA" %></td>
+                            <td><%= reportData?.limitData?.hepaFilterUpperLimit || "NA" %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <% } %>
 
             <% if ( reportData?.initiatorName || reportData?.initiatorComment || reportData?.initiatorAttachment ||
                 reportData?.initiatorDate ) { %>

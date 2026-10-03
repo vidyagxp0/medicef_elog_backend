@@ -50,6 +50,7 @@ exports.InsertDispensingBooth = async (req, res) => {
     departmentName,
     dispensingBoothArea,
     dispensingBoothID,
+    limitData,
     area_name,
     room_id,
     reviewer_id,
@@ -62,6 +63,8 @@ exports.InsertDispensingBooth = async (req, res) => {
     initiatorDeclaration,
     additionalInfo,
   } = req.body;
+
+  const normalizedLimitData = parseIfString(limitData, null);
 
   if (!description) {
     return res
@@ -160,6 +163,7 @@ exports.InsertDispensingBooth = async (req, res) => {
         departmentName: departmentName,
         dispensingBoothArea: dispensingBoothArea,
         dispensingBoothID: dispensingBoothID,
+        limitData: normalizedLimitData,
         reviewerData: reviewerData,
         reviewer_id: reviewer_id,
         approver_id: approver_id,
@@ -183,6 +187,7 @@ exports.InsertDispensingBooth = async (req, res) => {
       departmentName,
       dispensingBoothArea,
       dispensingBoothID,
+      limitData: normalizedLimitData,
       area_name,
       room_id,
       reviewer: reviewerNames,
@@ -338,6 +343,7 @@ exports.EditDispensingBooth = async (req, res) => {
     departmentName,
     dispensingBoothArea,
     dispensingBoothID,
+    limitData,
     area_name,
     room_id,
     reviewerData,
@@ -349,6 +355,8 @@ exports.EditDispensingBooth = async (req, res) => {
     initiatorComment,
     additionalInfo,
   } = req.body;
+
+  const normalizedLimitData = parseIfString(limitData, null);
 
   const { form_id } = req.params;
 
@@ -456,6 +464,8 @@ exports.EditDispensingBooth = async (req, res) => {
       departmentName,
       dispensingBoothArea,
       dispensingBoothID,
+      limitData:
+        limitData === undefined ? undefined : normalizedLimitData,
       initiatorComment,
       area_name,
       room_id,
@@ -548,7 +558,10 @@ exports.EditDispensingBooth = async (req, res) => {
     }
 
     for (const [field, newValue] of Object.entries(fields)) {
-      const oldValue = form[field];
+      const oldValue =
+        field === "limitData"
+          ? parseIfString(form[field], null)
+          : form[field];
 
       if (newValue !== undefined && hasChanged(oldValue, newValue)) {
         auditTrailEntries.push({
@@ -572,6 +585,8 @@ exports.EditDispensingBooth = async (req, res) => {
         departmentName,
         dispensingBoothArea,
         dispensingBoothID,
+        limitData:
+          limitData === undefined ? form.limitData : normalizedLimitData,
         area_name,
         room_id,
         reviewer_id,

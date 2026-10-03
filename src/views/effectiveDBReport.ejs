@@ -110,6 +110,13 @@
     month: "2-digit",
     year: "numeric",
     }).replace(/\//g, "-");    };
+
+    const formatFilterLimitRange = (lowerLimit, upperLimit) => {
+      const hasLowerLimit = lowerLimit !== undefined && lowerLimit !== null && lowerLimit !== "";
+      const hasUpperLimit = upperLimit !== undefined && upperLimit !== null && upperLimit !== "";
+      if (!hasLowerLimit && !hasUpperLimit) return "";
+      return `[${hasLowerLimit ? lowerLimit : ""}-${hasUpperLimit ? upperLimit : ""}]`;
+    };
     %>
 
     <!-- ================= DETAILS ================= -->
@@ -156,6 +163,36 @@
       </tbody>
     </table>
 
+    <% if (reportData?.limitData) { %>
+      <h2 class="heading">Dispensing Booth Filter Limits</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Filter</th>
+            <th>Lower Limit</th>
+            <th>Upper Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pre Filter</td>
+            <td><%= reportData?.limitData?.preFilterLowerLimit || "NA" %></td>
+            <td><%= reportData?.limitData?.preFilterUpperLimit || "NA" %></td>
+          </tr>
+          <tr>
+            <td>Intermediate Filter</td>
+            <td><%= reportData?.limitData?.intermediateFilterLowerLimit || "NA" %></td>
+            <td><%= reportData?.limitData?.intermediateFilterUpperLimit || "NA" %></td>
+          </tr>
+          <tr>
+            <td>HEPA Filter</td>
+            <td><%= reportData?.limitData?.hepaFilterLowerLimit || "NA" %></td>
+            <td><%= reportData?.limitData?.hepaFilterUpperLimit || "NA" %></td>
+          </tr>
+        </tbody>
+      </table>
+    <% } %>
+
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Dispensing Booth Activity Records</h2>
         <h3 class="subheading">Part-I</h3>
@@ -176,9 +213,9 @@
 
           </tr>
           <tr>  
-            <th>Pre Filter</th>
-            <th>Intermediate Filter</th>
-            <th>HEPA Filter</th>
+            <th>Pre Filter<br><%= formatFilterLimitRange(reportData?.limitData?.preFilterLowerLimit, reportData?.limitData?.preFilterUpperLimit) %></th>
+            <th>Intermediate Filter<br><%= formatFilterLimitRange(reportData?.limitData?.intermediateFilterLowerLimit, reportData?.limitData?.intermediateFilterUpperLimit) %></th>
+            <th>HEPA Filter<br><%= formatFilterLimitRange(reportData?.limitData?.hepaFilterLowerLimit, reportData?.limitData?.hepaFilterUpperLimit) %></th>
           </tr>
         </thead>
         <tbody>

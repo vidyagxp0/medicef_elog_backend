@@ -70,7 +70,13 @@ exports.InsertDailyVerification = async (req, res) => {
     acceptanceCriteriaMax,
     standardWeightW1,
     standardWeightW2,
-    standardWeightW3
+    standardWeightW3,
+    standardWeightW1Min,
+    standardWeightW1Max,
+    standardWeightW2Min,
+    standardWeightW2Max,
+    standardWeightW3Min,
+    standardWeightW3Max,
   } = req.body;
 
   if (!description) {
@@ -187,7 +193,13 @@ exports.InsertDailyVerification = async (req, res) => {
         acceptanceCriteriaMax: acceptanceCriteriaMax,
         standardWeightW1: standardWeightW1,
         standardWeightW2: standardWeightW2,
-        standardWeightW3: standardWeightW3
+        standardWeightW3: standardWeightW3,
+        standardWeightW1Min,
+        standardWeightW1Max,
+        standardWeightW2Min,
+        standardWeightW2Max,
+        standardWeightW3Min,
+        standardWeightW3Max,
       },
 
       { transaction },
@@ -216,7 +228,13 @@ exports.InsertDailyVerification = async (req, res) => {
       acceptanceCriteriaMax,
       standardWeightW1,
       standardWeightW2,
-      standardWeightW3
+      standardWeightW3,
+      standardWeightW1Min,
+      standardWeightW1Max,
+      standardWeightW2Min,
+      standardWeightW2Max,
+      standardWeightW3Min,
+      standardWeightW3Max,
     
     };
     for (const [field, value] of Object.entries(fields)) {
@@ -379,7 +397,13 @@ exports.EditDailyVerification = async (req, res) => {
     acceptanceCriteriaMax,
     standardWeightW1,
     standardWeightW2,
-    standardWeightW3
+    standardWeightW3,
+    standardWeightW1Min,
+    standardWeightW1Max,
+    standardWeightW2Min,
+    standardWeightW2Max,
+    standardWeightW3Min,
+    standardWeightW3Max,
   } = req.body;
 
   const { form_id } = req.params;
@@ -500,6 +524,12 @@ exports.EditDailyVerification = async (req, res) => {
       standardWeightW1,
       standardWeightW2,
       standardWeightW3,
+      standardWeightW1Min,
+      standardWeightW1Max,
+      standardWeightW2Min,
+      standardWeightW2Max,
+      standardWeightW3Min,
+      standardWeightW3Max,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -627,6 +657,12 @@ exports.EditDailyVerification = async (req, res) => {
         standardWeightW1,
         standardWeightW2,
         standardWeightW3,
+        standardWeightW1Min,
+        standardWeightW1Max,
+        standardWeightW2Min,
+        standardWeightW2Max,
+        standardWeightW3Min,
+        standardWeightW3Max,
         initiatorAttachment: initiatorAttachment
           ? getElogDocsUrl(initiatorAttachment)
           : form.initiatorAttachment,

@@ -259,6 +259,84 @@
       </tbody>
     </table>
 
+    <h2 class="heading">Balance Operating Range</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Min. (50X Least count)</th>
+          <th>Max. (50X Least count)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= reportData?.balanceOperatingRangeMin || "NA" %></td>
+          <td><%= reportData?.balanceOperatingRangeMax || "NA" %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="heading">Acceptance Criteria / Tolerance Limit</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Min. (-0.1%)</th>
+          <th>Max. (+0.1%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= reportData?.acceptanceCriteriaMin || "NA" %></td>
+          <td><%= reportData?.acceptanceCriteriaMax || "NA" %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="heading">Standard weight</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>W1 (50 x Least count)</th>
+          <th>W2 (50% of Balance Capacity)</th>
+          <th>W3 (80% of Balance capacity)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= reportData?.standardWeightW1 || "NA" %></td>
+          <td><%= reportData?.standardWeightW2 || "NA" %></td>
+          <td><%= reportData?.standardWeightW3 || "NA" %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="heading">Standard weight Min / Max</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Standard weight</th>
+          <th>Min. (-0.1%)</th>
+          <th>Max. (+0.1%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Standard weight W1</td>
+          <td><%= reportData?.standardWeightW1Min || "NA" %></td>
+          <td><%= reportData?.standardWeightW1Max || "NA" %></td>
+        </tr>
+        <tr>
+          <td>Standard weight W2</td>
+          <td><%= reportData?.standardWeightW2Min || "NA" %></td>
+          <td><%= reportData?.standardWeightW2Max || "NA" %></td>
+        </tr>
+        <tr>
+          <td>Standard weight W3</td>
+          <td><%= reportData?.standardWeightW3Min || "NA" %></td>
+          <td><%= reportData?.standardWeightW3Max || "NA" %></td>
+        </tr>
+      </tbody>
+    </table>
+
     <!-- ================= RECORDS ================= -->
     <h2 class="heading">Daily Verification Records</h2>
     <% if (reportData.DailyVerificationRecords && reportData.DailyVerificationRecords.length> 0) { %>
