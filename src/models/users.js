@@ -48,6 +48,41 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     defaultValue: true
   },
+  password: {
+  type: DataTypes.STRING,
+  allowNull: false,
+  validate: {
+    len: {
+      args: [8, 255],
+      msg: "Password must be at least 8 characters long",
+    },
+  },
+},
+
+password_changed_at: {
+  type: DataTypes.DATE,
+  allowNull: true,
+},
+
+password_expires_at: {
+  type: DataTypes.DATE,
+  allowNull: true,
+},
+
+must_change_password: {
+  type: DataTypes.BOOLEAN,
+  defaultValue: false,
+},
+
+failed_login_attempts: {
+  type: DataTypes.INTEGER,
+  defaultValue: 0,
+},
+
+locked_until: {
+  type: DataTypes.DATE,
+  allowNull: true,
+},
 });
 
 

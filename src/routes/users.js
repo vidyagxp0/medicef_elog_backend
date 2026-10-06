@@ -59,10 +59,20 @@ router.get("/get-all-effective-role", User.getAllEffectiveRoleGroups);
 router.post("/user-login", User.Userlogin);
 router.post("/user-logout",Auth.checkUserJwtToken, User.Userlogout);
 router.get("/login-activity",Auth.checkAdminJwtToken, User.getLoginActivity);
+router.get("/password-expiry-info/:id",Auth.checkUserJwtToken, User.getPasswordExpiryInfo);
 router.post(
   "/reset-password",
   Auth.checkAdminJwtToken,
   User.resetPassword
+);
+router.post(
+  "/change-password",
+  Auth.checkUserJwtToken,
+  User.changePassword
+);
+router.post(
+  "/change-expired-password",
+  User.changeExpiredPassword
 );
 
 module.exports = router;

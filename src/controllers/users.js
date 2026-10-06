@@ -12,6 +12,14 @@ const { sequelize } = require("../config/db");
 const { getFileUrl } = require("../middlewares/authentication");
 const { Op } = require("sequelize");
 const UserSession = require("../models/UserSession");
+const UserPasswordHistory = require("../models/UserPasswordHistory");
+const {
+  validatePasswordPolicy,
+  calculatePasswordExpiry,
+  isPasswordExpired,
+  PASSWORD_EXPIRY_DAYS,
+  PASSWORD_HISTORY_COUNT,
+} = require("../utils/passwordPolicy");
 
 //register user
 exports.signup = async (req, res) => {
@@ -92,6 +100,11 @@ exports.signup = async (req, res) => {
         age: age,
         gender: gender,
         profile_pic: getFileUrl(req?.file),
+
+        // Password policy
+        must_change_password: true,
+        password_changed_at: null,
+        password_expires_at: null,
       },
       { transaction },
     );
@@ -588,6 +601,34 @@ exports.Userlogin = async (req, res) => {
       });
     }
 
+//   if (isPasswordExpired(user.password_expires_at)) {
+//   const passwordChangeToken = jwt.sign(
+//     {
+//       userId: user.user_id,
+//       purpose: "password_change",
+//       passwordExpired: true,
+//     },
+//     config.development.JWT_SECRET,
+//     {
+//       expiresIn: "10m",
+//     }
+//   );
+
+//   return res.status(403).json({
+//     error: true,
+//     message:
+//       "Your password has expired. Please change your password before continuing.",
+//     password_expired: true,
+//     password_change_token: passwordChangeToken,
+//     user: {
+//       user_id: user.user_id,
+//       username: user.username,
+//       email: user.email,
+//       must_change_password: false,
+//     },
+//   });
+// }
+
     // Create session entry
     const session = await UserSession.create({
       user_id: user.user_id,
@@ -821,7 +862,16 @@ exports.resetPassword = async (req, res) => {
 
     // Update the user's password
     await User.update(
-      { password: hashedPassword },
+      { password: hashedPassword,
+
+        // Force user to change admin-reset password
+        must_change_password: true,
+        password_changed_at: null,
+        password_expires_at: null,
+
+        failed_login_attempts: 0,
+        locked_until: null,
+       },
       { where: { user_id: user_id } },
     );
 
@@ -845,4 +895,479 @@ exports.getAllEffectiveRoleGroups = async (req, res) => {
         response: e.message,
       });
     });
+};
+
+exports.changePassword = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const userId = req.user.userId;
+
+    const {
+      current_password,
+      new_password,
+      confirm_new_password,
+    } = req.body;
+
+    if (
+      !current_password ||
+      !new_password ||
+      !confirm_new_password
+    ) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message: "All password fields are required.",
+      });
+    }
+
+    if (new_password !== confirm_new_password) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message:
+          "New password and confirm password do not match.",
+      });
+    }
+
+    const passwordErrors =
+      validatePasswordPolicy(new_password);
+
+    if (passwordErrors.length > 0) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message: "Password does not meet the required policy.",
+        errors: passwordErrors,
+      });
+    }
+
+    const user = await User.findOne({
+      where: {
+        user_id: userId,
+        isActive: true,
+      },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+
+      return res.status(404).json({
+        error: true,
+        message: "User not found or inactive.",
+      });
+    }
+
+    const currentPasswordMatch = await bcrypt.compare(
+      current_password,
+      user.password
+    );
+
+    if (!currentPasswordMatch) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message: "Current password is incorrect.",
+      });
+    }
+
+    const samePassword = await bcrypt.compare(
+      new_password,
+      user.password
+    );
+
+    if (samePassword) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message:
+          "New password must be different from the current password.",
+      });
+    }
+
+    const passwordHistory =
+      await UserPasswordHistory.findAll({
+        where: {
+          user_id: userId,
+        },
+        order: [["created_at", "DESC"]],
+        limit: PASSWORD_HISTORY_COUNT,
+        transaction,
+      });
+
+    for (const history of passwordHistory) {
+      const reused = await bcrypt.compare(
+        new_password,
+        history.password_hash
+      );
+
+      if (reused) {
+        await transaction.rollback();
+
+        return res.status(400).json({
+          error: true,
+          message:
+            `You cannot reuse any of your last ${PASSWORD_HISTORY_COUNT} passwords.`,
+        });
+      }
+    }
+
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(
+      new_password,
+      salt
+    );
+
+    const now = new Date();
+
+    const passwordExpiresAt =
+      calculatePasswordExpiry(now);
+
+      
+
+    await UserPasswordHistory.create(
+      {
+        user_id: userId,
+        password_hash: user.password,
+        created_at: now,
+      },
+      { transaction }
+    );
+
+    await User.update(
+      {
+        password: hashedPassword,
+        password_changed_at: now,
+        password_expires_at: passwordExpiresAt,
+        must_change_password: false,
+        failed_login_attempts: 0,
+        locked_until: null,
+      },
+      {
+        where: {
+          user_id: userId,
+        },
+        transaction,
+      }
+    );
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message:
+        `Password changed successfully. Now redirecting to login page.`,
+      password_expires_at: passwordExpiresAt,
+      force_logout: true,
+    });
+  } catch (error) {
+    await transaction.rollback();
+
+    console.error(
+      "Change Password Error:",
+      error
+    );
+
+    return res.status(500).json({
+      error: true,
+      message: "Unable to change password.",
+    });
+  }
+};
+
+exports.changeExpiredPassword = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const {
+      password_change_token,
+      current_password,
+      new_password,
+      confirm_new_password,
+    } = req.body;
+
+    if (
+      !password_change_token ||
+      !current_password ||
+      !new_password ||
+      !confirm_new_password
+    ) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message: "All password fields are required.",
+      });
+    }
+
+    let decoded;
+
+    try {
+      decoded = jwt.verify(
+        password_change_token,
+        config.development.JWT_SECRET
+      );
+    } catch (error) {
+      await transaction.rollback();
+
+      return res.status(401).json({
+        error: true,
+        message:
+          "Password change session has expired. Please login again.",
+      });
+    }
+
+    // Token must ONLY be used for expired-password change
+    if (
+      decoded?.purpose !== "password_change" ||
+      decoded?.passwordExpired !== true
+    ) {
+      await transaction.rollback();
+
+      return res.status(401).json({
+        error: true,
+        message: "Invalid password change token.",
+      });
+    }
+
+    const userId = decoded.userId;
+
+    if (!userId) {
+      await transaction.rollback();
+
+      return res.status(401).json({
+        error: true,
+        message: "Invalid password change token.",
+      });
+    }
+
+    if (new_password !== confirm_new_password) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message:
+          "New password and confirm password do not match.",
+      });
+    }
+
+    const passwordErrors = validatePasswordPolicy(new_password);
+
+    if (passwordErrors.length > 0) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message: "Password does not meet the required policy.",
+        errors: passwordErrors,
+      });
+    }
+
+    const user = await User.findOne({
+      where: {
+        user_id: userId,
+        isActive: true,
+      },
+      transaction,
+    });
+
+    if (!user) {
+      await transaction.rollback();
+
+      return res.status(404).json({
+        error: true,
+        message: "User not found or inactive.",
+      });
+    }
+
+    // Verify old/current password again
+    const currentPasswordMatch = await bcrypt.compare(
+      current_password,
+      user.password
+    );
+
+    if (!currentPasswordMatch) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message: "Current password is incorrect.",
+      });
+    }
+
+    // New password cannot be same as current password
+    const samePassword = await bcrypt.compare(
+      new_password,
+      user.password
+    );
+
+    if (samePassword) {
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: true,
+        message:
+          "New password must be different from the current password.",
+      });
+    }
+
+    // Check password history
+    const passwordHistory =
+      await UserPasswordHistory.findAll({
+        where: {
+          user_id: userId,
+        },
+        order: [["created_at", "DESC"]],
+        limit: PASSWORD_HISTORY_COUNT,
+        transaction,
+      });
+
+    for (const history of passwordHistory) {
+      const reused = await bcrypt.compare(
+        new_password,
+        history.password_hash
+      );
+
+      if (reused) {
+        await transaction.rollback();
+
+        return res.status(400).json({
+          error: true,
+          message:
+            `You cannot reuse any of your last ${PASSWORD_HISTORY_COUNT} passwords.`,
+        });
+      }
+    }
+
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(
+      new_password,
+      salt
+    );
+
+    const now = new Date();
+
+    // New 90-day expiry starts from successful password change
+    const passwordExpiresAt =
+      calculatePasswordExpiry(now);
+
+    // Save old password into history
+    await UserPasswordHistory.create(
+      {
+        user_id: userId,
+        password_hash: user.password,
+        created_at: now,
+      },
+      { transaction }
+    );
+
+    await User.update(
+      {
+        password: hashedPassword,
+
+        password_changed_at: now,
+
+        password_expires_at: passwordExpiresAt,
+
+        // Expired-password flow is now completed
+        must_change_password: false,
+
+        failed_login_attempts: 0,
+        locked_until: null,
+      },
+      {
+        where: {
+          user_id: userId,
+        },
+        transaction,
+      }
+    );
+
+    await transaction.commit();
+
+    return res.status(200).json({
+      error: false,
+      message:
+        "Password changed successfully. Please login again.",
+      password_expires_at: passwordExpiresAt,
+      force_logout: true,
+    });
+  } catch (error) {
+    await transaction.rollback();
+
+    console.error(
+      "Expired Password Change Error:",
+      error
+    );
+
+    return res.status(500).json({
+      error: true,
+      message: "Unable to change password.",
+    });
+  }
+};
+
+const calculateDaysRemaining = (expiryDate) => {
+  if (!expiryDate) {
+    return null;
+  }
+  const now = new Date();
+  const diffTime = expiryDate - now;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+};
+
+const isPasswordAboutToExpire = (expiryDate) => {
+  if (!expiryDate) {
+    return false;
+  }
+  const now = new Date();
+  const diffTime = expiryDate - now;
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays <= 7; // Consider about to expire if 7 days or less remaining
+}
+
+exports.getPasswordExpiryInfo = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findOne({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        error: true,
+        message: "User not found.",
+      });
+    }
+
+    return res.status(200).json({
+      error: false,
+      data: {
+        days_remaining: calculateDaysRemaining(user.password_expires_at),
+        is_about_to_expire: isPasswordAboutToExpire(user.password_expires_at),
+        is_expired: user.password_expires_at ? new Date() > user.password_expires_at : false,
+        password_expires_at: user.password_expires_at,
+        password_changed_at: user.password_changed_at,
+        must_change_password: user.must_change_password,
+      },
+    });
+  } catch (error) {
+    console.error("Get Password Expiry Info Error:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: "Unable to fetch password expiry information.",
+    });
+  }
 };

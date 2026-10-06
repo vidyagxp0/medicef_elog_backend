@@ -211,7 +211,239 @@ const ensureDailyVerificationStandardWeightLimitColumns = async () => {
   }
 };
 
+// const ensureUserPasswordPolicyColumns = async () => {
+//   try {
+//     const queryInterface = sequelize.getQueryInterface();
+
+//     const userDescription = await queryInterface.describeTable("Users");
+
+//     const columns = [
+//       {
+//         name: "password_changed_at",
+//         definition: {
+//           type: DataTypes.DATE,
+//           allowNull: true,
+//         },
+//       },
+//       {
+//         name: "password_expires_at",
+//         definition: {
+//           type: DataTypes.DATE,
+//           allowNull: true,
+//         },
+//       },
+//       {
+//         name: "must_change_password",
+//         definition: {
+//           type: DataTypes.BOOLEAN,
+//           defaultValue: false,
+//           allowNull: false,
+//         },
+//       },
+//       {
+//         name: "failed_login_attempts",
+//         definition: {
+//           type: DataTypes.INTEGER,
+//           defaultValue: 0,
+//           allowNull: false,
+//         },
+//       },
+//       {
+//         name: "locked_until",
+//         definition: {
+//           type: DataTypes.DATE,
+//           allowNull: true,
+//         },
+//       },
+//     ];
+
+//     for (const column of columns) {
+//       if (!userDescription[column.name]) {
+//         await queryInterface.addColumn(
+//           "Users",
+//           column.name,
+//           column.definition
+//         );
+
+//         console.log(
+//           `Added ${column.name} column to Users`
+//         );
+//       }
+//     }
+//   } catch (error) {
+//     console.error(
+//       "User password policy migration error:",
+//       error.message
+//     );
+//   }
+// };
+
 // ------------------ SERVER START ------------------
+
+const ensureUserPasswordPolicyColumns = async () => {
+  try {
+    const queryInterface = sequelize.getQueryInterface();
+
+    const userDescription = await queryInterface.describeTable("Users");
+
+    const columns = [
+      {
+        name: "password_changed_at",
+        definition: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      {
+        name: "password_expires_at",
+        definition: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      {
+        name: "must_change_password",
+        definition: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+          allowNull: false,
+        },
+      },
+      {
+        name: "failed_login_attempts",
+        definition: {
+          type: DataTypes.INTEGER,
+          defaultValue: 0,
+          allowNull: false,
+        },
+      },
+      {
+        name: "locked_until",
+        definition: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+    ];
+
+    // ----------------------------------------------------
+    // 1. Ensure password policy columns exist
+    // ----------------------------------------------------
+    for (const column of columns) {
+      if (!userDescription[column.name]) {
+        await queryInterface.addColumn(
+          "Users",
+          column.name,
+          column.definition
+        );
+
+        console.log(`Added ${column.name} column to Users`);
+      }
+    }
+
+    // ----------------------------------------------------
+    // 2. One-time initialization for EXISTING users
+    // ----------------------------------------------------
+    //
+    // We create a small migration marker so this UPDATE
+    // never runs again after the initial rollout.
+    //
+    // ----------------------------------------------------
+
+    const migrationTable = "SystemMigrations";
+
+    const tableExists = await queryInterface
+      .showAllTables()
+      .then((tables) =>
+        tables.some(
+          (table) =>
+            String(table).toLowerCase() ===
+            migrationTable.toLowerCase()
+        )
+      );
+
+    if (!tableExists) {
+      await queryInterface.createTable(migrationTable, {
+        id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false,
+        },
+
+        migration_name: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true,
+        },
+
+        executed_at: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+      });
+
+      console.log(`Created ${migrationTable} table`);
+    }
+
+    const [migrationRows] = await sequelize.query(
+      `
+        SELECT id
+        FROM ${migrationTable}
+        WHERE migration_name = 'initial_user_password_change_required'
+        LIMIT 1
+      `
+    );
+
+    // ----------------------------------------------------
+    // 3. Run only once
+    // ----------------------------------------------------
+    if (migrationRows.length === 0) {
+      await sequelize.transaction(async (transaction) => {
+        await sequelize.query(
+          `
+            UPDATE Users
+            SET must_change_password = true
+            WHERE isActive = true
+          `,
+          {
+            transaction,
+          }
+        );
+
+        await sequelize.query(
+          `
+            INSERT INTO ${migrationTable}
+              (migration_name, executed_at)
+            VALUES
+              (
+                'initial_user_password_change_required',
+                CURRENT_TIMESTAMP
+              )
+          `,
+          {
+            transaction,
+          }
+        );
+      });
+
+      console.log(
+        "Initial password change requirement applied to existing users."
+      );
+    } else {
+      console.log(
+        "Initial user password migration already completed."
+      );
+    }
+  } catch (error) {
+    console.error(
+      "User password policy migration error:",
+      error.message
+    );
+  }
+};
+
 const startServer = async () => {
   try {
     await connectToDB();
@@ -219,7 +451,7 @@ const startServer = async () => {
 
     await sequelize.sync({ alter: false });
     console.log("Tables synchronized");
-
+    await ensureUserPasswordPolicyColumns();
     await ensureDispensingBoothLimitDataColumn();
     await ensureDailyVerificationStandardWeightLimitColumns();
     await ensureDrainCleaningColumns();
