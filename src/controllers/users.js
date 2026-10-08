@@ -17,6 +17,8 @@ const {
   validatePasswordPolicy,
   calculatePasswordExpiry,
   isPasswordExpired,
+  isUserActive,
+  MAX_LOGIN_ATTEMPTS,
   PASSWORD_EXPIRY_DAYS,
   PASSWORD_HISTORY_COUNT,
 } = require("../utils/passwordPolicy");
@@ -358,8 +360,17 @@ exports.changeUserStatus = async (req, res) => {
 
     const isActiveStr = (isActive === "1" || isActive === 1 || isActive === true || isActive === "true") ? "1" : "0";
 
+    const updatePayload = {
+      isActive: isActiveStr,
+    };
+
+    if (isActiveStr === "1") {
+      updatePayload.failed_login_attempts = 0;
+      updatePayload.locked_until = null;
+    }
+
     await User.update(
-      { isActive: isActiveStr },
+      updatePayload,
       {
         where: {
           user_id: req.params.id,
@@ -564,76 +575,187 @@ exports.getAllRoleGroups = async (req, res) => {
 
 // user login
 exports.Userlogin = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
   try {
     const { loginInput, password } = req.body;
 
     if (!loginInput || !password) {
+      await transaction.rollback();
       return res.status(400).json({
-        error: true,
+        success: false,
+        code: "INVALID_INPUT",
         message: "Email or UserName and password are required",
       });
     }
 
+    const normalizedLoginInput = String(loginInput).trim();
+
     const user = await User.findOne({
       where: {
-        isActive: true,
         [Op.or]: [
-          { email: loginInput.toLowerCase() },
-          { username: loginInput },
+          { email: normalizedLoginInput.toLowerCase() },
+          { userName: normalizedLoginInput },
         ],
       },
+      transaction,
+      lock: transaction.LOCK.UPDATE,
       raw: true,
     });
 
     if (!user) {
+      await transaction.rollback();
       return res.status(401).json({
-        error: true,
-        message: "User not found or inactive",
+        success: false,
+        code: "INVALID_CREDENTIALS",
+        message: "Invalid username or password",
+        failed_login_attempts: 0,
+        max_login_attempts: MAX_LOGIN_ATTEMPTS,
+        remaining_login_attempts: MAX_LOGIN_ATTEMPTS,
+        remainingAttempts: MAX_LOGIN_ATTEMPTS,
+      });
+    }
+
+    if (!isUserActive(user)) {
+      await transaction.rollback();
+      return res.status(403).json({
+        success: false,
+        code: "ACCOUNT_DISABLED",
+        message: "Maximum 5 failed attempts reached. Please contact the administrator.",
+        failed_login_attempts: Number(user.failed_login_attempts || 0),
+        max_login_attempts: MAX_LOGIN_ATTEMPTS,
+        remaining_login_attempts: 0,
+        remainingAttempts: 0,
       });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({
-        error: true,
-        message: "Invalid password",
+      await User.increment("failed_login_attempts", {
+        by: 1,
+        where: { user_id: user.user_id },
+        transaction,
+      });
+
+      const updatedUser = await User.findOne({
+        where: { user_id: user.user_id },
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+        raw: true,
+      });
+
+      const attempts = Number(updatedUser.failed_login_attempts || 0);
+      const remainingAttempts = Math.max(MAX_LOGIN_ATTEMPTS - attempts, 0);
+      const disableAccount = attempts >= MAX_LOGIN_ATTEMPTS;
+
+      if (disableAccount) {
+        await User.update(
+          {
+            isActive: "0",
+            failed_login_attempts: attempts,
+          },
+          {
+            where: { user_id: user.user_id },
+            transaction,
+          }
+        );
+      }
+
+      await transaction.commit();
+
+      if (disableAccount) {
+        return res.status(403).json({
+          success: false,
+          code: "ACCOUNT_DISABLED",
+          message: "Maximum 5 failed attempts reached. Please contact the administrator.",
+          failed_login_attempts: attempts,
+          max_login_attempts: MAX_LOGIN_ATTEMPTS,
+          remaining_login_attempts: 0,
+          remainingAttempts: 0,
+        });
+      }
+
+      return res.status(401).json({
+        success: false,
+        code: "INVALID_CREDENTIALS",
+        message: "Invalid username or password",
+        failed_login_attempts: attempts,
+        max_login_attempts: MAX_LOGIN_ATTEMPTS,
+        remaining_login_attempts: remainingAttempts,
+        remainingAttempts: remainingAttempts,
       });
     }
 
-//   if (isPasswordExpired(user.password_expires_at)) {
-//   const passwordChangeToken = jwt.sign(
-//     {
-//       userId: user.user_id,
-//       purpose: "password_change",
-//       passwordExpired: true,
-//     },
-//     config.development.JWT_SECRET,
-//     {
-//       expiresIn: "10m",
-//     }
-//   );
+    const passwordExpired = user.must_change_password === true || isPasswordExpired(user.password_expires_at);
 
-//   return res.status(403).json({
-//     error: true,
-//     message:
-//       "Your password has expired. Please change your password before continuing.",
-//     password_expired: true,
-//     password_change_token: passwordChangeToken,
-//     user: {
-//       user_id: user.user_id,
-//       username: user.username,
-//       email: user.email,
-//       must_change_password: false,
-//     },
-//   });
-// }
+    if (passwordExpired) {
+      const passwordChangeToken = jwt.sign(
+        {
+          userId: user.user_id,
+          purpose: "password_change",
+          passwordExpired: true,
+        },
+        config.development.JWT_SECRET,
+        { expiresIn: "10m" },
+      );
 
-    // Create session entry
+      await User.update(
+        {
+          failed_login_attempts: 0,
+          locked_until: null,
+        },
+        {
+          where: { user_id: user.user_id },
+          transaction,
+        }
+      );
+
+      const session = await UserSession.create({
+        user_id: user.user_id,
+        login_time: new Date(),
+      }, { transaction });
+
+      const token = jwt.sign(
+        { userId: user.user_id },
+        config.development.JWT_SECRET,
+        { expiresIn: "24h" },
+      );
+
+      await transaction.commit();
+
+      return res.status(200).json({
+        success: true,
+        code: "PASSWORD_EXPIRED",
+        message: "Password expired. Please change your password to continue.",
+        token,
+        password_change_token: passwordChangeToken,
+        user: {
+          user_id: user.user_id,
+          userName: user.userName,
+          email: user.email,
+          must_change_password: true,
+          password_expired: true,
+        },
+        session_id: session.id,
+      });
+    }
+
+    await User.update(
+      {
+        failed_login_attempts: 0,
+        locked_until: null,
+      },
+      {
+        where: { user_id: user.user_id },
+        transaction,
+      }
+    );
+
     const session = await UserSession.create({
       user_id: user.user_id,
       login_time: new Date(),
-    });
+    }, { transaction });
 
     const token = jwt.sign(
       { userId: user.user_id },
@@ -641,21 +763,25 @@ exports.Userlogin = async (req, res) => {
       { expiresIn: "24h" },
     );
 
-    // password remove
     const { password: _password, ...userWithoutPassword } = user;
 
+    await transaction.commit();
+
     return res.status(200).json({
-      error: false,
+      success: true,
+      code: "SUCCESS",
       message: "Login successful",
       token,
       user: userWithoutPassword,
       session_id: session.id,
     });
   } catch (error) {
+    await transaction.rollback();
     console.error("Login Error:", error);
 
     return res.status(500).json({
-      error: true,
+      success: false,
+      code: "SERVER_ERROR",
       message: "Internal server error",
     });
   }
@@ -1337,10 +1463,26 @@ const isPasswordAboutToExpire = (expiryDate) => {
 
 exports.getPasswordExpiryInfo = async (req, res) => {
   try {
-    const userId = req.params.id;
+    if (!req.user || !req.user.userId) {
+      return res.status(401).json({
+        success: false,
+        code: "UNAUTHORIZED",
+        message: "Unauthorized User",
+      });
+    }
+
+    const requestedUserId = Number(req.params?.id ?? req.user.userId);
+    if (requestedUserId && requestedUserId !== Number(req.user.userId)) {
+      return res.status(403).json({
+        success: false,
+        code: "UNAUTHORIZED",
+        message: "You can only access your own password expiry information.",
+      });
+    }
+
     const user = await User.findOne({
       where: {
-        user_id: userId,
+        user_id: req.user.userId,
       },
     });
 
@@ -1351,15 +1493,26 @@ exports.getPasswordExpiryInfo = async (req, res) => {
       });
     }
 
+    const passwordExpiresAt = user.password_expires_at ? new Date(user.password_expires_at) : null;
+    const passwordExpired = user.must_change_password === true || isPasswordExpired(user.password_expires_at);
+    const failedLoginAttempts = Number(user.failed_login_attempts || 0);
+    const maxLoginAttempts = MAX_LOGIN_ATTEMPTS;
+
     return res.status(200).json({
+      success: true,
       error: false,
       data: {
-        days_remaining: calculateDaysRemaining(user.password_expires_at),
-        is_about_to_expire: isPasswordAboutToExpire(user.password_expires_at),
-        is_expired: user.password_expires_at ? new Date() > user.password_expires_at : false,
+        password_expired: passwordExpired,
+        must_change_password: Boolean(user.must_change_password),
+        password_expiry_date: passwordExpiresAt ? passwordExpiresAt.toISOString().split("T")[0] : null,
+        failed_login_attempts: failedLoginAttempts,
+        max_login_attempts: maxLoginAttempts,
+        remaining_login_attempts: Math.max(maxLoginAttempts - failedLoginAttempts, 0),
         password_expires_at: user.password_expires_at,
         password_changed_at: user.password_changed_at,
-        must_change_password: user.must_change_password,
+        days_remaining: calculateDaysRemaining(user.password_expires_at),
+        is_about_to_expire: isPasswordAboutToExpire(user.password_expires_at),
+        is_expired: passwordExpired,
       },
     });
   } catch (error) {

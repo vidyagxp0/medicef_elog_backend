@@ -5,6 +5,14 @@ const PASSWORD_EXPIRY_WARNING_DAYS = 7;
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_MINUTES = 15;
 
+function isUserActive(user) {
+  if (!user) {
+    return false;
+  }
+
+  return String(user.isActive) !== "0" && String(user.isActive) !== "false" && user.isActive !== false && user.isActive !== 0;
+}
+
 function validatePasswordPolicy(password) {
   const errors = [];
 
@@ -84,6 +92,7 @@ module.exports = {
   PASSWORD_EXPIRY_WARNING_DAYS,
   MAX_LOGIN_ATTEMPTS,
   LOCKOUT_MINUTES,
+  isUserActive,
   validatePasswordPolicy,
   calculatePasswordExpiry,
   isPasswordExpired,
