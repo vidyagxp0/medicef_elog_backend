@@ -59,6 +59,11 @@ router.get("/get-all-effective-role", User.getAllEffectiveRoleGroups);
 router.post("/user-login", User.Userlogin);
 router.post("/user-logout",Auth.checkUserJwtToken, User.Userlogout);
 router.get("/login-activity",Auth.checkAdminJwtToken, User.getLoginActivity);
+router.get(
+  "/login-activity/report",
+  Auth.checkAdminJwtToken,
+  User.generateLoginActivityReport
+);
 router.get("/password-expiry-info/:id",Auth.checkUserJwtToken, User.getPasswordExpiryInfo);
 router.post(
   "/reset-password",

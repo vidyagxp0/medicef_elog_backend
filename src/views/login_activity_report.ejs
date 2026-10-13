@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 9px;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Section headings */
+.section-title {
+    width: 97.5%;
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    margin: 10px 10px 8px 10px;
+    padding: 10px 12px;
+    background: #e8ecef;
+    border-left: 5px solid #42454a;
+    color: #111827;
+}
+
+/* General information table */
+.info-table {
+    width: 97.5%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    margin: 0 0 18px 10px;
+}
+
+.info-table td {
+    border: 1px solid black;
+    padding: 6px 8px;
+    overflow-wrap: break-word;
+}
+
+.info-label {
+    width: 18%;
+    font-weight: 600;
+    font-size: 10px;
+    background: #f8f8f8;
+}
+
+/* Login activity table */
+.activity-table {
+     margin: 10px 10px 18px 10px;
+    width: 97.5%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.activity-table th {
+    background: #f8f8f8;
+    border: 1px solid #42454a;
+    padding: 6px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    overflow-wrap: break-word;
+}
+
+.activity-table td {
+    border: 1px solid #42454a;
+    padding: 5px 4px;
+    font-size: 9px;
+    overflow-wrap: anywhere;
+}
+
+.center {
+    text-align: center;
+}
+
+
+    </style>
+</head>
+
+<body>
+
+    <!-- GENERAL INFORMATION -->
+
+    <div class="section-title">
+        General Information
+    </div>
+
+    <table class="info-table">
+
+        <tr>
+            <td class="info-label">Report Type</td>
+            <td>Login Activity Report</td>
+
+            <td class="info-label">Total Records</td>
+            <td>
+                <%= rows.length %>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="info-label">Search</td>
+            <td>
+                <%= search || "All Employees" %>
+            </td>
+
+            <td class="info-label">Status</td>
+            <td>
+                <%= status ? status.toUpperCase() : "ALL" %>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="info-label">From Date</td>
+            <td>
+                <%= login_from || "All" %>
+            </td>
+
+            <td class="info-label">To Date</td>
+            <td>
+                <%= login_to || "All" %>
+            </td>
+        </tr>
+
+    </table>
+
+
+    <!-- LOGIN ACTIVITY -->
+
+    <div class="section-title">
+        Login Activity
+    </div>
+
+    <table class="activity-table">
+
+        <thead>
+
+            <tr>
+                <th style="width: 5%;">S.No</th>
+                <th style="width: 10%;">Employee ID</th>
+                <th style="width: 12%;">Name</th>
+                <th style="width: 20%;">Email</th>
+                <th style="width: 14%;">Login Time</th>
+                <th style="width: 14%;">Logout Time</th>
+                <th style="width: 10%;">Duration</th>
+                <th style="width: 10%;">Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <% rows.forEach((row, index) => { %>
+
+                <%
+                    const user = row.user || {};
+
+                    const formatDate = (date) => {
+                        if (!date) return "-";
+
+                        const d = new Date(date);
+
+                        if (isNaN(d.getTime())) return "-";
+
+                        const day = String(d.getDate()).padStart(2, "0");
+                        const month = String(d.getMonth() + 1).padStart(2, "0");
+                        const year = d.getFullYear();
+
+                        let hours = d.getHours();
+                        const minutes = String(d.getMinutes()).padStart(2, "0");
+
+                        const ampm = hours >= 12 ? "PM" : "AM";
+
+                        hours = hours % 12 || 12;
+
+                        return `${day}/${month}/${year} ${String(hours).padStart(2, "0")}:${minutes} ${ampm}`;
+                    };
+
+                    const calculateDuration = (loginTime, logoutTime) => {
+
+                        if (!loginTime || !logoutTime) {
+                            return "-";
+                        }
+
+                        const login = new Date(loginTime);
+                        const logout = new Date(logoutTime);
+
+                        const difference =
+                            logout.getTime() - login.getTime();
+
+                        if (difference < 0) {
+                            return "-";
+                        }
+
+                        const totalMinutes =
+                            Math.floor(difference / (1000 * 60));
+
+                        const hours =
+                            Math.floor(totalMinutes / 60);
+
+                        const minutes =
+                            totalMinutes % 60;
+
+                        return `${hours}h ${minutes}m`;
+                    };
+                %>
+
+                <tr>
+
+                    <td class="center">
+                        <%= index + 1 %>
+                    </td>
+
+                    <td>
+                        <%= user.employeeID || "-" %>
+                    </td>
+
+                    <td>
+                        <%= user.name || "-" %>
+                    </td>
+
+                    <td>
+                        <%= user.email || "-" %>
+                    </td>
+
+                    <td>
+                        <%= formatDate(row.login_time) %>
+                    </td>
+
+                    <td>
+                        <%= formatDate(row.logout_time) %>
+                    </td>
+
+                    <td class="center">
+                        <%= calculateDuration(
+                            row.login_time,
+                            row.logout_time
+                        ) %>
+                    </td>
+
+                    <td class="center">
+                        <%= row.logout_time
+                            ? "Inactive"
+                            : "Active"
+                        %>
+                    </td>
+
+                </tr>
+
+            <% }) %>
+
+        </tbody>
+
+    </table>
+
+</body>
+
+</html>

@@ -22,6 +22,9 @@ const {
   PASSWORD_EXPIRY_DAYS,
   PASSWORD_HISTORY_COUNT,
 } = require("../utils/passwordPolicy");
+const fs = require("fs");
+const path = require("path");
+const puppeteer = require("puppeteer");
 
 //register user
 exports.signup = async (req, res) => {
@@ -44,7 +47,18 @@ exports.signup = async (req, res) => {
     });
   }
 
-  // Start a transaction
+  const passwordErrors = validatePasswordPolicy(password);
+
+if (passwordErrors.length > 0) {
+  return res.status(400).json({
+    error: true,
+    message: "Password must be at least 8 characters long , at least one uppercase letter , at least one number , at least one special character.",
+    errors: passwordErrors,
+  });
+}
+
+  // St
+  // art a transaction
   const transaction = await sequelize.transaction();
 
   try {
@@ -952,11 +966,18 @@ exports.Adminlogin = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
-  let { user_id, current_password, new_password, confirm_new_password } =
+  let { user_id, new_password, confirm_new_password } =
     req.body;
+  const passwordErrors = validatePasswordPolicy(new_password);
 
+if (passwordErrors.length > 0) {
+  return res.status(400).json({
+    error: true,
+    message: "Password must be at least 8 characters long , at least one uppercase letter , at least one number , at least one special character."
+  });
+}
   // Validate input data
-  if (!user_id || !current_password || !new_password || !confirm_new_password) {
+  if (!user_id  || !new_password || !confirm_new_password) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
@@ -977,14 +998,17 @@ exports.resetPassword = async (req, res) => {
     }
 
     // Verify the current password
-    const isMatch = await bcrypt.compare(current_password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Current password is incorrect" });
-    }
+    // const isMatch = await bcrypt.compare(current_password, user.password);
+    // if (!isMatch) {
+    //   return res.status(400).json({ message: "Current password is incorrect" });
+    // }
 
     // Hash the new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(new_password, salt);
+
+    
+    const now = new Date();
 
     // Update the user's password
     await User.update(
@@ -992,8 +1016,8 @@ exports.resetPassword = async (req, res) => {
 
         // Force user to change admin-reset password
         must_change_password: true,
-        password_changed_at: null,
-        password_expires_at: null,
+        password_changed_at: now,
+        password_expires_at: calculatePasswordExpiry(now),
 
         failed_login_attempts: 0,
         locked_until: null,
@@ -1494,9 +1518,10 @@ exports.getPasswordExpiryInfo = async (req, res) => {
     }
 
     const passwordExpiresAt = user.password_expires_at ? new Date(user.password_expires_at) : null;
-    const passwordExpired = user.must_change_password === true || isPasswordExpired(user.password_expires_at);
+    const passwordExpired = isPasswordExpired(user.password_expires_at);
     const failedLoginAttempts = Number(user.failed_login_attempts || 0);
     const maxLoginAttempts = MAX_LOGIN_ATTEMPTS;
+    const passwordUpdateRequired = user.must_change_password === true && !passwordExpired;
 
     return res.status(200).json({
       success: true,
@@ -1513,6 +1538,7 @@ exports.getPasswordExpiryInfo = async (req, res) => {
         days_remaining: calculateDaysRemaining(user.password_expires_at),
         is_about_to_expire: isPasswordAboutToExpire(user.password_expires_at),
         is_expired: passwordExpired,
+        password_update_required: passwordUpdateRequired,
       },
     });
   } catch (error) {
@@ -1523,4 +1549,453 @@ exports.getPasswordExpiryInfo = async (req, res) => {
       message: "Unable to fetch password expiry information.",
     });
   }
+};
+
+
+exports.generateLoginActivityReport = async (req, res) => {
+
+    try {
+
+        const {
+            search = "",
+            login_from,
+            login_to,
+            status,
+        } = req.query;
+
+
+        // =========================
+        // SEARCH CONDITION
+        // =========================
+
+        const userSearchCondition = search
+            ? {
+                [Op.or]: [
+                    {
+                        name: {
+                            [Op.like]: `%${search}%`,
+                        },
+                    },
+                    {
+                        employeeID: {
+                            [Op.like]: `%${search}%`,
+                        },
+                    },
+                ],
+            }
+            : {};
+
+
+        // =========================
+        // SESSION CONDITION
+        // =========================
+
+        const sessionWhere = {};
+
+        if (login_from && login_to) {
+
+            const fromDate =
+                new Date(`${login_from}T00:00:00`);
+
+            const toDate =
+                new Date(`${login_to}T23:59:59`);
+
+            sessionWhere.login_time = {
+                [Op.between]: [
+                    fromDate,
+                    toDate,
+                ],
+            };
+
+        } else if (login_from) {
+
+            const fromDate =
+                new Date(`${login_from}T00:00:00`);
+
+            sessionWhere.login_time = {
+                [Op.gte]: fromDate,
+            };
+
+        } else if (login_to) {
+
+            const toDate =
+                new Date(`${login_to}T23:59:59`);
+
+            sessionWhere.login_time = {
+                [Op.lte]: toDate,
+            };
+
+        }
+
+
+        // =========================
+        // STATUS
+        // =========================
+
+        if (status === "active") {
+
+            sessionWhere.logout_time = null;
+
+        }
+
+        if (status === "inactive") {
+
+            sessionWhere.logout_time = {
+                [Op.ne]: null,
+            };
+
+        }
+
+
+        // =========================
+        // GET DATA
+        // =========================
+
+        const rows =
+            await UserSession.findAll({
+
+                where: sessionWhere,
+
+                include: [
+                    {
+                        model: User,
+
+                        as: "user",
+
+                        attributes: [
+                            "user_id",
+                            "name",
+                            "email",
+                            "employeeID",
+                        ],
+
+                        where:
+                            userSearchCondition,
+                    },
+                ],
+
+                order: [
+                    ["login_time", "DESC"],
+                ],
+
+            });
+
+
+        console.log(
+            "Report records:",
+            rows.length
+        );
+
+
+        // =========================
+        // REPORT DATA
+        // =========================
+
+        const reportData = {
+
+            departmentName:
+                "Administration",
+
+            Process: {
+
+                process:
+                    "Login Activity Report",
+
+            },
+
+        };
+
+
+        // =========================
+        // LOGO
+        // =========================
+
+        const logoPath = path.join(
+            __dirname,
+            "../public/medicef_logo.png.png"
+        );
+
+        let logoDataUri = "";
+
+        if (fs.existsSync(logoPath)) {
+
+            const logoBase64 =
+                fs.readFileSync(
+                    logoPath
+                ).toString("base64");
+
+            logoDataUri =
+                `data:image/png;base64,${logoBase64}`;
+
+        }
+
+
+        // =========================
+        // MAIN EJS
+        // =========================
+
+        const html =
+            await new Promise(
+                (resolve, reject) => {
+
+                    req.app.render(
+                        "login_activity_report",
+
+                        {
+                            reportData,
+                            rows,
+                            search,
+                            login_from,
+                            login_to,
+                            status,
+                        },
+
+                        (err, html) => {
+
+                            if (err) {
+                                return reject(err);
+                            }
+
+                            resolve(html);
+
+                        }
+                    );
+
+                }
+            );
+
+
+        // =========================
+        // HEADER EJS
+        // =========================
+
+        const headerHtml =
+            await new Promise(
+                (resolve, reject) => {
+
+                    req.app.render(
+                        "header",
+
+                        {
+                            reportData,
+                            logoDataUri,
+                        },
+
+                        (err, html) => {
+
+                            if (err) {
+                                return reject(err);
+                            }
+
+                            resolve(html);
+
+                        }
+                    );
+
+                }
+            );
+
+
+        // =========================
+        // FOOTER EJS
+        // =========================
+
+        const formattedDate =
+            new Date().toLocaleString(
+                "en-US",
+                {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                }
+            );
+
+
+        const footerHtml =
+            await new Promise(
+                (resolve, reject) => {
+
+                    req.app.render(
+                        "footer",
+
+                        {
+                            userName:
+                                req.user?.name ||
+                                "System User",
+
+                            date:
+                                formattedDate,
+                        },
+
+                        (err, html) => {
+
+                            if (err) {
+                                return reject(err);
+                            }
+
+                            resolve(html);
+
+                        }
+                    );
+
+                }
+            );
+
+
+        // =========================
+        // PUPPETEER
+        // =========================
+
+        const browser =
+            await puppeteer.launch({
+
+                headless: true,
+
+                args: [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                ],
+
+            });
+
+
+        try {
+
+            const page =
+                await browser.newPage();
+
+
+            await page.setContent(
+                html,
+                {
+                    waitUntil:
+                        "networkidle0",
+                }
+            );
+
+
+            // =========================
+            // PUBLIC DIRECTORY
+            // =========================
+
+            const publicDirectory =
+                path.resolve("public");
+
+
+            if (!fs.existsSync(
+                publicDirectory
+            )) {
+
+                fs.mkdirSync(
+                    publicDirectory,
+                    {
+                        recursive: true,
+                    }
+                );
+
+            }
+
+
+            // =========================
+            // FILE
+            // =========================
+
+            const fileName =
+                `Login_Activity_Report_${Date.now()}.pdf`;
+
+
+            const filePath =
+                path.join(
+                    publicDirectory,
+                    fileName
+                );
+
+
+            // =========================
+            // PDF
+            // =========================
+
+            await page.pdf({
+
+                path: filePath,
+
+                format: "A4",
+
+                printBackground: true,
+
+                displayHeaderFooter: true,
+
+                headerTemplate:
+                    headerHtml,
+
+                footerTemplate:
+                    footerHtml,
+
+                margin: {
+
+                    top: "125px",
+
+                    bottom: "60px",
+
+                    left: "30px",
+
+                    right: "30px",
+
+                },
+
+            });
+
+
+            console.log(
+                "PDF generated:",
+                filePath
+            );
+
+
+            return res.status(200).json({
+
+                success: true,
+
+                message:
+                    "Report generated successfully",
+
+                filename:
+                    fileName,
+
+            });
+
+
+        } finally {
+
+            await browser.close();
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Generate Login Activity Report Error:",
+            error
+        );
+
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                "Failed to generate report",
+
+            error:
+                error.message,
+
+        });
+
+    }
+
 };
