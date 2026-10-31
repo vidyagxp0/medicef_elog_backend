@@ -13,6 +13,7 @@ const areaFoggingRecord = require("../models/areaFoggingRecord");
 const areaFoggingAuditTrail = require("../models/areaFoggingAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
+const EffectiveChangeAudit = require("../models/effectiveChangeAudit")
 
 
 const getUserById = async (user_id) => {
@@ -326,6 +327,15 @@ exports.InsertareaFogging = async (req, res) => {
 
     const transaction = await sequelize.transaction();
 
+       const isEmptyAuditValue = (value) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  );
+};
+
+
     try {
       const user = await User.findOne({
         where: { user_id: req.user.userId, isActive: true },
@@ -396,6 +406,9 @@ exports.InsertareaFogging = async (req, res) => {
 
       // Track changes for the form
       const auditTrailEntries = [];
+
+const effectiveAuditEntries = [];
+
       const fields = {
         description,
         departmentName,
@@ -506,6 +519,20 @@ exports.InsertareaFogging = async (req, res) => {
             new_status: form.status,
             action: "Update Elog",
           });
+          effectiveAuditEntries.push({
+  form_id: form.form_id,
+  process_id: form.process_id || null,
+  performed_by: user.user_id,
+  field_name: field,
+  previous_value: oldValue === null || oldValue === undefined
+    ? null
+    : String(formatAuditValue(oldValue)),
+  new_value: newValue === null || newValue === undefined
+    ? null
+    : String(formatAuditValue(newValue)),
+  status: "updated",
+  performed_at: new Date(),
+});
         }
       }
 
@@ -539,57 +566,144 @@ exports.InsertareaFogging = async (req, res) => {
           for (const record of areaFoggingRecords) {
 
             if (record.record_id) {
-              // UPDATE existing row
-              await areaFoggingRecord.update(
-                {
-                  unique_id: record?.unique_id,
-                  dateOfFogging: record?.dateOfFogging,
-                  foggingTimeStart: record?.foggingTimeStart,
-                  foggingTimeStop: record?.foggingTimeStop,
-                  foggingHoldingStart: record?.foggingHoldingStart,
-                  foggingHoldingStop: record?.foggingHoldingStop,
-                  foggingDueOn: record?.foggingDueOn || null,
-                  area: record?.area,
-                  verified_by: record?.verified_by,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                  remarks: record?.remarks,
-                },
-                {
-                  where: {
-                    record_id: record.record_id,
-                    form_id: form_id,
-                  },
-                  transaction,
-                }
-              );
+  // 1. Fetch existing record
+  const existingRecord = await areaFoggingRecord.findOne({
+    where: {
+      record_id: record.record_id,
+      form_id: form_id,
+    },
+    transaction,
+  });
 
-            } else {
-              // CREATE only new row
-              await areaFoggingRecord.create(
-                {
-                  form_id: form_id,
-                  unique_id: record?.unique_id,
-                  dateOfFogging: record?.dateOfFogging,
-                  foggingTimeStart: record?.foggingTimeStart,
-                  foggingTimeStop: record?.foggingTimeStop,
-                  foggingHoldingStart: record?.foggingHoldingStart,
-                  foggingHoldingStop: record?.foggingHoldingStop,
-                  foggingDueOn: record?.foggingDueOn || null,
-                  area: record?.area,
-                  verified_by: record?.verified_by,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                  remarks: record?.remarks,
-                },
-                { transaction }
-              );
-            }
+  if (!existingRecord) {
+    throw new Error(`Record not found: ${record.record_id}`);
+  }
+
+  // 2. Fields which are being updated
+  const recordFields = {
+    unique_id: record?.unique_id,
+    dateOfFogging: record?.dateOfFogging,
+    foggingTimeStart: record?.foggingTimeStart,
+    foggingTimeStop: record?.foggingTimeStop,
+    foggingHoldingStart: record?.foggingHoldingStart,
+    foggingHoldingStop: record?.foggingHoldingStop,
+    foggingDueOn: record?.foggingDueOn || null,
+    area: record?.area,
+    verified_by: record?.verified_by,
+    done_by: record?.done_by,
+    reviewed_by: record?.reviewed_by,
+    remarks: record?.remarks,
+  };
+
+  // 3. Check which fields actually changed
+  for (const [field, newValue] of Object.entries(recordFields)) {
+    const oldValue = existingRecord[field];
+
+    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || null,
+        performed_by: user.user_id,
+        field_name: `${field}`,
+        previous_value:
+          oldValue === null || oldValue === undefined
+            ? null
+            : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue === null || newValue === undefined
+            ? null
+            : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
+    }
+  }
+
+  // 4. YOUR EXISTING UPDATE QUERY
+  await areaFoggingRecord.update(
+    {
+      unique_id: record?.unique_id,
+      dateOfFogging: record?.dateOfFogging,
+      foggingTimeStart: record?.foggingTimeStart,
+      foggingTimeStop: record?.foggingTimeStop,
+      foggingHoldingStart: record?.foggingHoldingStart,
+      foggingHoldingStop: record?.foggingHoldingStop,
+      foggingDueOn: record?.foggingDueOn || null,
+      area: record?.area,
+      verified_by: record?.verified_by,
+      done_by: record?.done_by,
+      reviewed_by: record?.reviewed_by,
+      remarks: record?.remarks,
+    },
+    {
+      where: {
+        record_id: record.record_id,
+        form_id: form_id,
+      },
+      transaction,
+    }
+  );
+
+} 
+          else {
+  // CREATE only new row
+
+  const newRecordData = {
+    form_id: form_id,
+    unique_id: record?.unique_id,
+    dateOfFogging: record?.dateOfFogging,
+    foggingTimeStart: record?.foggingTimeStart,
+    foggingTimeStop: record?.foggingTimeStop,
+    foggingHoldingStart: record?.foggingHoldingStart,
+    foggingHoldingStop: record?.foggingHoldingStop,
+    foggingDueOn: record?.foggingDueOn || null,
+    area: record?.area,
+    verified_by: record?.verified_by,
+    done_by: record?.done_by,
+    reviewed_by: record?.reviewed_by,
+    remarks: record?.remarks,
+  };
+
+  // 1. Create record (existing functionality)
+  const createdRecord = await areaFoggingRecord.create(
+    newRecordData,
+    { transaction }
+  );
+
+  // 2. Create audit entries for every field
+  for (const [field, newValue] of Object.entries(newRecordData)) {
+
+    // form_id ko alag se audit karne ki zarurat nahi
+    if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
+
+    effectiveAuditEntries.push({
+      form_id: form.form_id,
+      process_id: form.process_id || null,
+      performed_by: user.user_id,
+
+      field_name: `${field}`,
+
+      previous_value: null,
+      new_value: String(formatAuditValue(newValue)),
+
+      status: "created",
+      performed_at: new Date(),
+    });
+  }
+}
           }
         }
       await areaFoggingAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
+
+      if (effectiveAuditEntries.length > 0) {
+  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
+    transaction,
+  });
+}
 
       await transaction.commit();
 
@@ -1228,3 +1342,6 @@ exports.sendReportOnMail = async (req, res) => {
     });
   }
 };
+
+
+

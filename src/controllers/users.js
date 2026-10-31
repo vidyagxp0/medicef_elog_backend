@@ -25,12 +25,13 @@ const {
 const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer");
+const formModelRegistry = require("../utils/formModelRegistry");
 
 //register user
 exports.signup = async (req, res) => {
   const {
     password,
-    email,
+    email, 
     name,
     rolesArray,
     age,
@@ -1999,3 +2000,142 @@ exports.generateLoginActivityReport = async (req, res) => {
     }
 
 };
+
+
+exports.getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    console.log("Requested User ID:", id);
+
+    const user = await User.findOne({
+      where: { user_id: id },
+      include: [
+        {
+          model: UserRole,
+          include: [
+            { model: Role },
+            { model: Department },
+            { model: Process },
+            { model: RoleGroup },
+          ],
+        },
+      ],
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      data: user,
+    });
+  } catch (error) {
+    console.error("Get User By ID Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Database error",
+      error: error.message,
+    });
+  }
+};
+
+exports.getUserAssignedProcesses = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+        const userRoles = await UserRole.findAll({
+      where: {
+        user_id: userId,
+      },
+      attributes: ["department_id","process_id"],
+      raw: true,
+    });
+   
+     console.log(userRoles)
+    const departmentIds = [
+      ...new Set(
+        userRoles
+          .map((item) => item.department_id)
+          .filter((id) => id !== null && id !== undefined)
+      ),
+    ];
+    const processIds = [
+  ...new Set(
+    userRoles
+      .map((item) => item.process_id)
+      .filter((id) => id !== null && id !== undefined)
+  ),
+];
+
+const processes = await Process.findAll({
+  where: {
+    process_id: {
+      [Op.in]: processIds,
+    },
+  },
+});
+
+console.log("Assigned Processes:", processes);
+
+const processStatusData = await Promise.all(
+  processes.map(async (process) => {
+    const registry = formModelRegistry[process.process_id];
+
+    if (!registry || !registry.form) {
+      return {
+        process_id: process.process_id,
+        process: process.process,
+        records: [],
+      };
+    }
+
+    const FormModel = registry.form;
+
+    const records = await FormModel.findAll({
+      where: {
+        process_id: process.process_id,
+        department_id: {
+          [Op.in]: departmentIds,
+        },
+      },
+      attributes: ["form_id", "process_id", "status"],
+      raw: true,
+    });
+
+    return {
+      process_id: process.process_id,
+      process: process.process,
+      records: records.map((record) => ({
+        form_id: record.form_id,
+        status: record.status,
+      })),
+    };
+  })
+);
+
+
+    res.status(201).json({
+      data: {
+    departmentIds: departmentIds,
+    recordses: processStatusData
+  },
+      message:"Successfully"
+    })
+
+  } catch (error) {
+    console.error("Error fetching user assigned processes:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error",
+    });
+  }
+};
+

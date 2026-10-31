@@ -13,6 +13,7 @@ const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const Process = require("../models/processes");
+const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -321,6 +322,16 @@ exports.EditAHU = async (req, res) => {
 
   const transaction = await sequelize.transaction();
 
+  
+
+    const isEmptyAuditValue = (value) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  );
+};
+
   try {
     const user = await User.findOne({
       where: { user_id: req.user.userId, isActive: true },
@@ -395,6 +406,8 @@ exports.EditAHU = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
+    const effectiveAuditEntries = [];
+
     const fields = {
       description,
       departmentName,
@@ -451,6 +464,25 @@ exports.EditAHU = async (req, res) => {
     return value;
     };
 
+    const pushEffectiveAudit = (field, oldValue, newValue) => {
+  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+    return;
+  }
+
+  effectiveAuditEntries.push({
+    form_id: form.form_id,
+    process_id: form.process_id || process_id || null,
+    performed_by: user.user_id,
+    field_name: field,
+    previous_value:
+      oldValue == null ? null : String(formatAuditValue(oldValue)),
+    new_value:
+      newValue == null ? null : String(formatAuditValue(newValue)),
+    status: "updated",
+    performed_at: new Date(),
+  });
+};
+
     const dbReviewerIds = parseIfString(form?.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
     if (
@@ -494,6 +526,9 @@ exports.EditAHU = async (req, res) => {
       const oldValue = form[field];
 
       if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+
+         pushEffectiveAudit(field, oldValue, newValue);
+
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
@@ -537,56 +572,140 @@ exports.EditAHU = async (req, res) => {
 
         for (const record of AhuOperationRecords) {
 
-          if (record.record_id) {
-            // UPDATE existing row
-            await ahuOperationRecord.update(
-              {
-                unique_id: record?.unique_id,
-                date: record?.date,
-                equipmentId: record?.equipmentId,
-                time: record?.time,
-                operationStatus: record?.operationStatus,
-                time: record?.time,
-                remarks: record?.remarks,
-                done_by: record?.done_by,
-                reviewed_by: record?.reviewed_by,
-              },
-              {
-                where: {
-                  record_id: record.record_id,
-                  form_id: form_id,
-                },
-                transaction,
-              }
-            );
+         if (record.record_id) {
 
-          } else {
-            // CREATE only new row
-            await ahuOperationRecord.create(
-              {
-                form_id: form_id,
-                unique_id: record?.unique_id,
-                date: record?.date,
-                equipmentId: record?.equipmentId,
-                time: record?.time,
-                operationStatus: record?.operationStatus,
-                time: record?.time,
-                // startedBy: record?.startedBy,
-                // stopTime: record?.stopTime,
-                // stoppedBy: record?.stoppedBy,
-                remarks: record?.remarks,
-                done_by: record?.done_by,
-                reviewed_by: record?.reviewed_by,
-              },
-              { transaction }
-            );
-          }
+  // Step 1: Get existing record
+  const existingRecord = await ahuOperationRecord.findOne({
+    where: {
+      record_id: record.record_id,
+      form_id: form_id,
+    },
+    transaction,
+  });
+
+  if (!existingRecord) {
+    throw new Error(
+      `AHU record not found: ${record.record_id}`
+    );
+  }
+
+  // Step 2: Same fields which are being updated
+  const recordFields = {
+    unique_id: record?.unique_id,
+    date: record?.date,
+    equipmentId: record?.equipmentId,
+    time: record?.time,
+    operationStatus: record?.operationStatus,
+    remarks: record?.remarks,
+    done_by: record?.done_by,
+    reviewed_by: record?.reviewed_by,
+  };
+
+  // Step 3: Compare old and new values
+  for (const [field, newValue] of Object.entries(recordFields)) {
+
+    const oldValue = existingRecord[field];
+
+    if (
+      newValue !== undefined &&
+      hasChanged(oldValue, newValue)
+    ) {
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || process_id || null,
+        performed_by: user.user_id,
+        field_name: `${field}`,
+        previous_value:
+          oldValue == null
+            ? null
+            : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue == null
+            ? null
+            : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
+    }
+  }
+
+  // Step 4: Your original update query
+  await ahuOperationRecord.update(
+    {
+      unique_id: record?.unique_id,
+      date: record?.date,
+      equipmentId: record?.equipmentId,
+      time: record?.time,
+      operationStatus: record?.operationStatus,
+      time: record?.time,
+      remarks: record?.remarks,
+      done_by: record?.done_by,
+      reviewed_by: record?.reviewed_by,
+    },
+    {
+      where: {
+        record_id: record.record_id,
+        form_id: form_id,
+      },
+      transaction,
+    }
+  );
+}
+          else {
+
+  // Step 1: Same original create payload
+  const newRecordData = {
+    form_id: form_id,
+    unique_id: record?.unique_id,
+    date: record?.date,
+    equipmentId: record?.equipmentId,
+    time: record?.time,
+    operationStatus: record?.operationStatus,
+    time: record?.time,
+    remarks: record?.remarks,
+    done_by: record?.done_by,
+    reviewed_by: record?.reviewed_by,
+  };
+
+  // Step 2: Create record and capture returned row
+  const createdRecord = await ahuOperationRecord.create(
+    newRecordData,
+    { transaction }
+  );
+
+  // Step 3: Create audit entries
+  for (const [field, newValue] of Object.entries(newRecordData)) {
+
+    // form_id ko audit nahi karna
+     if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
+
+    effectiveAuditEntries.push({
+      form_id: form.form_id,
+      process_id: form.process_id || process_id || null,
+      performed_by: user.user_id,
+      field_name: `${field}`,
+      previous_value: null,
+      new_value: String(formatAuditValue(newValue)),
+      status: "created",
+      performed_at: new Date(),
+    });
+  }
+}
         }
       }
 
       await ahuOperationAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
+
+      if (effectiveAuditEntries.length > 0) {
+  await EffectiveChangeAudit.bulkCreate(
+    effectiveAuditEntries,
+    { transaction }
+  );
+}
 
     await transaction.commit();
 
