@@ -175,6 +175,42 @@ const DailyVerificationForm = sequelize.define("DailyVerificationForm", {
   room_id: {
     type: DataTypes.STRING,
   },
+  revision_of_form_id: {
+  type: DataTypes.INTEGER,
+  allowNull: true,
+  },
+
+  parentRecordName: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
+  revision_number: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
+
+  revision_justification: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+
+  is_revision_locked: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+
+  revision_requested_by: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+
+  revision_requested_at: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   workflow_state_id: {
     type: DataTypes.INTEGER,
     defaultValue: 1,

@@ -78,6 +78,12 @@ router.post(
   DailyVerificationProcess.sendReportOnMail
 );
 
+router.post(
+  "/revision/request/:form_id",
+  Auth.checkUserJwtToken,
+  DailyVerificationProcess.RequestDailyVerificationRevision
+);
+
 // router.get("/search", DailyVerificationProcess.GetAll);
 
 module.exports = router;

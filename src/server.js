@@ -210,6 +210,91 @@ const ensureDailyVerificationStandardWeightLimitColumns = async () => {
     }
   }
 };
+const ensureDailyVerificationRevisionColumns = async () => {
+  try {
+    const queryInterface = sequelize.getQueryInterface();
+    const tableName = "DailyVerificationForms";
+
+    const tableDescription = await queryInterface.describeTable(tableName);
+
+    const columns = [
+      {
+        name: "revision_of_form_id",
+        definition: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
+      },
+      {
+        name: "revision_number",
+        definition: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+      },
+      {
+        name: "revision_justification",
+        definition: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
+      },
+      {
+        name: "is_revision_locked",
+        definition: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+          defaultValue: false,
+        },
+      },
+      {
+        name: "revision_requested_by",
+        definition: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
+      },
+      {
+        name: "revision_requested_at",
+        definition: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      {
+        name: "parentRecordName",
+        definition: {
+          type: DataTypes.TEXT,
+          allowNull: true,
+        },
+      },
+    ];
+
+    for (const column of columns) {
+      if (!tableDescription[column.name]) {
+        await queryInterface.addColumn(
+          tableName,
+          column.name,
+          column.definition
+        );
+
+        console.log(
+          `Added ${column.name} column to ${tableName}`
+        );
+      }
+    }
+
+    console.log("DailyVerification revision columns checked successfully.");
+  } catch (error) {
+    console.error(
+      "DailyVerification revision migration error:",
+      error.message
+    );
+
+    throw error;
+  }
+};
 
 // const ensureUserPasswordPolicyColumns = async () => {
 //   try {
@@ -454,6 +539,7 @@ const startServer = async () => {
     await ensureUserPasswordPolicyColumns();
     await ensureDispensingBoothLimitDataColumn();
     await ensureDailyVerificationStandardWeightLimitColumns();
+    await ensureDailyVerificationRevisionColumns();
     await ensureDrainCleaningColumns();
     await initWorkflowTransitions();
     await inituserRolesSync()

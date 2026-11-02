@@ -77,6 +77,10 @@ exports.InsertDailyVerification = async (req, res) => {
     standardWeightW2Max,
     standardWeightW3Min,
     standardWeightW3Max,
+    revision_of_form_id,
+    revision_justification,
+    revision_number,
+    parentRecordName,
   } = req.body;
 
   if (!description) {
@@ -163,6 +167,27 @@ exports.InsertDailyVerification = async (req, res) => {
       }
     });
 
+  const savedParentRecordName =
+    req.body?.parentRecordName ?? null;
+  if (revision_of_form_id) {
+    const parentForm = await DailyVerificationForm.findByPk(
+      revision_of_form_id,
+      {
+        attributes: ["form_id"],
+        transaction,
+      }
+    );
+
+  if (!parentForm) {
+    await transaction.rollback();
+
+    return res.status(400).json({
+      error: true,
+      message: "Parent Daily Verification record not found.",
+    });
+  }
+ }
+
     // Create new Disinfectant Stock Form
     const newForm = await DailyVerificationForm.create(
       {
@@ -200,6 +225,18 @@ exports.InsertDailyVerification = async (req, res) => {
         standardWeightW2Max,
         standardWeightW3Min,
         standardWeightW3Max,
+        // Revision / Parent Record fields
+        revision_of_form_id: revision_of_form_id || null,
+        revision_justification: revision_justification || null,
+        revision_number:
+        revision_number !== undefined &&
+        revision_number !== null &&
+        revision_number !== ""
+          ? Number(revision_number)
+          : 0,
+
+        // Only if this column exists in your model/table
+       parentRecordName: savedParentRecordName,
       },
 
       { transaction },
@@ -235,7 +272,11 @@ exports.InsertDailyVerification = async (req, res) => {
       standardWeightW2Max,
       standardWeightW3Min,
       standardWeightW3Max,
-    
+      parentRecordName:
+      parentRecordName !== undefined
+        ? parentRecordName
+        : form.parentRecordName,
+        
     };
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
@@ -353,6 +394,10 @@ exports.InsertDailyVerification = async (req, res) => {
     return res.status(200).json({
       error: false,
       message: "E-log Created successfully",
+       data: {
+    ...newForm.toJSON(),
+    parentRecordName: newForm.parentRecordName || null,
+  },
     });
   } catch (error) {
     await transaction.rollback();
@@ -404,6 +449,7 @@ exports.EditDailyVerification = async (req, res) => {
     standardWeightW2Max,
     standardWeightW3Min,
     standardWeightW3Max,
+    parentRecordName, 
   } = req.body;
 
   const { form_id } = req.params;
@@ -672,6 +718,10 @@ exports.EditDailyVerification = async (req, res) => {
           : form.additionalAttachment,
         initiatorComment,
         additionalInfo,
+        parentRecordName:
+  parentRecordName !== undefined
+    ? parentRecordName
+    : form.parentRecordName,
       },
       { transaction },
     );
@@ -1361,6 +1411,226 @@ exports.sendReportOnMail = async (req, res) => {
       status: 500,
       error: true,
       message: `Internal Server Error${error}`,
+    });
+  }
+};
+exports.RequestDailyVerificationRevision = async (req, res) => {
+  const { form_id } = req.params;
+  const justification = String(req.body?.justification || "").trim();
+
+  if (!justification) {
+    return res.status(400).json({
+      error: true,
+      message: "Revision justification is required.",
+    });
+  }
+
+  const transaction = await sequelize.transaction();
+
+  try {
+    const originalForm = await DailyVerificationForm.findOne({
+      where: { form_id },
+      transaction,
+      lock: transaction.LOCK.UPDATE,
+    });
+
+    if (!originalForm) {
+      await transaction.rollback();
+
+      return res.status(404).json({
+        error: true,
+        message: "Daily Verification form not found.",
+      });
+    }
+
+    // Prevent another revision request for an already locked form.
+    if (originalForm.is_revision_locked) {
+      await transaction.rollback();
+
+      return res.status(409).json({
+        error: true,
+        message: "This record is already locked for revision.",
+      });
+    }
+
+    /*
+     * IMPORTANT:
+     * Before enabling this API in production, verify:
+     * 1. The form is actually Effective in your workflow.
+     * 2. The logged-in user has permission to request a revision.
+     *
+     * Use your existing workflow-state and authorization logic here.
+     * Do not rely only on the existence of the form.
+     */
+
+    // Get the original form's Elogs records.
+    const originalRecords = await DailyVerificationRecord.findAll({
+      where: { form_id: originalForm.form_id },
+      transaction,
+    });
+
+    // Copy only actual database fields, excluding primary key and timestamps.
+    const formAttributes = DailyVerificationForm.rawAttributes;
+
+    const originalData = originalForm.get({ plain: true });
+    const newFormData = {};
+
+    Object.keys(formAttributes).forEach((field) => {
+      if (
+        field !== "form_id" &&
+        field !== "createdAt" &&
+        field !== "updatedAt" &&
+        field !== "revision_of_form_id" &&
+        field !== "revision_number" &&
+        field !== "revision_justification" &&
+        field !== "is_revision_locked" &&
+        field !== "revision_requested_by" &&
+        field !== "revision_requested_at"
+      ) {
+        if (Object.prototype.hasOwnProperty.call(originalData, field)) {
+          newFormData[field] = originalData[field];
+        }
+      }
+    });
+
+    // Calculate the next revision number in the revision chain.
+    const revisionRootId =
+      originalForm.revision_of_form_id || originalForm.form_id;
+      const parentForm = await DailyVerificationForm.findByPk(
+  revisionRootId,
+  {
+    attributes: ["form_id", "parentRecordName"],
+    transaction,
+  }
+);
+
+const parentRecordName = parentForm?.parentRecordName || null;
+
+    const previousRevisions = await DailyVerificationForm.findAll({
+      where: {
+        revision_of_form_id: revisionRootId,
+      },
+      attributes: ["revision_number"],
+      transaction,
+    });
+
+    const maxRevisionNumber = previousRevisions.reduce(
+      (max, revision) =>
+        Math.max(max, Number(revision.revision_number || 0)),
+      Number(originalForm.revision_number || 0)
+    );
+
+    /*
+     * IMPORTANT:
+     * Set the new form's initial workflow state according to your
+     * actual workflow configuration before production use.
+     *
+     * Do not copy the original form's Effective workflow state into
+     * the new revision.
+     */
+
+    // Reset the workflow fields that are known from the current model.
+    // Verify these values against your existing workflow implementation.
+    if (Object.prototype.hasOwnProperty.call(formAttributes, "status")) {
+      newFormData.status = "Pending";
+    }
+
+    if (Object.prototype.hasOwnProperty.call(formAttributes, "stage")) {
+      newFormData.stage = 1;
+    }
+
+    /*
+     * If workflow_state_id is required, resolve the actual initial
+     * WorkflowState ID here instead of copying the Effective state.
+     *
+     * Example:
+     * newFormData.workflow_state_id = INITIAL_WORKFLOW_STATE_ID;
+     */
+
+    // Create a new form; do not modify the original form's business data.
+    const newRevision = await DailyVerificationForm.create(
+      {
+        ...newFormData,
+        revision_of_form_id: revisionRootId,
+        revision_number: maxRevisionNumber + 1,
+        revision_justification: justification,
+        is_revision_locked: false,
+        revision_requested_by:
+          req.user?.user_id || req.user?.id || null,
+        revision_requested_at: new Date(),
+        parentRecordName,
+      },
+      { transaction }
+    );
+
+    // Copy the Elogs rows to the new form.
+    // Original rows remain linked to the original form.
+    for (const originalRecord of originalRecords) {
+      const recordData = originalRecord.get({ plain: true });
+      const newRecordData = {};
+
+      const recordAttributes = DailyVerificationRecord.rawAttributes;
+
+      Object.keys(recordAttributes).forEach((field) => {
+        if (
+          field !== "record_id" &&
+          field !== "form_id" &&
+          field !== "createdAt" &&
+          field !== "updatedAt"
+        ) {
+          if (Object.prototype.hasOwnProperty.call(recordData, field)) {
+            newRecordData[field] = recordData[field];
+          }
+        }
+      });
+
+      await DailyVerificationRecord.create(
+        {
+          ...newRecordData,
+          form_id: newRevision.form_id,
+        },
+        { transaction }
+      );
+    }
+
+    // Lock the original only after the new revision has been created.
+    await originalForm.update(
+      {
+        is_revision_locked: true,
+        // revision_justification: justification,
+        // revision_requested_by:
+        //   req.user?.user_id || req.user?.id || null,
+        // revision_requested_at: new Date(),
+      },
+      { transaction }
+    );
+
+    await transaction.commit();
+
+    return res.status(201).json({
+      error: false,
+      message: "Revision form created successfully.",
+      data: {
+        originalFormId: originalForm.form_id,
+        newFormId: newRevision.form_id,
+        revisionNumber: newRevision.revision_number,
+        justification,
+      },
+    });
+  } catch (error) {
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+
+    console.error("Daily Verification revision error:", error);
+
+    return res.status(500).json({
+      error: true,
+      message: "Failed to create revision form.",
+      details:
+        process.env.NODE_ENV === "development"
+          ? error.message
+          : undefined,
     });
   }
 };

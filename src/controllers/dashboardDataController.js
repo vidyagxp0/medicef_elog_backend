@@ -211,6 +211,18 @@ exports.GetAllElogs = async (req, res) => {
       if (config && config.type === "form") {
         formAttributes.push(config.field);
       }
+      if (
+        FormModel.rawAttributes &&
+        FormModel.rawAttributes.parentRecordName
+      ) {
+        formAttributes.push("parentRecordName");
+      }
+      if (
+        FormModel.rawAttributes &&
+        FormModel.rawAttributes.revision_of_form_id
+      ) {
+        formAttributes.push("revision_of_form_id");
+      }
 
       const records = await FormModel.findAll({
         attributes: formAttributes,
@@ -252,6 +264,7 @@ exports.GetAllElogs = async (req, res) => {
           status: record.status,
           departmentName: record.departmentName,
           area_name: record.area_name,
+          parentRecordName: record.parentRecordName ?? null,
           equipmentID: equipmentVal,
           instrumentID: instrumentVal,
           workflow_state: record.workflow_state
@@ -321,7 +334,7 @@ exports.GetElogById = async (req, res) => {
     }
 
     const registry = formModelRegistry[process_id];
-    if (!registry) {
+    if (!registry || !registry.form) {
       return res.status(400).json({
         error: true,
         message: "Invalid process_id",
@@ -342,18 +355,60 @@ exports.GetElogById = async (req, res) => {
       ],
       order: [["form_id", "DESC"]],
     });
-    if (!elogData) {
-      return res.json({
+
+    if (elogData.length === 0) {
+      return res.status(404).json({
         error: true,
         message: "No data Found",
       });
     }
 
-    return res.json({
+    const supportsRevision = Boolean(
+      form.rawAttributes?.revision_of_form_id
+    );
+
+    // Add parent information without changing the database record
+    const responseData = await Promise.all(
+      elogData.map(async (item) => {
+        const currentData = item.toJSON();
+
+        const parentRecordId = supportsRevision
+          ? currentData.revision_of_form_id ?? null
+          : null;
+
+        let parentRecordName = null;
+
+        if (parentRecordId !== null) {
+          const parentForm = await form.findOne({
+            where: {
+              form_id: parentRecordId,
+              process_id,
+            },
+            attributes: ["form_id", "parentRecordName"],
+          });
+
+          parentRecordName = parentForm?.parentRecordName ?? null;
+        }
+
+        return {
+          ...currentData,
+          parent_record_id: parentRecordId,
+          parent_record_name: parentRecordName,
+        };
+      })
+    );
+
+    return res.status(200).json({
       error: false,
       message: "Data fetch Successfully",
-      data: elogData,
-    });
+      data: responseData,
+    })
+
+    // return res.json({
+    //   error: false,
+    //   message: "Data fetch Successfully",
+    //   data: elogData,
+    // });
   } catch (error) {
     return res.status(500).json({
       error: true,
@@ -437,6 +492,12 @@ exports.GetAllEffectiveElogs = async (req, res) => {
       if (config && config.type === "form") {
         formAttributes.push(config.field);
       }
+      if (
+        FormModel.rawAttributes &&
+        FormModel.rawAttributes.parentRecordName
+      ) {
+        formAttributes.push("parentRecordName");
+      }
       if (FormModel.rawAttributes && FormModel.rawAttributes.fiscal_year) {
         formAttributes.push("fiscal_year");
       }
@@ -485,6 +546,7 @@ exports.GetAllEffectiveElogs = async (req, res) => {
           fiscal_year: record.fiscal_year || null,
           equipmentID: equipmentVal,
           instrumentID: instrumentVal,
+          parentRecordName: record.parentRecordName ?? null,
           workflow_state: record.workflow_state
             ? {
                 code: record.workflow_state.code,
@@ -567,6 +629,7 @@ exports.GetEffectiveElogsById = async (req, res) => {
         process_id,
         workflow_state_id: "4",
       },
+      
       include: [
         { model: record },
         { model: Process, attributes: ["process_id", "process"] },
@@ -575,9 +638,45 @@ exports.GetEffectiveElogsById = async (req, res) => {
       order: [["form_id", "DESC"]],
     });
 
+
+    const supportsRevision = Boolean(
+      form.rawAttributes?.revision_of_form_id
+    );
+
+    const responseData = await Promise.all(
+      elogData.map(async (item) => {
+        const currentData = item.toJSON();
+
+        const parentRecordId = supportsRevision
+          ? currentData.revision_of_form_id ?? null
+          : null;
+
+        let parentRecordName = null;
+
+        if (parentRecordId !== null) {
+          const parentForm = await form.findOne({
+            where: {
+              form_id: parentRecordId,
+              process_id,
+            },
+            attributes: ["form_id", "parentRecordName"],
+          });
+
+          parentRecordName = parentForm?.parentRecordName ?? null;
+        }
+
+        return {
+          ...currentData,
+          parent_record_id: parentRecordId,
+          parent_record_name: parentRecordName,
+        };
+      })
+    );
+
+
     return res.json({
       error: false,
-      data: elogData,
+      data: responseData,
     });
   } catch (error) {
     return res.status(500).json({
