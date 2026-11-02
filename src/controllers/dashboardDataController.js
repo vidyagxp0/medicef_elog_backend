@@ -13,6 +13,8 @@ const fs = require("fs");
 const path = require("path");
 const { sequelize } = require("../config/db");
 const { getElogDocsUrl } = require("../middlewares/authentication");
+const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
+
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -1613,3 +1615,333 @@ exports.getProcessAnalytics = async (req, res) => {
   }
 };
 
+    // Pagination values from query params
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+
+    const offset = (page - 1) * limit;
+
+    // Fetch paginated records and total count
+    const { count, rows } = await EffectiveChaneAudit.findAndCountAll({
+      where: {
+        form_id,
+        process_id,
+      },
+      include: [
+        {
+          model: User,
+          as: "performedByUser",
+          attributes: ["user_id", "name", "email"],
+        },
+      ],
+      order: [["performed_at", "DESC"]],
+      limit,
+      offset,
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: rows,
+      pagination: {
+        totalRecords: count,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+        limit,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const PDFDocument = require("pdfkit");
+
+
+
+exports.generateEffectiveAuditReport = async (req, res) => {
+   const { form_id, process_id } = req.params;
+    const userId = req.user.userId;
+    const formattedDate = new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    }); 
+
+  let browser;
+const user = await getUserById(userId);
+  try {
+   
+    
+       const registry = formModelRegistry[process_id];
+    if (!registry || !registry.audit) {
+      return res.status(400).json({
+        error: true,
+        message: "Audit trail not configured for this process",
+      });
+    }
+
+    const AuditModel = registry.audit;
+    const Form = registry.form;
+const FormData = await Form.findOne({
+  where: { form_id },
+});
+
+if (!FormData) {
+  return res.status(404).json({
+    success: false,
+    message: "Form not found",
+  });
+}
+
+const departmentName = FormData.departmentName;
+    // Fetch audit records
+    const auditRecords = await EffectiveChangeAudit.findAll({
+      where: {
+        form_id,
+        process_id,
+      },
+      attributes: [
+        "performed_by",
+        "field_name",
+        "previous_value",
+        "new_value",
+        "status",
+        "performed_at",
+      ],
+      order: [["performed_at", "DESC"]],
+      raw: true,
+    });
+
+    if (!auditRecords.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No audit records found",
+      });
+    }
+
+    // Fetch users
+    const userIds = [
+      ...new Set(
+        auditRecords
+          .map((record) => record.performed_by)
+          .filter(Boolean)
+      ),
+    ];
+
+    const users = userIds.length
+      ? await User.findAll({
+          where: {
+            user_id: userIds,
+          },
+          attributes: ["user_id", "name"],
+          raw: true,
+        })
+      : [];
+
+    const userMap = {};
+
+    users.forEach((user) => {
+      userMap[user.user_id] = user.name;
+    });
+
+    // Format field name
+    const formatFieldName = (fieldName) => {
+      if (!fieldName) return "-";
+
+      return fieldName
+        .replace(/^Record\s+\d+\s*-\s*/i, "")
+        .replace(/_/g, " ")
+        .replace(/([a-z])([A-Z])/g, "$1 $2")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
+    // Format date
+    const formatDateTime = (date) => {
+      if (!date) return "-";
+
+      return new Date(date).toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+    };
+
+    // Remove HTML tags
+    const stripHtml = (value) => {
+      if (value === null || value === undefined || value === "") {
+        return "-";
+      }
+
+      if (typeof value !== "string") {
+        return JSON.stringify(value);
+      }
+
+      return value.replace(/<[^>]*>/g, "").trim();
+    };
+
+    // Prepare six columns
+    const response = auditRecords.map((record, index) => ({
+      serialNo: index + 1,
+
+      field_name: formatFieldName(record.field_name),
+
+      previous_value: stripHtml(record.previous_value),
+
+      new_value: stripHtml(record.new_value),
+
+      status: record.status || "-",
+
+      performedBy: userMap[record.performed_by] || "Unknown",
+
+      performedOn: formatDateTime(record.performed_at),
+    }));
+
+const userName = user?.name || "System User";
+
+// Report data
+// Effective audit ke fields aur response same rahenge
+const data = {
+  form_id,
+  process_id,
+  departmentName: departmentName,
+  Process: {
+    process: "Not Applicable",
+  },
+  printedOn: formattedDate,
+  auditTrail: response,
+  title: "Effective Audit Report",
+};
+
+// Logo
+const logoPath = path.join(
+  __dirname,
+  "../public/medicef_logo.png.png"
+);
+
+const logoBase64 = fs.readFileSync(logoPath).toString("base64");
+const logoDataUri = `data:image/png;base64,${logoBase64}`;
+
+// Render Effective Audit Report content
+const htmlContent = await new Promise((resolve, reject) => {
+  req.app.render(
+    "effectiveAuditReport",
+    {
+      reportData: data,
+      logoDataUri,
+      date: formattedDate,
+      userName,
+    },
+    (err, html) => {
+      if (err) return reject(err);
+      resolve(html);
+    }
+  );
+});
+
+// Render common Audit Header
+const headerHtml = await new Promise((resolve, reject) => {
+  req.app.render(
+    "auditHeader",
+    {
+      reportData: data,
+      logoDataUri,
+    },
+    (err, html) => {
+      if (err) return reject(err);
+      resolve(html);
+    }
+  );
+});
+
+// Render common Footer
+const footerHtml = await new Promise((resolve, reject) => {
+  req.app.render(
+    "footer",
+    {
+      userName,
+      date: formattedDate,
+    },
+    (err, html) => {
+      if (err) return reject(err);
+      resolve(html);
+    }
+  );
+});
+
+// Launch Puppeteer
+browser = await puppeteer.launch({
+  headless: true,
+  args: ["--no-sandbox", "--disable-setuid-sandbox"],
+});
+
+const page = await browser.newPage();
+
+await page.setContent(htmlContent, {
+  waitUntil: "networkidle0",
+});
+
+// Generate PDF
+const pdfBuffer = await page.pdf({
+  format: "A4",
+  landscape: true,
+  printBackground: true,
+  displayHeaderFooter: true,
+
+  // Same header and footer as normal Audit Trail
+  headerTemplate: headerHtml,
+  footerTemplate: footerHtml,
+
+  margin: {
+    top: "180px",
+    bottom: "60px",
+    left: "40px",
+    right: "40px",
+  },
+});
+
+res.setHeader(
+  "Content-Disposition",
+  `attachment; filename=Effective_Audit_Report_${form_id}_${process_id}.pdf`
+);
+
+res.setHeader("Content-Type", "application/pdf");
+
+return res.end(pdfBuffer);
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=Effective_Audit_Report_${form_id}_${process_id}.pdf`
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    return res.end(pdfBuffer);
+
+  } catch (error) {
+    console.error("Effective Audit PDF Error:", error);
+
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Unable to generate effective audit report",
+        error: error.message,
+      });
+    }
+
+    res.destroy(error);
+
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
+  }
+};

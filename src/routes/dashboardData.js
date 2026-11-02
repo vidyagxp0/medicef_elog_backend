@@ -49,4 +49,11 @@ router.post("/delete-record/:form_id/:process_id/:record_id", Auth.checkUserJwtT
 
 router.get("/process-analytics/:process_id", Auth.checkUserJwtToken, dashboardDataController.getProcessAnalytics);
 
+router.get("/getAllEffectiveChanges/:form_id/:process_id",dashboardDataController.effectiveChanges)
+
+router.get(
+  "/generate-effective-audit-report/:form_id/:process_id",
+  Auth.checkUserJwtToken,
+  dashboardDataController.generateEffectiveAuditReport
+);
 module.exports = router;

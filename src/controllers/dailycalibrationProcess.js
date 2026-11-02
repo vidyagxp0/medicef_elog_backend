@@ -401,6 +401,20 @@ exports.EditDailyCalibration = async (req, res) => {
 
   const transaction = await sequelize.transaction();
 
+  const normalizeDateTime = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid dateTime value: ${value}`);
+  }
+
+  return date.toISOString().slice(0, 19).replace("T", " ");
+};
+
   try {
     const user = await User.findOne({
       where: { user_id: req.user.userId, isActive: true },
