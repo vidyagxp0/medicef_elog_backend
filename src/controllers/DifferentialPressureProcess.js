@@ -11,6 +11,7 @@ const { v4: uuidv4 } = require("uuid");
 const DifferentialPressureForm = require("../models/differentialPressureForm");
 const DifferentialPressureRecord = require("../models/differentialPressureRecords");
 const DifferentialPressureAuditTrail = require("../models/differentialPressureAuditTrail");
+const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
 
@@ -194,6 +195,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
     );
 
     const auditTrailEntries = [];
+    const effectiveAuditEntries = [];
     const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
     const reviewerNames = reviewerUsers.map(u => u.name).join(", ");
 
@@ -573,6 +575,33 @@ exports.InsertDifferentialPressure = async (req, res) => {
         return value;
       };
 
+       const pushEffectiveAudit = (field, oldValue, newValue) => {
+          if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+            return;
+          }
+
+          effectiveAuditEntries.push({
+            form_id: form.form_id,
+            process_id: form.process_id || null,
+            performed_by: user.user_id,
+            field_name: field,
+            previous_value:
+              oldValue == null ? null : String(formatAuditValue(oldValue)),
+            new_value:
+              newValue == null ? null : String(formatAuditValue(newValue)),
+            status: "updated",
+            performed_at: new Date(),
+          });
+        };
+
+        const isEmptyAuditValue = (value) => {
+          return (
+            value === null ||
+            value === undefined ||
+            (typeof value === "string" && value.trim() === "")
+          );
+        };
+
       const dbReviewerIds = parseIfString(form.reviewer_id, []);
       const reqReviewerIds = parseIfString(reviewer_id, []);
 
@@ -635,6 +664,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
         const oldValue = form[field];
 
         if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+          pushEffectiveAudit(field, oldValue, newValue);
           auditTrailEntries.push({
             form_id: form.form_id,
             field_name: field,
@@ -679,7 +709,96 @@ exports.InsertDifferentialPressure = async (req, res) => {
       );
 
   // Update / Create Temperature Records (NO DELETE)
+        
+    if (
+      Array.isArray(DifferentialPressureRecords) &&
+      DifferentialPressureRecords.length > 0
+    ) {
+      for (const record of DifferentialPressureRecords) {
 
+    // Same fields as original UPDATE and CREATE payload
+    const updateData = {
+      unique_id: record?.unique_id,
+      time: record?.time,
+      date: record?.date,
+      differential_pressure: record?.differential_pressure,
+      remarks: record?.remarks,
+      done_by: record?.done_by,
+      checked_by: record?.checked_by,
+      reviewed_by: record?.reviewed_by,
+      approved_by: record?.approved_by,
+    };
+
+    if (record.record_id) {
+      // UPDATE existing record
+
+      const existingRecord = await DifferentialPressureRecord.findOne({
+        where: {
+          record_id: record.record_id,
+          form_id: form_id,
+        },
+        transaction,
+      });
+
+      if (!existingRecord) {
+        throw new Error(
+          `Differential Pressure record not found: ${record.record_id}`
+        );
+      }
+
+      // Compare existing and updated values
+      for (const [field, newValue] of Object.entries(updateData)) {
+        const oldValue = existingRecord.get(field);
+
+        if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+          effectiveAuditEntries.push({
+            form_id: form.form_id,
+            process_id: form.process_id || null,
+            performed_by: user.user_id,
+            field_name: `${field}`,
+            previous_value:
+              oldValue == null
+                ? null
+                : String(formatAuditValue(oldValue)),
+            new_value:
+              newValue == null
+                ? null
+                : String(formatAuditValue(newValue)),
+            status: "updated",
+            performed_at: new Date(),
+          });
+        }
+      }
+
+      // Original update
+      await existingRecord.update(updateData, { transaction });
+
+    } else {
+      // CREATE new record
+
+      const newRecordData = {
+        form_id: form_id,
+        unique_id: record?.unique_id,
+        time: record?.time,
+        date: record?.date,
+        differential_pressure: record?.differential_pressure,
+        remarks: record?.remarks,
+        done_by: record?.done_by,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        approved_by: record?.approved_by,
+      };
+
+      const newRecord = await DifferentialPressureRecord.create(
+        newRecordData,
+        { transaction }
+      );
+
+      // Create audit entries only for non-empty values
+      for (const [field, newValue] of Object.entries(newRecordData)) {
+        if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
         if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
 
           for (const record of DifferentialPressureRecords) {
@@ -727,9 +846,28 @@ exports.InsertDifferentialPressure = async (req, res) => {
             }
           }
         }
+         effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: `${field}`,
+          previous_value: null,
+          new_value: String(formatAuditValue(newValue)),
+          status: "created",
+          performed_at: new Date(),
+        });
+      }
+    }
+  }
+}
       await DifferentialPressureAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
+           if (effectiveAuditEntries.length > 0) {
+            await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
+              transaction,
+            });
+          }
 
       await transaction.commit();
 

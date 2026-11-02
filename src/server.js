@@ -43,6 +43,7 @@ const dailyCalibrationRoutes = require("./routes/dailyCalibration");
 const balanceUsesRoutes = require("./routes/balanceUses");
 // const monthlyCalibrationRoutes = require("./routes/monthlyCalibration");
 
+const EffectiveChangeAudit = require("./models/effectiveChangeAudit");
 const workFLow = require("./routes/workflow");
 const DispensingRecord = require("./models/dispensingRecord");
 
@@ -559,6 +560,23 @@ const ensureDailyCalibrationDateTimeColumn = async () => {
   }
 };
 
+const ensureEffectiveChangeAuditTable = async () => {
+  try {
+    await EffectiveChangeAudit.sync();
+
+    console.log(
+      "EffectiveChangeAudit table checked/created successfully."
+    );
+  } catch (error) {
+    console.error(
+      "EffectiveChangeAudit table creation error:",
+      error.message
+    );
+
+    throw error;
+  }
+};
+
 const startServer = async () => {
   try {
     await connectToDB();
@@ -566,6 +584,7 @@ const startServer = async () => {
 
     await sequelize.sync({ alter: false });
     console.log("Tables synchronized");
+    await ensureEffectiveChangeAuditTable();
     await ensureUserPasswordPolicyColumns();
     await ensureDispensingBoothLimitDataColumn();
     await ensureDailyVerificationStandardWeightLimitColumns();

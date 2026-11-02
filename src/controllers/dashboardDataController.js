@@ -1614,6 +1614,53 @@ exports.getProcessAnalytics = async (req, res) => {
     });
   }
 };
+exports.GetEffectiveChangeAudit = async (req, res) => {
+  try {
+    const { form_id, process_id } = req.params;
+
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit, 10) || 5);
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await EffectiveChangeAudit.findAndCountAll({
+      where: {
+        form_id,
+        process_id,
+      },
+      include: [
+        {
+          model: User,
+          as: "performedByUser",
+          attributes: ["user_id", "name", "email"],
+        },
+      ],
+      order: [["performed_at", "DESC"]],
+      limit,
+      offset,
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: rows,
+      pagination: {
+        totalRecords: count,
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+        limit,
+      },
+    });
+  } catch (error) {
+    console.error("GetEffectiveChangeAudit Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.effectiveChanges = async (req, res) => {
+  try {
+    const { form_id, process_id } = req.params;
 
     // Pagination values from query params
     const page = parseInt(req.query.page) || 1;
@@ -1622,7 +1669,7 @@ exports.getProcessAnalytics = async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Fetch paginated records and total count
-    const { count, rows } = await EffectiveChaneAudit.findAndCountAll({
+    const { count, rows } = await EffectiveChangeAudit.findAndCountAll({
       where: {
         form_id,
         process_id,
