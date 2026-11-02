@@ -402,6 +402,20 @@ exports.EditDailyCalibration = async (req, res) => {
 
   const transaction = await sequelize.transaction();
 
+  const normalizeDateTime = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) {
+    throw new Error(`Invalid dateTime value: ${value}`);
+  }
+
+  return date.toISOString().slice(0, 19).replace("T", " ");
+};
+
   try {
     const user = await User.findOne({
       where: { user_id: req.user.userId, isActive: true },
@@ -674,7 +688,7 @@ if (
 
       const recordFields = {
         unique_id: record?.unique_id,
-        dateTime: record?.dateTime,
+       dateTime: normalizeDateTime(record?.dateTime),
         theoreticalWeight: record?.theoreticalWeight,
         standardWt: record?.standardWt,
         observedWt: record?.observedWt,
@@ -688,14 +702,23 @@ if (
 
       // Compare old and new values
       for (const [field, newValue] of Object.entries(recordFields)) {
-        const oldValue = existingRecord[field];
+       
+        const oldValue =
+  field === "dateTime"
+    ? normalizeDateTime(existingRecord[field])
+    : existingRecord[field];
 
-        if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+const comparableNewValue =
+  field === "dateTime"
+    ? normalizeDateTime(newValue)
+    : newValue;
+
+        if (newValue !== undefined && hasChanged(oldValue, comparableNewValue)) {
           effectiveAuditEntries.push({
             form_id: form.form_id,
             process_id: form.process_id || null,
             performed_by: user.user_id,
-            field_name: `Record ${record.record_id} - ${field}`,
+            field_name: `${field}`,
             previous_value:
               oldValue == null
                 ? null
@@ -714,7 +737,7 @@ if (
       await DailyCalibrationRecord.update(
         {
           unique_id: record?.unique_id,
-          dateTime: record?.dateTime,
+          dateTime: recordFields.dateTime,
           theoreticalWeight: record?.theoreticalWeight,
           standardWt: record?.standardWt,
           observedWt: record?.observedWt,
@@ -740,7 +763,7 @@ if (
       const newRecordData = {
         form_id: form_id,
         unique_id: record?.unique_id,
-        dateTime: record?.dateTime,
+       dateTime: normalizeDateTime(record?.dateTime),
         theoreticalWeight: record?.theoreticalWeight,
         standardWt: record?.standardWt,
         observedWt: record?.observedWt,
@@ -767,7 +790,7 @@ if (
           form_id: form.form_id,
           process_id: form.process_id || null,
           performed_by: user.user_id,
-          field_name: `Record ${createdRecord.record_id} - ${field}`,
+          field_name: `${field}`,
           previous_value: null,
           new_value: String(formatAuditValue(newValue)),
           status: "created",
@@ -788,7 +811,6 @@ if (
     transaction,
   });
 }
-
 
     await transaction.commit();
 

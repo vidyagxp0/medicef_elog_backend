@@ -1,0 +1,304 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Effective Audit Report</title>
+
+  <style>
+    :root { --gutter: 25px; }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", -apple-system, Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #222;
+    }
+
+    /* One wrapper for header + content = identical width */
+   .page-wrap {
+  width: 100%;
+  padding: 20px var(--gutter) 70px; /* was 50px, gives ~20px more gap above the footer */
+}
+
+
+
+    /* Force whatever auditHeader renders to fill the same width as the table */
+    .header-wrap,
+    .header-wrap > * {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .header-wrap table { width: 100% !important; }
+
+    .report-title {
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      margin: 20px 0;
+    }
+
+    h2.heading {
+      font-size: 15px;
+      padding: 7px 10px;
+      margin: 18px 0 12px;
+      background: #f1f1f1;
+      border-left: 4px solid #555;
+    }
+
+   .report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  table-layout: fixed;
+  margin-bottom: 15px; /* small gap under the table */
+}
+    .report-table th,
+    .report-table td {
+      border: 1px solid #42454a;
+      padding: 7px 6px;
+      text-align: left;
+      vertical-align: top;
+      word-break: break-word;
+    }
+
+    .report-table th {
+      background-color: #e8e8e8;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .report-table td:first-child { text-align: center; }
+
+    .performed-by { font-weight: 600; }
+    .performed-on { color: #555; font-size: 10.5px; }
+
+    /* FOOTER: pinned to the bottom of every printed page */
+    .footer-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 6px var(--gutter);
+      background: #fff;
+      border-top: 1px solid #cbd5e1;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      font-size: 11px;
+      color: #475569;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .footer-left, .footer-right { font-weight: 500; }
+    .footer-center { font-weight: 600; color: #0f172a; }
+    .pageNumber, .totalPages { font-weight: 700; color: #0f172a; }
+
+    @media print {
+      thead { display: table-header-group; }
+      tr { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+<div class="page-wrap">
+
+  <h2 class="report-title">Effective Audit Report</h2>
+
+  <table class="report-table">
+    <thead>
+      <tr>
+        <th style="width: 6%;">S. No.</th>
+        <th style="width: 17%;">Field Name</th>
+        <th style="width: 22%;">Previous Value</th>
+        <th style="width: 22%;">New Value</th>
+        <th style="width: 10%;">Status</th>
+        <th style="width: 23%;">Performed By / On</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% if (reportData.auditTrail && reportData.auditTrail.length > 0) { %>
+
+        <% reportData.auditTrail.forEach((record) => { %>
+          <tr>
+            <td><%= record.serialNo %></td>
+            <td><%= record.field_name %></td>
+            <td><%= record.previous_value %></td>
+            <td><%= record.new_value %></td>
+            <td><%= record.status %></td>
+
+            <td>
+              <div class="performed-by">
+                <%= record.performedBy %>
+              </div>
+
+              <div class="performed-on">
+                <%= record.performedOn %>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+
+      <% } else { %>
+        <tr>
+          <td colspan="6" style="text-align: center;">
+            No audit records found
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html> -->
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Effective Audit Report</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 12px;
+      color: #000;
+    }
+
+    .page-wrap {
+      width: 100%;
+    }
+
+    .report-title {
+      text-align: center;
+      font-size: 19px;
+      font-weight: 700;
+      margin: 20px 0;
+      color: #000;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+
+    .report-table th,
+    .report-table td {
+      border: 1px solid #42454a;
+      padding: 6px 8px;
+      text-align: left;
+      font-size: 12px;
+      vertical-align: top;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .report-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+
+    .report-table td:first-child {
+      text-align: center;
+    }
+
+    .performed-by {
+      font-weight: bold;
+    }
+
+    .performed-on {
+      font-size: 12px;
+      color: #000;
+    }
+
+    .report-table tr {
+      page-break-inside: avoid;
+      page-break-after: auto;
+    }
+
+    .report-table thead {
+      display: table-header-group;
+    }
+
+    .report-table tfoot {
+      display: table-footer-group;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrap">
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th style="width: 6%;">S. No.</th>
+          <th style="width: 17%;">Field Name</th>
+          <th style="width: 22%;">Previous Value</th>
+          <th style="width: 22%;">New Value</th>
+          <th style="width: 10%;">Status</th>
+          <th style="width: 23%;">Performed By / On</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if (reportData.auditTrail && reportData.auditTrail.length > 0) { %>
+
+          <% reportData.auditTrail.forEach((record) => { %>
+            <tr>
+              <td><%= record.serialNo %></td>
+              <td><%= record.field_name %></td>
+              <td><%= record.previous_value %></td>
+              <td><%= record.new_value %></td>
+              <td><%= record.status %></td>
+
+              <td>
+                <div class="performed-on"><b>Performed By:</b>
+                  <%= record.performedBy %>
+                </div>
+
+                <div class="performed-on">
+                  <b>Performed On:</b>
+                  <%= record.performedOn %>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+
+        <% } else { %>
+          <tr>
+            <td colspan="6" style="text-align: center;">
+              No audit records found
+            </td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+  </div>
+</body>
+</html>

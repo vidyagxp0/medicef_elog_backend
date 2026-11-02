@@ -56,4 +56,9 @@ router.get("/process-analytics/:process_id", Auth.checkUserJwtToken, dashboardDa
 
 router.get("/getAllEffectiveChanges/:form_id/:process_id",dashboardDataController.effectiveChanges)
 
+router.get(
+  "/generate-effective-audit-report/:form_id/:process_id",
+  Auth.checkUserJwtToken,
+  dashboardDataController.generateEffectiveAuditReport
+);
 module.exports = router;

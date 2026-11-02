@@ -444,6 +444,36 @@ const ensureUserPasswordPolicyColumns = async () => {
   }
 };
 
+const ensureDailyCalibrationDateTimeColumn = async () => {
+  try {
+    const queryInterface = sequelize.getQueryInterface();
+
+    const tableDescription = await queryInterface.describeTable(
+      "DailyCalibrationRecords"
+    );
+
+    if (!tableDescription.dateTime) {
+      await queryInterface.addColumn(
+        "DailyCalibrationRecords",
+        "dateTime",
+        {
+          type: DataTypes.DATE,
+          allowNull: true,
+        }
+      );
+
+      console.log(
+        "Added dateTime column to DailyCalibrationRecords"
+      );
+    }
+  } catch (error) {
+    console.error(
+      "DailyCalibrationRecords migration error:",
+      error.message
+    );
+  }
+};
+
 const startServer = async () => {
   try {
     await connectToDB();
@@ -455,6 +485,7 @@ const startServer = async () => {
     await ensureDispensingBoothLimitDataColumn();
     await ensureDailyVerificationStandardWeightLimitColumns();
     await ensureDrainCleaningColumns();
+    await ensureDailyCalibrationDateTimeColumn();
     await initWorkflowTransitions();
     await inituserRolesSync()
 
