@@ -13,6 +13,7 @@ const foggingSolutionRecord = require("../models/FoggingSolutionRecord");
 const foggingSolutionAuditTrail = require("../models/FoggingSolutionAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
+const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 
 
 const getUserById = async (user_id) => {
@@ -326,6 +327,17 @@ exports.InsertfoggingSolution = async (req, res) => {
 
     const transaction = await sequelize.transaction();
 
+    
+   
+
+    const isEmptyAuditValue = (value) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  );
+};
+
     try {
       const user = await User.findOne({
         where: { user_id: req.user.userId, isActive: true },
@@ -396,6 +408,9 @@ exports.InsertfoggingSolution = async (req, res) => {
 
       // Track changes for the form
       const auditTrailEntries = [];
+
+      const effectiveAuditEntries = [];
+
       const fields = {
         description,
         departmentName,
@@ -453,6 +468,25 @@ exports.InsertfoggingSolution = async (req, res) => {
         return value;
       };
 
+      const pushEffectiveAudit = (field, oldValue, newValue) => {
+  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+    return;
+  }
+
+  effectiveAuditEntries.push({
+    form_id: form.form_id,
+    process_id: form.process_id || null,
+    performed_by: user.user_id,
+    field_name: field,
+    previous_value:
+      oldValue == null ? null : String(formatAuditValue(oldValue)),
+    new_value:
+      newValue == null ? null : String(formatAuditValue(newValue)),
+    status: "updated",
+    performed_at: new Date(),
+  });
+};
+
       const dbReviewerIds = parseIfString(form.reviewer_id, []);
       const reqReviewerIds = parseIfString(reviewer_id, []);
 
@@ -496,6 +530,10 @@ exports.InsertfoggingSolution = async (req, res) => {
         const oldValue = form[field];
 
         if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+
+           pushEffectiveAudit(field, oldValue, newValue);
+
+
           auditTrailEntries.push({
             form_id: form.form_id,
             field_name: field,
@@ -538,54 +576,139 @@ exports.InsertfoggingSolution = async (req, res) => {
 
           for (const record of foggingSolutionRecords) {
 
-            if (record.record_id) {
-              // UPDATE existing row
-              await foggingSolutionRecord.update(
-                {
-                  unique_id: record?.unique_id,
-                  date: record?.date,
-                  time: record?.time,
-                  virosilTaken: record?.virosilTaken,
-                  waterTaken: record?.waterTaken,
-                  totalSolution: record?.totalSolution,
-                  preparedBy: record?.preparedBy,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                  remarks: record?.remarks,
-                },
-                {
-                  where: {
-                    record_id: record.record_id,
-                    form_id: form_id,
-                  },
-                  transaction,
-                }
-              );
+          if (record.record_id) {
 
-            } else {
-              // CREATE only new row
-              await foggingSolutionRecord.create(
-                {
-                  form_id: form_id,
-                  unique_id: record?.unique_id,
-                  date: record?.date,
-                  time: record?.time,
-                  virosilTaken: record?.virosilTaken,
-                  waterTaken: record?.waterTaken,
-                  totalSolution: record?.totalSolution,
-                  preparedBy: record?.preparedBy,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                  remarks: record?.remarks,
-                },
-                { transaction }
-              );
-            }
+  // Fetch existing record
+  const existingRecord = await foggingSolutionRecord.findOne({
+    where: {
+      record_id: record.record_id,
+      form_id: form_id,
+    },
+    transaction,
+  });
+
+  if (!existingRecord) {
+    throw new Error(
+      `Fogging solution record not found: ${record.record_id}`
+    );
+  }
+
+  // Same fields as original update payload
+  const recordFields = {
+    unique_id: record?.unique_id,
+    date: record?.date,
+    time: record?.time,
+    virosilTaken: record?.virosilTaken,
+    waterTaken: record?.waterTaken,
+    totalSolution: record?.totalSolution,
+    preparedBy: record?.preparedBy,
+    done_by: record?.done_by,
+    reviewed_by: record?.reviewed_by,
+    remarks: record?.remarks,
+  };
+
+  // Compare old and new values
+  for (const [field, newValue] of Object.entries(recordFields)) {
+    const oldValue = existingRecord[field];
+
+    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || null,
+        performed_by: user.user_id,
+        field_name: `${field}`,
+        previous_value:
+          oldValue == null
+            ? null
+            : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue == null
+            ? null
+            : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
+    }
+  }
+
+  // Original update query unchanged
+  await foggingSolutionRecord.update(
+    {
+      unique_id: record?.unique_id,
+      date: record?.date,
+      time: record?.time,
+      virosilTaken: record?.virosilTaken,
+      waterTaken: record?.waterTaken,
+      totalSolution: record?.totalSolution,
+      preparedBy: record?.preparedBy,
+      done_by: record?.done_by,
+      reviewed_by: record?.reviewed_by,
+      remarks: record?.remarks,
+    },
+    {
+      where: {
+        record_id: record.record_id,
+        form_id: form_id,
+      },
+      transaction,
+    }
+  );
+}
+            else {
+
+  // Original create payload unchanged
+  const newRecordData = {
+    form_id: form_id,
+    unique_id: record?.unique_id,
+    date: record?.date,
+    time: record?.time,
+    virosilTaken: record?.virosilTaken,
+    waterTaken: record?.waterTaken,
+    totalSolution: record?.totalSolution,
+    preparedBy: record?.preparedBy,
+    done_by: record?.done_by,
+    reviewed_by: record?.reviewed_by,
+    remarks: record?.remarks,
+  };
+
+  // Create record
+  const createdRecord = await foggingSolutionRecord.create(
+    newRecordData,
+    { transaction }
+  );
+
+  // Create audit entries
+  for (const [field, newValue] of Object.entries(newRecordData)) {
+
+   if (field === "form_id" || isEmptyAuditValue(newValue)) {
+      continue;
+    }
+
+
+    effectiveAuditEntries.push({
+      form_id: form.form_id,
+      process_id: form.process_id || null,
+      performed_by: user.user_id,
+      field_name: `${field}`,
+      previous_value: null,
+      new_value: String(formatAuditValue(newValue)),
+      status: "created",
+      performed_at: new Date(),
+    });
+  }
+}
           }
         }
       await foggingSolutionAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
+
+      if (effectiveAuditEntries.length > 0) {
+  await EffectiveChangeAudit.bulkCreate(
+    effectiveAuditEntries,
+    { transaction }
+  );
+}
 
       await transaction.commit();
 

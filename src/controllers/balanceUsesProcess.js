@@ -12,6 +12,7 @@ const { v4: uuidv4 } = require("uuid");
 const BalanceUsesForm = require("../models/balanceUsesForm");
 const BalanceUsesRecord = require("../models/balanceUsesRecord");
 const BalanceUsesAuditTrail = require("../models/balanceUsesAuditTrail");
+const EffectiveChangeAudit = require("../models/effectiveChangeAudit.js")
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
 
@@ -64,7 +65,7 @@ exports.InsertBalanceUses = async (req, res) => {
     month,
     year,
   } = req.body;
-
+console.log(req.body)
   if (!description) {
     return res
       .status(400)
@@ -152,6 +153,7 @@ exports.InsertBalanceUses = async (req, res) => {
     // Create new Disinfectant Stock Form
     const newForm = await BalanceUsesForm.create(
       {
+        
         department_id: department_id,
         process_id: process_id,
         initiator_id: user.user_id,
@@ -201,7 +203,7 @@ exports.InsertBalanceUses = async (req, res) => {
           field_name: field,
           previous_value: null,
           new_value: typeof value === "object" ? JSON.stringify(value) : value,
-          changed_by: user.user_id,
+          performed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -215,7 +217,7 @@ exports.InsertBalanceUses = async (req, res) => {
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
-        changed_by: user.user_id,
+        performed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
         action: "Opened",
@@ -228,7 +230,7 @@ exports.InsertBalanceUses = async (req, res) => {
         field_name: "additionalAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
-        changed_by: user.user_id,
+        performed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
         declaration: initiatorDeclaration,
@@ -257,7 +259,7 @@ exports.InsertBalanceUses = async (req, res) => {
           field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id || "",
-          changed_by: user.user_id,
+          performed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -268,7 +270,7 @@ exports.InsertBalanceUses = async (req, res) => {
           field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
-          changed_by: user.user_id,
+          performed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -278,7 +280,7 @@ exports.InsertBalanceUses = async (req, res) => {
           field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
-          changed_by: user.user_id,
+          performed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -289,7 +291,7 @@ exports.InsertBalanceUses = async (req, res) => {
             field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs),
-            changed_by: user.user_id,
+            performed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
             action: "Opened",
@@ -324,7 +326,7 @@ exports.InsertBalanceUses = async (req, res) => {
 
 exports.EditBalanceUses = async (req, res) => {
 
-
+console.log(req.body.process_id,"qwertyui")
 
   const {
     department_id,
@@ -342,7 +344,8 @@ exports.EditBalanceUses = async (req, res) => {
     additionalInfo,
     instrumentID,
     month,
-    year
+    year,
+    process_id
   } = req.body;
 
   const { form_id } = req.params;
@@ -384,6 +387,15 @@ exports.EditBalanceUses = async (req, res) => {
   }
 
   const transaction = await sequelize.transaction();
+
+     const isEmptyAuditValue = (value) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  );
+};
+
 
   try {
     const user = await User.findOne({
@@ -455,6 +467,7 @@ exports.EditBalanceUses = async (req, res) => {
       instrumentID,
       month,
       year,
+      process_id,
       initiatorComment,
       initiatorAttachment: initiatorAttachment
         ? getElogDocsUrl(initiatorAttachment)
@@ -520,7 +533,7 @@ exports.EditBalanceUses = async (req, res) => {
         field_name: "reviewer",
         previous_value: oldReviewers?.map((u) => u.name).join(", "),
         new_value: newReviewers?.map((u) => u.name).join(", "),
-        changed_by: user.user_id,
+        performed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
         action: "Update Elog",
@@ -536,7 +549,7 @@ exports.EditBalanceUses = async (req, res) => {
         field_name: "approver",
         previous_value: oldApprover?.name || "",
         new_value: newApprover?.name || "",
-        changed_by: user.user_id,
+        performed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
         action: "Update Elog",
@@ -552,7 +565,7 @@ exports.EditBalanceUses = async (req, res) => {
           field_name: field,
           previous_value: formatAuditValue(oldValue) || null,
           new_value: formatAuditValue(newValue),
-          changed_by: user.user_id,
+          performed_by: user.user_id,
           previous_status: form.status,
           new_status: form.status,
           action: "Update Elog",
@@ -574,6 +587,7 @@ exports.EditBalanceUses = async (req, res) => {
         instrumentID,
         month,
         year,
+        process_id,
         initiatorAttachment: initiatorAttachment
           ? getElogDocsUrl(initiatorAttachment)
           : form.initiatorAttachment,
@@ -594,48 +608,135 @@ exports.EditBalanceUses = async (req, res) => {
       BalanceUsesRecords.length > 0
     ) {
       for (const record of BalanceUsesRecords) {
-        if (record.record_id) {
-          // UPDATE existing row
-          await BalanceUsesRecord.update(
-            {
-              unique_id: record?.unique_id,
-              date: record?.date,
-              productName: record?.productName,
-              batchNo: record?.batchNo,
-              weightTaken: record?.weightTaken,
-              testActivity: record?.testActivity,
-              done_by: record?.done_by,
-              checked_by: record?.checked_by,
-              reviewed_by: record?.reviewed_by,
-              remarks: record?.remarks,
-            },
-            {
-              where: {
-                record_id: record.record_id,
-                form_id: form_id,
-              },
-              transaction,
-            },
-          );
-        } else {
-          // CREATE only new row
-          await BalanceUsesRecord.create(
-            {
-              form_id: form_id,
-              unique_id: record?.unique_id,
-              date: record?.date,
-              productName: record?.productName,
-              batchNo: record?.batchNo,
-              weightTaken: record?.weightTaken,
-              testActivity: record?.testActivity,
-              done_by: record?.done_by,
-              checked_by: record?.checked_by,
-              reviewed_by: record?.reviewed_by,
-              remarks: record?.remarks,
-            },
-            { transaction },
-          );
-        }
+      if (record.record_id) {
+  const existingRecord = await BalanceUsesRecord.findOne({
+    where: {
+      record_id: record.record_id,
+      form_id: form_id,
+    },
+    transaction,
+  });
+
+  if (!existingRecord) {
+    throw new Error(
+      `Balance Uses record not found: ${record.record_id}`
+    );
+  }
+
+  const updateData = {
+    unique_id: record.unique_id,
+    date: record.date,
+    process_id: process_id,
+    productName: record.productName,
+    batchNo: record.batchNo,
+    weightTaken: record.weightTaken,
+    testActivity: record.testActivity,
+    done_by: record.done_by,
+    checked_by: record.checked_by,
+    reviewed_by: record.reviewed_by,
+    remarks: record.remarks,
+  };
+
+  const toAuditValue = (value) => {
+    if (value === null || value === undefined) return null;
+
+    if (typeof value === "object") {
+      return JSON.stringify(value);
+    }
+
+    return String(value);
+  };
+
+  const changedFields = Object.keys(updateData).filter((field) => {
+    return (
+      toAuditValue(existingRecord.get(field)) !==
+      toAuditValue(updateData[field])
+    );
+  });
+
+  if (changedFields.length > 0) {
+    await EffectiveChangeAudit.bulkCreate(
+      changedFields.map((field) => ({
+        form_id: form_id,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value: toAuditValue(existingRecord.get(field)),
+        new_value: toAuditValue(updateData[field]),
+        status:"updated",
+        process_id:process_id,
+        performed_at: new Date(),
+      })),
+      { transaction }
+    );
+  }
+
+  await existingRecord.update(updateData, { transaction });
+
+}
+  else {
+  // Create a new Balance Uses record
+  const newRecord = await BalanceUsesRecord.create(
+    {
+      form_id: form_id,
+      process_id: process_id,
+      unique_id: record?.unique_id,
+      date: record?.date,
+      productName: record?.productName,
+      batchNo: record?.batchNo,
+      weightTaken: record?.weightTaken,
+      testActivity: record?.testActivity,
+      done_by: record?.done_by,
+      checked_by: record?.checked_by,
+      reviewed_by: record?.reviewed_by,
+      remarks: record?.remarks,
+    },
+    { transaction }
+  );
+
+  // All fields to be recorded in EffectiveChangeAudit
+  const auditFields = [
+    "unique_id",
+    "date",
+    "productName",
+    "batchNo",
+    "weightTaken",
+    "testActivity",
+    "done_by",
+    "checked_by",
+    "reviewed_by",
+    "remarks",
+  ];
+
+  // Skip null, undefined and empty values
+  const auditEntries = auditFields
+    .filter((field) => {
+      const value = newRecord.get(field);
+      return !isEmptyAuditValue(value);
+    })
+    .map((field) => {
+      const value = newRecord.get(field);
+
+      return {
+        form_id: form_id,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value: null,
+        new_value:
+          typeof value === "object"
+            ? JSON.stringify(value)
+            : String(value),
+        status: "created",
+        process_id: newRecord.process_id,
+        performed_at: new Date(),
+      };
+    });
+
+  if (auditEntries.length > 0) {
+    await EffectiveChangeAudit.bulkCreate(auditEntries, {
+      transaction,
+    });
+  }
+}
       }
     }
     await BalanceUsesAuditTrail.bulkCreate(auditTrailEntries, {
