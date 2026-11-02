@@ -348,6 +348,7 @@ exports.EditDrainCleaning = async (req, res) => {
     reviewer_id,
     approver_id,
     DrainCleaningRecords,
+    deletedDrainRowIds,
     esignInput,
     password,
     initiatorComment,
@@ -580,6 +581,27 @@ const normalizeTime = (value) => {
           previous_status: form.status,
           new_status: form.status,
           action: "Update Elog",
+        });
+      }
+    }
+
+    // Removed Drain ID rows from the database
+    const rowsToDelete = parseIfString(deletedDrainRowIds, []);
+
+    if (Array.isArray(rowsToDelete) && rowsToDelete.length > 0) {
+      const validRowIds = rowsToDelete
+        .map(Number)
+        .filter((id) => Number.isInteger(id) && id > 0);
+
+      if (validRowIds.length > 0) {
+        await DrainCleaningRecord.destroy({
+          where: {
+            form_id: form_id,
+            row_id: {
+              [Op.in]: validRowIds,
+            },
+          },
+          transaction,
         });
       }
     }
