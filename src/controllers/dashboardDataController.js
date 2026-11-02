@@ -7,7 +7,6 @@ const { Op } = require("sequelize");
 const WorkflowState = require("../models/workflowState");
 const UserRole = require("../models/userRoles");
 const auditFieldMap = require("../utils/auditFieldMap");
-const EffectiveChaneAudit=require('../models/effectiveChangeAudit')
 
 const puppeteer = require("puppeteer");
 const fs = require("fs");
@@ -310,172 +309,6 @@ exports.GetAllElogs = async (req, res) => {
     });
   }
 };
-
-
-exports.GetAllElogsWithoutFilters = async (req, res) => {
-  try {
-    const userId = req.user.userId;
-
-    const allowedDeptIds = await getDepartmentsForUser(userId);
-
-    // Fetch all processes
-    const allProcesses = await Process.findAll();
-
-    let response = [];
-
-    for (const process of allProcesses) {
-      const registry = formModelRegistry[process.process_id];
-
-      if (!registry || !registry.form) continue;
-
-      const FormModel = registry.form;
-      const config = SEARCHABLE_FIELDS[process.process_id];
-
-      const approverAlias = registry.approverAlias || "approver";
-
-      // Include required associated models
-      const includeModels = [
-        {
-          model: WorkflowState,
-          as: "workflow_state",
-          attributes: ["id", "code", "name"],
-          required: false,
-        },
-        {
-          model: User,
-          as: approverAlias,
-          attributes: ["user_id", "name"],
-          required: false,
-        },
-      ];
-
-      if (config && config.type === "record") {
-        includeModels.push({
-          model: registry.record,
-          as: config.association,
-          attributes: [config.field],
-          required: false,
-        });
-      }
-
-      // Select dashboard fields only
-      const formAttributes = [
-        "form_id",
-        "process_id",
-        "initiator_name",
-        "date_of_initiation",
-        "description",
-        "status",
-        "departmentName",
-        "area_name",
-        "workflow_state_id",
-      ];
-
-      if (config && config.type === "form") {
-        formAttributes.push(config.field);
-      }
-
-      // Fetch ALL records without filters or pagination
-      const records = await FormModel.findAll({
-        attributes: formAttributes,
-        where: {
-          department_id: {
-            [Op.in]: allowedDeptIds,
-          },
-        },
-        include: includeModels,
-        order: [["form_id", "DESC"]],
-      });
-
-      const mappedRecords = records.map((record) => {
-        let equipmentVal = null;
-        let instrumentVal = null;
-
-        if (config) {
-          if (config.type === "form") {
-            const val = record[config.field];
-
-            if (config.targetKey === "equipmentID") {
-              equipmentVal = val;
-            } else {
-              instrumentVal = val;
-            }
-          } else if (config.type === "record") {
-            const associatedRecords =
-              record[config.association] || [];
-
-            if (associatedRecords.length > 0) {
-              const val = associatedRecords[0][config.field];
-
-              if (config.targetKey === "equipmentID") {
-                equipmentVal = val;
-              } else {
-                instrumentVal = val;
-              }
-            }
-          }
-        }
-
-        return {
-          form_id: record.form_id,
-          process_id: record.process_id,
-          initiator_name: record.initiator_name,
-          date_of_initiation: record.date_of_initiation,
-          description: record.description,
-          status: record.status,
-          departmentName: record.departmentName,
-          area_name: record.area_name,
-          equipmentID: equipmentVal,
-          instrumentID: instrumentVal,
-          workflow_state: record.workflow_state
-            ? {
-                code: record.workflow_state.code,
-                name: record.workflow_state.name,
-              }
-            : null,
-        };
-      });
-
-      // Add every record to response
-      for (const record of mappedRecords) {
-        response.push({
-          process_id: process.process_id,
-          process: process.process,
-          data: [record],
-          date_of_initiation: record.date_of_initiation,
-        });
-      }
-    }
-
-    // Sort all records by initiation date (newest first)
-    response.sort((a, b) => {
-      const dateA = a.date_of_initiation
-        ? new Date(a.date_of_initiation).getTime()
-        : 0;
-
-      const dateB = b.date_of_initiation
-        ? new Date(b.date_of_initiation).getTime()
-        : 0;
-
-      return dateB - dateA;
-    });
-
-    return res.status(200).json({
-      error: false,
-      totalRecords: response.length,
-      data: response,
-    });
-  } catch (error) {
-    console.error("GetAllElogsWithoutFilters Error:", error);
-
-    return res.status(400).json({
-      error: true,
-      message: error.message,
-    });
-  }
-};
-
-
 exports.GetElogById = async (req, res) => {
   try {
     const { form_id, process_id } = req.params;
@@ -741,18 +574,7 @@ exports.GetEffectiveElogsById = async (req, res) => {
       ],
       order: [["form_id", "DESC"]],
     });
-console.log(
-  "Drain Cleaning Records:",
-  JSON.stringify(
-    elogData.map((item) => item.DrainCleaningRecords),
-    null,
-    2
-  )
-);
-    console.log("Process ID:", process_id);
-console.log("Record model:", record.name);
-console.log("Record attributes:", Object.keys(record.rawAttributes));
-console.log("Associations:", Object.keys(form.associations));
+
     return res.json({
       error: false,
       data: elogData,
@@ -794,7 +616,6 @@ exports.getAllProcesses = async (req, res) => {
     });
   }
 };
-
 exports.getAllDepartments = async (req, res) => {
   try {
     const { departmentName } = req.query;
@@ -826,7 +647,6 @@ exports.getAllDepartments = async (req, res) => {
     });
   }
 };
-
 exports.getServerTime = async (req, res) => {
   try {
     const now = new Date();
@@ -893,7 +713,6 @@ exports.getServerTime = async (req, res) => {
     });
   }
 };
-
 exports.GetUserOnBasisOfRoleGroup = async (req, res) => {
   const { role_id, department_id, process_id } = req.body;
 
@@ -1694,47 +1513,4 @@ exports.getProcessAnalytics = async (req, res) => {
     });
   }
 };
- 
-exports.effectiveChanges = async (req, res) => {
-  try {
-    const { form_id, process_id } = req.params;
 
-    // Pagination values from query params
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
-
-    const offset = (page - 1) * limit;
-
-    // Fetch paginated records and total count
-    const { count, rows } = await EffectiveChaneAudit.findAndCountAll({
-      where: {
-        form_id,
-        process_id,
-      },
-      include: [
-        {
-          model: User,
-          as: "performedByUser",
-          attributes: ["user_id", "name", "email"],
-        },
-      ],
-      order: [["performed_at", "DESC"]],
-      limit,
-      offset,
-    });
-
-    return res.status(200).json({
-      success: true,
-      data: rows,
-      pagination: {
-        totalRecords: count,
-        currentPage: page,
-        totalPages: Math.ceil(count / limit),
-        limit,
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: error.message });
-  }
-};

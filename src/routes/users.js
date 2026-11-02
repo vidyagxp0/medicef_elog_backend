@@ -4,8 +4,6 @@ const User = require("../controllers/users");
 const Auth = require("../middlewares/authentication");
 const multer = require("multer");
 const path = require("path");
-const Process = require("../models/processes");
-
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -59,7 +57,6 @@ router.get(
 router.get("/get-all-rolegroups", User.getAllRoleGroups);
 router.get("/get-all-effective-role", User.getAllEffectiveRoleGroups);
 router.post("/user-login", User.Userlogin);
-router.get("/get-user-byid/:id", User.getUserById);
 router.post("/user-logout",Auth.checkUserJwtToken, User.Userlogout);
 router.get("/login-activity",Auth.checkAdminJwtToken, User.getLoginActivity);
 router.get(
@@ -82,6 +79,5 @@ router.post(
   "/change-expired-password",
   User.changeExpiredPassword
 );
-router.get("/get-UserAssignedProcesses",Auth.checkUserJwtToken,User.getUserAssignedProcesses);
 
 module.exports = router;

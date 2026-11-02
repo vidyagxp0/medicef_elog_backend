@@ -27,11 +27,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get("/get-all", Auth.checkUserJwtToken, dashboardDataController.GetAllElogs);
-router.get(
-  "/get-all-records",
-  Auth.checkUserJwtToken,
-  dashboardDataController.GetAllElogsWithoutFilters
-);
 router.get("/get/:form_id/:process_id", dashboardDataController.GetElogById);
 router.get("/get-all-effective", Auth.checkUserJwtToken, dashboardDataController.GetAllEffectiveElogs);
 router.get("/get-effective-by-id/:form_id/:process_id", Auth.checkUserJwtToken, dashboardDataController.GetEffectiveElogsById);
@@ -53,7 +48,5 @@ router.post("/add-attachment/:form_id/:process_id",upload.any(), Auth.checkUserJ
 router.post("/delete-record/:form_id/:process_id/:record_id", Auth.checkUserJwtToken,dashboardDataController.deleteRecordById);
 
 router.get("/process-analytics/:process_id", Auth.checkUserJwtToken, dashboardDataController.getProcessAnalytics);
-
-router.get("/getAllEffectiveChanges/:form_id/:process_id",dashboardDataController.effectiveChanges)
 
 module.exports = router;

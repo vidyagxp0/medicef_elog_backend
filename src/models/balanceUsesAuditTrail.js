@@ -19,7 +19,7 @@ const BalanceUsesAuditTrail = sequelize.define(
         key: "form_id",
       },
     },
-    performed_by: {
+    changed_by: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

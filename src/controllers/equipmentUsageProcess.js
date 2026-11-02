@@ -13,7 +13,6 @@ const EquipmentUsageRecord = require("../models/EquipmentUsageRecords");
 const EquipmentUsageAuditTrail = require("../models/EquipmentUsageAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
-const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 
 
 const getUserById = async (user_id) => {
@@ -330,17 +329,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
 
     const transaction = await sequelize.transaction();
 
-    
-
-
-    const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
-
     try {
       const user = await User.findOne({
         where: { user_id: req.user.userId, isActive: true },
@@ -411,9 +399,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
 
       // Track changes for the form
       const auditTrailEntries = [];
-
-      const effectiveAuditEntries = [];
-
       const fields = {
         description,
         departmentName,
@@ -525,23 +510,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
             new_status: form.status,
             action: "Update Elog",
           });
-
-          effectiveAuditEntries.push({
-  form_id: form.form_id,
-  process_id: form.process_id || null,
-  performed_by: user.user_id,
-  field_name: field,
-  previous_value:
-    oldValue === null || oldValue === undefined
-      ? null
-      : String(formatAuditValue(oldValue)),
-  new_value:
-    newValue === null || newValue === undefined
-      ? null
-      : String(formatAuditValue(newValue)),
-  status: "updated",
-  performed_at: new Date(),
-});
         }
       }
 
@@ -577,61 +545,6 @@ exports.InsertEquipmentUsage = async (req, res) => {
 
             if (record.record_id) {
               // UPDATE existing row
-
-         const existingRecord = await EquipmentUsageRecord.findOne({
-  where: {
-    record_id: record.record_id,
-    form_id: form_id,
-  },
-  transaction,
-});
-
-if (!existingRecord) {
-  throw new Error(`Equipment Usage Record not found: ${record.record_id}`);
-}
-
-// 2. Collect incoming values for comparison
-const recordFields = {
-  unique_id: record?.unique_id,
-  date: record?.date,
-  time: record?.time,
-  productName: record?.productName,
-  batchNo: record?.batchNo,
-  batchSize: record?.batchSize,
-  activityType: record?.activityType,
-  startTime: record?.startTime,
-  endTime: record?.endTime,
-  remarks: record?.remarks,
-  done_by: record?.done_by,
-  reviewed_by: record?.reviewed_by,
-  verified_by: record?.verified_by,
-};
-
-// 3. Compare old and new values
-for (const [field, newValue] of Object.entries(recordFields)) {
-  const oldValue = existingRecord[field];
-
-  if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value:
-        oldValue === null || oldValue === undefined
-          ? null
-          : String(formatAuditValue(oldValue)),
-      new_value:
-        newValue === null || newValue === undefined
-          ? null
-          : String(formatAuditValue(newValue)),
-      status: "updated",
-      performed_at: new Date(),
-    });
-  }
-}
-
-
               await EquipmentUsageRecord.update(
                 {
                   unique_id: record?.unique_id,
@@ -657,67 +570,33 @@ for (const [field, newValue] of Object.entries(recordFields)) {
                 }
               );
 
+            } else {
+              // CREATE only new row
+              await EquipmentUsageRecord.create(
+                {
+                  form_id: form_id,
+                  unique_id: record?.unique_id,
+                  date: record?.date,
+                  time: record?.time,
+                  productName: record?.productName,
+                  batchNo: record?.batchNo,
+                  batchSize: record?.batchSize,
+                  activityType: record?.activityType,
+                  startTime: record?.startTime,
+                  endTime: record?.endTime,
+                  remarks: record?.remarks,
+                  done_by: record?.done_by,
+                  reviewed_by: record?.reviewed_by,
+                  verified_by: record?.verified_by,
+                },
+                { transaction }
+              );
             }
-           else {
-  // CREATE only new row
-
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    time: record?.time,
-    productName: record?.productName,
-    batchNo: record?.batchNo,
-    batchSize: record?.batchSize,
-    activityType: record?.activityType,
-    startTime: record?.startTime,
-    endTime: record?.endTime,
-    remarks: record?.remarks,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-    verified_by: record?.verified_by,
-  };
-
-  // 1. Create new record
-  const createdRecord = await EquipmentUsageRecord.create(
-    newRecordData,
-    { transaction }
-  );
-
-  // 2. Create audit for every provided field
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-
-    // Skip form_id
-     if (field === "form_id" || isEmptyAuditValue(newValue)) {
-          continue;
-        }
-
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
           }
         }
-     if (auditTrailEntries.length > 0) {
-  await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
-    transaction,
-  });
-}
-
-// Effective change audit
-if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
-    transaction,
-  });
-}
+      await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
+        transaction,
+      });
 
       await transaction.commit();
 

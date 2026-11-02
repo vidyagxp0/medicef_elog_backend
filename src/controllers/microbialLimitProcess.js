@@ -13,7 +13,6 @@ const MicrobialLimitRecord = require("../models/microbialLimitRecord");
 const MicrobialAuditTrail = require("../models/microbialAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
-const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -450,9 +449,6 @@ exports.EditMicrobialLimit = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
-
-    const effectiveAuditEntries = [];
-
     const fields = {
       description,
       departmentName,
@@ -509,33 +505,6 @@ exports.EditMicrobialLimit = async (req, res) => {
       return value;
     };
 
-    const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
-
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
-
-const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
-
     const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
 
@@ -578,9 +547,6 @@ const isEmptyAuditValue = (value) => {
       const oldValue = form[field];
 
       if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-
-        pushEffectiveAudit(field, oldValue, newValue);
-
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
@@ -626,172 +592,84 @@ const isEmptyAuditValue = (value) => {
     ) {
       for (const record of MicrobialLimitRecords) {
         if (record.record_id) {
-  const existingRecord = await MicrobialLimitRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
-
-  if (!existingRecord) {
-    throw new Error(`Microbial limit record not found: ${record.record_id}`);
-  }
-
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    product_name: record?.product_name,
-    batch_no: record?.batch_no,
-    mfg_date: record?.mfg_date,
-    exp_date: record?.exp_date,
-    ar_no: record?.ar_no,
-    analysis_date: record?.analysis_date,
-    analyzed_by: record?.analyzed_by,
-    results_of_tbc: record?.results_of_tbc,
-    results_of_tfc: record?.results_of_tfc,
-    date_of_observation: record?.date_of_observation,
-    observed1_by: record?.observed1_by,
-    observed2_by: record?.observed2_by,
-    date_of_release: record?.date_of_release,
-    e_coli: record?.e_coli,
-    salmonella: record?.salmonella,
-    p_aeruginosa: record?.p_aeruginosa,
-    s_aureus: record?.s_aureus,
-    shigellaboydii: record?.shigellaboydii,
-    c_albicans: record?.c_albicans,
-    clostridia: record?.clostridia,
-    bile_tolerant: record?.bile_tolerant,
-    checked_by: record?.checked_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
-
-  // Compare old and new values
-  for (const [field, newValue] of Object.entries(recordFields)) {
-    const oldValue = existingRecord[field];
-
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null ? null : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null ? null : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
-    }
-  }
-
-  // Original update query - same fields
-  await MicrobialLimitRecord.update(
-    {
-      unique_id: record?.unique_id,
-      date: record?.date,
-      product_name: record?.product_name,
-      batch_no: record?.batch_no,
-      mfg_date: record?.mfg_date,
-      exp_date: record?.exp_date,
-      ar_no: record?.ar_no,
-      analysis_date: record?.analysis_date,
-      analyzed_by: record?.analyzed_by,
-      results_of_tbc: record?.results_of_tbc,
-      results_of_tfc: record?.results_of_tfc,
-      date_of_observation: record?.date_of_observation,
-      observed1_by: record?.observed1_by,
-      observed2_by: record?.observed2_by,
-      date_of_release: record?.date_of_release,
-      e_coli: record?.e_coli,
-      salmonella: record?.salmonella,
-      p_aeruginosa: record?.p_aeruginosa,
-      s_aureus: record?.s_aureus,
-      shigellaboydii: record?.shigellaboydii,
-      c_albicans: record?.c_albicans,
-      clostridia: record?.clostridia,
-      bile_tolerant: record?.bile_tolerant,
-      checked_by: record?.checked_by,
-      reviewed_by: record?.reviewed_by,
-      remarks: record?.remarks,
-    },
-    {
-      where: {
-        record_id: record.record_id,
-        form_id: form_id,
-      },
-      transaction,
-    }
-  );
-}
-        else {
-  // Original create payload - no extra fields
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    product_name: record?.product_name,
-    batch_no: record?.batch_no,
-    mfg_date: record?.mfg_date,
-    exp_date: record?.exp_date,
-    ar_no: record?.ar_no,
-    analysis_date: record?.analysis_date,
-    analyzed_by: record?.analyzed_by,
-    results_of_tbc: record?.results_of_tbc,
-    results_of_tfc: record?.results_of_tfc,
-    date_of_observation: record?.date_of_observation,
-    observed1_by: record?.observed1_by,
-    observed2_by: record?.observed2_by,
-    date_of_release: record?.date_of_release,
-    e_coli: record?.e_coli,
-    salmonella: record?.salmonella,
-    p_aeruginosa: record?.p_aeruginosa,
-    s_aureus: record?.s_aureus,
-    shigellaboydii: record?.shigellaboydii,
-    c_albicans: record?.c_albicans,
-    clostridia: record?.clostridia,
-    bile_tolerant: record?.bile_tolerant,
-    checked_by: record?.checked_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
-
-  const createdRecord = await MicrobialLimitRecord.create(
-    newRecordData,
-    { transaction }
-  );
-
-  // Create audit only for non-empty values
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
-
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+          // UPDATE existing row
+          await MicrobialLimitRecord.update(
+            {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              product_name: record?.product_name,
+              batch_no: record?.batch_no,
+              mfg_date: record?.mfg_date,
+              exp_date: record?.exp_date,
+              ar_no: record?.ar_no,
+              analysis_date: record?.analysis_date,
+              analyzed_by: record?.analyzed_by,
+              results_of_tbc: record?.results_of_tbc,
+              results_of_tfc: record?.results_of_tfc,
+              date_of_observation: record?.date_of_observation,
+              observed1_by: record?.observed1_by,
+              observed2_by: record?.observed2_by,
+              date_of_release: record?.date_of_release,
+              e_coli: record?.e_coli,
+              salmonella: record?.salmonella,
+              p_aeruginosa: record?.p_aeruginosa,
+              s_aureus: record?.s_aureus,
+              shigellaboydii: record?.shigellaboydii,
+              c_albicans: record?.c_albicans,
+              clostridia: record?.clostridia,
+              bile_tolerant: record?.bile_tolerant,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
+            },
+            {
+              where: {
+                record_id: record.record_id,
+                form_id: form_id,
+              },
+              transaction,
+            },
+          );
+        } else {
+          // CREATE only new row
+          await MicrobialLimitRecord.create(
+            {
+              form_id: form_id,
+              unique_id: record?.unique_id,
+              date: record?.date,
+              product_name: record?.product_name,
+              batch_no: record?.batch_no,
+              mfg_date: record?.mfg_date,
+              exp_date: record?.exp_date,
+              ar_no: record?.ar_no,
+              analysis_date: record?.analysis_date,
+              analyzed_by: record?.analyzed_by,
+              results_of_tbc: record?.results_of_tbc,
+              results_of_tfc: record?.results_of_tfc,
+              date_of_observation: record?.date_of_observation,
+              observed1_by: record?.observed1_by,
+              observed2_by: record?.observed2_by,
+              date_of_release: record?.date_of_release,
+              e_coli: record?.e_coli,
+              salmonella: record?.salmonella,
+              p_aeruginosa: record?.p_aeruginosa,
+              s_aureus: record?.s_aureus,
+              shigellaboydii: record?.shigellaboydii,
+              c_albicans: record?.c_albicans,
+              clostridia: record?.clostridia,
+              bile_tolerant: record?.bile_tolerant,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
+            },
+            { transaction },
+          );
+        }
       }
     }
     await MicrobialAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
-
-    if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
-    transaction,
-  });
-}
 
     await transaction.commit();
 

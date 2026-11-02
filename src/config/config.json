@@ -1,7 +1,7 @@
 {
     "development" : {
             "PORT": 1000,
-            "dbName": "elogbook",
+            "dbName": "elogbook-db",
             "username": "root",
             "password": "root",
             "dialect": "mysql",

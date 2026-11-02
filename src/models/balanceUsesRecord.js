@@ -3,10 +3,6 @@ const { DataTypes } = require("sequelize");
 const BalanceUsesForm = require("./balanceUsesForm");
 
 const BalanceUsesRecord = sequelize.define("BalanceUsesRecord", {
-  process_id: {
-  type: DataTypes.INTEGER,
-  allowNull: true,
-},
   record_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,

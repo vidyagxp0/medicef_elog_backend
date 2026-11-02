@@ -42,8 +42,6 @@ router.put(
   DrainCleaningProcess.EditDrainCleaning
 );
 
-router.delete("/delete-row/:row_id", DrainCleaningProcess.deleteRowById);
-
 router.post(
   "/generate-pdf",
   Auth.checkUserJwtToken,

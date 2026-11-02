@@ -13,7 +13,6 @@ const DrainCleaningRecord = require("../models/drainCleaningRecord");
 const DrainCleaningAuditTrail = require("../models/drainCleaningAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
-const EffectiveChangeAudit = require('../models/effectiveChangeAudit')
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -211,7 +210,7 @@ exports.InsertDrainCleaning = async (req, res) => {
           field_name: field,
           previous_value: null,
           new_value: typeof value === "object" ? JSON.stringify(value) : value,
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -225,7 +224,7 @@ exports.InsertDrainCleaning = async (req, res) => {
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
         action: "Opened",
@@ -238,7 +237,7 @@ exports.InsertDrainCleaning = async (req, res) => {
         field_name: "additionalAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
         declaration: initiatorDeclaration,
@@ -268,7 +267,7 @@ exports.InsertDrainCleaning = async (req, res) => {
           field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id || "",
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -279,7 +278,7 @@ exports.InsertDrainCleaning = async (req, res) => {
           field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -289,7 +288,7 @@ exports.InsertDrainCleaning = async (req, res) => {
           field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -300,7 +299,7 @@ exports.InsertDrainCleaning = async (req, res) => {
             field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs),
-            performed_by: user.user_id,
+            changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
             action: "Opened",
@@ -354,8 +353,7 @@ exports.EditDrainCleaning = async (req, res) => {
     initiatorComment,
     additionalInfo,
   } = req.body;
-  const process_id=req.body.Process.process_id;
- console.log(process_id,"fde")
+
   const { form_id } = req.params;
 
   if (!form_id) {
@@ -395,23 +393,6 @@ exports.EditDrainCleaning = async (req, res) => {
   }
 
   const transaction = await sequelize.transaction();
-
-     const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
-
-const normalizeTime = (value) => {
-  if (value === null || value === undefined || value === "") {
-    return value;
-  }
-
-  return String(value).trim().slice(0, 8).padEnd(8, ":00");
-};
-
 
   try {
     const user = await User.findOne({
@@ -545,7 +526,7 @@ const normalizeTime = (value) => {
         field_name: "reviewer",
         previous_value: oldReviewers?.map((u) => u.name).join(", "),
         new_value: newReviewers?.map((u) => u.name).join(", "),
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
         action: "Update Elog",
@@ -561,7 +542,7 @@ const normalizeTime = (value) => {
         field_name: "approver",
         previous_value: oldApprover?.name || "",
         new_value: newApprover?.name || "",
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
         action: "Update Elog",
@@ -577,7 +558,7 @@ const normalizeTime = (value) => {
           field_name: field,
           previous_value: formatAuditValue(oldValue) || null,
           new_value: formatAuditValue(newValue),
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: form.status,
           new_status: form.status,
           action: "Update Elog",
@@ -632,51 +613,12 @@ const normalizeTime = (value) => {
     );
 
     // Update / Create Drain Cleaning Records (NO DELETE)
-    
-    // Update / Create Drain Cleaning Records (NO DELETE)
-
     if (
       Array.isArray(DrainCleaningRecords) &&
       DrainCleaningRecords.length > 0
     ) {
       for (const record of DrainCleaningRecords) {
-        const updateData = {
-          unique_id: record?.unique_id,
-          date: record?.date,
-          by: record?.by,
-          checked: record?.checked,
-          day: record?.day,
-          month:
-            record?.month !== undefined ? record.month : undefined,
-          year:
-            record?.year !== undefined ? record.year : undefined,
-          month_name: record?.month_name,
-          role: record?.role,
-          row_id: record?.row_id,
-          row_label: record?.row_label,
-          status: record?.status,
-          time: record?.time,
-          drain_id: record?.drain_id,
-          done_by: record?.done_by,
-          checked_by: record?.checked_by,
-          reviewed_by: record?.reviewed_by,
-          verified_by: record?.verified_by,
-          remarks: record?.remarks,
-        };
-
-        const toAuditValue = (value) => {
-          if (value === null || value === undefined) return null;
-
-          if (typeof value === "object") {
-            return JSON.stringify(value);
-          }
-
-          return String(value);
-        };
-
         let existingRecord = null;
-
-        // Find record by record_id first
         if (record.record_id) {
           existingRecord = await DrainCleaningRecord.findOne({
             where: {
@@ -685,27 +627,18 @@ const normalizeTime = (value) => {
             },
             transaction,
           });
-        } else if (
-          record.row_id !== undefined &&
-          record.row_id !== null &&
-          record.day !== undefined &&
-          record.day !== null
-        ) {
-          // Otherwise, find using row_id + day + optional month/year
+        } else if (record.row_id && record.day) {
           const matchWhere = {
             form_id: form_id,
             row_id: record.row_id,
             day: record.day,
           };
-
           if (record.month !== undefined && record.month !== null) {
             matchWhere.month = record.month;
           }
-
           if (record.year !== undefined && record.year !== null) {
             matchWhere.year = record.year;
           }
-
           existingRecord = await DrainCleaningRecord.findOne({
             where: matchWhere,
             transaction,
@@ -713,109 +646,59 @@ const normalizeTime = (value) => {
         }
 
         if (existingRecord) {
-          // UPDATE existing record
-          const changedFields = Object.keys(updateData).filter((field) => {
-
-  if (
-    (field === "month" || field === "year") &&
-    updateData[field] === undefined
-  ) {
-    return false;
-  }
-
-  if (updateData[field] === undefined) {
-    return false;
-  }
-
-  let oldValue = existingRecord.get(field);
-  let newValue = updateData[field];
-
-  // Normalize time before comparison
-  if (field === "time") {
-    oldValue = normalizeTime(oldValue);
-    newValue = normalizeTime(newValue);
-  }
-
-  return (
-    toAuditValue(oldValue) !== toAuditValue(newValue)
-  );
-});
-
-          // Save audit entries only for changed fields
-          if (changedFields.length > 0) {
-            await EffectiveChangeAudit.bulkCreate(
-              changedFields.map((field) => ({
-                form_id: form_id,
-                performed_by: user.user_id,
-                field_name: field,
-                previous_value:
-                  toAuditValue(existingRecord.get(field)),
-                new_value: toAuditValue(updateData[field]) ?? "null",
-                status: "updated",
-                process_id:process_id
-              })),
-              { transaction }
-            );
-          }
-
-          // Do not overwrite month/year when not provided
-          const dataToUpdate = { ...updateData };
-
-          if (dataToUpdate.month === undefined) {
-            delete dataToUpdate.month;
-          }
-
-          if (dataToUpdate.year === undefined) {
-            delete dataToUpdate.year;
-          }
-
-          await existingRecord.update(dataToUpdate, { transaction });
-        } 
-       else {
-  // CREATE a new record
-  const createData = {
-    ...updateData,
-    form_id: form_id,
-  };
-
-  const newRecord = await DrainCleaningRecord.create(
-    createData,
-    { transaction }
-  );
-
-  // Audit all fields of the newly created record
-  const auditFields = Object.keys(updateData);
-
-  // Skip null, undefined and empty values
-  const auditEntries = auditFields
-    .filter((field) => {
-      const value = newRecord.get(field);
-      return !isEmptyAuditValue(value);
-    })
-    .map((field) => {
-      const value = newRecord.get(field);
-
-      return {
-        form_id: form_id,
-        performed_by: user.user_id,
-        field_name: field,
-        previous_value: null,
-        new_value: toAuditValue(value),
-        status: "created",
-        process_id: process_id,
-        performed_at: new Date(),
-      };
-    });
-
-  if (auditEntries.length > 0) {
-    await EffectiveChangeAudit.bulkCreate(auditEntries, {
-      transaction,
-    });
-  }
-}
+          // UPDATE existing row
+          await existingRecord.update(
+            {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              by: record?.by,
+              checked: record?.checked,
+              day: record?.day,
+              month: record?.month !== undefined ? record.month : existingRecord.month,
+              year: record?.year !== undefined ? record.year : existingRecord.year,
+              month_name: record?.month_name || existingRecord.month_name,
+              role: record?.role,
+              row_id: record?.row_id,
+              row_label: record?.row_label,
+              status: record?.status,
+              time: record?.time,
+              done_by: record?.done_by,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              verified_by: record?.verified_by,
+              remarks: record?.remarks,
+            },
+            { transaction },
+          );
+        } else {
+          // CREATE only new row
+          await DrainCleaningRecord.create(
+            {
+              form_id: form_id,
+              unique_id: record?.unique_id,
+              time: record?.time,
+              by: record?.by,
+              checked: record?.checked,
+              day: record?.day,
+              month: record?.month,
+              year: record?.year,
+              month_name: record?.month_name,
+              role: record?.role,
+              row_id: record?.row_id,
+              row_label: record?.row_label,
+              status: record?.status,
+              drain_id: record?.drain_id,
+              done_by: record?.done_by,
+              checked_by: record?.checked_by,
+              reviewed_by: record?.reviewed_by,
+              verified_by: record?.verified_by,
+              remarks: record?.remarks,
+            },
+            { transaction },
+          );
+        }
       }
     }
-
     await DrainCleaningAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
@@ -1567,50 +1450,6 @@ exports.sendReportOnMail = async (req, res) => {
       status: 500,
       error: true,
       message: `Internal Server Error${error}`,
-    });
-  }
-};
-
-exports.deleteRowById = async (req, res) => {
-  try {
-    const { row_id } = req.params;
-
-    // Validate row_id
-    if (row_id === undefined || row_id === null || row_id === "") {
-      return res.status(400).json({
-        success: false,
-        message: "row_id is required",
-      });
-    }
-
-    // Check whether row exists
-    const record = await DrainCleaningRecord.findOne({
-      where: {
-        row_id: row_id,
-      },
-    });
-
-    if (!record) {
-      return res.status(404).json({
-        success: false,
-        message: "Record not found",
-      });
-    }
-
-    // Delete record
-    await record.destroy();
-
-    return res.status(200).json({
-      success: true,
-      message: "Record deleted successfully",
-    });
-  } catch (error) {
-    console.error("Error deleting record:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
     });
   }
 };

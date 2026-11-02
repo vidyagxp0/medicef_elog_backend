@@ -13,7 +13,6 @@ const DispensingBoothRecord = require("../models/dispensingBoothRecord");
 const DispensingBoothAuditTrail = require("../models/dispensingBoothAuditTrail");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
-const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -460,9 +459,6 @@ exports.EditDispensingBooth = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
-
-    const effectiveAuditEntries = [];
-
     const fields = {
       description,
       departmentName,
@@ -523,33 +519,6 @@ exports.EditDispensingBooth = async (req, res) => {
       return value;
     };
 
-    const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
-
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
-
-const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
-
     const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
 
@@ -595,9 +564,6 @@ const isEmptyAuditValue = (value) => {
           : form[field];
 
       if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-
-         pushEffectiveAudit(field, oldValue, newValue);
-
         auditTrailEntries.push({
           form_id: form.form_id,
           field_name: field,
@@ -647,157 +613,74 @@ const isEmptyAuditValue = (value) => {
     ) {
       for (const record of DispensingBoothRecords) {
         if (record.record_id) {
-  // UPDATE existing row
-
-  const existingRecord = await DispensingBoothRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
-
-  if (!existingRecord) {
-    throw new Error(`Dispensing booth record not found: ${record.record_id}`);
-  }
-
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    rlaf_start_time: record?.rlaf_start_time,
-    pre_filter: record?.pre_filter,
-    intermediate_filter: record?.intermediate_filter,
-    hepa_filter: record?.hepa_filter,
-    product: record?.product,
-    batch_no: record?.batch_no,
-    batch_size: record?.batch_size,
-    dispensing_start_time: record?.dispensing_start_time,
-    dispensing_end_time: record?.dispensing_end_time,
-    rlaf_end_time: record?.rlaf_end_time,
-    dispensing_doneby: record?.dispensing_doneby,
-    dispensing_verifiedby: record?.dispensing_verifiedby,
-    type_of_cleaning: record?.type_of_cleaning,
-    dbc_start_time: record?.dbc_start_time,
-    dbc_end_time: record?.dbc_end_time,
-    dbc_doneby: record?.dbc_doneby,
-    dbc_verifiedby: record?.dbc_verifiedby,
-    checked_by: record?.checked_by,
-    remarks: record?.remarks,
-  };
-
-  for (const [field, newValue] of Object.entries(recordFields)) {
-    const oldValue = existingRecord[field];
-
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null ? null : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null ? null : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
-    }
-  }
-
-  await DispensingBoothRecord.update(
-    {
-      unique_id: record?.unique_id,
-      date: record?.date,
-      rlaf_start_time: record?.rlaf_start_time,
-      pre_filter: record?.pre_filter,
-      intermediate_filter: record?.intermediate_filter,
-      hepa_filter: record?.hepa_filter,
-      product: record?.product,
-      batch_no: record?.batch_no,
-      batch_size: record?.batch_size,
-      dispensing_start_time: record?.dispensing_start_time,
-      dispensing_end_time: record?.dispensing_end_time,
-      rlaf_end_time: record?.rlaf_end_time,
-      dispensing_doneby: record?.dispensing_doneby,
-      dispensing_verifiedby: record?.dispensing_verifiedby,
-      type_of_cleaning: record?.type_of_cleaning,
-      dbc_start_time: record?.dbc_start_time,
-      dbc_end_time: record?.dbc_end_time,
-      dbc_doneby: record?.dbc_doneby,
-      dbc_verifiedby: record?.dbc_verifiedby,
-      checked_by: record?.checked_by,
-      remarks: record?.remarks,
-    },
-    {
-      where: {
-        record_id: record.record_id,
-        form_id: form_id,
-      },
-      transaction,
-    },
-  );
-}
-       else {
-  // CREATE only new row
-
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    rlaf_start_time: record?.rlaf_start_time,
-    pre_filter: record?.pre_filter,
-    intermediate_filter: record?.intermediate_filter,
-    hepa_filter: record?.hepa_filter,
-    product: record?.product,
-    batch_no: record?.batch_no,
-    batch_size: record?.batch_size,
-    dispensing_start_time: record?.dispensing_start_time,
-    dispensing_end_time: record?.dispensing_end_time,
-    rlaf_end_time: record?.rlaf_end_time,
-    dispensing_doneby: record?.dispensing_doneby,
-    dispensing_verifiedby: record?.dispensing_verifiedby,
-    type_of_cleaning: record?.type_of_cleaning,
-    dbc_start_time: record?.dbc_start_time,
-    dbc_end_time: record?.dbc_end_time,
-    dbc_doneby: record?.dbc_doneby,
-    dbc_verifiedby: record?.dbc_verifiedby,
-    checked_by: record?.checked_by,
-    remarks: record?.remarks,
-  };
-
-  const createdRecord = await DispensingBoothRecord.create(
-    newRecordData,
-    { transaction },
-  );
-
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
-
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+          // UPDATE existing row
+          await DispensingBoothRecord.update(
+            {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              rlaf_start_time: record?.rlaf_start_time,
+              pre_filter: record?.pre_filter,
+              intermediate_filter: record?.intermediate_filter,
+              hepa_filter: record?.hepa_filter,
+              product: record?.product,
+              batch_no: record?.batch_no,
+              batch_size: record?.batch_size,
+              dispensing_start_time: record?.dispensing_start_time,
+              dispensing_end_time: record?.dispensing_end_time,
+              rlaf_end_time: record?.rlaf_end_time,
+              dispensing_doneby: record?.dispensing_doneby,
+              dispensing_verifiedby: record?.dispensing_verifiedby,
+              type_of_cleaning: record?.type_of_cleaning,
+              dbc_start_time: record?.dbc_start_time,
+              dbc_end_time: record?.dbc_end_time,
+              dbc_doneby: record?.dbc_doneby,
+              dbc_verifiedby: record?.dbc_verifiedby,
+              checked_by: record?.checked_by,
+              remarks: record?.remarks,
+            },
+            {
+              where: {
+                record_id: record.record_id,
+                form_id: form_id,
+              },
+              transaction,
+            },
+          );
+        } else {
+          // CREATE only new row
+          await DispensingBoothRecord.create(
+            {
+              form_id: form_id,
+              unique_id: record?.unique_id,
+              date: record?.date,
+              rlaf_start_time: record?.rlaf_start_time,
+              pre_filter: record?.pre_filter,
+              intermediate_filter: record?.intermediate_filter,
+              hepa_filter: record?.hepa_filter,
+              product: record?.product,
+              batch_no: record?.batch_no,
+              batch_size: record?.batch_size,
+              dispensing_start_time: record?.dispensing_start_time,
+              dispensing_end_time: record?.dispensing_end_time,
+              rlaf_end_time: record?.rlaf_end_time,
+              dispensing_doneby: record?.dispensing_doneby,
+              dispensing_verifiedby: record?.dispensing_verifiedby,
+              type_of_cleaning: record?.type_of_cleaning,
+              dbc_start_time: record?.dbc_start_time,
+              dbc_end_time: record?.dbc_end_time,
+              dbc_doneby: record?.dbc_doneby,
+              dbc_verifiedby: record?.dbc_verifiedby,
+              checked_by: record?.checked_by,
+              remarks: record?.remarks,
+            },
+            { transaction },
+          );
+        }
       }
     }
     await DispensingBoothAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
-
-    if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
-    transaction,
-  });
-}
 
     await transaction.commit();
 

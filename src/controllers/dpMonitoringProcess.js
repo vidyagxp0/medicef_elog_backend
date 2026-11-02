@@ -13,7 +13,6 @@ const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const Process = require("../models/processes");
-const EffectiveChangeAudit = require("../models/EffectiveChangeAudit");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -322,17 +321,6 @@ exports.EditDPMonitoring = async (req, res) => {
 
   const transaction = await sequelize.transaction();
 
-  
-
-
-    const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
-
   try {
     const user = await User.findOne({
       where: { user_id: req.user.userId, isActive: true },
@@ -407,9 +395,6 @@ exports.EditDPMonitoring = async (req, res) => {
 
     // Track changes for the form
     const auditTrailEntries = [];
-
-    const effectiveAuditEntries = [];
-
     const fields = {
       description,
       departmentName,
@@ -466,29 +451,6 @@ exports.EditDPMonitoring = async (req, res) => {
     return value;
     };
 
-    const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
-
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null
-        ? null
-        : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null
-        ? null
-        : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
-
     const dbReviewerIds = parseIfString(form?.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
     if (
@@ -527,34 +489,6 @@ exports.EditDPMonitoring = async (req, res) => {
       });
     }
 
-    // Department ID
-pushEffectiveAudit(
-  "department_id",
-  form.department_id,
-  department_id
-);
-
-// Reviewer IDs
-
-pushEffectiveAudit(
-  "reviewer_id",
-  dbReviewerIds,
-  reqReviewerIds
-);
-
-// Reviewer data
-pushEffectiveAudit(
-  "reviewerData",
-  form.reviewerData,
-  reviewerData
-);
-
-// Approver ID
-pushEffectiveAudit(
-  "approver_id",
-  form.approver_id,
-  approver_id
-);
 
     for (const [field, newValue] of Object.entries(fields)) {
       const oldValue = form[field];
@@ -570,8 +504,6 @@ pushEffectiveAudit(
           new_status: form.status,
           action: "Update Elog",
         });
-
-         pushEffectiveAudit(field, oldValue, newValue);
       }
     }
 
@@ -606,141 +538,55 @@ pushEffectiveAudit(
         for (const record of DPMonitoringRecords) {
 
           if (record.record_id) {
+            // UPDATE existing row
+            await DPMonitoringRecord.update(
+              {
+                time: record?.time,
+                date: record?.date,
+                equipmentId: record?.equipmentId,
+                operationStatus: record?.operationStatus,
+                preFilter5to10: record?.preFilter5to10,
+                fineFilter7to10: record?.fineFilter7to10,
+                fineFilter8to20: record?.fineFilter8to20,
+                remarks: record?.remarks,
+                done_by: record?.done_by,
+                reviewed_by: record?.reviewed_by,
+              },
+              {
+                where: {
+                  record_id: record.record_id,
+                  form_id: form_id,
+                },
+                transaction,
+              }
+            );
 
-  // Step 1: Fetch existing record
-  const existingRecord = await DPMonitoringRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
-
-  if (!existingRecord) {
-    throw new Error(`DP Monitoring record not found: ${record.record_id}`);
-  }
-
-  // Step 2: Incoming record fields
-  const recordFields = {
-    time: record?.time,
-    date: record?.date,
-    equipmentId: record?.equipmentId,
-    operationStatus: record?.operationStatus,
-    preFilter5to10: record?.preFilter5to10,
-    fineFilter7to10: record?.fineFilter7to10,
-    fineFilter8to20: record?.fineFilter8to20,
-    remarks: record?.remarks,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-  };
-
-  // Step 3: Compare old and new values
-  for (const [field, newValue] of Object.entries(recordFields)) {
-
-    const oldValue = existingRecord[field];
-
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null
-            ? null
-            : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null
-            ? null
-            : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
-
-    }
-  }
-
-  // Step 4: Original update query - unchanged
-  await DPMonitoringRecord.update(
-    {
-      time: record?.time,
-      date: record?.date,
-      equipmentId: record?.equipmentId,
-      operationStatus: record?.operationStatus,
-      preFilter5to10: record?.preFilter5to10,
-      fineFilter7to10: record?.fineFilter7to10,
-      fineFilter8to20: record?.fineFilter8to20,
-      remarks: record?.remarks,
-      done_by: record?.done_by,
-      reviewed_by: record?.reviewed_by,
-    },
-    {
-      where: {
-        record_id: record.record_id,
-        form_id: form_id,
-      },
-      transaction,
-    }
-  );
-
-}
-         else {
-
-  // Step 1: Prepare new record data
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    time: record?.time,
-    date: record?.date,
-    equipmentId: record?.equipmentId,
-    operationStatus: record?.operationStatus,
-    preFilter5to10: record?.preFilter5to10,
-    fineFilter7to10: record?.fineFilter7to10,
-    fineFilter8to20: record?.fineFilter8to20,
-    remarks: record?.remarks,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-  };
-
-  // Step 2: Create record
-  const createdRecord = await DPMonitoringRecord.create(
-    newRecordData,
-    { transaction }
-  );
-
-  // Step 3: Generate audit entries
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-          continue;
-        }
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-
-  }
-}
+          } else {
+            // CREATE only new row
+            await DPMonitoringRecord.create(
+              {
+                form_id: form_id,
+                unique_id: record?.unique_id,
+                time: record?.time,
+                date: record?.date,
+                equipmentId: record?.equipmentId,
+                operationStatus: record?.operationStatus,
+                preFilter5to10: record?.preFilter5to10,
+                fineFilter7to10: record?.fineFilter7to10,
+                fineFilter8to20: record?.fineFilter8to20,
+                remarks: record?.remarks,
+                done_by: record?.done_by,
+                reviewed_by: record?.reviewed_by,
+              },
+              { transaction }
+            );
+          }
         }
       }
 
       await DPMonitoringAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
-
-      if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(
-    effectiveAuditEntries,
-    { transaction }
-  );
-}
 
     await transaction.commit();
 
