@@ -309,7 +309,12 @@ exports.InsertDrainCleaning = async (req, res) => {
       });
     }
 
-    await DrainCleaningAuditTrail.bulkCreate(auditTrailEntries, {
+    const auditEntriesWithChangedBy = auditTrailEntries.map((entry) => ({
+      ...entry,
+      changed_by: user.user_id,
+    }));  
+
+    await DrainCleaningAuditTrail.bulkCreate(auditEntriesWithChangedBy, {
       transaction,
     });
 
@@ -348,13 +353,13 @@ exports.EditDrainCleaning = async (req, res) => {
     reviewer_id,
     approver_id,
     DrainCleaningRecords,
+    deletedDrainRowIds,
     esignInput,
     password,
     initiatorComment,
     additionalInfo,
   } = req.body;
   const process_id=req.body.Process.process_id;
- console.log(process_id,"fde")
   const { form_id } = req.params;
 
   if (!form_id) {
@@ -583,6 +588,26 @@ const normalizeTime = (value) => {
         });
       }
     }
+       // Removed Drain ID rows from the database
+    const rowsToDelete = parseIfString(deletedDrainRowIds, []);
+
+    if (Array.isArray(rowsToDelete) && rowsToDelete.length > 0) {
+      const validRowIds = rowsToDelete
+        .map(Number)
+        .filter((id) => Number.isInteger(id) && id > 0);
+
+      if (validRowIds.length > 0) {
+        await DrainCleaningRecord.destroy({
+          where: {
+            form_id: form_id,
+            row_id: {
+              [Op.in]: validRowIds,
+            },
+          },
+          transaction,
+        });
+      }
+    }
 
     // Update the form details
     await form.update(
@@ -725,6 +750,7 @@ const normalizeTime = (value) => {
                       changedFields.map((field) => ({
                         form_id: form_id,
                         performed_by: user.user_id,
+                        changed_by: user.user_id,
                         field_name: field,
                         previous_value:
                           toAuditValue(existingRecord.get(field)),
@@ -776,6 +802,7 @@ const normalizeTime = (value) => {
               return {
                 form_id: form_id,
                 performed_by: user.user_id,
+                changed_by: user.user_id, 
                 field_name: field,
                 previous_value: null,
                 new_value: toAuditValue(value),
@@ -793,8 +820,13 @@ const normalizeTime = (value) => {
         }
               }
             }
+             
+            const auditEntriesWithChangedBy = auditTrailEntries.map((entry) => ({
+            ...entry,
+            changed_by: user.user_id,
+          }));
 
-            await DrainCleaningAuditTrail.bulkCreate(auditTrailEntries, {
+            await DrainCleaningAuditTrail.bulkCreate(auditEntriesWithChangedBy, {
               transaction,
             });
 

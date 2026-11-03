@@ -1813,7 +1813,7 @@ const departmentName = FormData.departmentName;
 
       performedBy: userMap[record.performed_by] || "Unknown",
 
-      performedOn: formatDateTime(record.performed_at),
+      performed_at: record.performed_at,
     }));
 
 const userName = user?.name || "System User";
