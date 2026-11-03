@@ -385,7 +385,7 @@
               <td><%= stripHtml(record.field_name) %></td>
               <td class="signature-value"><%= formatAuditValue(record.previous_value, record.field_name) %></td>
               <td class="signature-value"><%= formatAuditValue(record.new_value, record.field_name) %></td>
-              <td><%= record.status %></td>
+              <td style="text-transform: capitalize;"><%= record.status %></td>
 
               <td>
                 <div class="performed-on"><b>Performed By:</b>
