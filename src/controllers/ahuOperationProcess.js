@@ -454,12 +454,12 @@ exports.EditAHU = async (req, res) => {
         JSON.stringify(normalizeValue(newVal));
     };
 
-  const formatAuditValue = (value) => {
-    if (typeof value === "object" && value !== null) {
-      return JSON.stringify(value);
-    }
-    return value;
-    };
+      const formatAuditValue = (value) => {
+        if (typeof value === "object" && value !== null) {
+          return JSON.stringify(value);
+        }
+        return value;
+        };
 
     const pushEffectiveAudit = (field, oldValue, newValue) => {
       if (newValue === undefined || !hasChanged(oldValue, newValue)) {

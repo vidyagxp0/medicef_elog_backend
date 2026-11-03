@@ -723,38 +723,38 @@ const isEmptyAuditValue = (value) => {
     remarks: record?.remarks,
   };
 
-  const createdRecord = await DispensingRecord.create(
-    newRecordData,
-    { transaction },
-  );
+    const createdRecord = await DispensingRecord.create(
+      newRecordData,
+      { transaction },
+    );
 
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
+      for (const [field, newValue] of Object.entries(newRecordData)) {
+        if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+        effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: `${field}`,
+          previous_value: null,
+          new_value: String(formatAuditValue(newValue)),
+          status: "created",
+          performed_at: new Date(),
+        });
       }
     }
-    await DispensingAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
+  }
+}
+        await DispensingAuditTrail.bulkCreate(auditTrailEntries, {
+          transaction,
+        });
 
-    if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
-    transaction,
-  });
+        if (effectiveAuditEntries.length > 0) {
+      await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
+        transaction,
+      });
 }
 
     await transaction.commit();

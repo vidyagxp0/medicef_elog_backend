@@ -499,39 +499,39 @@ exports.EditColdChamber = async (req, res) => {
       );
     };
 
-    const formatAuditValue = (value) => {
-      if (typeof value === "object" && value !== null) {
-        return JSON.stringify(value);
+        const formatAuditValue = (value) => {
+          if (typeof value === "object" && value !== null) {
+            return JSON.stringify(value);
+          }
+          return value;
+        };
+
+        const pushEffectiveAudit = (field, oldValue, newValue) => {
+      if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+        return;
       }
-      return value;
+
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || null,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value:
+          oldValue == null ? null : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue == null ? null : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
     };
 
-    const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
-
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
-
-const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
+    const isEmptyAuditValue = (value) => {
+      return (
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+      );
+    };
 
     const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);

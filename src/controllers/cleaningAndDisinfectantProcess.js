@@ -705,23 +705,23 @@ const isEmptyAuditValue = (value) => {
   );
 
   // Create audit entries only for non-empty values
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
+      for (const [field, newValue] of Object.entries(newRecordData)) {
+        if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+        effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: `${field}`,
+          previous_value: null,
+          new_value: String(formatAuditValue(newValue)),
+          status: "created",
+          performed_at: new Date(),
+        });
+      }
+    }
       }
     }
     await CleaningAndDisinfectantAuditTrail.bulkCreate(auditTrailEntries, {

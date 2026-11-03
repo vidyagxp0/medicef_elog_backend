@@ -1022,13 +1022,13 @@ exports.chatByPdf = async (req, res) => {
     fs.writeFileSync(filePath, pdf);
 
     res.status(200).json({ filename: `Elog_Report_${uniqueId}.pdf` });
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    return res
-      .status(500)
-      .json({ error: true, message: `Error generating PDF: ${error.message}` });
-  }
-};
+      } catch (error) {
+        console.error("Error generating PDF:", error);
+        return res
+          .status(500)
+          .json({ error: true, message: `Error generating PDF: ${error.message}` });
+      }
+    };
 exports.viewReport = async (req, res) => {
   try {
     const { form_id } = req.params;

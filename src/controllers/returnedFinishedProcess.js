@@ -612,96 +612,96 @@ const isEmptyAuditValue = (value) => {
 
     // Update / Create Temperature Records (NO DELETE)
 
-    if (
-      Array.isArray(ReturnedFinishedRecords) &&
-      ReturnedFinishedRecords.length > 0
-    ) {
-      for (const record of ReturnedFinishedRecords) {
-       if (record.record_id) {
-  // UPDATE existing row
+        if (
+          Array.isArray(ReturnedFinishedRecords) &&
+          ReturnedFinishedRecords.length > 0
+        ) {
+          for (const record of ReturnedFinishedRecords) {
+          if (record.record_id) {
+      // UPDATE existing row
 
-  const existingRecord = await ReturnedFinishedRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
-
-  if (!existingRecord) {
-    throw new Error(
-      `Returned finished record not found: ${record.record_id}`,
-    );
-  }
-
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    product_name: record?.product_name,
-    batch_no: record?.batch_no,
-    mfg_date: record?.mfg_date,
-    exp_date: record?.exp_date,
-    no_of_package: record?.no_of_package,
-    returned_quantity: record?.returned_quantity,
-    party_name: record?.party_name,
-    invoice_no: record?.invoice_no,
-    reason_for_return: record?.reason_for_return,
-    received_by: record?.received_by,
-    verified_by: record?.verified_by,
-    done_by: record?.done_by,
-    checked_by: record?.checked_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
-
-  for (const [field, newValue] of Object.entries(recordFields)) {
-    const oldValue = existingRecord[field];
-
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null ? null : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null ? null : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
+      const existingRecord = await ReturnedFinishedRecord.findOne({
+        where: {
+          record_id: record.record_id,
+          form_id: form_id,
+        },
+        transaction,
       });
-    }
-  }
 
-  await ReturnedFinishedRecord.update(
-    {
-      unique_id: record?.unique_id,
-      date: record?.date,
-      product_name: record?.product_name,
-      batch_no: record?.batch_no,
-      mfg_date: record?.mfg_date,
-      exp_date: record?.exp_date,
-      no_of_package: record?.no_of_package,
-      returned_quantity: record?.returned_quantity,
-      party_name: record?.party_name,
-      invoice_no: record?.invoice_no,
-      reason_for_return: record?.reason_for_return,
-      received_by: record?.received_by,
-      verified_by: record?.verified_by,
-      done_by: record?.done_by,
-      checked_by: record?.checked_by,
-      reviewed_by: record?.reviewed_by,
-      remarks: record?.remarks,
-    },
-    {
-      where: {
-        record_id: record.record_id,
-        form_id: form_id,
-      },
-      transaction,
-    },
-  );
-}
+      if (!existingRecord) {
+        throw new Error(
+          `Returned finished record not found: ${record.record_id}`,
+        );
+      }
+
+      const recordFields = {
+        unique_id: record?.unique_id,
+        date: record?.date,
+        product_name: record?.product_name,
+        batch_no: record?.batch_no,
+        mfg_date: record?.mfg_date,
+        exp_date: record?.exp_date,
+        no_of_package: record?.no_of_package,
+        returned_quantity: record?.returned_quantity,
+        party_name: record?.party_name,
+        invoice_no: record?.invoice_no,
+        reason_for_return: record?.reason_for_return,
+        received_by: record?.received_by,
+        verified_by: record?.verified_by,
+        done_by: record?.done_by,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
+      };
+
+      for (const [field, newValue] of Object.entries(recordFields)) {
+        const oldValue = existingRecord[field];
+
+        if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+          effectiveAuditEntries.push({
+            form_id: form.form_id,
+            process_id: form.process_id || null,
+            performed_by: user.user_id,
+            field_name: `${field}`,
+            previous_value:
+              oldValue == null ? null : String(formatAuditValue(oldValue)),
+            new_value:
+              newValue == null ? null : String(formatAuditValue(newValue)),
+            status: "updated",
+            performed_at: new Date(),
+          });
+        }
+      }
+
+        await ReturnedFinishedRecord.update(
+          {
+            unique_id: record?.unique_id,
+            date: record?.date,
+            product_name: record?.product_name,
+            batch_no: record?.batch_no,
+            mfg_date: record?.mfg_date,
+            exp_date: record?.exp_date,
+            no_of_package: record?.no_of_package,
+            returned_quantity: record?.returned_quantity,
+            party_name: record?.party_name,
+            invoice_no: record?.invoice_no,
+            reason_for_return: record?.reason_for_return,
+            received_by: record?.received_by,
+            verified_by: record?.verified_by,
+            done_by: record?.done_by,
+            checked_by: record?.checked_by,
+            reviewed_by: record?.reviewed_by,
+            remarks: record?.remarks,
+          },
+          {
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          },
+        );
+      }
         else {
   // CREATE only new row
 
@@ -731,23 +731,23 @@ const isEmptyAuditValue = (value) => {
     { transaction },
   );
 
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
+      for (const [field, newValue] of Object.entries(newRecordData)) {
+        if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+        effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: `${field}`,
+          previous_value: null,
+          new_value: String(formatAuditValue(newValue)),
+          status: "created",
+          performed_at: new Date(),
+        });
+      }
+    }
       }
     }
     await ReturnedFinishedAuditTrail.bulkCreate(auditTrailEntries, {
@@ -755,9 +755,9 @@ const isEmptyAuditValue = (value) => {
     });
 
     if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
-    transaction,
-  });
+    await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
+      transaction,
+    });
 }
 
     await transaction.commit();
@@ -766,7 +766,8 @@ const isEmptyAuditValue = (value) => {
       error: false,
       message: "E-log Updated successfully",
     });
-  } catch (error) {
+    }
+    catch (error) {
     await transaction.rollback();
 
     let errorMessage = "Error during updating elog";

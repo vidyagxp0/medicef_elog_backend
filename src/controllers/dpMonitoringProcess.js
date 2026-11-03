@@ -688,59 +688,59 @@ pushEffectiveAudit(
          else {
 
   // Step 1: Prepare new record data
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    time: record?.time,
-    date: record?.date,
-    equipmentId: record?.equipmentId,
-    operationStatus: record?.operationStatus,
-    preFilter5to10: record?.preFilter5to10,
-    fineFilter7to10: record?.fineFilter7to10,
-    fineFilter8to20: record?.fineFilter8to20,
-    remarks: record?.remarks,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-  };
+          const newRecordData = {
+            form_id: form_id,
+            unique_id: record?.unique_id,
+            time: record?.time,
+            date: record?.date,
+            equipmentId: record?.equipmentId,
+            operationStatus: record?.operationStatus,
+            preFilter5to10: record?.preFilter5to10,
+            fineFilter7to10: record?.fineFilter7to10,
+            fineFilter8to20: record?.fineFilter8to20,
+            remarks: record?.remarks,
+            done_by: record?.done_by,
+            reviewed_by: record?.reviewed_by,
+          };
 
-  // Step 2: Create record
-  const createdRecord = await DPMonitoringRecord.create(
-    newRecordData,
-    { transaction }
-  );
+          // Step 2: Create record
+          const createdRecord = await DPMonitoringRecord.create(
+            newRecordData,
+            { transaction }
+          );
 
-  // Step 3: Generate audit entries
-  for (const [field, newValue] of Object.entries(newRecordData)) {
+          // Step 3: Generate audit entries
+          for (const [field, newValue] of Object.entries(newRecordData)) {
 
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-          continue;
+            if (field === "form_id" || isEmptyAuditValue(newValue)) {
+                  continue;
+                }
+            effectiveAuditEntries.push({
+              form_id: form.form_id,
+              process_id: form.process_id || process_id || null,
+              performed_by: user.user_id,
+              field_name: `${field}`,
+              previous_value: null,
+              new_value: String(formatAuditValue(newValue)),
+              status: "created",
+              performed_at: new Date(),
+            });
+
+          }
         }
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
+                }
+              }
 
-  }
-}
+              await DPMonitoringAuditTrail.bulkCreate(auditTrailEntries, {
+                transaction,
+              });
+
+              if (effectiveAuditEntries.length > 0) {
+          await EffectiveChangeAudit.bulkCreate(
+            effectiveAuditEntries,
+            { transaction }
+          );
         }
-      }
-
-      await DPMonitoringAuditTrail.bulkCreate(auditTrailEntries, {
-        transaction,
-      });
-
-      if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(
-    effectiveAuditEntries,
-    { transaction }
-  );
-}
 
     await transaction.commit();
 

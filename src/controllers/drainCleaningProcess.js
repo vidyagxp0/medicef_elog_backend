@@ -694,130 +694,130 @@ const normalizeTime = (value) => {
           // UPDATE existing record
           const changedFields = Object.keys(updateData).filter((field) => {
 
-  if (
-    (field === "month" || field === "year") &&
-    updateData[field] === undefined
-  ) {
-    return false;
-  }
+          if (
+            (field === "month" || field === "year") &&
+            updateData[field] === undefined
+          ) {
+            return false;
+          }
 
-  if (updateData[field] === undefined) {
-    return false;
-  }
+          if (updateData[field] === undefined) {
+            return false;
+          }
 
-  let oldValue = existingRecord.get(field);
-  let newValue = updateData[field];
+          let oldValue = existingRecord.get(field);
+          let newValue = updateData[field];
 
-  // Normalize time before comparison
-  if (field === "time") {
-    oldValue = normalizeTime(oldValue);
-    newValue = normalizeTime(newValue);
-  }
+          // Normalize time before comparison
+          if (field === "time") {
+            oldValue = normalizeTime(oldValue);
+            newValue = normalizeTime(newValue);
+          }
 
-  return (
-    toAuditValue(oldValue) !== toAuditValue(newValue)
-  );
-});
+          return (
+            toAuditValue(oldValue) !== toAuditValue(newValue)
+          );
+        });
 
-          // Save audit entries only for changed fields
-          if (changedFields.length > 0) {
-            await EffectiveChangeAudit.bulkCreate(
-              changedFields.map((field) => ({
+                  // Save audit entries only for changed fields
+                  if (changedFields.length > 0) {
+                    await EffectiveChangeAudit.bulkCreate(
+                      changedFields.map((field) => ({
+                        form_id: form_id,
+                        performed_by: user.user_id,
+                        field_name: field,
+                        previous_value:
+                          toAuditValue(existingRecord.get(field)),
+                        new_value: toAuditValue(updateData[field]) ?? "null",
+                        status: "updated",
+                        process_id:process_id
+                      })),
+                      { transaction }
+                    );
+                  }
+
+                  // Do not overwrite month/year when not provided
+                  const dataToUpdate = { ...updateData };
+
+                  if (dataToUpdate.month === undefined) {
+                    delete dataToUpdate.month;
+                  }
+
+                  if (dataToUpdate.year === undefined) {
+                    delete dataToUpdate.year;
+                  }
+
+                  await existingRecord.update(dataToUpdate, { transaction });
+                } 
+              else {
+          // CREATE a new record
+          const createData = {
+            ...updateData,
+            form_id: form_id,
+          };
+
+          const newRecord = await DrainCleaningRecord.create(
+            createData,
+            { transaction }
+          );
+
+          // Audit all fields of the newly created record
+          const auditFields = Object.keys(updateData);
+
+          // Skip null, undefined and empty values
+          const auditEntries = auditFields
+            .filter((field) => {
+              const value = newRecord.get(field);
+              return !isEmptyAuditValue(value);
+            })
+            .map((field) => {
+              const value = newRecord.get(field);
+
+              return {
                 form_id: form_id,
                 performed_by: user.user_id,
                 field_name: field,
-                previous_value:
-                  toAuditValue(existingRecord.get(field)),
-                new_value: toAuditValue(updateData[field]) ?? "null",
-                status: "updated",
-                process_id:process_id
-              })),
-              { transaction }
-            );
+                previous_value: null,
+                new_value: toAuditValue(value),
+                status: "created",
+                process_id: process_id,
+                performed_at: new Date(),
+              };
+            });
+
+          if (auditEntries.length > 0) {
+            await EffectiveChangeAudit.bulkCreate(auditEntries, {
+              transaction,
+            });
           }
+        }
+              }
+            }
 
-          // Do not overwrite month/year when not provided
-          const dataToUpdate = { ...updateData };
+            await DrainCleaningAuditTrail.bulkCreate(auditTrailEntries, {
+              transaction,
+            });
 
-          if (dataToUpdate.month === undefined) {
-            delete dataToUpdate.month;
+            await transaction.commit();
+
+            return res.status(200).json({
+              error: false,
+              message: "E-log Updated successfully",
+            });
+          } catch (error) {
+            await transaction.rollback();
+
+            let errorMessage = "Error during updating elog";
+            if (error instanceof ValidationError) {
+              errorMessage = error.errors.map((e) => e.message).join(", ");
+            }
+
+            return res.status(500).json({
+              error: true,
+              message: `${errorMessage}: ${error.message}`,
+            });
           }
-
-          if (dataToUpdate.year === undefined) {
-            delete dataToUpdate.year;
-          }
-
-          await existingRecord.update(dataToUpdate, { transaction });
-        } 
-       else {
-  // CREATE a new record
-  const createData = {
-    ...updateData,
-    form_id: form_id,
-  };
-
-  const newRecord = await DrainCleaningRecord.create(
-    createData,
-    { transaction }
-  );
-
-  // Audit all fields of the newly created record
-  const auditFields = Object.keys(updateData);
-
-  // Skip null, undefined and empty values
-  const auditEntries = auditFields
-    .filter((field) => {
-      const value = newRecord.get(field);
-      return !isEmptyAuditValue(value);
-    })
-    .map((field) => {
-      const value = newRecord.get(field);
-
-      return {
-        form_id: form_id,
-        performed_by: user.user_id,
-        field_name: field,
-        previous_value: null,
-        new_value: toAuditValue(value),
-        status: "created",
-        process_id: process_id,
-        performed_at: new Date(),
-      };
-    });
-
-  if (auditEntries.length > 0) {
-    await EffectiveChangeAudit.bulkCreate(auditEntries, {
-      transaction,
-    });
-  }
-}
-      }
-    }
-
-    await DrainCleaningAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
-    });
-
-    await transaction.commit();
-
-    return res.status(200).json({
-      error: false,
-      message: "E-log Updated successfully",
-    });
-  } catch (error) {
-    await transaction.rollback();
-
-    let errorMessage = "Error during updating elog";
-    if (error instanceof ValidationError) {
-      errorMessage = error.errors.map((e) => e.message).join(", ");
-    }
-
-    return res.status(500).json({
-      error: true,
-      message: `${errorMessage}: ${error.message}`,
-    });
-  }
-};
+        };
 
 exports.generateReport = async (req, res) => {
   try {

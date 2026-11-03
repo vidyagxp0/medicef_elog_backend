@@ -526,24 +526,24 @@ exports.InsertEquipmentUsage = async (req, res) => {
             action: "Update Elog",
           });
 
-          effectiveAuditEntries.push({
-  form_id: form.form_id,
-  process_id: form.process_id || null,
-  performed_by: user.user_id,
-  field_name: field,
-  previous_value:
-    oldValue === null || oldValue === undefined
-      ? null
-      : String(formatAuditValue(oldValue)),
-  new_value:
-    newValue === null || newValue === undefined
-      ? null
-      : String(formatAuditValue(newValue)),
-  status: "updated",
-  performed_at: new Date(),
-});
-        }
-      }
+        effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: field,
+          previous_value:
+            oldValue === null || oldValue === undefined
+              ? null
+              : String(formatAuditValue(oldValue)),
+          new_value:
+            newValue === null || newValue === undefined
+              ? null
+              : String(formatAuditValue(newValue)),
+          status: "updated",
+          performed_at: new Date(),
+        });
+                }
+              }
 
       // Update the form details
       await form.update(
@@ -570,154 +570,154 @@ exports.InsertEquipmentUsage = async (req, res) => {
         { transaction }
       );
 
-  // Update / Create Temperature Records (NO DELETE)
-        if (Array.isArray(EquipmentUsageRecords) && EquipmentUsageRecords.length > 0) {
+        // Update / Create Temperature Records (NO DELETE)
+           if (Array.isArray(EquipmentUsageRecords) && EquipmentUsageRecords.length > 0) {
 
-          for (const record of EquipmentUsageRecords) {
+             for (const record of EquipmentUsageRecords) {
 
-            if (record.record_id) {
-              // UPDATE existing row
+              if (record.record_id) {
+                    // UPDATE existing row
 
-         const existingRecord = await EquipmentUsageRecord.findOne({
-  where: {
-    record_id: record.record_id,
-    form_id: form_id,
-  },
-  transaction,
-});
+              const existingRecord = await EquipmentUsageRecord.findOne({
+              where: {
+                record_id: record.record_id,
+                form_id: form_id,
+              },
+              transaction,
+            });
 
-if (!existingRecord) {
-  throw new Error(`Equipment Usage Record not found: ${record.record_id}`);
-}
-
-// 2. Collect incoming values for comparison
-const recordFields = {
-  unique_id: record?.unique_id,
-  date: record?.date,
-  time: record?.time,
-  productName: record?.productName,
-  batchNo: record?.batchNo,
-  batchSize: record?.batchSize,
-  activityType: record?.activityType,
-  startTime: record?.startTime,
-  endTime: record?.endTime,
-  remarks: record?.remarks,
-  done_by: record?.done_by,
-  reviewed_by: record?.reviewed_by,
-  verified_by: record?.verified_by,
-};
-
-// 3. Compare old and new values
-for (const [field, newValue] of Object.entries(recordFields)) {
-  const oldValue = existingRecord[field];
-
-  if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value:
-        oldValue === null || oldValue === undefined
-          ? null
-          : String(formatAuditValue(oldValue)),
-      new_value:
-        newValue === null || newValue === undefined
-          ? null
-          : String(formatAuditValue(newValue)),
-      status: "updated",
-      performed_at: new Date(),
-    });
-  }
-}
-
-
-              await EquipmentUsageRecord.update(
-                {
-                  unique_id: record?.unique_id,
-                  date: record?.date,
-                  time: record?.time,
-                  productName: record?.productName,
-                  batchNo: record?.batchNo,
-                  batchSize: record?.batchSize,
-                  activityType: record?.activityType,
-                  startTime: record?.startTime,
-                  endTime: record?.endTime,
-                  remarks: record?.remarks,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                  verified_by: record?.verified_by,
-                },
-                {
-                  where: {
-                    record_id: record.record_id,
-                    form_id: form_id,
-                  },
-                  transaction,
-                }
-              );
-
+            if (!existingRecord) {
+              throw new Error(`Equipment Usage Record not found: ${record.record_id}`);
             }
-           else {
-  // CREATE only new row
 
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    time: record?.time,
-    productName: record?.productName,
-    batchNo: record?.batchNo,
-    batchSize: record?.batchSize,
-    activityType: record?.activityType,
-    startTime: record?.startTime,
-    endTime: record?.endTime,
-    remarks: record?.remarks,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-    verified_by: record?.verified_by,
-  };
+            // 2. Collect incoming values for comparison
+            const recordFields = {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              time: record?.time,
+              productName: record?.productName,
+              batchNo: record?.batchNo,
+              batchSize: record?.batchSize,
+              activityType: record?.activityType,
+              startTime: record?.startTime,
+              endTime: record?.endTime,
+              remarks: record?.remarks,
+              done_by: record?.done_by,
+              reviewed_by: record?.reviewed_by,
+              verified_by: record?.verified_by,
+            };
 
-  // 1. Create new record
-  const createdRecord = await EquipmentUsageRecord.create(
-    newRecordData,
-    { transaction }
-  );
 
-  // 2. Create audit for every provided field
-  for (const [field, newValue] of Object.entries(newRecordData)) {
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
 
-    // Skip form_id
-     if (field === "form_id" || isEmptyAuditValue(newValue)) {
-          continue;
-        }
-
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+            if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+              effectiveAuditEntries.push({
+                form_id: form.form_id,
+                process_id: form.process_id || null,
+                performed_by: user.user_id,
+                field_name: `${field}`,
+                previous_value:
+                  oldValue === null || oldValue === undefined
+                    ? null
+                    : String(formatAuditValue(oldValue)),
+                new_value:
+                  newValue === null || newValue === undefined
+                    ? null
+                    : String(formatAuditValue(newValue)),
+                status: "updated",
+                performed_at: new Date(),
+              });
+            }
           }
-        }
-     if (auditTrailEntries.length > 0) {
-  await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
-    transaction,
-  });
-}
 
-// Effective change audit
-if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
-    transaction,
-  });
-}
+
+            await EquipmentUsageRecord.update(
+                 {
+                     unique_id: record?.unique_id,
+                     date: record?.date,
+                     time: record?.time,
+                     productName: record?.productName,
+                     batchNo: record?.batchNo,
+                     batchSize: record?.batchSize,
+                     activityType: record?.activityType,
+                     startTime: record?.startTime,
+                     endTime: record?.endTime,
+                     remarks: record?.remarks,
+                     done_by: record?.done_by,
+                     reviewed_by: record?.reviewed_by,
+                     verified_by: record?.verified_by,
+                  },
+                          {
+                            where: {
+                              record_id: record.record_id,
+                              form_id: form_id,
+                            },
+                            transaction,
+                          }
+                        );
+
+                      }
+                    else {
+            // CREATE only new row
+
+            const newRecordData = {
+              form_id: form_id,
+              unique_id: record?.unique_id,
+              date: record?.date,
+              time: record?.time,
+              productName: record?.productName,
+              batchNo: record?.batchNo,
+              batchSize: record?.batchSize,
+              activityType: record?.activityType,
+              startTime: record?.startTime,
+              endTime: record?.endTime,
+              remarks: record?.remarks,
+              done_by: record?.done_by,
+              reviewed_by: record?.reviewed_by,
+              verified_by: record?.verified_by,
+            };
+
+            // 1. Create new record
+            const createdRecord = await EquipmentUsageRecord.create(
+              newRecordData,
+              { transaction }
+            );
+
+            // 2. Create audit for every provided field
+            for (const [field, newValue] of Object.entries(newRecordData)) {
+
+              // Skip form_id
+              if (field === "form_id" || isEmptyAuditValue(newValue)) {
+                    continue;
+                  }
+
+              effectiveAuditEntries.push({
+                form_id: form.form_id,
+                process_id: form.process_id || null,
+                performed_by: user.user_id,
+                field_name: `${field}`,
+                previous_value: null,
+                new_value: String(formatAuditValue(newValue)),
+                status: "created",
+                performed_at: new Date(),
+              });
+            }
+          }
+                    }
+                  }
+          if (auditTrailEntries.length > 0) {
+        await EquipmentUsageAuditTrail.bulkCreate(auditTrailEntries, {
+          transaction,
+        });
+      }
+
+      // Effective change audit
+      if (effectiveAuditEntries.length > 0) {
+        await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
+          transaction,
+        });
+      }
 
       await transaction.commit();
 

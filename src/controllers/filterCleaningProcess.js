@@ -467,23 +467,23 @@ exports.InsertfilterCleaning = async (req, res) => {
       };
 
       const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
+      if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+        return;
+      }
 
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || null,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value:
+          oldValue == null ? null : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue == null ? null : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
+    };
 
       const dbReviewerIds = parseIfString(form.reviewer_id, []);
       const reqReviewerIds = parseIfString(reviewer_id, []);
@@ -576,167 +576,167 @@ exports.InsertfilterCleaning = async (req, res) => {
            if (record.record_id) {
 
   // Fetch existing record
-  const existingRecord = await filterCleaningRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
+          const existingRecord = await filterCleaningRecord.findOne({
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          });
 
-  if (!existingRecord) {
-    throw new Error(
-      `Filter cleaning record not found: ${record.record_id}`
-    );
-  }
+          if (!existingRecord) {
+            throw new Error(
+              `Filter cleaning record not found: ${record.record_id}`
+            );
+          }
 
   // Same fields as original update payload
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    equipmentID: record?.equipmentID,
-    preFilterID: record?.preFilterID,
-    preFilterQty: record?.preFilterQty,
-    returnRiserFilterID: record?.returnRiserFilterID,
-    returnRiserFilterQty: record?.returnRiserFilterQty,
-    fineFilterID: record?.fineFilterID,
-    fineFilterQty: record?.fineFilterQty,
-    cleaningStartTime: record?.cleaningStartTime,
-    cleaningEndTime: record?.cleaningEndTime,
-    physicalCondition: record?.physicalCondition,
-    dryingStartTime: record?.dryingStartTime,
-    dryingStopTime: record?.dryingStopTime,
-    fineCleaningStart: record?.fineCleaningStart,
-    fineCleaningEnd: record?.fineCleaningEnd,
-    finePhysicalCondition: record?.finePhysicalCondition,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+          const recordFields = {
+            unique_id: record?.unique_id,
+            date: record?.date,
+            equipmentID: record?.equipmentID,
+            preFilterID: record?.preFilterID,
+            preFilterQty: record?.preFilterQty,
+            returnRiserFilterID: record?.returnRiserFilterID,
+            returnRiserFilterQty: record?.returnRiserFilterQty,
+            fineFilterID: record?.fineFilterID,
+            fineFilterQty: record?.fineFilterQty,
+            cleaningStartTime: record?.cleaningStartTime,
+            cleaningEndTime: record?.cleaningEndTime,
+            physicalCondition: record?.physicalCondition,
+            dryingStartTime: record?.dryingStartTime,
+            dryingStopTime: record?.dryingStopTime,
+            fineCleaningStart: record?.fineCleaningStart,
+            fineCleaningEnd: record?.fineCleaningEnd,
+            finePhysicalCondition: record?.finePhysicalCondition,
+            done_by: record?.done_by,
+            reviewed_by: record?.reviewed_by,
+            remarks: record?.remarks,
+          };
 
-  // Compare old and new values
-  for (const [field, newValue] of Object.entries(recordFields)) {
-    const oldValue = existingRecord[field];
+          // Compare old and new values
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
 
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null
-            ? null
-            : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null
-            ? null
-            : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
-    }
-  }
+            if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+              effectiveAuditEntries.push({
+                form_id: form.form_id,
+                process_id: form.process_id || null,
+                performed_by: user.user_id,
+                field_name: `${field}`,
+                previous_value:
+                  oldValue == null
+                    ? null
+                    : String(formatAuditValue(oldValue)),
+                new_value:
+                  newValue == null
+                    ? null
+                    : String(formatAuditValue(newValue)),
+                status: "updated",
+                performed_at: new Date(),
+              });
+            }
+          }
 
   // Original update query unchanged
-  await filterCleaningRecord.update(
-    {
-      unique_id: record?.unique_id,
-      date: record?.date,
-      equipmentID: record?.equipmentID,
-      preFilterID: record?.preFilterID,
-      preFilterQty: record?.preFilterQty,
-      returnRiserFilterID: record?.returnRiserFilterID,
-      returnRiserFilterQty: record?.returnRiserFilterQty,
-      fineFilterID: record?.fineFilterID,
-      fineFilterQty: record?.fineFilterQty,
-      cleaningStartTime: record?.cleaningStartTime,
-      cleaningEndTime: record?.cleaningEndTime,
-      physicalCondition: record?.physicalCondition,
-      dryingStartTime: record?.dryingStartTime,
-      dryingStopTime: record?.dryingStopTime,
-      fineCleaningStart: record?.fineCleaningStart,
-      fineCleaningEnd: record?.fineCleaningEnd,
-      finePhysicalCondition: record?.finePhysicalCondition,
-      done_by: record?.done_by,
-      reviewed_by: record?.reviewed_by,
-      remarks: record?.remarks,
-    },
-    {
-      where: {
-        record_id: record.record_id,
-        form_id: form_id,
-      },
-      transaction,
-    }
-  );
+          await filterCleaningRecord.update(
+            {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              equipmentID: record?.equipmentID,
+              preFilterID: record?.preFilterID,
+              preFilterQty: record?.preFilterQty,
+              returnRiserFilterID: record?.returnRiserFilterID,
+              returnRiserFilterQty: record?.returnRiserFilterQty,
+              fineFilterID: record?.fineFilterID,
+              fineFilterQty: record?.fineFilterQty,
+              cleaningStartTime: record?.cleaningStartTime,
+              cleaningEndTime: record?.cleaningEndTime,
+              physicalCondition: record?.physicalCondition,
+              dryingStartTime: record?.dryingStartTime,
+              dryingStopTime: record?.dryingStopTime,
+              fineCleaningStart: record?.fineCleaningStart,
+              fineCleaningEnd: record?.fineCleaningEnd,
+              finePhysicalCondition: record?.finePhysicalCondition,
+              done_by: record?.done_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
+            },
+            {
+              where: {
+                record_id: record.record_id,
+                form_id: form_id,
+              },
+              transaction,
+            }
+          );
 }
     else {
 
   // Original create payload unchanged
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    equipmentID: record?.equipmentID,
-    preFilterID: record?.preFilterID,
-    preFilterQty: record?.preFilterQty,
-    returnRiserFilterID: record?.returnRiserFilterID,
-    returnRiserFilterQty: record?.returnRiserFilterQty,
-    fineFilterID: record?.fineFilterID,
-    fineFilterQty: record?.fineFilterQty,
-    cleaningStartTime: record?.cleaningStartTime,
-    cleaningEndTime: record?.cleaningEndTime,
-    physicalCondition: record?.physicalCondition,
-    dryingStartTime: record?.dryingStartTime,
-    dryingStopTime: record?.dryingStopTime,
-    fineCleaningStart: record?.fineCleaningStart,
-    fineCleaningEnd: record?.fineCleaningEnd,
-    finePhysicalCondition: record?.finePhysicalCondition,
-    area: record?.area,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+          const newRecordData = {
+            form_id: form_id,
+            unique_id: record?.unique_id,
+            date: record?.date,
+            equipmentID: record?.equipmentID,
+            preFilterID: record?.preFilterID,
+            preFilterQty: record?.preFilterQty,
+            returnRiserFilterID: record?.returnRiserFilterID,
+            returnRiserFilterQty: record?.returnRiserFilterQty,
+            fineFilterID: record?.fineFilterID,
+            fineFilterQty: record?.fineFilterQty,
+            cleaningStartTime: record?.cleaningStartTime,
+            cleaningEndTime: record?.cleaningEndTime,
+            physicalCondition: record?.physicalCondition,
+            dryingStartTime: record?.dryingStartTime,
+            dryingStopTime: record?.dryingStopTime,
+            fineCleaningStart: record?.fineCleaningStart,
+            fineCleaningEnd: record?.fineCleaningEnd,
+            finePhysicalCondition: record?.finePhysicalCondition,
+            area: record?.area,
+            done_by: record?.done_by,
+            reviewed_by: record?.reviewed_by,
+            remarks: record?.remarks,
+          };
 
   // Create and capture record
-  const createdRecord = await filterCleaningRecord.create(
-    newRecordData,
-    { transaction }
-  );
+          const createdRecord = await filterCleaningRecord.create(
+            newRecordData,
+            { transaction }
+          );
 
-  // Create audit entries
-  for (const [field, newValue] of Object.entries(newRecordData)) {
+        // Create audit entries
+          for (const [field, newValue] of Object.entries(newRecordData)) {
 
-   if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
+          if (field === "form_id" || isEmptyAuditValue(newValue)) {
+              continue;
+            }
 
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+          effectiveAuditEntries.push({
+            form_id: form.form_id,
+            process_id: form.process_id || null,
+            performed_by: user.user_id,
+            field_name: `${field}`,
+            previous_value: null,
+            new_value: String(formatAuditValue(newValue)),
+            status: "created",
+            performed_at: new Date(),
+            });
           }
         }
-      await filterCleaningAuditTrail.bulkCreate(auditTrailEntries, {
-        transaction,
-      });
+      }
+   }
+        await filterCleaningAuditTrail.bulkCreate(auditTrailEntries, {
+          transaction,
+        });
 
-      if (effectiveAuditEntries.length > 0) {
-  await EffectiveChangeAudit.bulkCreate(
-    effectiveAuditEntries,
-    { transaction }
-  );
-}
+        if (effectiveAuditEntries.length > 0) {
+        await EffectiveChangeAudit.bulkCreate(
+          effectiveAuditEntries,
+          { transaction }
+        );
+        }
 
       await transaction.commit();
 

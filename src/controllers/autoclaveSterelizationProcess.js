@@ -505,27 +505,27 @@ exports.EditAutoclaveSterelization = async (req, res) => {
     return;
   }
 
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
+    effectiveAuditEntries.push({
+      form_id: form.form_id,
+      process_id: form.process_id || null,
+      performed_by: user.user_id,
+      field_name: field,
+      previous_value:
+        oldValue == null ? null : String(formatAuditValue(oldValue)),
+      new_value:
+        newValue == null ? null : String(formatAuditValue(newValue)),
+      status: "updated",
+      performed_at: new Date(),
+    });
+  };
 
-const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
+    const isEmptyAuditValue = (value) => {
+      return (
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+      );
+    };
 
     const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
@@ -618,110 +618,110 @@ const isEmptyAuditValue = (value) => {
       for (const record of AutoclaveSterelizationRecords) {
        if (record.record_id) {
   // Fetch existing record
-  const existingRecord = await AutoclaveSterelizationRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
+      const existingRecord = await AutoclaveSterelizationRecord.findOne({
+        where: {
+          record_id: record.record_id,
+          form_id: form_id,
+        },
+        transaction,
+      });
 
-  if (!existingRecord) {
-    throw new Error(`Record not found: ${record.record_id}`);
-  }
+        if (!existingRecord) {
+          throw new Error(`Record not found: ${record.record_id}`);
+        }
 
   // Only fields present in the original UPDATE payload
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    material_name: record?.material_name,
-    quantity: record?.quantity,
-    autoclave_load_no: record?.autoclave_load_no,
-    cycle_no: record?.cycle_no,
-    cycle_hold_time: record?.cycle_hold_time,
-    autoclave_start_time: record?.autoclave_start_time,
-    autoclave_end_time: record?.autoclave_end_time,
-    sterilization_hold_start_time: record?.sterilization_hold_start_time,
-    sterilization_hold_end_time: record?.sterilization_hold_end_time,
-    temperature: record?.temperature,
-    pressure: record?.pressure,
-    done_by: record?.done_by,
-    checked_by: record?.checked_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+        const recordFields = {
+          unique_id: record?.unique_id,
+          date: record?.date,
+          material_name: record?.material_name,
+          quantity: record?.quantity,
+          autoclave_load_no: record?.autoclave_load_no,
+          cycle_no: record?.cycle_no,
+          cycle_hold_time: record?.cycle_hold_time,
+          autoclave_start_time: record?.autoclave_start_time,
+          autoclave_end_time: record?.autoclave_end_time,
+          sterilization_hold_start_time: record?.sterilization_hold_start_time,
+          sterilization_hold_end_time: record?.sterilization_hold_end_time,
+          temperature: record?.temperature,
+          pressure: record?.pressure,
+          done_by: record?.done_by,
+          checked_by: record?.checked_by,
+          reviewed_by: record?.reviewed_by,
+          remarks: record?.remarks,
+        };
 
   // Compare old and new values
-  for (const [field, newValue] of Object.entries(recordFields)) {
-    const oldValue = existingRecord[field];
+        for (const [field, newValue] of Object.entries(recordFields)) {
+          const oldValue = existingRecord[field];
 
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null ? null : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null ? null : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
-    }
-  }
+          if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+            effectiveAuditEntries.push({
+              form_id: form.form_id,
+              process_id: form.process_id || null,
+              performed_by: user.user_id,
+              field_name: `${field}`,
+              previous_value:
+                oldValue == null ? null : String(formatAuditValue(oldValue)),
+              new_value:
+                newValue == null ? null : String(formatAuditValue(newValue)),
+              status: "updated",
+              performed_at: new Date(),
+            });
+          }
+        }
 
   // Original UPDATE query — unchanged
-  await AutoclaveSterelizationRecord.update(
-    {
-      unique_id: record?.unique_id,
-      date: record?.date,
-      material_name: record?.material_name,
-      quantity: record?.quantity,
-      autoclave_load_no: record?.autoclave_load_no,
-      cycle_no: record?.cycle_no,
-      cycle_hold_time: record?.cycle_hold_time,
-      autoclave_start_time: record?.autoclave_start_time,
-      autoclave_end_time: record?.autoclave_end_time,
-      sterilization_hold_start_time: record?.sterilization_hold_start_time,
-      sterilization_hold_end_time: record?.sterilization_hold_end_time,
-      temperature: record?.temperature,
-      pressure: record?.pressure,
-      done_by: record?.done_by,
-      checked_by: record?.checked_by,
-      reviewed_by: record?.reviewed_by,
-      remarks: record?.remarks,
-    },
-    {
-      where: {
-        record_id: record.record_id,
+        await AutoclaveSterelizationRecord.update(
+          {
+            unique_id: record?.unique_id,
+            date: record?.date,
+            material_name: record?.material_name,
+            quantity: record?.quantity,
+            autoclave_load_no: record?.autoclave_load_no,
+            cycle_no: record?.cycle_no,
+            cycle_hold_time: record?.cycle_hold_time,
+            autoclave_start_time: record?.autoclave_start_time,
+            autoclave_end_time: record?.autoclave_end_time,
+            sterilization_hold_start_time: record?.sterilization_hold_start_time,
+            sterilization_hold_end_time: record?.sterilization_hold_end_time,
+            temperature: record?.temperature,
+            pressure: record?.pressure,
+            done_by: record?.done_by,
+            checked_by: record?.checked_by,
+            reviewed_by: record?.reviewed_by,
+            remarks: record?.remarks,
+          },
+          {
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          }
+        );
+      }
+          else {
+      const newRecordData = {
         form_id: form_id,
-      },
-      transaction,
-    }
-  );
-}
-         else {
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    material_name: record?.material_name,
-    quantity: record?.quantity,
-    autoclave_load_no: record?.autoclave_load_no,
-    cycle_no: record?.cycle_no,
-    cycle_hold_time: record?.cycle_hold_time,
-    autoclave_start_time: record?.autoclave_start_time,
-    autoclave_end_time: record?.autoclave_end_time,
-    sterilization_hold_start_time: record?.sterilization_hold_start_time,
-    sterilization_hold_end_time: record?.sterilization_hold_end_time,
-    temperature: record?.temperature,
-    pressure: record?.pressure,
-    done_by: record?.done_by,
-    checked_by: record?.checked_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+        unique_id: record?.unique_id,
+        date: record?.date,
+        material_name: record?.material_name,
+        quantity: record?.quantity,
+        autoclave_load_no: record?.autoclave_load_no,
+        cycle_no: record?.cycle_no,
+        cycle_hold_time: record?.cycle_hold_time,
+        autoclave_start_time: record?.autoclave_start_time,
+        autoclave_end_time: record?.autoclave_end_time,
+        sterilization_hold_start_time: record?.sterilization_hold_start_time,
+        sterilization_hold_end_time: record?.sterilization_hold_end_time,
+        temperature: record?.temperature,
+        pressure: record?.pressure,
+        done_by: record?.done_by,
+        checked_by: record?.checked_by,
+        reviewed_by: record?.reviewed_by,
+        remarks: record?.remarks,
+      };
 
   const createdRecord = await AutoclaveSterelizationRecord.create(
     newRecordData,
@@ -734,18 +734,18 @@ const isEmptyAuditValue = (value) => {
       continue;
     }
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+        effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: `${field}`,
+          previous_value: null,
+          new_value: String(formatAuditValue(newValue)),
+          status: "created",
+          performed_at: new Date(),
+        });
+      }
+    }
       }
     }
     await AutoclaveSterelizationAuditTrail.bulkCreate(auditTrailEntries, {

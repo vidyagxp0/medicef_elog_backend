@@ -268,7 +268,7 @@ exports.InsertInstrumentUsage = async (req, res) => {
 };
 
 // edit differential pressure elog details
-  exports.EditInstrumentUsage = async (req, res) => {
+exports.EditInstrumentUsage = async (req, res) => {
     const {
       department_id,
       description,
@@ -469,23 +469,23 @@ exports.InsertInstrumentUsage = async (req, res) => {
       };
 
       const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
+      if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+        return;
+      }
 
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || null,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value:
+          oldValue == null ? null : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue == null ? null : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
+    };
 
       const dbReviewerIds = parseIfString(form.reviewer_id, []);
       const reqReviewerIds = parseIfString(reviewer_id, []);
@@ -527,11 +527,11 @@ exports.InsertInstrumentUsage = async (req, res) => {
 
 
       for (const [field, newValue] of Object.entries(fields)) {
-        const oldValue = form[field];
+      const oldValue = form[field];
 
-        if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+      if (newValue !== undefined && hasChanged(oldValue, newValue)) {
 
-              pushEffectiveAudit(field, oldValue, newValue);
+          pushEffectiveAudit(field, oldValue, newValue);
 
           auditTrailEntries.push({
             form_id: form.form_id,
@@ -573,118 +573,118 @@ exports.InsertInstrumentUsage = async (req, res) => {
   // Update / Create Temperature Records (NO DELETE)
         if (Array.isArray(instrumentUsageRecords) && instrumentUsageRecords.length > 0) {
 
-          for (const record of instrumentUsageRecords) {
+        for (const record of instrumentUsageRecords) {
 
-           if (record.record_id) {
+          if (record.record_id) {
 
   // Get existing record
-  const existingRecord = await instrumentUsageRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
+          const existingRecord = await instrumentUsageRecord.findOne({
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          });
 
-  if (!existingRecord) {
-    throw new Error(`Instrument usage record not found: ${record.record_id}`);
-  }
+          if (!existingRecord) {
+            throw new Error(`Instrument usage record not found: ${record.record_id}`);
+          }
 
   // Same fields as your original update payload
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    time: record?.time,
-    productName: record?.productName,
-    batchNo: record?.batchNo,
-    testname: record?.testname,
-    startTime: record?.startTime,
-    endTime: record?.endTime,
-    analyzed_by: record?.analyzed_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+          const recordFields = {
+            unique_id: record?.unique_id,
+            date: record?.date,
+            time: record?.time,
+            productName: record?.productName,
+            batchNo: record?.batchNo,
+            testname: record?.testname,
+            startTime: record?.startTime,
+            endTime: record?.endTime,
+            analyzed_by: record?.analyzed_by,
+            reviewed_by: record?.reviewed_by,
+            remarks: record?.remarks,
+          };
 
   // Compare old and new values
-  for (const [field, newValue] of Object.entries(recordFields)) {
-    const oldValue = existingRecord[field];
+          for (const [field, newValue] of Object.entries(recordFields)) {
+            const oldValue = existingRecord[field];
 
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null
-            ? null
-            : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null
-            ? null
-            : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
-    }
-  }
+            if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+              effectiveAuditEntries.push({
+                form_id: form.form_id,
+                process_id: form.process_id || null,
+                performed_by: user.user_id,
+                field_name: `${field}`,
+                previous_value:
+                  oldValue == null
+                    ? null
+                    : String(formatAuditValue(oldValue)),
+                new_value:
+                  newValue == null
+                    ? null
+                    : String(formatAuditValue(newValue)),
+                status: "updated",
+                performed_at: new Date(),
+              });
+            }
+          }
 
   // Original update query - unchanged
-  await instrumentUsageRecord.update(
-    {
-      unique_id: record?.unique_id,
-      date: record?.date,
-      time: record?.time,
-      productName: record?.productName,
-      batchNo: record?.batchNo,
-      testname: record?.testname,
-      startTime: record?.startTime,
-      endTime: record?.endTime,
-      analyzed_by: record?.analyzed_by,
-      // done_by: record?.done_by,
-      reviewed_by: record?.reviewed_by,
-      remarks: record?.remarks,
-    },
-    {
-      where: {
-        record_id: record.record_id,
-        form_id: form_id,
-      },
-      transaction,
-    }
-  );
-}
+          await instrumentUsageRecord.update(
+            {
+              unique_id: record?.unique_id,
+              date: record?.date,
+              time: record?.time,
+              productName: record?.productName,
+              batchNo: record?.batchNo,
+              testname: record?.testname,
+              startTime: record?.startTime,
+              endTime: record?.endTime,
+              analyzed_by: record?.analyzed_by,
+              // done_by: record?.done_by,
+              reviewed_by: record?.reviewed_by,
+              remarks: record?.remarks,
+            },
+          {
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          }
+        );
+      }
             
            else {
 
   // Original create payload - unchanged
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    date: record?.date,
-    time: record?.time,
-    productName: record?.productName,
-    batchNo: record?.batchNo,
-    testname: record?.testname,
-    startTime: record?.startTime,
-    endTime: record?.endTime,
-    analyzed_by: record?.analyzed_by,
-    // done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+          const newRecordData = {
+            form_id: form_id,
+            unique_id: record?.unique_id,
+            date: record?.date,
+            time: record?.time,
+            productName: record?.productName,
+            batchNo: record?.batchNo,
+            testname: record?.testname,
+            startTime: record?.startTime,
+            endTime: record?.endTime,
+            analyzed_by: record?.analyzed_by,
+            // done_by: record?.done_by,
+            reviewed_by: record?.reviewed_by,
+            remarks: record?.remarks,
+          };
 
   // Create and capture the new record
-  const createdRecord = await instrumentUsageRecord.create(
-    newRecordData,
-    { transaction }
-  );
+          const createdRecord = await instrumentUsageRecord.create(
+            newRecordData,
+            { transaction }
+          );
 
   // Create audit entries
-  for (const [field, newValue] of Object.entries(newRecordData)) {
- if (field === "form_id" || isEmptyAuditValue(newValue)) {
-          continue;
-        }
+        for (const [field, newValue] of Object.entries(newRecordData)) {
+      if (field === "form_id" || isEmptyAuditValue(newValue)) {
+                continue;
+              }
 
     effectiveAuditEntries.push({
       form_id: form.form_id,

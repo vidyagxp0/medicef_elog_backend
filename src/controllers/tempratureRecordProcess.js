@@ -687,64 +687,64 @@ pushEffectiveAudit(
 
 // Update / Create Temperature Records (NO DELETE)
 
-      if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
+        if (Array.isArray(TempratureRecords) && TempratureRecords.length > 0) {
 
-        for (const record of TempratureRecords) {
+          for (const record of TempratureRecords) {
 
-          if (record.record_id) {
+            if (record.record_id) {
 
-              // Step 1: Fetch existing record from database
-  const existingRecord = await TempratureProcessRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
+                // Step 1: Fetch existing record from database
+          const existingRecord = await TempratureProcessRecord.findOne({
+            where: {
+              record_id: record.record_id,
+              form_id: form_id,
+            },
+            transaction,
+          });
 
-  if (!existingRecord) {
-    throw new Error(`Temperature record not found: ${record.record_id}`);
-  }
+          if (!existingRecord) {
+            throw new Error(`Temperature record not found: ${record.record_id}`);
+          }
 
   // Step 2: Incoming updated values
-  const recordFields = {
-    time: record.time,
-    date: record.date,
-    min_temprature_record: record.min_temprature_record,
-    max_temprature_record: record.max_temprature_record,
-    humidity_record: record.humidity_record,
-    remarks: record.remarks,
-    done_by: record.done_by,
-    reviewed_by: record?.reviewed_by,
-    approved_by: record?.approved_by,
-  };
+          const recordFields = {
+            time: record.time,
+            date: record.date,
+            min_temprature_record: record.min_temprature_record,
+            max_temprature_record: record.max_temprature_record,
+            humidity_record: record.humidity_record,
+            remarks: record.remarks,
+            done_by: record.done_by,
+            reviewed_by: record?.reviewed_by,
+            approved_by: record?.approved_by,
+          };
 
   // Step 3: Compare old and new values
-  for (const [field, newValue] of Object.entries(recordFields)) {
+          for (const [field, newValue] of Object.entries(recordFields)) {
 
-    const oldValue = existingRecord[field];
+            const oldValue = existingRecord[field];
 
-    if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+            if (newValue !== undefined && hasChanged(oldValue, newValue)) {
 
-      effectiveAuditEntries.push({
-        form_id: form.form_id,
-        process_id: form.process_id || process_id || null,
-        performed_by: user.user_id,
-        field_name: `${field}`,
-        previous_value:
-          oldValue == null
-            ? null
-            : String(formatAuditValue(oldValue)),
-        new_value:
-          newValue == null
-            ? null
-            : String(formatAuditValue(newValue)),
-        status: "updated",
-        performed_at: new Date(),
-      });
+              effectiveAuditEntries.push({
+                form_id: form.form_id,
+                process_id: form.process_id || process_id || null,
+                performed_by: user.user_id,
+                field_name: `${field}`,
+                previous_value:
+                  oldValue == null
+                    ? null
+                    : String(formatAuditValue(oldValue)),
+                new_value:
+                  newValue == null
+                    ? null
+                    : String(formatAuditValue(newValue)),
+                status: "updated",
+                performed_at: new Date(),
+              });
 
-    }
-  }
+            }
+          }
 
             // UPDATE existing row
             await TempratureProcessRecord.update(
@@ -772,46 +772,46 @@ pushEffectiveAudit(
        else {
   // CREATE only new row
 
-  const newRecordData = {
-    form_id: form_id,
-    unique_id: record?.unique_id,
-    time: record?.time,
-    date: record?.date,
-    min_temprature_record: record.min_temprature_record,
-    max_temprature_record: record.max_temprature_record,
-    humidity_record: record?.humidity_record,
-    remarks: record?.remarks,
-    done_by: record?.done_by,
-    reviewed_by: record?.reviewed_by,
-    approved_by: record?.approved_by,
-  };
+          const newRecordData = {
+            form_id: form_id,
+            unique_id: record?.unique_id,
+            time: record?.time,
+            date: record?.date,
+            min_temprature_record: record.min_temprature_record,
+            max_temprature_record: record.max_temprature_record,
+            humidity_record: record?.humidity_record,
+            remarks: record?.remarks,
+            done_by: record?.done_by,
+            reviewed_by: record?.reviewed_by,
+            approved_by: record?.approved_by,
+          };
 
   // Create record and get generated record_id
-  const createdRecord = await TempratureProcessRecord.create(
-    newRecordData,
-    { transaction }
-  );
+          const createdRecord = await TempratureProcessRecord.create(
+              newRecordData,
+              { transaction }
+            );
 
   // Create audit entries for newly created record
-  for (const [field, newValue] of Object.entries(newRecordData)) {
+            for (const [field, newValue] of Object.entries(newRecordData)) {
 
-     if (field === "form_id" || isEmptyAuditValue(newValue)) {
-          continue;
-        }
+              if (field === "form_id" || isEmptyAuditValue(newValue)) {
+                    continue;
+                  }
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
+              effectiveAuditEntries.push({
+                form_id: form.form_id,
+                process_id: form.process_id || process_id || null,
+                performed_by: user.user_id,
+                field_name: `${field}`,
+                previous_value: null,
+                new_value: String(formatAuditValue(newValue)),
+                status: "created",
+                performed_at: new Date(),
+              });
 
-  }
-}
+            }
+          }
         }
       }
 

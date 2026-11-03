@@ -499,31 +499,31 @@ exports.EditLabAssaySample = async (req, res) => {
     };
 
     const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
+    if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+      return;
+    }
 
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
+    effectiveAuditEntries.push({
+      form_id: form.form_id,
+      process_id: form.process_id || null,
+      performed_by: user.user_id,
+      field_name: field,
+      previous_value:
+        oldValue == null ? null : String(formatAuditValue(oldValue)),
+      new_value:
+        newValue == null ? null : String(formatAuditValue(newValue)),
+      status: "updated",
+      performed_at: new Date(),
+    });
+  };
 
-const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
+      const isEmptyAuditValue = (value) => {
+        return (
+          value === null ||
+          value === undefined ||
+          (typeof value === "string" && value.trim() === "")
+        );
+      };
 
     const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
@@ -616,38 +616,38 @@ const isEmptyAuditValue = (value) => {
     ) {
       for (const record of LabAssaySampleRecords) {
         if (record.record_id) {
-  const existingRecord = await LabAssaySampleRecord.findOne({
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
+    const existingRecord = await LabAssaySampleRecord.findOne({
+      where: {
+        record_id: record.record_id,
+        form_id: form_id,
+      },
+      transaction,
+    });
 
-  if (!existingRecord) {
-    throw new Error(
-      `Lab assay sample record not found: ${record.record_id}`
-    );
-  }
+    if (!existingRecord) {
+      throw new Error(
+        `Lab assay sample record not found: ${record.record_id}`
+      );
+    }
 
-  const recordFields = {
-    unique_id: record?.unique_id,
-    date: record?.date,
-    product_name: record?.product_name,
-    batch_no: record?.batch_no,
-    mfg_date: record?.mfg_date,
-    exp_date: record?.exp_date,
-    ar_no: record?.ar_no,
-    analyzed_by: record?.analyzed_by,
-    average_cfu: record?.average_cfu,
-    no_of_spores: record?.no_of_spores,
-    percentage_of_spores: record?.percentage_of_spores,
-    date_of_observation: record?.date_of_observation,
-    observed_by: record?.observed_by,
-    checked_by: record?.checked_by,
-    reviewed_by: record?.reviewed_by,
-    remarks: record?.remarks,
-  };
+    const recordFields = {
+      unique_id: record?.unique_id,
+      date: record?.date,
+      product_name: record?.product_name,
+      batch_no: record?.batch_no,
+      mfg_date: record?.mfg_date,
+      exp_date: record?.exp_date,
+      ar_no: record?.ar_no,
+      analyzed_by: record?.analyzed_by,
+      average_cfu: record?.average_cfu,
+      no_of_spores: record?.no_of_spores,
+      percentage_of_spores: record?.percentage_of_spores,
+      date_of_observation: record?.date_of_observation,
+      observed_by: record?.observed_by,
+      checked_by: record?.checked_by,
+      reviewed_by: record?.reviewed_by,
+      remarks: record?.remarks,
+    };
 
   // Compare old and new values
   for (const [field, newValue] of Object.entries(recordFields)) {

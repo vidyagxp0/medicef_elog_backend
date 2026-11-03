@@ -512,32 +512,32 @@ exports.EditBreakdownMaintenance = async (req, res) => {
       return value;
     };
 
-    const pushEffectiveAudit = (field, oldValue, newValue) => {
-  if (newValue === undefined || !hasChanged(oldValue, newValue)) {
-    return;
-  }
+        const pushEffectiveAudit = (field, oldValue, newValue) => {
+      if (newValue === undefined || !hasChanged(oldValue, newValue)) {
+        return;
+      }
 
-  effectiveAuditEntries.push({
-    form_id: form.form_id,
-    process_id: form.process_id || null,
-    performed_by: user.user_id,
-    field_name: field,
-    previous_value:
-      oldValue == null ? null : String(formatAuditValue(oldValue)),
-    new_value:
-      newValue == null ? null : String(formatAuditValue(newValue)),
-    status: "updated",
-    performed_at: new Date(),
-  });
-};
+      effectiveAuditEntries.push({
+        form_id: form.form_id,
+        process_id: form.process_id || null,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value:
+          oldValue == null ? null : String(formatAuditValue(oldValue)),
+        new_value:
+          newValue == null ? null : String(formatAuditValue(newValue)),
+        status: "updated",
+        performed_at: new Date(),
+      });
+    };
 
-const isEmptyAuditValue = (value) => {
-  return (
-    value === null ||
-    value === undefined ||
-    (typeof value === "string" && value.trim() === "")
-  );
-};
+    const isEmptyAuditValue = (value) => {
+      return (
+        value === null ||
+        value === undefined ||
+        (typeof value === "string" && value.trim() === "")
+      );
+    };
 
     const dbReviewerIds = parseIfString(form.reviewer_id, []);
     const reqReviewerIds = parseIfString(reviewer_id, []);
@@ -699,76 +699,76 @@ const isEmptyAuditValue = (value) => {
     }
   }
 
-  // Original UPDATE query
-  await BreakdownMaintenanceRecord.update(recordFields, {
-    where: {
-      record_id: record.record_id,
-      form_id: form_id,
-    },
-    transaction,
-  });
+    // Original UPDATE query
+    await BreakdownMaintenanceRecord.update(recordFields, {
+      where: {
+        record_id: record.record_id,
+        form_id: form_id,
+      },
+      transaction,
+    });
 
-} else {
-  // Original CREATE payload
-  const newRecordData = {
-    form_id: form_id,
-    departmentName: record?.departmentName,
-    requested_by: record?.requested_by,
-    request_date: record?.request_date,
-    request_time: record?.request_time,
-    equipment_system_area_name: record?.equipment_system_area_name,
-    area_id_no: record?.area_id_no,
-    type_of_work_electrical: record?.type_of_work_electrical,
-    type_of_work_mechanical: record?.type_of_work_mechanical,
-    type_of_work_civil: record?.type_of_work_civil,
-    type_of_work_other: record?.type_of_work_other,
-    description_of_job: record?.description_of_job,
-    user_dept_sign_date: record?.user_dept_sign_date,
-    request_received_by: record?.request_received_by,
-    request_received_date: record?.request_received_date,
-    request_received_time: record?.request_received_time,
-    request_received_sign: record?.request_received_sign,
-    change_control_required: record?.change_control_required,
-    change_control_no: record?.change_control_no,
-    summary_of_work_done: record?.summary_of_work_done,
-    work_completed_by: record?.work_completed_by,
-    work_completed_date: record?.work_completed_date,
-    work_completed_time: record?.work_completed_time,
-    work_completed_sign: record?.work_completed_sign,
-    qa_comments: record?.qa_comments,
-    affects_critical_process: record?.affects_critical_process,
-    qa_sign_date: record?.qa_sign_date,
-    equipment_available_for_use: record?.equipment_available_for_use,
-    acceptance_user_sign_date: record?.acceptance_user_sign_date,
-    checked_by_engineering_sign_date:
-      record?.checked_by_engineering_sign_date,
-    verified_by_head_engineering_sign_date:
-      record?.verified_by_head_engineering_sign_date,
-  };
+    } else {
+      // Original CREATE payload
+      const newRecordData = {
+        form_id: form_id,
+        departmentName: record?.departmentName,
+        requested_by: record?.requested_by,
+        request_date: record?.request_date,
+        request_time: record?.request_time,
+        equipment_system_area_name: record?.equipment_system_area_name,
+        area_id_no: record?.area_id_no,
+        type_of_work_electrical: record?.type_of_work_electrical,
+        type_of_work_mechanical: record?.type_of_work_mechanical,
+        type_of_work_civil: record?.type_of_work_civil,
+        type_of_work_other: record?.type_of_work_other,
+        description_of_job: record?.description_of_job,
+        user_dept_sign_date: record?.user_dept_sign_date,
+        request_received_by: record?.request_received_by,
+        request_received_date: record?.request_received_date,
+        request_received_time: record?.request_received_time,
+        request_received_sign: record?.request_received_sign,
+        change_control_required: record?.change_control_required,
+        change_control_no: record?.change_control_no,
+        summary_of_work_done: record?.summary_of_work_done,
+        work_completed_by: record?.work_completed_by,
+        work_completed_date: record?.work_completed_date,
+        work_completed_time: record?.work_completed_time,
+        work_completed_sign: record?.work_completed_sign,
+        qa_comments: record?.qa_comments,
+        affects_critical_process: record?.affects_critical_process,
+        qa_sign_date: record?.qa_sign_date,
+        equipment_available_for_use: record?.equipment_available_for_use,
+        acceptance_user_sign_date: record?.acceptance_user_sign_date,
+        checked_by_engineering_sign_date:
+          record?.checked_by_engineering_sign_date,
+        verified_by_head_engineering_sign_date:
+          record?.verified_by_head_engineering_sign_date,
+      };
 
-  const createdRecord = await BreakdownMaintenanceRecord.create(
-    newRecordData,
-    { transaction }
-  );
+      const createdRecord = await BreakdownMaintenanceRecord.create(
+        newRecordData,
+        { transaction }
+      );
 
   // Create audit entries only for non-empty values
-  for (const [field, newValue] of Object.entries(newRecordData)) {
-    if (field === "form_id" || isEmptyAuditValue(newValue)) {
-      continue;
-    }
+      for (const [field, newValue] of Object.entries(newRecordData)) {
+        if (field === "form_id" || isEmptyAuditValue(newValue)) {
+          continue;
+        }
 
-    effectiveAuditEntries.push({
-      form_id: form.form_id,
-      process_id: form.process_id || null,
-      performed_by: user.user_id,
-      field_name: `${field}`,
-      previous_value: null,
-      new_value: String(formatAuditValue(newValue)),
-      status: "created",
-      performed_at: new Date(),
-    });
-  }
-}
+        effectiveAuditEntries.push({
+          form_id: form.form_id,
+          process_id: form.process_id || null,
+          performed_by: user.user_id,
+          field_name: `${field}`,
+          previous_value: null,
+          new_value: String(formatAuditValue(newValue)),
+          status: "created",
+          performed_at: new Date(),
+        });
+      }
+    }
       }
     }
     await BreakdownMaintenanceAuditTrail.bulkCreate(auditTrailEntries, {
