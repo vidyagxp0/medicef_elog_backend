@@ -513,6 +513,7 @@ exports.InsertDifferentialPressure = async (req, res) => {
 
       // Track changes for the form
       const auditTrailEntries = [];
+      const effectiveAuditEntries = [];
       const fields = {
         description,
         departmentName,

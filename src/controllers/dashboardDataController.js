@@ -364,46 +364,10 @@ exports.GetElogById = async (req, res) => {
         message: "No data Found",
       });
     }
-
-    const supportsRevision = Boolean(
-      form.rawAttributes?.revision_of_form_id
-    );
-
-    // Add parent information without changing the database record
-    const responseData = await Promise.all(
-      elogData.map(async (item) => {
-        const currentData = item.toJSON();
-
-        const parentRecordId = supportsRevision
-          ? currentData.revision_of_form_id ?? null
-          : null;
-
-        let parentRecordName = null;
-
-        if (parentRecordId !== null) {
-          const parentForm = await form.findOne({
-            where: {
-              form_id: parentRecordId,
-              process_id,
-            },
-            attributes: ["form_id", "parentRecordName"],
-          });
-
-          parentRecordName = parentForm?.parentRecordName ?? null;
-        }
-
-        return {
-          ...currentData,
-          parent_record_id: parentRecordId,
-          parent_record_name: parentRecordName,
-        };
-      })
-    );
-
     return res.status(200).json({
       error: false,
       message: "Data fetch Successfully",
-      data: responseData,
+      data: elogData,
     })
 
     // return res.json({
@@ -1092,7 +1056,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
       headerTemplate: headerHtml,
       footerTemplate: footerHtml,
       margin: {
-        top: "180px",
+        top: "130px",
         bottom: "60px",
         left: "40px",
         right: "40px",
@@ -1948,7 +1912,7 @@ const pdfBuffer = await page.pdf({
   footerTemplate: footerHtml,
 
   margin: {
-    top: "180px",
+    top: "130px",
     bottom: "60px",
     left: "40px",
     right: "40px",

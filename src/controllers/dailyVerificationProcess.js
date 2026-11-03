@@ -1,4 +1,3 @@
-
 const { sequelize } = require("../config/db");
 const User = require("../models/users");
 const { ValidationError } = require("sequelize");
@@ -43,210 +42,339 @@ const parseIfString = (value, fallback = null) => {
 };
 
 // Fill Lab Assay Sample form and insert its records.
+// exports.InsertDailyVerification = async (req, res) => {
+//   const {
+//     department_id,
+//     process_id,
+//     description,
+//     departmentName,
+//     balanceIdNo,
+//     makeModel,
+//     balanceCapacity,
+//     leastCount,
+//     area_name,
+//     room_id,
+//     reviewer_id,
+//     reviewerData,
+//     approver_id,
+//     initiatorComment,
+//     esignInput,
+//     password,
+//     FormRecordsArray,
+//     initiatorDeclaration,
+//     additionalInfo,
+//     balanceOperatingRangeMin,
+//     balanceOperatingRangeMax,
+//     acceptanceCriteriaMin,
+//     acceptanceCriteriaMax,
+//     standardWeightW1,
+//     standardWeightW2,
+//     standardWeightW3,
+//     standardWeightW1Min,
+//     standardWeightW1Max,
+//     standardWeightW2Min,
+//     standardWeightW2Max,
+//     standardWeightW3Min,
+//     standardWeightW3Max,
+//   } = req.body;
+
+//   if (!description) {
+//     return res
+//       .status(400)
+//       .json({ error: true, message: "Description field is mandatory." });
+//   }
+
+//   if (!area_name) {
+//     return res
+//       .status(400)
+//       .json({ error: true, message: "Area name field is mandatory." });
+//   }
+
+//   if (!reviewer_id) {
+//     return res
+//       .status(400)
+//       .json({ error: true, message: "Please provide a reviewer." });
+//   }
+
+//   if (!approver_id) {
+//     return res
+//       .status(400)
+//       .json({ error: true, message: "Please provide an approver." });
+//   }
+
+//   if (!reviewerData) {
+//     return res
+//       .status(400)
+//       .json({ error: true, message: "Please provide a reviewer data." });
+//   }
+
+//   if (!esignInput || !password) {
+//     return res.status(400).json({
+//       error: true,
+//       message: "Please provide email or username and password.",
+//     });
+//   }
+
+//   // Start a transaction
+//   const transaction = await sequelize.transaction();
+
+//   try {
+//     const user = await User.findOne({
+//       where: { user_id: req.user.userId, isActive: true },
+//       transaction,
+//     });
+
+//     if (!user) {
+//       await transaction.rollback();
+//       return res
+//         .status(401)
+//         .json({ error: true, message: "Invalid e-signature." });
+//     }
+
+//     const isPasswordValid = await bcrypt.compare(password, user.password);
+
+//     if (!isPasswordValid) {
+//       await transaction.rollback();
+//       return res
+//         .status(401)
+//         .json({ error: true, message: "Invalid e-signature." });
+//     }
+//     if (
+//       user.email.toLowerCase() !== esignInput.toLowerCase() &&
+//       user.userName !== esignInput
+//     ) {
+//       await transaction.rollback();
+//       return res
+//         .status(401)
+//         .json({ error: true, message: "Invalid e-signature credentials." });
+//     }
+
+//     let initiatorAttachment = null;
+//     let additionalAttachment = null;
+//     const supportingDocs = {};
+
+//     // Process files
+//     req.files?.forEach((file) => {
+//       if (file.fieldname === "initiatorAttachment") {
+//         initiatorAttachment = file;
+//       } else if (file.fieldname === "additionalAttachment") {
+//         additionalAttachment = file;
+//       }
+//     });
+
+//     // Create new Disinfectant Stock Form
+//     const newForm = await DailyVerificationForm.create(
+//       {
+//         department_id: department_id,
+//         process_id: process_id,
+//         initiator_id: user.user_id,
+//         initiator_name: user.name,
+//         description: description,
+//         status: "Opened",
+//         stage: 1,
+//         departmentName: departmentName,
+//         balanceIdNo: balanceIdNo,
+//         makeModel: makeModel,
+//         balanceCapacity: balanceCapacity,
+//         leastCount: leastCount,
+//         reviewerData: reviewerData,
+//         reviewer_id: reviewer_id,
+//         approver_id: approver_id,
+//         initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+//         additionalAttachment: getElogDocsUrl(additionalAttachment),
+//         initiatorComment: initiatorComment,
+//         additionalInfo: additionalInfo,
+//         area_name: area_name,
+//         room_id: room_id,
+//         balanceOperatingRangeMin: balanceOperatingRangeMin,
+//         balanceOperatingRangeMax: balanceOperatingRangeMax,
+//         acceptanceCriteriaMin: acceptanceCriteriaMin,
+//         acceptanceCriteriaMax: acceptanceCriteriaMax,
+//         standardWeightW1: standardWeightW1,
+//         standardWeightW2: standardWeightW2,
+//         standardWeightW3: standardWeightW3,
+//         standardWeightW1Min,
+//         standardWeightW1Max,
+//         standardWeightW2Min,
+//         standardWeightW2Max,
+//         standardWeightW3Min,
+//         standardWeightW3Max,
+//       },
+
+//       { transaction },
+//     );
+
+//     const auditTrailEntries = [];
+//     const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
+//     const reviewerNames = reviewerUsers.map((u) => u.name).join(", ");
+
+//     const fields = {
+//       description,
+//       departmentName,
+//       balanceIdNo,
+//       makeModel,
+//       balanceCapacity,
+//       leastCount,
+//       area_name,
+//       room_id,
+//       reviewer: reviewerNames,
+//       approver: (await getUserById(approver_id))?.name,
+//       initiatorComment,
+//       additionalInfo,
+//       balanceOperatingRangeMin,
+//       balanceOperatingRangeMax,
+//       acceptanceCriteriaMin,
+//       acceptanceCriteriaMax,
+//       standardWeightW1,
+//       standardWeightW2,
+//       standardWeightW3,
+//       standardWeightW1Min,
+//       standardWeightW1Max,
+//       standardWeightW2Min,
+//       standardWeightW2Max,
+//       standardWeightW3Min,
+//       standardWeightW3Max,
+    
+//     };
+//     for (const [field, value] of Object.entries(fields)) {
+//       if (value !== undefined && value !== null && value !== "") {
+//         auditTrailEntries.push({
+//           form_id: newForm.form_id,
+//           field_name: field,
+//           previous_value: null,
+//           new_value: typeof value === "object" ? JSON.stringify(value) : value,
+//           changed_by: user.user_id,
+//           previous_status: "Not Applicable",
+//           new_status: "Opened",
+//           action: "Opened",
+//         });
+//       }
+//     }
+
+//     if (initiatorAttachment) {
+//       auditTrailEntries.push({
+//         form_id: newForm.form_id,
+//         field_name: "initiatorAttachment",
+//         previous_value: null,
+//         new_value: getElogDocsUrl(initiatorAttachment),
+//         changed_by: user.user_id,
+//         previous_status: "Not Applicable",
+//         new_status: "Opened",
+//         action: "Opened",
+//       });
+//     }
+
+//     if (additionalAttachment) {
+//       auditTrailEntries.push({
+//         form_id: newForm.form_id,
+//         field_name: "additionalAttachment",
+//         previous_value: null,
+//         new_value: getElogDocsUrl(additionalAttachment),
+//         changed_by: user.user_id,
+//         previous_status: "Not Applicable",
+//         new_status: "Opened",
+//         declaration: initiatorDeclaration,
+//         action: "Opened",
+//       });
+//     }
+
+//     if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
+//       const formRecords = FormRecordsArray.map((record, index) => ({
+//         form_id: newForm?.form_id,
+//         unique_id: record?.unique_id,
+//         date: record?.date,
+//         time: record?.time,
+//         zeroBalance: record?.zeroBalance,
+//         spiritLevelStatus: record?.spiritLevelStatus,
+//         observedWeightsW1: record?.observedWeightsW1,
+//         observedWeightsW2: record?.observedWeightsW2,
+//         observedWeightsW3: record?.observedWeightsW3,
+//         floor: record?.floor,
+//         done_by: record?.done_by,
+//         checked_by: record?.checked_by,
+//         reviewed_by: record?.reviewed_by,
+//         verified_by: record?.verified_by,
+//         remarks: record?.remarks,
+//       }));
+
+//       formRecords.forEach((record, index) => {
+//         auditTrailEntries.push({
+//           form_id: newForm.form_id,
+//           field_name: "Unique Id",
+//           previous_value: null,
+//           new_value: record.unique_id || "",
+//           changed_by: user.user_id,
+//           previous_status: "Not Applicable",
+//           new_status: "Opened",
+//           action: "Opened",
+//         });
+
+//         auditTrailEntries.push({
+//           form_id: newForm.form_id,
+//           field_name: "Remarks",
+//           previous_value: null,
+//           new_value: record.remarks,
+//           changed_by: user.user_id,
+//           previous_status: "Not Applicable",
+//           new_status: "Opened",
+//           action: "Opened",
+//         });
+//         auditTrailEntries.push({
+//           form_id: newForm.form_id,
+//           field_name: "CheckedBy",
+//           previous_value: null,
+//           new_value: record.checked_by,
+//           changed_by: user.user_id,
+//           previous_status: "Not Applicable",
+//           new_status: "Opened",
+//           action: "Opened",
+//         });
+//         if (supportingDocs[index]) {
+//           auditTrailEntries.push({
+//             form_id: newForm.form_id,
+//             field_name: "SupportingDocs",
+//             previous_value: null,
+//             new_value: getElogDocsUrl(supportingDocs),
+//             changed_by: user.user_id,
+//             previous_status: "Not Applicable",
+//             new_status: "Opened",
+//             action: "Opened",
+//           });
+//         }
+//       });
+//     }
+
+//     await DailyVerificationAuditTrail.bulkCreate(auditTrailEntries, {
+//       transaction,
+//     });
+
+//     await transaction.commit();
+//     return res.status(200).json({
+//       error: false,
+//       message: "E-log Created successfully",
+//     });
+//   } catch (error) {
+//     await transaction.rollback();
+
+//     let errorMessage = "Error during creating elog";
+//     if (error instanceof ValidationError) {
+//       errorMessage = error.errors.map((e) => e.message).join(", ");
+//     }
+
+//     return res.status(500).json({
+//       error: true,
+//       message: `${errorMessage}: ${error.message}`,
+//     });
+//   }
+// };
+
 exports.InsertDailyVerification = async (req, res) => {
-  const {
-    department_id,
-    process_id,
-    description,
-    departmentName,
-    balanceIdNo,
-    makeModel,
-    balanceCapacity,
-    leastCount,
-    area_name,
-    room_id,
-    reviewer_id,
-    reviewerData,
-    approver_id,
-    initiatorComment,
-    esignInput,
-    password,
-    FormRecordsArray,
-    initiatorDeclaration,
-    additionalInfo,
-    balanceOperatingRangeMin,
-    balanceOperatingRangeMax,
-    acceptanceCriteriaMin,
-    acceptanceCriteriaMax,
-    standardWeightW1,
-    standardWeightW2,
-    standardWeightW3,
-    standardWeightW1Min,
-    standardWeightW1Max,
-    standardWeightW2Min,
-    standardWeightW2Max,
-    standardWeightW3Min,
-    standardWeightW3Max,
-    revision_of_form_id,
-    revision_justification,
-    revision_number,
-    parentRecordName,
-  } = req.body;
-
-  if (!description) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Description field is mandatory." });
-  }
-
-  if (!area_name) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Area name field is mandatory." });
-  }
-
-  if (!reviewer_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a reviewer." });
-  }
-
-  if (!approver_id) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide an approver." });
-  }
-
-  if (!reviewerData) {
-    return res
-      .status(400)
-      .json({ error: true, message: "Please provide a reviewer data." });
-  }
-
-  if (!esignInput || !password) {
-    return res.status(400).json({
-      error: true,
-      message: "Please provide email or username and password.",
-    });
-  }
-
-  // Start a transaction
-  const transaction = await sequelize.transaction();
+  let transaction;
 
   try {
-    const user = await User.findOne({
-      where: { user_id: req.user.userId, isActive: true },
-      transaction,
-    });
-
-    if (!user) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature." });
-    }
-    if (
-      user.email.toLowerCase() !== esignInput.toLowerCase() &&
-      user.userName !== esignInput
-    ) {
-      await transaction.rollback();
-      return res
-        .status(401)
-        .json({ error: true, message: "Invalid e-signature credentials." });
-    }
-
-    let initiatorAttachment = null;
-    let additionalAttachment = null;
-    const supportingDocs = {};
-
-    // Process files
-    req.files?.forEach((file) => {
-      if (file.fieldname === "initiatorAttachment") {
-        initiatorAttachment = file;
-      } else if (file.fieldname === "additionalAttachment") {
-        additionalAttachment = file;
-      }
-    });
-
-  const savedParentRecordName =
-    req.body?.parentRecordName ?? null;
-  if (revision_of_form_id) {
-    const parentForm = await DailyVerificationForm.findByPk(
-      revision_of_form_id,
-      {
-        attributes: ["form_id"],
-        transaction,
-      }
-    );
-
-  if (!parentForm) {
-    await transaction.rollback();
-
-    return res.status(400).json({
-      error: true,
-      message: "Parent Daily Verification record not found.",
-    });
-  }
- }
-
-    // Create new Disinfectant Stock Form
-    const newForm = await DailyVerificationForm.create(
-      {
-        department_id: department_id,
-        process_id: process_id,
-        initiator_id: user.user_id,
-        initiator_name: user.name,
-        description: description,
-        status: "Opened",
-        stage: 1,
-        departmentName: departmentName,
-        balanceIdNo: balanceIdNo,
-        makeModel: makeModel,
-        balanceCapacity: balanceCapacity,
-        leastCount: leastCount,
-        reviewerData: reviewerData,
-        reviewer_id: reviewer_id,
-        approver_id: approver_id,
-        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
-        additionalAttachment: getElogDocsUrl(additionalAttachment),
-        initiatorComment: initiatorComment,
-        additionalInfo: additionalInfo,
-        area_name: area_name,
-        room_id: room_id,
-        balanceOperatingRangeMin: balanceOperatingRangeMin,
-        balanceOperatingRangeMax: balanceOperatingRangeMax,
-        acceptanceCriteriaMin: acceptanceCriteriaMin,
-        acceptanceCriteriaMax: acceptanceCriteriaMax,
-        standardWeightW1: standardWeightW1,
-        standardWeightW2: standardWeightW2,
-        standardWeightW3: standardWeightW3,
-        standardWeightW1Min,
-        standardWeightW1Max,
-        standardWeightW2Min,
-        standardWeightW2Max,
-        standardWeightW3Min,
-        standardWeightW3Max,
-        // Revision / Parent Record fields
-        revision_of_form_id: revision_of_form_id || null,
-        revision_justification: revision_justification || null,
-        revision_number:
-        revision_number !== undefined &&
-        revision_number !== null &&
-        revision_number !== ""
-          ? Number(revision_number)
-          : 0,
-
-        // Only if this column exists in your model/table
-       parentRecordName: savedParentRecordName,
-      },
-
-      { transaction },
-    );
-
-    const auditTrailEntries = [];
-    const reviewerUsers = await getUsersByIdsReviewer(reviewer_id);
-    const reviewerNames = reviewerUsers.map((u) => u.name).join(", ");
-
-    const fields = {
+    const {
+      department_id,
+      process_id,
       description,
       departmentName,
       balanceIdNo,
@@ -255,9 +383,14 @@ exports.InsertDailyVerification = async (req, res) => {
       leastCount,
       area_name,
       room_id,
-      reviewer: reviewerNames,
-      approver: (await getUserById(approver_id))?.name,
+      reviewer_id,
+      reviewerData,
+      approver_id,
       initiatorComment,
+      esignInput,
+      password,
+      FormRecordsArray,
+      initiatorDeclaration,
       additionalInfo,
       balanceOperatingRangeMin,
       balanceOperatingRangeMax,
@@ -272,144 +405,653 @@ exports.InsertDailyVerification = async (req, res) => {
       standardWeightW2Max,
       standardWeightW3Min,
       standardWeightW3Max,
-      parentRecordName:
-      parentRecordName !== undefined
-        ? parentRecordName
-        : form.parentRecordName,
-        
+      revision_of_form_id,
+      parentRecordName,
+      revision_justification,
+    } = req.body;
+
+    // --------------------------------------------------
+    // 1. BASIC VALIDATIONS
+    // --------------------------------------------------
+
+    if (!description || !String(description).trim()) {
+      return res.status(400).json({
+        error: true,
+        message: "Description field is mandatory.",
+      });
+    }
+
+    if (!area_name) {
+      return res.status(400).json({
+        error: true,
+        message: "Area name field is mandatory.",
+      });
+    }
+
+    if (!reviewer_id) {
+      return res.status(400).json({
+        error: true,
+        message: "Please provide a reviewer.",
+      });
+    }
+
+    if (!approver_id) {
+      return res.status(400).json({
+        error: true,
+        message: "Please provide an approver.",
+      });
+    }
+
+    if (!reviewerData) {
+      return res.status(400).json({
+        error: true,
+        message: "Please provide reviewer data.",
+      });
+    }
+
+    if (!esignInput || !password) {
+      return res.status(400).json({
+        error: true,
+        message: "Please provide email or username and password.",
+      });
+    }
+
+    // --------------------------------------------------
+    // 2. NORMALIZE REQUEST DATA
+    // --------------------------------------------------
+
+    const isRevision =
+      revision_of_form_id !== undefined &&
+      revision_of_form_id !== null &&
+      String(revision_of_form_id).trim() !== "";
+
+    const parsedRecords = parseIfString(FormRecordsArray, []);
+
+    if (!Array.isArray(parsedRecords)) {
+      return res.status(400).json({
+        error: true,
+        message: "Invalid Daily Verification records format.",
+      });
+    }
+
+    // reviewer_id can be an array or a JSON string.
+    const parsedReviewerIds = parseIfString(reviewer_id, reviewer_id);
+
+    // --------------------------------------------------
+    // 3. START TRANSACTION
+    // --------------------------------------------------
+
+    transaction = await sequelize.transaction();
+
+    // --------------------------------------------------
+    // 4. VERIFY LOGGED-IN USER AND E-SIGN
+    // --------------------------------------------------
+
+    const user = await User.findOne({
+      where: {
+        user_id: req.user.userId,
+        isActive: true,
+      },
+      transaction,
+    });
+
+    if (!user) {
+      const error = new Error("Invalid e-signature.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isPasswordValid) {
+      const error = new Error("Invalid e-signature.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const enteredEsign = String(esignInput).trim().toLowerCase();
+
+    const userEmail = String(user.email || "").trim().toLowerCase();
+
+    const userName = String(user.userName || "").trim().toLowerCase();
+
+    if (enteredEsign !== userEmail && enteredEsign !== userName) {
+      const error = new Error("Invalid e-signature credentials.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    // --------------------------------------------------
+    // 5. PROCESS UPLOADED FILES
+    // --------------------------------------------------
+
+    let initiatorAttachment = null;
+    let additionalAttachment = null;
+
+    const supportingDocs = {};
+
+    if (Array.isArray(req.files)) {
+      req.files.forEach((file) => {
+        if (file.fieldname === "initiatorAttachment") {
+          initiatorAttachment = file;
+        } else if (file.fieldname === "additionalAttachment") {
+          additionalAttachment = file;
+        } else {
+          /*
+            Supporting document field names are not defined
+            in the supplied controller. This supports common
+            indexed names such as:
+              supportingDocs[0]
+              supportingDocs_0
+              supportingDocs-0
+
+            Make sure your frontend uses one of these formats
+            if you want supporting document audit entries.
+          */
+
+          const match = file.fieldname.match(
+            /^supportingDocs(?:\[|_|-)(\d+)\]?$/
+          );
+
+          if (match) {
+            supportingDocs[Number(match[1])] = file;
+          }
+        }
+      });
+    }
+
+    // --------------------------------------------------
+    // 6. REVISION VALIDATION
+    // --------------------------------------------------
+
+    let parentForm = null;
+    let revisionNumber = 0;
+
+    if (isRevision) {
+      const parentFormId = Number(revision_of_form_id);
+
+      if (!Number.isInteger(parentFormId) || parentFormId <= 0) {
+        const error = new Error("Invalid parent form ID.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (
+        !revision_justification ||
+        !String(revision_justification).trim()
+      ) {
+        const error = new Error("Revision justification is required.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Lock parent row to prevent concurrent revision requests.
+      parentForm = await DailyVerificationForm.findOne({
+        where: {
+          form_id: parentFormId,
+        },
+        transaction,
+        lock: transaction.LOCK.UPDATE,
+      });
+
+      if (!parentForm) {
+        const error = new Error(
+          "Parent Daily Verification form not found."
+        );
+        error.statusCode = 404;
+        throw error;
+      }
+
+      // Ensure the revision belongs to the same process and department.
+      if (
+        Number(parentForm.process_id) !== Number(process_id) ||
+        Number(parentForm.department_id) !== Number(department_id)
+      ) {
+        const error = new Error(
+          "Parent form process or department does not match."
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Prevent another revision while the parent is locked.
+      if (parentForm.is_revision_locked) {
+        const error = new Error(
+          "Revision is already locked for this form."
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      /*
+        Always calculate the revision number on the backend.
+        Do not trust revision_number coming from the frontend.
+      */
+
+      const latestRevision = await DailyVerificationForm.findOne({
+        where: {
+          revision_of_form_id: parentForm.form_id,
+        },
+        attributes: ["revision_number"],
+        order: [["revision_number", "DESC"]],
+        transaction,
+      });
+
+      revisionNumber = Number(latestRevision?.revision_number || 0) + 1;
+    }
+
+    // --------------------------------------------------
+    // 7. CREATE DAILY VERIFICATION FORM
+    // --------------------------------------------------
+
+    const newForm = await DailyVerificationForm.create(
+      {
+        department_id,
+        process_id,
+
+        initiator_id: user.user_id,
+        initiator_name: user.name,
+
+        description,
+        status: "Opened",
+        stage: 1,
+
+        departmentName,
+        balanceIdNo,
+        makeModel,
+        balanceCapacity,
+        leastCount,
+
+        reviewerData,
+        reviewer_id: parsedReviewerIds,
+        approver_id,
+
+        initiatorAttachment: getElogDocsUrl(initiatorAttachment),
+        additionalAttachment: getElogDocsUrl(additionalAttachment),
+
+        initiatorComment,
+        additionalInfo,
+
+        area_name,
+        room_id,
+
+        balanceOperatingRangeMin,
+        balanceOperatingRangeMax,
+
+        acceptanceCriteriaMin,
+        acceptanceCriteriaMax,
+
+        standardWeightW1,
+        standardWeightW2,
+        standardWeightW3,
+
+        standardWeightW1Min,
+        standardWeightW1Max,
+
+        standardWeightW2Min,
+        standardWeightW2Max,
+
+        standardWeightW3Min,
+        standardWeightW3Max,
+
+        // Revision fields
+        revision_of_form_id: isRevision
+          ? parentForm.form_id
+          : null,
+
+        parentRecordName: isRevision
+          ? parentForm.parentRecordName || parentRecordName || null
+          : null,
+
+        revision_number: isRevision
+          ? revisionNumber
+          : 0,
+
+        // revision_justification: isRevision
+        //   ? String(revision_justification).trim()
+        //   : null,
+        revision_justification: null,
+      },
+      {
+        transaction,
+      }
+    );
+
+    // --------------------------------------------------
+    // 8. LOCK PARENT FORM AFTER REVISION CREATION
+    // --------------------------------------------------
+
+    if (isRevision) {
+      await parentForm.update(
+        {
+          is_revision_locked: true,
+          revision_requested_by: user.user_id,
+          revision_requested_at: new Date(),
+          revision_justification: String(revision_justification).trim(),
+        },
+        {
+          transaction,
+        }
+      );
+    }
+
+    // --------------------------------------------------
+    // 9. CREATE DAILY VERIFICATION RECORDS
+    // --------------------------------------------------
+
+    const formRecords = parsedRecords.map((record) => ({
+      form_id: newForm.form_id,
+
+      unique_id: record?.unique_id,
+      date: record?.date,
+      time: record?.time,
+
+      zeroBalance: record?.zeroBalance,
+      spiritLevelStatus: record?.spiritLevelStatus,
+
+      observedWeightsW1: record?.observedWeightsW1,
+      observedWeightsW2: record?.observedWeightsW2,
+      observedWeightsW3: record?.observedWeightsW3,
+
+      floor: record?.floor,
+
+      done_by: record?.done_by,
+      checked_by: record?.checked_by,
+      reviewed_by: record?.reviewed_by,
+      verified_by: record?.verified_by,
+
+      remarks: record?.remarks,
+    }));
+
+    /*
+      IMPORTANT:
+      Records are inserted against the NEW form ID.
+      Parent form records are not modified.
+    */
+
+    if (formRecords.length > 0) {
+      await DailyVerificationRecord.bulkCreate(formRecords, {
+        transaction,
+      });
+    }
+
+    // --------------------------------------------------
+    // 10. CREATE AUDIT TRAIL
+    // --------------------------------------------------
+
+    const auditTrailEntries = [];
+
+    const reviewerUsers = await getUsersByIdsReviewer(
+      parsedReviewerIds
+    );
+
+    const reviewerNames = reviewerUsers
+      .map((u) => u.name)
+      .join(", ");
+
+    const approverUser = await getUserById(approver_id);
+
+    const fields = {
+      description,
+      departmentName,
+      balanceIdNo,
+      makeModel,
+      balanceCapacity,
+      leastCount,
+      area_name,
+      room_id,
+
+      reviewer: reviewerNames,
+      approver: approverUser?.name,
+
+      initiatorComment,
+      additionalInfo,
+
+      balanceOperatingRangeMin,
+      balanceOperatingRangeMax,
+
+      acceptanceCriteriaMin,
+      acceptanceCriteriaMax,
+
+      standardWeightW1,
+      standardWeightW2,
+      standardWeightW3,
+
+      standardWeightW1Min,
+      standardWeightW1Max,
+
+      standardWeightW2Min,
+      standardWeightW2Max,
+
+      standardWeightW3Min,
+      standardWeightW3Max,
     };
+
+    // General form field audit entries.
     for (const [field, value] of Object.entries(fields)) {
       if (value !== undefined && value !== null && value !== "") {
         auditTrailEntries.push({
           form_id: newForm.form_id,
+
           field_name: field,
+
           previous_value: null,
-          new_value: typeof value === "object" ? JSON.stringify(value) : value,
+
+          new_value:
+            typeof value === "object"
+              ? JSON.stringify(value)
+              : value,
+
           changed_by: user.user_id,
+
           previous_status: "Not Applicable",
           new_status: "Opened",
+
           action: "Opened",
         });
       }
     }
 
+    // Initiator attachment audit entry.
     if (initiatorAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
+
         field_name: "initiatorAttachment",
+
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
+
         changed_by: user.user_id,
+
         previous_status: "Not Applicable",
         new_status: "Opened",
+
         action: "Opened",
       });
     }
 
+    // Additional attachment audit entry.
     if (additionalAttachment) {
       auditTrailEntries.push({
         form_id: newForm.form_id,
+
         field_name: "additionalAttachment",
+
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
+
         changed_by: user.user_id,
+
         previous_status: "Not Applicable",
         new_status: "Opened",
-        declaration: initiatorDeclaration,
+
         action: "Opened",
       });
     }
 
-    if (Array.isArray(FormRecordsArray) && FormRecordsArray.length > 0) {
-      const formRecords = FormRecordsArray.map((record, index) => ({
-        form_id: newForm?.form_id,
-        unique_id: record?.unique_id,
-        date: record?.date,
-        time: record?.time,
-        zeroBalance: record?.zeroBalance,
-        spiritLevelStatus: record?.spiritLevelStatus,
-        observedWeightsW1: record?.observedWeightsW1,
-        observedWeightsW2: record?.observedWeightsW2,
-        observedWeightsW3: record?.observedWeightsW3,
-        floor: record?.floor,
-        done_by: record?.done_by,
-        checked_by: record?.checked_by,
-        reviewed_by: record?.reviewed_by,
-        verified_by: record?.verified_by,
-        remarks: record?.remarks,
-      }));
+    // Revision audit entries.
+    if (isRevision) {
+      const revisionFields = {
+        revision_of_form_id: parentForm.form_id,
+        parentRecordName:
+          parentForm.parentRecordName || parentRecordName || null,
+        revision_number: revisionNumber,
+        revision_justification: String(revision_justification).trim(),
+      };
 
-      formRecords.forEach((record, index) => {
+      for (const [field, value] of Object.entries(revisionFields)) {
         auditTrailEntries.push({
           form_id: newForm.form_id,
-          field_name: "Unique Id",
-          previous_value: null,
-          new_value: record.unique_id || "",
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
 
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "Remarks",
+          field_name: field,
+
           previous_value: null,
-          new_value: record.remarks,
+          new_value: value,
+
           changed_by: user.user_id,
+
           previous_status: "Not Applicable",
           new_status: "Opened",
-          action: "Opened",
+
+          action: "Revision Created",
         });
-        auditTrailEntries.push({
-          form_id: newForm.form_id,
-          field_name: "CheckedBy",
-          previous_value: null,
-          new_value: record.checked_by,
-          changed_by: user.user_id,
-          previous_status: "Not Applicable",
-          new_status: "Opened",
-          action: "Opened",
-        });
-        if (supportingDocs[index]) {
-          auditTrailEntries.push({
-            form_id: newForm.form_id,
-            field_name: "SupportingDocs",
-            previous_value: null,
-            new_value: getElogDocsUrl(supportingDocs),
-            changed_by: user.user_id,
-            previous_status: "Not Applicable",
-            new_status: "Opened",
-            action: "Opened",
-          });
-        }
-      });
+      }
     }
 
-    await DailyVerificationAuditTrail.bulkCreate(auditTrailEntries, {
-      transaction,
+    // Record-wise audit entries.
+    formRecords.forEach((record, index) => {
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+
+        field_name: "Unique Id",
+
+        previous_value: null,
+        new_value: record.unique_id || "",
+
+        changed_by: user.user_id,
+
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+
+        action: "Opened",
+      });
+
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+
+        field_name: "Remarks",
+
+        previous_value: null,
+        new_value: record.remarks || "",
+
+        changed_by: user.user_id,
+
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+
+        action: "Opened",
+      });
+
+      auditTrailEntries.push({
+        form_id: newForm.form_id,
+
+        field_name: "CheckedBy",
+
+        previous_value: null,
+        new_value: record.checked_by || "",
+
+        changed_by: user.user_id,
+
+        previous_status: "Not Applicable",
+        new_status: "Opened",
+
+        action: "Opened",
+      });
+
+      // Supporting document audit entry, if uploaded.
+      if (supportingDocs[index]) {
+        auditTrailEntries.push({
+          form_id: newForm.form_id,
+
+          field_name: "SupportingDocs",
+
+          previous_value: null,
+          new_value: getElogDocsUrl(supportingDocs[index]),
+
+          changed_by: user.user_id,
+
+          previous_status: "Not Applicable",
+          new_status: "Opened",
+
+          action: "Opened",
+        });
+      }
     });
+
+    if (auditTrailEntries.length > 0) {
+      await DailyVerificationAuditTrail.bulkCreate(
+        auditTrailEntries,
+        {
+          transaction,
+        }
+      );
+    }
+
+    // --------------------------------------------------
+    // 11. COMMIT TRANSACTION
+    // --------------------------------------------------
 
     await transaction.commit();
+
+    // --------------------------------------------------
+    // 12. SUCCESS RESPONSE
+    // --------------------------------------------------
+
     return res.status(200).json({
       error: false,
-      message: "E-log Created successfully",
-       data: {
-    ...newForm.toJSON(),
-    parentRecordName: newForm.parentRecordName || null,
-  },
+
+      message: isRevision
+        ? "Daily Verification Revision Created Successfully."
+        : "E-log Created successfully.",
+
+      data: {
+        form_id: newForm.form_id,
+
+        revision_of_form_id: newForm.revision_of_form_id,
+
+        revision_number: newForm.revision_number,
+
+        isRevision,
+      },
     });
   } catch (error) {
-    await transaction.rollback();
+    // --------------------------------------------------
+    // 13. ROLLBACK ON ERROR
+    // --------------------------------------------------
 
-    let errorMessage = "Error during creating elog";
-    if (error instanceof ValidationError) {
-      errorMessage = error.errors.map((e) => e.message).join(", ");
+    if (transaction && !transaction.finished) {
+      await transaction.rollback();
     }
 
-    return res.status(500).json({
+    console.error("InsertDailyVerification Error:", error);
+
+    let errorMessage = "Error during creating Daily Verification form.";
+
+    if (error instanceof ValidationError) {
+      errorMessage = error.errors
+        .map((e) => e.message)
+        .join(", ");
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    return res.status(error.statusCode || 500).json({
       error: true,
-      message: `${errorMessage}: ${error.message}`,
+      message: errorMessage,
     });
   }
 };
@@ -449,7 +1091,6 @@ exports.EditDailyVerification = async (req, res) => {
     standardWeightW2Max,
     standardWeightW3Min,
     standardWeightW3Max,
-    parentRecordName, 
   } = req.body;
 
   const { form_id } = req.params;
@@ -718,10 +1359,6 @@ exports.EditDailyVerification = async (req, res) => {
           : form.additionalAttachment,
         initiatorComment,
         additionalInfo,
-        parentRecordName:
-  parentRecordName !== undefined
-    ? parentRecordName
-    : form.parentRecordName,
       },
       { transaction },
     );
@@ -1411,226 +2048,6 @@ exports.sendReportOnMail = async (req, res) => {
       status: 500,
       error: true,
       message: `Internal Server Error${error}`,
-    });
-  }
-};
-exports.RequestDailyVerificationRevision = async (req, res) => {
-  const { form_id } = req.params;
-  const justification = String(req.body?.justification || "").trim();
-
-  if (!justification) {
-    return res.status(400).json({
-      error: true,
-      message: "Revision justification is required.",
-    });
-  }
-
-  const transaction = await sequelize.transaction();
-
-  try {
-    const originalForm = await DailyVerificationForm.findOne({
-      where: { form_id },
-      transaction,
-      lock: transaction.LOCK.UPDATE,
-    });
-
-    if (!originalForm) {
-      await transaction.rollback();
-
-      return res.status(404).json({
-        error: true,
-        message: "Daily Verification form not found.",
-      });
-    }
-
-    // Prevent another revision request for an already locked form.
-    if (originalForm.is_revision_locked) {
-      await transaction.rollback();
-
-      return res.status(409).json({
-        error: true,
-        message: "This record is already locked for revision.",
-      });
-    }
-
-    /*
-     * IMPORTANT:
-     * Before enabling this API in production, verify:
-     * 1. The form is actually Effective in your workflow.
-     * 2. The logged-in user has permission to request a revision.
-     *
-     * Use your existing workflow-state and authorization logic here.
-     * Do not rely only on the existence of the form.
-     */
-
-    // Get the original form's Elogs records.
-    const originalRecords = await DailyVerificationRecord.findAll({
-      where: { form_id: originalForm.form_id },
-      transaction,
-    });
-
-    // Copy only actual database fields, excluding primary key and timestamps.
-    const formAttributes = DailyVerificationForm.rawAttributes;
-
-    const originalData = originalForm.get({ plain: true });
-    const newFormData = {};
-
-    Object.keys(formAttributes).forEach((field) => {
-      if (
-        field !== "form_id" &&
-        field !== "createdAt" &&
-        field !== "updatedAt" &&
-        field !== "revision_of_form_id" &&
-        field !== "revision_number" &&
-        field !== "revision_justification" &&
-        field !== "is_revision_locked" &&
-        field !== "revision_requested_by" &&
-        field !== "revision_requested_at"
-      ) {
-        if (Object.prototype.hasOwnProperty.call(originalData, field)) {
-          newFormData[field] = originalData[field];
-        }
-      }
-    });
-
-    // Calculate the next revision number in the revision chain.
-    const revisionRootId =
-      originalForm.revision_of_form_id || originalForm.form_id;
-      const parentForm = await DailyVerificationForm.findByPk(
-  revisionRootId,
-  {
-    attributes: ["form_id", "parentRecordName"],
-    transaction,
-  }
-);
-
-const parentRecordName = parentForm?.parentRecordName || null;
-
-    const previousRevisions = await DailyVerificationForm.findAll({
-      where: {
-        revision_of_form_id: revisionRootId,
-      },
-      attributes: ["revision_number"],
-      transaction,
-    });
-
-    const maxRevisionNumber = previousRevisions.reduce(
-      (max, revision) =>
-        Math.max(max, Number(revision.revision_number || 0)),
-      Number(originalForm.revision_number || 0)
-    );
-
-    /*
-     * IMPORTANT:
-     * Set the new form's initial workflow state according to your
-     * actual workflow configuration before production use.
-     *
-     * Do not copy the original form's Effective workflow state into
-     * the new revision.
-     */
-
-    // Reset the workflow fields that are known from the current model.
-    // Verify these values against your existing workflow implementation.
-    if (Object.prototype.hasOwnProperty.call(formAttributes, "status")) {
-      newFormData.status = "Pending";
-    }
-
-    if (Object.prototype.hasOwnProperty.call(formAttributes, "stage")) {
-      newFormData.stage = 1;
-    }
-
-    /*
-     * If workflow_state_id is required, resolve the actual initial
-     * WorkflowState ID here instead of copying the Effective state.
-     *
-     * Example:
-     * newFormData.workflow_state_id = INITIAL_WORKFLOW_STATE_ID;
-     */
-
-    // Create a new form; do not modify the original form's business data.
-    const newRevision = await DailyVerificationForm.create(
-      {
-        ...newFormData,
-        revision_of_form_id: revisionRootId,
-        revision_number: maxRevisionNumber + 1,
-        revision_justification: justification,
-        is_revision_locked: false,
-        revision_requested_by:
-          req.user?.user_id || req.user?.id || null,
-        revision_requested_at: new Date(),
-        parentRecordName,
-      },
-      { transaction }
-    );
-
-    // Copy the Elogs rows to the new form.
-    // Original rows remain linked to the original form.
-    for (const originalRecord of originalRecords) {
-      const recordData = originalRecord.get({ plain: true });
-      const newRecordData = {};
-
-      const recordAttributes = DailyVerificationRecord.rawAttributes;
-
-      Object.keys(recordAttributes).forEach((field) => {
-        if (
-          field !== "record_id" &&
-          field !== "form_id" &&
-          field !== "createdAt" &&
-          field !== "updatedAt"
-        ) {
-          if (Object.prototype.hasOwnProperty.call(recordData, field)) {
-            newRecordData[field] = recordData[field];
-          }
-        }
-      });
-
-      await DailyVerificationRecord.create(
-        {
-          ...newRecordData,
-          form_id: newRevision.form_id,
-        },
-        { transaction }
-      );
-    }
-
-    // Lock the original only after the new revision has been created.
-    await originalForm.update(
-      {
-        is_revision_locked: true,
-        // revision_justification: justification,
-        // revision_requested_by:
-        //   req.user?.user_id || req.user?.id || null,
-        // revision_requested_at: new Date(),
-      },
-      { transaction }
-    );
-
-    await transaction.commit();
-
-    return res.status(201).json({
-      error: false,
-      message: "Revision form created successfully.",
-      data: {
-        originalFormId: originalForm.form_id,
-        newFormId: newRevision.form_id,
-        revisionNumber: newRevision.revision_number,
-        justification,
-      },
-    });
-  } catch (error) {
-    if (!transaction.finished) {
-      await transaction.rollback();
-    }
-
-    console.error("Daily Verification revision error:", error);
-
-    return res.status(500).json({
-      error: true,
-      message: "Failed to create revision form.",
-      details:
-        process.env.NODE_ENV === "development"
-          ? error.message
-          : undefined,
     });
   }
 };
