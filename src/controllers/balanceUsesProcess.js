@@ -203,7 +203,7 @@ console.log(req.body)
           field_name: field,
           previous_value: null,
           new_value: typeof value === "object" ? JSON.stringify(value) : value,
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -217,7 +217,7 @@ console.log(req.body)
         field_name: "initiatorAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(initiatorAttachment),
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
         action: "Opened",
@@ -230,7 +230,7 @@ console.log(req.body)
         field_name: "additionalAttachment",
         previous_value: null,
         new_value: getElogDocsUrl(additionalAttachment),
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: "Not Applicable",
         new_status: "Opened",
         declaration: initiatorDeclaration,
@@ -259,7 +259,7 @@ console.log(req.body)
           field_name: "Unique Id",
           previous_value: null,
           new_value: record.unique_id || "",
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -270,7 +270,7 @@ console.log(req.body)
           field_name: "Remarks",
           previous_value: null,
           new_value: record.remarks,
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -280,7 +280,7 @@ console.log(req.body)
           field_name: "CheckedBy",
           previous_value: null,
           new_value: record.checked_by,
-          performed_by: user.user_id,
+          changed_by: user.user_id,
           previous_status: "Not Applicable",
           new_status: "Opened",
           action: "Opened",
@@ -291,7 +291,7 @@ console.log(req.body)
             field_name: "SupportingDocs",
             previous_value: null,
             new_value: getElogDocsUrl(supportingDocs),
-            performed_by: user.user_id,
+            changed_by: user.user_id,
             previous_status: "Not Applicable",
             new_status: "Opened",
             action: "Opened",
@@ -450,6 +450,8 @@ console.log(req.body.process_id,"qwertyui")
       return res.status(404).json({ error: true, message: "Form not found." });
     }
 
+    const effectiveProcessId = process_id ?? form.process_id;
+
     // Define epsilon for float comparison
     const EPSILON = 0.000001;
 
@@ -458,6 +460,8 @@ console.log(req.body.process_id,"qwertyui")
 
     // Track changes for the form
     const auditTrailEntries = [];
+    const effectiveAuditEntries = [];
+
     const fields = {
       description,
       departmentName,
@@ -533,10 +537,11 @@ console.log(req.body.process_id,"qwertyui")
         field_name: "reviewer",
         previous_value: oldReviewers?.map((u) => u.name).join(", "),
         new_value: newReviewers?.map((u) => u.name).join(", "),
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
         action: "Update Elog",
+
       });
     }
 
@@ -549,7 +554,7 @@ console.log(req.body.process_id,"qwertyui")
         field_name: "approver",
         previous_value: oldApprover?.name || "",
         new_value: newApprover?.name || "",
-        performed_by: user.user_id,
+        changed_by: user.user_id,
         previous_status: form.status,
         new_status: form.status,
         action: "Update Elog",
@@ -557,21 +562,22 @@ console.log(req.body.process_id,"qwertyui")
     }
 
     for (const [field, newValue] of Object.entries(fields)) {
-      const oldValue = form[field];
+  const oldValue = form[field];
 
-      if (newValue !== undefined && hasChanged(oldValue, newValue)) {
-        auditTrailEntries.push({
-          form_id: form.form_id,
-          field_name: field,
-          previous_value: formatAuditValue(oldValue) || null,
-          new_value: formatAuditValue(newValue),
-          performed_by: user.user_id,
-          previous_status: form.status,
-          new_status: form.status,
-          action: "Update Elog",
-        });
-      }
-    }
+  if (newValue !== undefined && hasChanged(oldValue, newValue)) {
+    auditTrailEntries.push({
+      form_id: form.form_id,
+      field_name: field,
+      previous_value: formatAuditValue(oldValue) || null,
+      new_value: formatAuditValue(newValue),
+      changed_by: user.user_id,
+      previous_status: form.status,
+      new_status: form.status,
+      action: "Update Elog",
+      process_id: form.process_id,
+    });
+  }
+}
 
     // Update the form details
     await form.update(
@@ -581,6 +587,7 @@ console.log(req.body.process_id,"qwertyui")
         departmentName,
         area_name,
         room_id,
+        process_id: effectiveProcessId,
         reviewer_id,
         reviewerData,
         approver_id,
@@ -603,145 +610,152 @@ console.log(req.body.process_id,"qwertyui")
 
     // Update / Create Temperature Records (NO DELETE)
 
-        if (
-          Array.isArray(BalanceUsesRecords) &&
-          BalanceUsesRecords.length > 0
-        ) {
-          for (const record of BalanceUsesRecords) {
-          if (record.record_id) {
-      const existingRecord = await BalanceUsesRecord.findOne({
-        where: {
-          record_id: record.record_id,
-          form_id: form_id,
-        },
-        transaction,
-      });
+    if (
+      Array.isArray(BalanceUsesRecords) &&
+      BalanceUsesRecords.length > 0
+    ) {
+      for (const record of BalanceUsesRecords) {
+      if (record.record_id) {
+  const existingRecord = await BalanceUsesRecord.findOne({
+    where: {
+      record_id: record.record_id,
+      form_id: form_id,
+    },
+    transaction,
+  });
 
-      if (!existingRecord) {
-        throw new Error(
-          `Balance Uses record not found: ${record.record_id}`
-        );
-      }
+  if (!existingRecord) {
+    throw new Error(
+      `Balance Uses record not found: ${record.record_id}`
+    );
+  }
 
-      const updateData = {
-        unique_id: record.unique_id,
-        date: record.date,
-        process_id: process_id,
-        productName: record.productName,
-        batchNo: record.batchNo,
-        weightTaken: record.weightTaken,
-        testActivity: record.testActivity,
-        done_by: record.done_by,
-        checked_by: record.checked_by,
-        reviewed_by: record.reviewed_by,
-        remarks: record.remarks,
-      };
+  const updateData = {
+    unique_id: record.unique_id,
+    date: record.date,
+    productName: record.productName,
+    batchNo: record.batchNo,
+    weightTaken: record.weightTaken,
+    testActivity: record.testActivity,
+    done_by: record.done_by,
+    checked_by: record.checked_by,
+    reviewed_by: record.reviewed_by,
+    remarks: record.remarks,
+  };
 
-    const toAuditValue = (value) => {
-      if (value === null || value === undefined) return null;
+  const toAuditValue = (value) => {
+    if (value === null || value === undefined) return null;
 
-      if (typeof value === "object") {
-        return JSON.stringify(value);
-      }
-
-      return String(value);
-    };
-
-    const changedFields = Object.keys(updateData).filter((field) => {
-      return (
-        toAuditValue(existingRecord.get(field)) !==
-        toAuditValue(updateData[field])
-      );
-    });
-
-    if (changedFields.length > 0) {
-      await EffectiveChangeAudit.bulkCreate(
-        changedFields.map((field) => ({
-          form_id: form_id,
-          performed_by: user.user_id,
-          field_name: field,
-          previous_value: toAuditValue(existingRecord.get(field)),
-          new_value: toAuditValue(updateData[field]),
-          status:"updated",
-          process_id:process_id,
-          performed_at: new Date(),
-        })),
-        { transaction }
-      );
+    if (typeof value === "object") {
+      return JSON.stringify(value);
     }
 
-      await existingRecord.update(updateData, { transaction });
+    return String(value);
+  };
 
-    }
-      else {
-      // Create a new Balance Uses record
-      const newRecord = await BalanceUsesRecord.create(
-        {
-          form_id: form_id,
-          process_id: process_id,
-          unique_id: record?.unique_id,
-          date: record?.date,
-          productName: record?.productName,
-          batchNo: record?.batchNo,
-          weightTaken: record?.weightTaken,
-          testActivity: record?.testActivity,
-          done_by: record?.done_by,
-          checked_by: record?.checked_by,
-          reviewed_by: record?.reviewed_by,
-          remarks: record?.remarks,
-        },
-        { transaction }
-      );
+  const changedFields = Object.keys(updateData).filter((field) => {
+    return (
+      toAuditValue(existingRecord.get(field)) !==
+      toAuditValue(updateData[field])
+    );
+  });
+
+  if (changedFields.length > 0) {
+    await EffectiveChangeAudit.bulkCreate(
+      changedFields.map((field) => ({
+        form_id: form_id,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value: toAuditValue(existingRecord.get(field)),
+        new_value: toAuditValue(updateData[field]),
+        status:"updated",
+       process_id: effectiveProcessId,
+        performed_at: new Date(),
+      })),
+      { transaction }
+    );
+  }
+
+  await existingRecord.update(updateData, { transaction });
+
+}
+  else {
+  // Create a new Balance Uses record
+  const newRecord = await BalanceUsesRecord.create(
+    {
+      form_id: form_id,
+    process_id: process_id,
+      unique_id: record?.unique_id,
+      date: record?.date,
+      productName: record?.productName,
+      batchNo: record?.batchNo,
+      weightTaken: record?.weightTaken,
+      testActivity: record?.testActivity,
+      done_by: record?.done_by,
+      checked_by: record?.checked_by,
+      reviewed_by: record?.reviewed_by,
+      remarks: record?.remarks,
+    },
+    { transaction }
+  );
 
   // All fields to be recorded in EffectiveChangeAudit
-      const auditFields = [
-        "unique_id",
-        "date",
-        "productName",
-        "batchNo",
-        "weightTaken",
-        "testActivity",
-        "done_by",
-        "checked_by",
-        "reviewed_by",
-        "remarks",
-      ];
+  const auditFields = [
+    "unique_id",
+    "date",
+    "productName",
+    "batchNo",
+    "weightTaken",
+    "testActivity",
+    "done_by",
+    "checked_by",
+    "reviewed_by",
+    "remarks",
+  ];
 
   // Skip null, undefined and empty values
-      const auditEntries = auditFields
-        .filter((field) => {
-          const value = newRecord.get(field);
-          return !isEmptyAuditValue(value);
-        })
-        .map((field) => {
-          const value = newRecord.get(field);
+  const auditEntries = auditFields
+    .filter((field) => {
+      const value = newRecord.get(field);
+      return !isEmptyAuditValue(value);
+    })
+    .map((field) => {
+      const value = newRecord.get(field);
 
-          return {
-            form_id: form_id,
-            performed_by: user.user_id,
-            field_name: field,
-            previous_value: null,
-            new_value:
-              typeof value === "object"
-                ? JSON.stringify(value)
-                : String(value),
-            status: "created",
-            process_id: newRecord.process_id,
-            performed_at: new Date(),
-          };
-        });
+      return {
+        form_id: form_id,
+        performed_by: user.user_id,
+        field_name: field,
+        previous_value: null,
+        new_value:
+          typeof value === "object"
+            ? JSON.stringify(value)
+            : String(value),
+        status: "created",
+        process_id: effectiveProcessId,
+        performed_at: new Date(),
+      };
+    });
 
-      if (auditEntries.length > 0) {
-        await EffectiveChangeAudit.bulkCreate(auditEntries, {
-          transaction,
-        });
+  if (auditEntries.length > 0) {
+    await EffectiveChangeAudit.bulkCreate(auditEntries, {
+      transaction,
+    });
+  }
+}
       }
     }
-          }
-        }
     await BalanceUsesAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
+
+    console.log(effectiveAuditEntries,"effectiveAuditEntries")
+
+if (effectiveAuditEntries.length > 0) {
+  await EffectiveChangeAudit.bulkCreate(effectiveAuditEntries, {
+    transaction,
+  });
+}
 
     await transaction.commit();
 
