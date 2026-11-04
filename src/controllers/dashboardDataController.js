@@ -866,6 +866,7 @@ exports.generateAuditPdfbyId = async (req, res) => {
   const userId = req.user.userId;
   const date = new Date();
   const formattedDate = date.toLocaleDateString("en-US", {
+    timeZone: "Asia/Kolkata",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",

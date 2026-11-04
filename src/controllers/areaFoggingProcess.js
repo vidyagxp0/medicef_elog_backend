@@ -617,6 +617,7 @@ exports.generateReport = async (req, res) => {
     let reportData = req.body.reportData;
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -738,6 +739,7 @@ exports.chatByPdf = async (req, res) => {
       : "Not Applicable";
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -924,6 +926,7 @@ if (!form_id) {
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -1077,6 +1080,7 @@ exports.blankReport = async (req, res) => {
 
     const date = new Date();
     const formattedDate = date.toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
