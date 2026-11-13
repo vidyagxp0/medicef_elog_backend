@@ -130,25 +130,86 @@ function hasAccess(userRoles, department_id, processId, roleId) {
   );
 }
 
+// function authorizeUserRole(processId, roleId) {
+//   return async (req, res, next) => {
+//     const userRoles = await UserRole.findAll({
+//       where: {
+//         user_id: req.user.userId,
+//       },
+//       attributes: { exclude: ["createdAt", "updatedAt"] },
+//     });
+//     if (!req.body.department_id) {
+//       return res
+//         .status(400)
+//         .json({ error: true, message: "Please provide a department ID." });
+//     }
+//     if (hasAccess(userRoles, Number(req.body?.department_id), processId, roleId)) {
+//       next(); // User has access, proceed to the next middleware or route handler
+//     } else {
+//       res
+//         .status(403)
+//         .json({ message: "Forbidden: You do not have required permissions." });
+//     }
+//   };
+// }
 function authorizeUserRole(processId, roleId) {
   return async (req, res, next) => {
-    const userRoles = await UserRole.findAll({
-      where: {
-        user_id: req.user.userId,
-      },
-      attributes: { exclude: ["createdAt", "updatedAt"] },
-    });
-    if (!req.body.department_id) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Please provide a department ID." });
-    }
-    if (hasAccess(userRoles, Number(req.body?.department_id), processId, roleId)) {
-      next(); // User has access, proceed to the next middleware or route handler
-    } else {
-      res
-        .status(403)
-        .json({ message: "Forbidden: You do not have required permissions." });
+    try {
+      const userRoles = await UserRole.findAll({
+        where: {
+          user_id: req.user.userId,
+        },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
+
+      if (!req.body.department_id) {
+        return res.status(400).json({
+          error: true,
+          message: "Please provide a department ID.",
+        });
+      }
+
+      const departmentId = Number(req.body.department_id);
+
+      const isRevision =
+        req.body.revision_of_form_id !== undefined &&
+        req.body.revision_of_form_id !== null &&
+        String(req.body.revision_of_form_id).trim() !== "";
+
+      let hasPermission;
+
+      if (isRevision) {
+        // Child form: allow any assigned role for this process
+        // in the selected department.
+        hasPermission = userRoles.some(
+          (role) =>
+            Number(role.department_id) === departmentId &&
+            Number(role.process_id) === Number(processId)
+        );
+      } else {
+        // Normal form: preserve existing permission logic.
+        hasPermission = hasAccess(
+          userRoles,
+          departmentId,
+          processId,
+          roleId
+        );
+      }
+
+      if (hasPermission) {
+        return next();
+      }
+
+      return res.status(403).json({
+        message: "Forbidden: You do not have required permissions.",
+      });
+    } catch (error) {
+      console.error("authorizeUserRole error:", error);
+
+      return res.status(500).json({
+        error: true,
+        message: "Permission verification failed.",
+      });
     }
   };
 }

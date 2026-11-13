@@ -14,6 +14,7 @@ const DailyVerificationAuditTrail = require("../models/dailyVerificationAuditTra
 const EffectiveChangeAudit = require("../models/effectiveChangeAudit");
 const Process = require("../models/processes");
 const { Op, fn, col, where, literal } = require("sequelize");
+const UserRole = require("../models/userRoles");
 
 const getUserById = async (user_id) => {
   const user = await User.findOne({ where: { user_id, isActive: true } });
@@ -406,6 +407,8 @@ exports.InsertDailyVerification = async (req, res) => {
       standardWeightW2Max,
       standardWeightW3Min,
       standardWeightW3Max,
+      initiator_id,
+      initiator_name,
       revision_of_form_id,
       parentRecordName,
       revision_justification,
@@ -570,6 +573,7 @@ exports.InsertDailyVerification = async (req, res) => {
 
     let parentForm = null;
     let revisionNumber = 0;
+    let selectedInitiator = null;
 
     if (isRevision) {
       const parentFormId = Number(revision_of_form_id);
@@ -642,6 +646,46 @@ exports.InsertDailyVerification = async (req, res) => {
       });
 
       revisionNumber = Number(latestRevision?.revision_number || 0) + 1;
+
+      const selectedInitiatorId = Number(initiator_id);
+      if (!Number.isInteger(selectedInitiatorId) || selectedInitiatorId <= 0) {
+        const error = new Error("Please select a valid Initiator.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+        selectedInitiator = await User.findOne({
+          where: {
+            user_id: selectedInitiatorId,
+            isActive: true,
+          },
+          transaction,
+        });
+
+        if (!selectedInitiator) {
+          const error = new Error("Selected Initiator not found or inactive.");
+          error.statusCode = 400;
+          throw error;
+        }
+
+        // Verify selected user has Initiator role (role_id = 1)
+        const hasInitiatorRole = await UserRole.findOne({
+          where: {
+            user_id: selectedInitiatorId,
+            role_id: 1,
+            department_id,
+            process_id,
+          },
+          transaction,
+        });
+
+        if (!hasInitiatorRole) {
+          const error = new Error(
+            "Selected user is not assigned as Initiator for this process."
+          );
+          error.statusCode = 400;
+          throw error;
+        }
     }
 
     // --------------------------------------------------
@@ -653,8 +697,15 @@ exports.InsertDailyVerification = async (req, res) => {
         department_id,
         process_id,
 
-        initiator_id: user.user_id,
-        initiator_name: user.name,
+        // initiator_id: user.user_id,
+        // initiator_name: user.name,
+        initiator_id: isRevision
+        ? selectedInitiator.user_id
+        : user.user_id,
+
+      initiator_name: isRevision
+        ? selectedInitiator.name
+        : user.name,
 
         description,
         status: "Opened",
