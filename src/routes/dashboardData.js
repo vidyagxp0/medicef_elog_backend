@@ -3,6 +3,7 @@ const router = express.Router();
 const Auth = require("../middlewares/authentication");
 const dashboardDataController = require("../controllers/dashboardDataController");
 
+const auditReviewController = require("../controllers/auditReviewController");
 const multer = require("multer");
 const path = require("path");
 
@@ -56,4 +57,19 @@ router.get(
   Auth.checkUserJwtToken,
   dashboardDataController.generateEffectiveAuditReport
 );
+
+// Submit audit review
+router.post(
+  "/audit-review/:form_id/:process_id",
+  Auth.checkUserJwtToken,
+  auditReviewController.createAuditReview
+);
+
+// Get audit review history
+router.get(
+  "/audit-reviews/:form_id/:process_id",
+  Auth.checkUserJwtToken,
+  auditReviewController.getAuditReviews
+);
+
 module.exports = router;
