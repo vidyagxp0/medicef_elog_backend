@@ -44,6 +44,7 @@ const balanceUsesRoutes = require("./routes/balanceUses");
 // const monthlyCalibrationRoutes = require("./routes/monthlyCalibration");
 
 const EffectiveChangeAudit = require("./models/effectiveChangeAudit");
+const ElogAuditReview = require("./models/elogAuditReview");
 const workFLow = require("./routes/workflow");
 const DispensingRecord = require("./models/dispensingRecord");
 
@@ -577,6 +578,25 @@ const ensureEffectiveChangeAuditTable = async () => {
   }
 };
 
+// ------------------ AUDIT REVIEW TABLE ------------------
+
+const ensureElogAuditReviewsTable = async () => {
+  try {
+    await ElogAuditReview.sync();
+
+    console.log(
+      "ElogAuditReviews table checked/created successfully."
+    );
+  } catch (error) {
+    console.error(
+      "ElogAuditReviews table creation error:",
+      error.message
+    );
+
+    throw error;
+  }
+};
+
 const startServer = async () => {
   try {
     await connectToDB();
@@ -585,6 +605,7 @@ const startServer = async () => {
     await sequelize.sync({ alter: false });
     console.log("Tables synchronized");
     await ensureEffectiveChangeAuditTable();
+    await ensureElogAuditReviewsTable();
     await ensureUserPasswordPolicyColumns();
     await ensureDispensingBoothLimitDataColumn();
     await ensureDailyVerificationStandardWeightLimitColumns();
