@@ -641,11 +641,11 @@ exports.EditDailyCalibration = async (req, res) => {
 
     // Update / Create Temperature Records (NO DELETE)
 
-    if (
-      Array.isArray(DailyCalibrationRecords) &&
-      DailyCalibrationRecords.length > 0
-    ) {
-      for (const record of DailyCalibrationRecords) {
+    // if (
+    //   Array.isArray(DailyCalibrationRecords) &&
+    //   DailyCalibrationRecords.length > 0
+    // ) {
+    //   for (const record of DailyCalibrationRecords) {
        // Update / Create Daily Calibration Records (NO DELETE)
 
     if (
@@ -776,8 +776,8 @@ exports.EditDailyCalibration = async (req, res) => {
         }
       }
     }
-      }
-    }
+    //   }
+    // }
     await DailyCalibrationAuditTrail.bulkCreate(auditTrailEntries, {
       transaction,
     });
