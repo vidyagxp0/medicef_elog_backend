@@ -800,53 +800,53 @@ exports.InsertDifferentialPressure = async (req, res) => {
         if (field === "form_id" || isEmptyAuditValue(newValue)) {
           continue;
         }
-        if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
+        // if (Array.isArray(DifferentialPressureRecords) && DifferentialPressureRecords.length > 0) {
 
-          for (const record of DifferentialPressureRecords) {
+        //   for (const record of DifferentialPressureRecords) {
 
-            if (record.record_id) {
-              // UPDATE existing row
-              await DifferentialPressureRecord.update(
-                {
-                  unique_id: record?.unique_id,
-                  time: record?.time,
-                  date: record?.date,
-                  differential_pressure: record?.differential_pressure,
-                  remarks: record?.remarks,
-                  done_by: record?.done_by,
-                  checked_by: record?.checked_by,
-                  reviewed_by: record?.reviewed_by,
-                  approved_by: record?.approved_by,
-                },
-                {
-                  where: {
-                    record_id: record.record_id,
-                    form_id: form_id,
-                  },
-                  transaction,
-                }
-              );
+        //     if (record.record_id) {
+        //       // UPDATE existing row
+        //       await DifferentialPressureRecord.update(
+        //         {
+        //           unique_id: record?.unique_id,
+        //           time: record?.time,
+        //           date: record?.date,
+        //           differential_pressure: record?.differential_pressure,
+        //           remarks: record?.remarks,
+        //           done_by: record?.done_by,
+        //           checked_by: record?.checked_by,
+        //           reviewed_by: record?.reviewed_by,
+        //           approved_by: record?.approved_by,
+        //         },
+        //         {
+        //           where: {
+        //             record_id: record.record_id,
+        //             form_id: form_id,
+        //           },
+        //           transaction,
+        //         }
+        //       );
 
-            } else {
-              // CREATE only new row
-              await DifferentialPressureRecord.create(
-                {
-                  form_id: form_id,
-                  unique_id: record?.unique_id,
-                  time: record?.time,
-                  date: record?.date,
-                  differential_pressure: record?.differential_pressure,
-                  remarks: record?.remarks,
-                  done_by: record?.done_by,
-                  checked_by: record?.checked_by,
-                  reviewed_by: record?.reviewed_by,
-                  approved_by: record?.approved_by,
-                },
-                { transaction }
-              );
-            }
-          }
-        }
+        //     } else {
+        //       // CREATE only new row
+        //       await DifferentialPressureRecord.create(
+        //         {
+        //           form_id: form_id,
+        //           unique_id: record?.unique_id,
+        //           time: record?.time,
+        //           date: record?.date,
+        //           differential_pressure: record?.differential_pressure,
+        //           remarks: record?.remarks,
+        //           done_by: record?.done_by,
+        //           checked_by: record?.checked_by,
+        //           reviewed_by: record?.reviewed_by,
+        //           approved_by: record?.approved_by,
+        //         },
+        //         { transaction }
+        //       );
+        //     }
+        //   }
+        // }
          effectiveAuditEntries.push({
           form_id: form.form_id,
           process_id: form.process_id || null,

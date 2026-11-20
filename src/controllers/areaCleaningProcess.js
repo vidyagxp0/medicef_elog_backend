@@ -581,13 +581,13 @@ exports.InsertAreaCleaning = async (req, res) => {
         });
       };
 
-      const isEmptyAuditValue = (value) => {
-        return (
-          value === null ||
-          value === undefined ||
-          (typeof value === "string" && value.trim() === "")
-        );
-      };
+      // const isEmptyAuditValue = (value) => {
+      //   return (
+      //     value === null ||
+      //     value === undefined ||
+      //     (typeof value === "string" && value.trim() === "")
+      //   );
+      // };
 
       const dbReviewerIds = parseIfString(form.reviewer_id, []);
       const reqReviewerIds = parseIfString(reviewer_id, []);
@@ -673,9 +673,9 @@ exports.InsertAreaCleaning = async (req, res) => {
 
   // Update / Create Temperature Records (NO DELETE)
 
-        if (Array.isArray(AreaCleaningRecords) && AreaCleaningRecords.length > 0) {
+        // if (Array.isArray(AreaCleaningRecords) && AreaCleaningRecords.length > 0) {
 
-          for (const record of AreaCleaningRecords) {
+        //   for (const record of AreaCleaningRecords) {
 
            if (
               Array.isArray(AreaCleaningRecords) &&
@@ -828,67 +828,67 @@ exports.InsertAreaCleaning = async (req, res) => {
                 }
               }
             }
-            if (record.record_id) {
-              // UPDATE existing row
-              await AreaCleaningRecord.update(
-                {
-                  unique_id: record?.unique_id,
-                  time: record?.time,
-                  date: record?.date,
-                  fromTime: record?.fromTime,
-                  toTime: record?.toTime,
-                  cleaningAgent: record?.cleaningAgent,
-                  disinfectantUsed: record?.disinfectantUsed,
-                  ceiling: record?.ceiling,
-                  lightFixtures: record?.lightFixtures,
-                  walls: record?.walls,
-                  riserGrills: record?.riserGrills,
-                  doorCloser: record?.doorCloser,
-                  electricFixtures: record?.electricFixtures,
-                  viewingGlassPanel: record?.viewingGlassPanel,
-                  floorCoving: record?.floorCoving,
-                  remarks: record?.remarks,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                },
-                {
-                  where: {
-                    record_id: record.record_id,
-                    form_id: form_id,
-                  },
-                  transaction,
-                }
-              );
+            // if (record.record_id) {
+            //   // UPDATE existing row
+            //   await AreaCleaningRecord.update(
+            //     {
+            //       unique_id: record?.unique_id,
+            //       time: record?.time,
+            //       date: record?.date,
+            //       fromTime: record?.fromTime,
+            //       toTime: record?.toTime,
+            //       cleaningAgent: record?.cleaningAgent,
+            //       disinfectantUsed: record?.disinfectantUsed,
+            //       ceiling: record?.ceiling,
+            //       lightFixtures: record?.lightFixtures,
+            //       walls: record?.walls,
+            //       riserGrills: record?.riserGrills,
+            //       doorCloser: record?.doorCloser,
+            //       electricFixtures: record?.electricFixtures,
+            //       viewingGlassPanel: record?.viewingGlassPanel,
+            //       floorCoving: record?.floorCoving,
+            //       remarks: record?.remarks,
+            //       done_by: record?.done_by,
+            //       reviewed_by: record?.reviewed_by,
+            //     },
+            //     {
+            //       where: {
+            //         record_id: record.record_id,
+            //         form_id: form_id,
+            //       },
+            //       transaction,
+            //     }
+            //   );
 
-            } else {
-              // CREATE only new row
-              await AreaCleaningRecord.create(
-                {
-                  form_id: form_id,
-                  unique_id: record?.unique_id,
-                  time: record?.time,
-                  date: record?.date,
-                  fromTime: record?.fromTime,
-                  toTime: record?.toTime,
-                  cleaningAgent: record?.cleaningAgent,
-                  disinfectantUsed: record?.disinfectantUsed,
-                  ceiling: record?.ceiling,
-                  lightFixtures: record?.lightFixtures,
-                  walls: record?.walls,
-                  riserGrills: record?.riserGrills,
-                  doorCloser: record?.doorCloser,
-                  electricFixtures: record?.electricFixtures,
-                  viewingGlassPanel: record?.viewingGlassPanel,
-                  floorCoving: record?.floorCoving,
-                  done_by: record?.done_by,
-                  reviewed_by: record?.reviewed_by,
-                  remarks: record?.remarks,
-                },
-                { transaction }
-              );
-            }
-          }
-        }
+            // } else {
+            //   // CREATE only new row
+            //   await AreaCleaningRecord.create(
+            //     {
+            //       form_id: form_id,
+            //       unique_id: record?.unique_id,
+            //       time: record?.time,
+            //       date: record?.date,
+            //       fromTime: record?.fromTime,
+            //       toTime: record?.toTime,
+            //       cleaningAgent: record?.cleaningAgent,
+            //       disinfectantUsed: record?.disinfectantUsed,
+            //       ceiling: record?.ceiling,
+            //       lightFixtures: record?.lightFixtures,
+            //       walls: record?.walls,
+            //       riserGrills: record?.riserGrills,
+            //       doorCloser: record?.doorCloser,
+            //       electricFixtures: record?.electricFixtures,
+            //       viewingGlassPanel: record?.viewingGlassPanel,
+            //       floorCoving: record?.floorCoving,
+            //       done_by: record?.done_by,
+            //       reviewed_by: record?.reviewed_by,
+            //       remarks: record?.remarks,
+            //     },
+            //     { transaction }
+            //   );
+            // }
+       //   }
+        //}
       await AreaCleaningAuditTrail.bulkCreate(auditTrailEntries, {
         transaction,
       });
