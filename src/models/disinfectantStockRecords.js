@@ -30,6 +30,10 @@ const DisinfectantStockRecords = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+     product_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     batch_no: {
       type: DataTypes.STRING,
     },

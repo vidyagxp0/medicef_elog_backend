@@ -172,6 +172,39 @@ const ensureDrainCleaningColumns = async () => {
     console.error("Migration check error for DrainCleaning:", err.message);
   }
 };
+const ensureDisinfectantStockProductNameColumn = async () => {
+  try {
+    const queryInterface = sequelize.getQueryInterface();
+
+    const tableDescription = await queryInterface.describeTable(
+      "DisinfectantStockRecords"
+    );
+
+    if (!tableDescription.product_name) {
+      await queryInterface.addColumn(
+        "DisinfectantStockRecords",
+        "product_name",
+        {
+          type: DataTypes.STRING,
+          allowNull: true,
+        }
+      );
+
+      console.log(
+        "Added product_name column to DisinfectantStockRecords"
+      );
+    } else {
+      console.log("product_name column already exists");
+    }
+  } catch (error) {
+    console.error(
+      "DisinfectantStock migration error:",
+      error.message
+    );
+
+    throw error;
+  }
+};
 
 const ensureDispensingBoothLimitDataColumn = async () => {
   const queryInterface = sequelize.getQueryInterface();
@@ -611,6 +644,7 @@ const startServer = async () => {
     await ensureDailyVerificationStandardWeightLimitColumns();
     await ensureDailyVerificationRevisionColumns();
     await ensureDrainCleaningColumns();
+    await ensureDisinfectantStockProductNameColumn();
     await ensureDailyCalibrationDateTimeColumn();
     await initWorkflowTransitions();
     await inituserRolesSync()
