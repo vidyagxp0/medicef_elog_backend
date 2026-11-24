@@ -330,6 +330,34 @@ const ensureDailyVerificationRevisionColumns = async () => {
     throw error;
   }
 };
+const ensureFilterCleaningCheckedAtColumn = async () => {
+  try {
+    const filterCleaningModel = sequelize.models.filterCleaningRecord;
+
+    if (!filterCleaningModel) {
+      throw new Error("filterCleaningRecord model is not registered");
+    }
+
+    const queryInterface = sequelize.getQueryInterface();
+    const tableName = filterCleaningModel.getTableName();
+
+    const columns = await queryInterface.describeTable(tableName);
+
+    if (!columns.checked_at) {
+      await queryInterface.addColumn(tableName, "checked_at", {
+        type: filterCleaningModel.rawAttributes.checked_at.type,
+        allowNull: true,
+      });
+
+      console.log("checked_at column added successfully");
+    } else {
+      console.log("checked_at column already exists");
+    }
+  } catch (error) {
+    console.error("Error ensuring checked_at column:", error);
+    throw error;
+  }
+};
 
 // const ensureUserPasswordPolicyColumns = async () => {
 //   try {
@@ -637,6 +665,7 @@ const startServer = async () => {
 
     await sequelize.sync({ alter: false });
     console.log("Tables synchronized");
+    await ensureFilterCleaningCheckedAtColumn();
     await ensureEffectiveChangeAuditTable();
     await ensureElogAuditReviewsTable();
     await ensureUserPasswordPolicyColumns();

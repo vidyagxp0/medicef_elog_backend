@@ -612,6 +612,7 @@ exports.InsertfilterCleaning = async (req, res) => {
             done_by: record?.done_by,
             reviewed_by: record?.reviewed_by,
             remarks: record?.remarks,
+            checked_at: record?.checked_at,
           };
 
           // Compare old and new values
@@ -661,6 +662,7 @@ exports.InsertfilterCleaning = async (req, res) => {
               done_by: record?.done_by,
               reviewed_by: record?.reviewed_by,
               remarks: record?.remarks,
+              checked_at: record?.checked_at,
             },
             {
               where: {
@@ -697,6 +699,7 @@ exports.InsertfilterCleaning = async (req, res) => {
             done_by: record?.done_by,
             reviewed_by: record?.reviewed_by,
             remarks: record?.remarks,
+            checked_at: record?.checked_at,
           };
 
   // Create and capture record

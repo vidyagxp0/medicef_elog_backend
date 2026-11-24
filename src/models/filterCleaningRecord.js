@@ -99,6 +99,10 @@ const filterCleaningRecord = sequelize.define(
     // supporting_docs: {
     //   type: DataTypes.STRING,
     // },
+    checked_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }
 );
 
