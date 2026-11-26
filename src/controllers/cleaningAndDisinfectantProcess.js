@@ -41,6 +41,17 @@ const parseIfString = (value, fallback = null) => {
 
   return value;
 };
+const parseTimestamp = (value) => {
+  if (!value) return null;
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error("Invalid timestamp.");
+  }
+
+  return date;
+};
 
 // Fill Lab Assay Sample form and insert its records.
 exports.InsertCleaningAndDisinfectant = async (req, res) => {
@@ -246,6 +257,8 @@ exports.InsertCleaningAndDisinfectant = async (req, res) => {
         checked_by: record?.checked_by,
         reviewed_by: record?.reviewed_by,
         remarks: record?.remarks,
+        prepared_at: parseTimestamp(record?.prepared_at),
+        entry_at: parseTimestamp(record?.entry_at),
       }));
 
       formRecords.forEach((record, index) => {
@@ -646,6 +659,10 @@ const isEmptyAuditValue = (value) => {
     checked_by: record?.checked_by,
     reviewed_by: record?.reviewed_by,
     remarks: record?.remarks,
+    prepared_at: existingRecord.prepared_at ?? null,
+    entry_at: record?.entry_at
+    ? parseTimestamp(record.entry_at)
+    : existingRecord.entry_at,
   };
 
   // Compare old and new values
@@ -697,6 +714,8 @@ const isEmptyAuditValue = (value) => {
     checked_by: record?.checked_by,
     reviewed_by: record?.reviewed_by,
     remarks: record?.remarks,
+    prepared_at: parseTimestamp(record?.prepared_at),
+    entry_at: parseTimestamp(record?.entry_at),
   };
 
   const createdRecord = await CleaningAndDisinfectantRecord.create(

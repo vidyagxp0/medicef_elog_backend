@@ -78,8 +78,21 @@ const CleaningAndDisinfectantRecord = sequelize.define(
     remarks: {
       type: DataTypes.STRING,
     },
-  }
-);
+    // NEW: Solution preparation timestamp
+    prepared_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
+    },
+
+    // NEW: Distribution entry timestamp
+    entry_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
+    },
+      }
+    );
 
 CleaningAndDisinfectantRecord.belongsTo(CleaningAndDisinfectantForm, { foreignKey: 'form_id' });
 CleaningAndDisinfectantForm.hasMany(CleaningAndDisinfectantRecord, { foreignKey: 'form_id' });

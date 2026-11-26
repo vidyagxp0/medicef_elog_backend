@@ -358,7 +358,47 @@ const ensureFilterCleaningCheckedAtColumn = async () => {
     throw error;
   }
 };
+const ensureCleaningAndDisinfectantColumns = async () => {
+  try {
+    const queryInterface = sequelize.getQueryInterface();
 
+    const model = sequelize.models.CleaningAndDisinfectantRecord;
+
+    if (!model) {
+      throw new Error(
+        "CleaningAndDisinfectantRecord model is not registered"
+      );
+    }
+
+    const tableName = model.getTableName();
+
+    const tableDescription =
+      await queryInterface.describeTable(tableName);
+
+    const columns = ["prepared_at", "entry_at"];
+
+    for (const column of columns) {
+      if (!tableDescription[column]) {
+        await queryInterface.addColumn(tableName, column, {
+          type: DataTypes.DATE,
+          allowNull: true,
+          defaultValue: null,
+        });
+
+        console.log(`Added ${column} column successfully`);
+      } else {
+        console.log(`${column} column already exists`);
+      }
+    }
+  } catch (error) {
+    console.error(
+      "CleaningAndDisinfectantRecords migration error:",
+      error.message
+    );
+
+    throw error;
+  }
+};
 // const ensureUserPasswordPolicyColumns = async () => {
 //   try {
 //     const queryInterface = sequelize.getQueryInterface();
@@ -675,6 +715,7 @@ const startServer = async () => {
     await ensureDrainCleaningColumns();
     await ensureDisinfectantStockProductNameColumn();
     await ensureDailyCalibrationDateTimeColumn();
+    await ensureCleaningAndDisinfectantColumns();
     await initWorkflowTransitions();
     await inituserRolesSync()
 
